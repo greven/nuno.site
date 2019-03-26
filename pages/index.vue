@@ -2,12 +2,8 @@
   <section class="container">
     <div>
       <logo />
-      <h1 class="title">
-        nuno.site
-      </h1>
-      <h2 class="subtitle">
-        Nuno Freire personal website.
-      </h2>
+      <h1 class="title">Nuno Site</h1>
+      <h2 class="subtitle">Nuno Freire personal website.</h2>
       <div class="links">
         <a href="https://nuxtjs.org/" target="_blank" class="button--green"
           >Documentation</a
