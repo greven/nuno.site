@@ -1,0 +1,20 @@
+{
+  "title": "Nuno's Site",
+  "url": "https://nuno.site",
+  "description": "My personal website / resume as a Web Developer.",
+  "feed": {
+    "subtitle": "My personal website / resume as a Web Developer.",
+    "filename": "feed.xml",
+    "path": "/feed/feed.xml",
+    "id": "https://nuno.site"
+  },
+  "jsonfeed": {
+    "path": "/feed/feed.json",
+    "url": "https://nuno.site/feed/feed.json"
+  },
+  "author": {
+    "name": "Nuno Moço",
+    "email": "mail@nuno.site",
+    "url": "https://nuno.site/about"
+  }
+}
