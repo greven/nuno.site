@@ -6,20 +6,15 @@ eleventyNavigation:
 ---
 
 {% block content %}
-  <div>
-    <div>
-      {% Image "images/1.jpg",
-      "this is an alt description" %}
-    </div>
-    <div class="fixed inset-0 flex justify-center items-center bg-cool-gray-900 text-cool-gray-50">
+  <div class="text-cool-gray-50">
+    <div class="fixed inset-0 flex flex-col justify-center items-center bg-dark-900">
       <div>
         <div x-data="{message:'🤖 Hello World 🤓'}" x-text="message"></div>
-
-        <div class="text-cool-gray-50">Might actually build this, this time around...</div>
+        <div>Might actually build this, this time around...</div>
       </div>
 
-      <div>
-        <h1>Latest 3 Posts</h1>
+      <div class="mt-8">
+        <h1 class="text-4xl font-bold">Latest 3 Posts</h1>
 
         {% set postslist = collections.posts | head(-3) %}
         {% set postslistCounter = collections.posts | length %}
