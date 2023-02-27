@@ -3,8 +3,8 @@
   <.back navigate={~p"/blog/"} class="mb-4">All posts</.back>
 
   <h1><%= @post.title %></h1>
-  <p><time><%= @post.date %></time></p>
-  <p>Tagged as <%= Enum.join(@post.tags, ", ") %></p>
+  <time><%= @post.date %></time>
+  <div>Tagged as <%= Enum.join(@post.tags, ", ") %></div>
 
   <div class="my-8">
     <%= raw(@post.body) %>

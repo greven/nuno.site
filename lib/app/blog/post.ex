@@ -4,7 +4,7 @@ defmodule App.Blog.Post do
   """
 
   @enforce_keys [:id, :title, :body, :tags, :date]
-  defstruct [:id, :title, :body, :tags, :date, published: true]
+  defstruct [:id, :title, :body, :tags, :date, published: true, toc: false]
 
   def build(filename, attrs, body) do
     [year, month, day, id] =

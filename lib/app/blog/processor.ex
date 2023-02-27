@@ -13,5 +13,9 @@ defmodule App.Blog.Processor do
     {"h2", [{"id", anchor_id}], [text], %{}}
   end
 
+  def process({"h6", [], ["Table of Contents"] = text, %{}}) do
+    {"h6", [{"id", "table-of-contents"}], text, %{}}
+  end
+
   def process(value), do: value
 end

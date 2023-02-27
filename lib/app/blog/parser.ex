@@ -21,7 +21,9 @@ defmodule App.Blog.Parser do
           {original, title, slug}
         end)
 
-      if Enum.any?(headers) do
+      show_toc? = Map.get(attrs, :toc, false)
+
+      if Enum.any?(headers) and show_toc? do
         {attrs, append_table_of_contents(body, headers)}
       else
         {attrs, body}
@@ -38,7 +40,7 @@ defmodule App.Blog.Parser do
       end)
       |> Enum.join("\n")
 
-    "Table of contents:\n#{table}\n\n#{body}"
+    "###### Table of Contents\n#{table}\n\n#{body}"
   end
 
   defp split(path, contents) do

@@ -1,1 +1,9 @@
 @import "./reset.css";
+
+h6#table-of-contents {
+  @apply mt-16 text-lg font-semibold;
+}
+
+h6#table-of-contents + ol {
+  @apply mb-16;
+}
