@@ -1,4 +1,4 @@
-defmodule NsWeb.CoreComponents do
+defmodule AppWeb.CoreComponents do
   @moduledoc """
   Provides core UI components.
 
@@ -12,7 +12,7 @@ defmodule NsWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import NsWeb.Gettext
+  import AppWeb.Gettext
 
   @doc """
   Renders a modal.
@@ -646,9 +646,9 @@ defmodule NsWeb.CoreComponents do
     # should be written to the errors.po file. The :count option is
     # set by Ecto and indicates we should also apply plural rules.
     if count = opts[:count] do
-      Gettext.dngettext(NsWeb.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(AppWeb.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(NsWeb.Gettext, "errors", msg, opts)
+      Gettext.dgettext(AppWeb.Gettext, "errors", msg, opts)
     end
   end
 

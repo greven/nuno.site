@@ -1,5 +1,5 @@
-defmodule NsWeb.PageController do
-  use NsWeb, :controller
+defmodule AppWeb.PageController do
+  use AppWeb, :controller
 
   def home(conn, _params) do
     # The home page is often custom made,

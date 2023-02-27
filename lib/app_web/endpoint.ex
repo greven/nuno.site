@@ -1,4 +1,4 @@
-defmodule NsWeb.Endpoint do
+defmodule AppWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :ns
 
   # The session will be stored in the cookie and signed,
@@ -21,7 +21,7 @@ defmodule NsWeb.Endpoint do
     at: "/",
     from: :ns,
     gzip: false,
-    only: NsWeb.static_paths()
+    only: AppWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -43,5 +43,5 @@ defmodule NsWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug NsWeb.Router
+  plug AppWeb.Router
 end

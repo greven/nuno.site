@@ -1,8 +1,8 @@
 import Config
 
 # Configure your database
-config :ns, Ns.Repo,
-  database: Path.expand("../data/ns_dev.db", Path.dirname(__ENV__.file)),
+config :app, App.Repo,
+  database: Path.expand("../data/app_dev.db", Path.dirname(__ENV__.file)),
   pool_size: 5,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true
@@ -13,7 +13,7 @@ config :ns, Ns.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with esbuild to bundle .js and .css sources.
-config :ns, NsWeb.Endpoint,
+config :app, AppWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: 4000],
@@ -50,7 +50,7 @@ config :ns, NsWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :ns, NsWeb.Endpoint,
+config :app, AppWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
@@ -60,7 +60,7 @@ config :ns, NsWeb.Endpoint,
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :ns, dev_routes: true
+config :app, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

@@ -1,4 +1,4 @@
-defmodule Ns.Repo do
+defmodule App.Repo do
   use Ecto.Repo,
     otp_app: :ns,
     adapter: Ecto.Adapters.SQLite3

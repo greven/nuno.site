@@ -1,12 +1,12 @@
-defmodule NsWeb do
+defmodule AppWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
 
   This can be used in your application as:
 
-      use NsWeb, :controller
-      use NsWeb, :html
+      use AppWeb, :controller
+      use AppWeb, :html
 
   The definitions below will be executed for every controller,
   component, etc, so keep them short and clean, focused
@@ -40,10 +40,10 @@ defmodule NsWeb do
     quote do
       use Phoenix.Controller,
         formats: [:html, :json],
-        layouts: [html: NsWeb.Layouts]
+        layouts: [html: AppWeb.Layouts]
 
       import Plug.Conn
-      import NsWeb.Gettext
+      import AppWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -52,7 +52,7 @@ defmodule NsWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {NsWeb.Layouts, :app}
+        layout: {AppWeb.Layouts, :app}
 
       unquote(html_helpers())
     end
@@ -84,8 +84,8 @@ defmodule NsWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation
-      import NsWeb.CoreComponents
-      import NsWeb.Gettext
+      import AppWeb.CoreComponents
+      import AppWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
@@ -98,9 +98,9 @@ defmodule NsWeb do
   def verified_routes do
     quote do
       use Phoenix.VerifiedRoutes,
-        endpoint: NsWeb.Endpoint,
-        router: NsWeb.Router,
-        statics: NsWeb.static_paths()
+        endpoint: AppWeb.Endpoint,
+        router: AppWeb.Router,
+        statics: AppWeb.static_paths()
     end
   end
 

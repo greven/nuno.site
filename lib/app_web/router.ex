@@ -1,11 +1,11 @@
-defmodule NsWeb.Router do
-  use NsWeb, :router
+defmodule AppWeb.Router do
+  use AppWeb, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {NsWeb.Layouts, :root}
+    plug :put_root_layout, {AppWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -14,14 +14,14 @@ defmodule NsWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", NsWeb do
+  scope "/", AppWeb do
     pipe_through :browser
 
     get "/", PageController, :home
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", NsWeb do
+  # scope "/api", AppWeb do
   #   pipe_through :api
   # end
 end

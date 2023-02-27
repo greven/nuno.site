@@ -1,4 +1,4 @@
-defmodule Ns.Application do
+defmodule App.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -9,22 +9,22 @@ defmodule Ns.Application do
   def start(_type, _args) do
     children = [
       # Start the Telemetry supervisor
-      NsWeb.Telemetry,
+      AppWeb.Telemetry,
       # Start the Ecto repository
-      Ns.Repo,
+      App.Repo,
       # Start the PubSub system
-      {Phoenix.PubSub, name: Ns.PubSub},
+      {Phoenix.PubSub, name: App.PubSub},
       # Start Finch
-      {Finch, name: Ns.Finch},
+      {Finch, name: App.Finch},
       # Start the Endpoint (http/https)
-      NsWeb.Endpoint
-      # Start a worker by calling: Ns.Worker.start_link(arg)
-      # {Ns.Worker, arg}
+      AppWeb.Endpoint
+      # Start a worker by calling: App.Worker.start_link(arg)
+      # {App.Worker, arg}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Ns.Supervisor]
+    opts = [strategy: :one_for_one, name: App.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
@@ -32,7 +32,7 @@ defmodule Ns.Application do
   # whenever the application is updated.
   @impl true
   def config_change(changed, _new, removed) do
-    NsWeb.Endpoint.config_change(changed, removed)
+    AppWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end

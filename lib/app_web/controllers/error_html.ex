@@ -1,5 +1,5 @@
-defmodule NsWeb.ErrorHTML do
-  use NsWeb, :html
+defmodule AppWeb.ErrorHTML do
+  use AppWeb, :html
 
   # If you want to customize your error pages,
   # uncomment the embed_templates/1 call below

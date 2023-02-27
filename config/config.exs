@@ -7,18 +7,18 @@
 # General application configuration
 import Config
 
-config :ns,
-  ecto_repos: [Ns.Repo],
+config :app,
+  ecto_repos: [App.Repo],
   generators: [binary_id: true]
 
 # Configures the endpoint
-config :ns, NsWeb.Endpoint,
+config :app, AppWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [
-    formats: [html: NsWeb.ErrorHTML, json: NsWeb.ErrorJSON],
+    formats: [html: AppWeb.ErrorHTML, json: AppWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: Ns.PubSub,
+  pubsub_server: App.PubSub,
   live_view: [signing_salt: "fU1ufwZU"],
   adapter: Bandit.PhoenixAdapter
 

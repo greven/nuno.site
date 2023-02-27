@@ -1,4 +1,4 @@
-defmodule Ns do
+defmodule App do
   @moduledoc """
   Ns keeps the contexts that define your domain
   and business logic.

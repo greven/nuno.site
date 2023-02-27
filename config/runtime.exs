@@ -17,7 +17,7 @@ import Config
 # Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
 # script that automatically sets the env var above.
 if System.get_env("PHX_SERVER") do
-  config :ns, NsWeb.Endpoint, server: true
+  config :app, AppWeb.Endpoint, server: true
 end
 
 if config_env() == :prod do
@@ -25,10 +25,10 @@ if config_env() == :prod do
     System.get_env("DATABASE_PATH") ||
       raise """
       environment variable DATABASE_PATH is missing.
-      For example: /etc/ns/ns.db
+      For example: /etc/app/app.db
       """
 
-  config :ns, Ns.Repo,
+  config :app, App.Repo,
     database: database_path,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
 
@@ -47,7 +47,7 @@ if config_env() == :prod do
   host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
-  config :ns, NsWeb.Endpoint,
+  config :app, AppWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     http: [
       # Enable IPv6 and bind on all interfaces.
@@ -64,7 +64,7 @@ if config_env() == :prod do
   # To get SSL working, you will need to add the `https` key
   # to your endpoint configuration:
   #
-  #     config :ns, NsWeb.Endpoint,
+  #     config :app, AppWeb.Endpoint,
   #       https: [
   #         ...,
   #         port: 443,
@@ -86,7 +86,7 @@ if config_env() == :prod do
   # We also recommend setting `force_ssl` in your endpoint, ensuring
   # no data is ever sent via http, always redirecting to https:
   #
-  #     config :ns, NsWeb.Endpoint,
+  #     config :app, AppWeb.Endpoint,
   #       force_ssl: [hsts: true]
   #
   # Check `Plug.SSL` for all available options in `force_ssl`.
