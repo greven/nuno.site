@@ -1,0 +1,12 @@
+<.flash_group flash={@flash} />
+<div class="mx-auto prose">
+  <.back navigate={~p"/blog/"} class="mb-4">All posts</.back>
+
+  <h1><%= @post.title %></h1>
+  <p><time><%= @post.date %></time></p>
+  <p>Tagged as <%= Enum.join(@post.tags, ", ") %></p>
+
+  <div class="my-8">
+    <%= raw(@post.body) %>
+  </div>
+</div>

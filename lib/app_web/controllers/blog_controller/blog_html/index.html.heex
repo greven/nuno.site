@@ -1,0 +1,24 @@
+<.flash_group flash={@flash} />
+<div class="mx-auto prose">
+  <h1>Listing all posts</h1>
+
+  <ul class="list-none">
+    <%= for post <- @posts do %>
+      <li id={post.id} class="">
+        <h2>
+          <.link href={~p"/blog/#{post}"} class="underline text-teal-600">
+            <%= post.title %>
+          </.link>
+        </h2>
+
+        <p>
+          <time><%= post.date %></time>
+        </p>
+
+        <p>
+          Tagged as <%= Enum.join(post.tags, ", ") %>
+        </p>
+      </li>
+    <% end %>
+  </ul>
+</div>

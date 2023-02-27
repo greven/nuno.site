@@ -561,11 +561,13 @@ defmodule AppWeb.CoreComponents do
       <.back navigate={~p"/posts"}>Back to posts</.back>
   """
   attr :navigate, :any, required: true
+  attr :class, :string, default: nil
+
   slot :inner_block, required: true
 
   def back(assigns) do
     ~H"""
-    <div class="mt-16">
+    <div class={["mt-16", @class]}>
       <.link
         navigate={@navigate}
         class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
