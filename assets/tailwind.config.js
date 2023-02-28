@@ -21,10 +21,30 @@ module.exports = {
           light: "#FBFBFB",
           dark: "#222222",
         },
+        text: {
+          light: "#15141A",
+          dark: "#FBFBFB",
+        },
       },
       typography: ({ theme }) => ({
+        DEFAULT: {
+          color: theme("colors.red.600"),
+          css: {
+            h1: {
+              "font-weight": 600,
+            },
+            "h2, h3, h4, h5": {
+              "font-weight": 400,
+            },
+            a: {
+              "text-decoration": "underline",
+            },
+          },
+        },
+
         primary: {
           css: {
+            "--tw-prose-headings": "#222222",
             "--tw-prose-links": theme("colors.primary"),
             "--tw-prose-bullets": theme("colors.primary"),
           },

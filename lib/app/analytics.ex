@@ -5,6 +5,10 @@ defmodule App.Analytics do
 
   use Supervisor
 
+  import Ecto.Query
+
+  alias App.Analytics.Metric
+
   @worker App.Analytics.Worker
   @registry App.Analytics.Registry
   @supervisor App.Analytics.WorkerSupervisor
@@ -23,6 +27,7 @@ defmodule App.Analytics do
     Supervisor.init(children, strategy: :one_for_all)
   end
 
+  # Bump the count of the page page by using an existing worker or spawning a new one.
   def bump(path) when is_binary(path) do
     pid =
       case Registry.lookup(@registry, path) do
@@ -38,4 +43,44 @@ defmodule App.Analytics do
 
     send(pid, :bump)
   end
+
+  # ------------------------------------------
+  #  Metrics
+  # ------------------------------------------
+
+  @doc """
+  Get the page total view count aggregation
+  """
+  def get_page_view_count(path) do
+    from(m in App.Analytics.Metric,
+      select: sum(m.counter),
+      where: m.path == ^path,
+      group_by: m.path
+    )
+    |> App.Repo.one()
+  end
+
+  def upsert_page_counter!(path, counter) do
+    date = Date.utc_today()
+    query = from(m in Metric, update: [inc: [counter: ^counter]])
+
+    %Metric{date: date, path: path, counter: counter}
+    |> App.Repo.insert!(on_conflict: query, conflict_target: [:date, :path])
+    |> after_metric_update(path)
+  end
+
+  defp after_metric_update(metric, path), do: App.Analytics.broadcast(path, metric)
+
+  # ------------------------------------------
+  #  PubSub
+  # ------------------------------------------
+
+  def broadcast(path, metric) do
+    Phoenix.PubSub.broadcast(App.PubSub, "metrics:#{path}", %{
+      event: "metrics_update",
+      payload: %{metric: metric}
+    })
+  end
+
+  def subscribe(path), do: Phoenix.PubSub.subscribe(App.PubSub, "metrics:#{path}")
 end

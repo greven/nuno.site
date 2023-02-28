@@ -14,6 +14,8 @@ defmodule App.Application do
       App.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: App.PubSub},
+      # Start Phoenix Presence
+      AppWeb.Presence,
       # Start Finch
       {Finch, name: App.Finch},
       # App analytics

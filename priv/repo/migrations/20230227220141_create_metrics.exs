@@ -7,5 +7,7 @@ defmodule App.Repo.Migrations.CreateMetrics do
       add :path, :string, primary_key: true
       add :counter, :integer, default: 0
     end
+
+    create index(:metrics, [:path])
   end
 end

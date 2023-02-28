@@ -20,9 +20,9 @@ defmodule AppWeb.Router do
   scope "/", AppWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
-    get "/blog", BlogController, :index
-    get "/blog/:id", BlogController, :show
+    live "/", PageLive, :home
+    live "/blog", BlogLive, :index, as: :blog
+    live "/blog/:id", BlogLive, :show, as: :blog
   end
 
   # Other scopes may use custom stacks.

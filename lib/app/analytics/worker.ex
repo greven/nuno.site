@@ -3,8 +3,6 @@ defmodule App.Analytics.Worker do
 
   use GenServer, restart: :temporary
 
-  alias App.Analytics.Metric
-
   @registry App.Analytics.Registry
 
   def start_link(path) do
@@ -30,27 +28,15 @@ defmodule App.Analytics.Worker do
 
   @impl true
   def handle_info(:upsert, {path, counter}) do
-    upsert_path_counter!(path, counter)
+    App.Analytics.upsert_page_counter!(path, counter)
     {:noreply, {path, 0}}
   end
 
   @impl true
   def terminate(_, {_path, 0}), do: :ok
-  def terminate(_, {path, counter}), do: upsert_path_counter!(path, counter)
+  def terminate(_, {path, counter}), do: App.Analytics.upsert_page_counter!(path, counter)
 
   defp schedule_upsert() do
     Process.send_after(self(), :upsert, Enum.random(10..20) * 1_000)
-  end
-
-  defp upsert_path_counter!(path, counter) do
-    import Ecto.Query
-    date = Date.utc_today()
-    query = from(m in Metric, update: [inc: [counter: ^counter]])
-
-    App.Repo.insert!(
-      %Metric{date: date, path: path, counter: counter},
-      on_conflict: query,
-      conflict_target: [:date, :path]
-    )
   end
 end

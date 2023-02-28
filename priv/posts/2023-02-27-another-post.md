@@ -1,5 +1,6 @@
 %{
 title: "Another post",
+description: "Description",
 tags: ~w(dev),
 toc: true
 }
