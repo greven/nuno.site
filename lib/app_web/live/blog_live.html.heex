@@ -26,6 +26,7 @@
     <div>Tagged as <%= Enum.join(@post.tags, ", ") %></div>
     <div>Page views: <%= @page_views %></div>
     <div>Current readers: <%= @readers %></div>
+    <div>Reading time: <%= @post.reading_time %>m</div>
 
     <div class="my-8">
       <%= raw(@post.body) %>

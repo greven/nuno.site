@@ -4,10 +4,13 @@ defmodule AppWeb.BlogLive do
   # Show
   @impl true
   def mount(%{"id" => id}, _session, socket) do
+    post = App.Blog.get_post_by_id!(id)
+    dbg(post)
+
     socket =
       socket
       |> assign(:uri, nil)
-      |> assign(:post, App.Blog.get_post_by_id!(id))
+      |> assign(:post, post)
 
     {:ok, socket}
   end
