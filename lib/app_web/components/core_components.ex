@@ -567,7 +567,7 @@ defmodule AppWeb.CoreComponents do
 
   def back(assigns) do
     ~H"""
-    <div class={["mt-16", @class]}>
+    <div class={@class}>
       <.link
         navigate={@navigate}
         class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"

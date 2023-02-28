@@ -1,9 +1,22 @@
 @import "./reset.css";
+@import "./fonts.css";
 
-h6#table-of-contents {
-  @apply mt-16 text-lg font-semibold;
+::selection {
+  background-color: theme("colors.primary");
+  color: theme("colors.white");
 }
 
-h6#table-of-contents + ol {
-  @apply mb-16;
+body {
+  font-family: theme("fontFamily.sans");
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: theme("fontFamily.headings");
 }

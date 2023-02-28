@@ -1,12 +1,12 @@
 <.flash_group flash={@flash} />
-<div class="mx-auto prose">
-  <h1>Listing all posts</h1>
+<div class="mx-auto">
+  <h1 class="text-4xl mb-6">Listing all posts</h1>
 
-  <ul class="list-none">
+  <ul class="list-none p-0">
     <%= for post <- @posts do %>
       <li id={post.id} class="">
         <h2>
-          <.link href={~p"/blog/#{post}"} class="underline text-teal-600">
+          <.link href={~p"/blog/#{post}"} class="underline text-primary">
             <%= post.title %>
           </.link>
         </h2>

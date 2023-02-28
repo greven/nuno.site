@@ -16,6 +16,8 @@ defmodule App.Application do
       {Phoenix.PubSub, name: App.PubSub},
       # Start Finch
       {Finch, name: App.Finch},
+      # App analytics
+      App.Analytics,
       # Start the Endpoint (http/https)
       AppWeb.Endpoint
       # Start a worker by calling: App.Worker.start_link(arg)

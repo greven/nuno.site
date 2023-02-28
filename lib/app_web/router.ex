@@ -1,6 +1,8 @@
 defmodule AppWeb.Router do
   use AppWeb, :router
 
+  alias AppWeb.Plugs
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule AppWeb.Router do
     plug :put_root_layout, {AppWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Plugs.BumpMetric
   end
 
   pipeline :api do
