@@ -579,6 +579,18 @@ defmodule AppWeb.CoreComponents do
     """
   end
 
+  attr :class, :string, default: nil
+
+  slot :inner_block, required: true
+
+  def badge(assigns) do
+    ~H"""
+    <span class={["inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 hover:bg-neutral-200 transition duration-200", @class]}>
+      <%= render_slot(@inner_block) %>
+    </span>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do

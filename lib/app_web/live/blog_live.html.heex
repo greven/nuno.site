@@ -5,13 +5,12 @@
     <ul :for={{dom_id, post} <- @streams.posts} class="list-none p-0">
       <li id={dom_id} class="my-4">
         <h2>
-          <.link href={~p"/blog/#{post}"} class="underline text-primary">
+          <.link href={~p"/blog/#{post}"} class="underline text-primary font-medium">
             <%= post.title %>
           </.link>
         </h2>
 
         <time><%= post.date %></time>
-        <div>Tagged as <%= Enum.join(post.tags, ", ") %></div>
       </li>
     </ul>
   </div>
@@ -21,12 +20,17 @@
   <div class="mx-auto prose prose-primary">
     <.back navigate={~p"/blog/"} class="mb-4">All posts</.back>
 
-    <h1><%= @post.title %></h1>
-    <time><%= @post.date %></time>
-    <div>Tagged as <%= Enum.join(@post.tags, ", ") %></div>
-    <div>Page views: <%= @page_views %></div>
-    <div>Current readers: <%= @readers %></div>
-    <div>Reading time: <%= @post.reading_time %>m</div>
+    <h1 class="mb-2"><%= @post.title %></h1>
+    <div class="flex text-neutral-500">
+      <.publication_date date={@post.date} />
+    </div>
+
+    <div class="flex">
+      <div>Views: <%= @page_views %></div>
+      <div>Readers: <%= @readers %></div>
+      <%!-- <div>Reading time: <%= reading_time(@post.reading_time) %><span class="font-medium">m</span></div> --%>
+      <%!-- <.post_tags tags={@post.tags} /> --%>
+    </div>
 
     <div class="my-8">
       <%= raw(@post.body) %>

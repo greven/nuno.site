@@ -48,16 +48,29 @@ defmodule App.Analytics do
   #  Metrics
   # ------------------------------------------
 
+  def list_page_views(path) do
+    Metric
+    |> select([m], {m.date, m.counter})
+    |> where(path: ^path)
+    |> App.Repo.all()
+  end
+
   @doc """
   Get the page total view count aggregation
   """
   def get_page_view_count(path) do
-    from(m in App.Analytics.Metric,
+    from(m in Metric,
       select: sum(m.counter),
       where: m.path == ^path,
       group_by: m.path
     )
     |> App.Repo.one()
+  end
+
+  def total_site_views do
+    Metric
+    |> select([m], sum(m.counter))
+    |> App.Repo.all()
   end
 
   def upsert_page_counter!(path, counter) do

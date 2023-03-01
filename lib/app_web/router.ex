@@ -1,6 +1,8 @@
 defmodule AppWeb.Router do
   use AppWeb, :router
 
+  import Phoenix.LiveDashboard.Router
+
   alias AppWeb.Plugs
 
   pipeline :browser do
@@ -17,12 +19,26 @@ defmodule AppWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :require_auth do
+    plug Plugs.CheckAuth
+  end
+
   scope "/", AppWeb do
     pipe_through :browser
 
-    live "/", PageLive, :home
-    live "/blog", BlogLive, :index, as: :blog
-    live "/blog/:id", BlogLive, :show, as: :blog
+    live_session :default do
+      live "/", PageLive, :home
+      live "/blog", BlogLive, :index, as: :blog
+      live "/blog/:id", BlogLive, :show, as: :blog
+      live "/blog/tags", TagsLive, :index
+      live "/blog/tags/:id", TagsLive, :show
+    end
+  end
+
+  scope "/admin" do
+    pipe_through [:browser, :require_auth]
+
+    live_dashboard "/dashboard", metrics: AppWeb.Telemetry
   end
 
   # Other scopes may use custom stacks.

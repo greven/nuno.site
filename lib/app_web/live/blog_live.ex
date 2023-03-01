@@ -1,6 +1,8 @@
 defmodule AppWeb.BlogLive do
   use AppWeb, :live_view
 
+  import AppWeb.PageComponents
+
   # Show
   @impl true
   def mount(%{"id" => id}, _session, socket) do
@@ -79,5 +81,12 @@ defmodule AppWeb.BlogLive do
     end
 
     assign(socket, :readers, readers)
+  end
+
+  defp reading_time(reading_time) do
+    cond do
+      reading_time < 1 -> "<1"
+      true -> "#{reading_time}"
+    end
   end
 end

@@ -19,7 +19,7 @@ defmodule App.MixProject do
   def application do
     [
       mod: {App.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :os_mon, :xmerl]
     ]
   end
 
@@ -38,6 +38,7 @@ defmodule App.MixProject do
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_view, "~> 0.18.16"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
+      {:phoenix_live_dashboard, "~> 0.7"},
 
       # HTTP server
       {:bandit, "~> 0.6"},
@@ -68,6 +69,7 @@ defmodule App.MixProject do
       {:sobelow, "~> 0.11", only: :dev},
 
       # Utils
+      {:timex, "~> 3.7"},
       {:floki, ">= 0.30.0", only: :test},
 
       # Assets
