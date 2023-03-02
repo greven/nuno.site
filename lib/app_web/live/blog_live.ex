@@ -5,8 +5,8 @@ defmodule AppWeb.BlogLive do
 
   # Show
   @impl true
-  def mount(%{"id" => id}, _session, socket) do
-    post = App.Blog.get_post_by_id!(id)
+  def mount(%{"slug" => slug}, _session, socket) do
+    post = App.Blog.get_post_by_slug!(slug)
 
     socket =
       socket
@@ -20,16 +20,16 @@ defmodule AppWeb.BlogLive do
     socket =
       socket
       |> assign(:page_title, "Blog")
-      |> stream(:posts, App.Blog.published_posts())
+      |> stream(:posts, App.Blog.list_published_posts())
 
     {:ok, socket}
   end
 
   # Show
   @impl true
-  def handle_params(%{"id" => id}, uri, socket) do
+  def handle_params(%{"slug" => slug}, uri, socket) do
     %URI{path: path} = URI.parse(uri)
-    post = App.Blog.get_post_by_id!(id)
+    post = App.Blog.get_post_by_slug!(slug)
 
     socket =
       socket

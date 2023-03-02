@@ -27,14 +27,14 @@ defmodule AppWeb.PageComponents do
   attr :class, :string, default: nil
 
   def publication_date(assigns) do
-    assigns = assign(assigns, :date, relative_date(assigns.post.date))
+    assigns = assign(assigns, :date, relative_date(assigns.post.published_date))
 
     ~H"""
     <time><%= @date %></time>
     """
   end
 
-  defp relative_date(date) do
+  defp relative_date(date) when not is_nil(date) do
     date_diff = Date.diff(Date.utc_today(), date)
 
     cond do
@@ -42,4 +42,6 @@ defmodule AppWeb.PageComponents do
       true -> Timex.format!(date, "{D} {Mfull} {YYYY}")
     end
   end
+
+  defp relative_date(date), do: date
 end

@@ -52,8 +52,7 @@ defmodule App.MixProject do
       # {:litestream, "~> 0.3.0"},
 
       # Content
-      {:nimble_publisher, "~> 0.1.3"},
-      {:makeup_elixir, ">= 0.0.0"},
+      # {:makeup_elixir, ">= 0.0.0"},
 
       # JSON & CSV
       {:jason, "~> 1.4"},
@@ -97,7 +96,7 @@ defmodule App.MixProject do
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
-      translate: ["gettext.extract", "gettext.merge priv/gettext"],
+      translate: ["gettext.extract", "gettext.merge priv/gettext"]
     ]
   end
 end

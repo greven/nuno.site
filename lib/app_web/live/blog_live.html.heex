@@ -5,12 +5,12 @@
     <ul :for={{dom_id, post} <- @streams.posts} class="list-none p-0">
       <li id={dom_id} class="my-4">
         <h2>
-          <.link href={~p"/blog/#{post}"} class="underline text-primary font-medium">
+          <.link href={~p"/blog/#{post.slug}"} class="underline text-primary font-medium">
             <%= post.title %>
           </.link>
         </h2>
 
-        <time><%= post.date %></time>
+        <time><%= post.published_date %></time>
       </li>
     </ul>
   </div>
@@ -38,15 +38,17 @@
         </div>
 
         <div class="pl-1">
-          <span class="mr-1 text-neutral-700"><%= App.Utils.format_number(@today_views) %></span><%= gettext(
-            "views today"
-          ) %>
+          <span class="mr-1 text-neutral-700">
+            <%= if @today_views, do: App.Helpers.format_number(@today_views), else: "-" %>
+          </span>
+          <%= gettext("views today") %>
         </div>
 
         <div class="pl-1">
-          <span class="mr-1 text-neutral-700"><%= App.Utils.format_number(@page_views) %></span><%= gettext(
-            "page views"
-          ) %>
+          <span class="mr-1 text-neutral-700">
+            <%= if @page_views, do: App.Helpers.format_number(@page_views), else: "-" %>
+          </span>
+          <%= gettext("page views") %>
         </div>
       </div>
     </div>
@@ -65,7 +67,7 @@
         ) %>
       </div>
 
-      <.post_tags tags={@post.tags} />
+      <%!-- <.post_tags tags={@post.tags} /> --%>
 
       <div class="my-8">
         <%= raw(@post.body) %>

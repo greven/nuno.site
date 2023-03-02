@@ -1,45 +1,189 @@
 defmodule App.Blog do
   @moduledoc """
-  Blog posts
+  The Blog context.
   """
 
-  alias App.Blog
+  import Ecto.Query, warn: false
+  alias App.Repo
+
   alias App.Blog.Post
+  alias App.Blog.Tag
 
-  @posts_path "priv/posts/*.md"
+  # ------------------------------------------
+  #  Posts
+  # ------------------------------------------
 
-  use NimblePublisher,
-    build: Post,
-    parser: Blog.Parser,
-    from: Application.app_dir(:app, @posts_path),
-    earmark_options: [postprocessor: &Blog.Processor.process/1],
-    highlighters: [:makeup_elixir],
-    as: :posts
+  @doc """
+  Returns the list of posts.
 
-  defmodule NotFoundError do
-    defexception [:message, plug_status: 404]
+  ## Examples
+
+      iex> list_posts()
+      [%Post{}, ...]
+
+  """
+  def list_posts do
+    Repo.all(Post)
   end
 
-  @posts Enum.sort_by(@posts, & &1.date, {:desc, Date})
-
-  @tags @posts |> Enum.flat_map(& &1.tags) |> Enum.uniq() |> Enum.sort()
-
-  def all_posts, do: @posts
-  def all_tags, do: @tags
-
-  def published_posts, do: Enum.filter(all_posts(), &(&1.published == true))
-
-  def recent_posts(count \\ 5), do: Enum.take(all_posts(), count)
-
-  def get_post_by_id!(id) do
-    Enum.find(all_posts(), &(&1.id == id)) ||
-      raise NotFoundError, "post with id=#{id} not found"
+  def list_published_posts do
+    Post
+    |> where(status: :published)
+    |> where([p], p.published_date <= ^DateTime.utc_now())
+    |> Repo.all()
   end
 
-  def get_posts_by_tag!(tag) do
-    case Enum.filter(all_posts(), &(tag in &1.tags)) do
-      [] -> raise NotFoundError, "posts with tag=#{tag} not found"
-      posts -> posts
-    end
+  @doc """
+  Gets a single post.
+
+  Raises `Ecto.NoResultsError` if the Post does not exist.
+
+  ## Examples
+
+      iex> get_post!(123)
+      %Post{}
+
+      iex> get_post!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_post!(id), do: Repo.get!(Post, id)
+
+  def get_post!(id, preload: preload) do
+    Post
+    |> preload(^preload)
+    |> Repo.get!(id)
   end
+
+  def get_post_by_slug!(%Post{slug: slug}), do: get_post_by_slug!(slug)
+
+  def get_post_by_slug!(slug) do
+    Repo.get_by!(Post, slug: slug)
+  end
+
+  def get_post_by_slug!(%Post{slug: slug}, preload: preload) do
+    get_post_by_slug!(slug, preload: preload)
+  end
+
+  def get_post_by_slug!(slug, preload: preload) do
+    Post
+    |> preload(^preload)
+    |> Repo.get_by!(slug: slug)
+  end
+
+  @doc """
+  Gets all posts that have the argument tag or tag id.
+  """
+  def get_posts_by_tag!(%Tag{id: id}), do: get_posts_by_tag!(id)
+
+  def get_posts_by_tag!(tag_id) do
+    Post
+    |> join(:inner, [p], t in assoc(p, :tags), on: t.id == ^tag_id)
+    |> Repo.all()
+  end
+
+  @doc """
+  Creates a post.
+
+  ## Examples
+
+      iex> create_post(%{field: value})
+      {:ok, %Post{}}
+
+      iex> create_post(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_post(attrs \\ %{}) do
+    %Post{}
+    |> Post.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a post.
+
+  ## Examples
+
+      iex> update_post(post, %{field: new_value})
+      {:ok, %Post{}}
+
+      iex> update_post(post, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_post(%Post{} = post, attrs) do
+    post
+    |> Post.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a post.
+
+  ## Examples
+
+      iex> delete_post(post)
+      {:ok, %Post{}}
+
+      iex> delete_post(post)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_post(%Post{} = post) do
+    Repo.delete(post)
+  end
+
+  @doc """
+  Sets a draft post to published and sets the `published_date` if `nil`.
+  If the `published_date` is a date in the future it represents a scheduled post.
+  """
+  def publish_post(%Post{} = post) do
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking post changes.
+
+  ## Examples
+
+      iex> change_post(post)
+      %Ecto.Changeset{data: %Post{}}
+
+  """
+  def change_post(%Post{} = post, attrs \\ %{}) do
+    Post.changeset(post, attrs)
+  end
+
+  # ------------------------------------------
+  #  Tags
+  # ------------------------------------------
+
+  @doc """
+  Returns the list of tags.
+
+  ## Examples
+
+      iex> list_tags()
+      [%Post{}, ...]
+
+  """
+  def list_tags do
+    Repo.all(Tag)
+  end
+
+  @doc """
+  Gets a single tag.
+
+  Raises `Ecto.NoResultsError` if the Tag does not exist.
+
+  ## Examples
+
+      iex> get_tag!(123)
+      %Post{}
+
+      iex> get_tag!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_tag!(id), do: Repo.get!(Tag, id)
 end

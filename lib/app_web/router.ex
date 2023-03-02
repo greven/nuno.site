@@ -33,7 +33,7 @@ defmodule AppWeb.Router do
     live_session :default do
       live "/", PageLive, :home
       live "/blog", BlogLive, :index, as: :blog
-      live "/blog/:id", BlogLive, :show, as: :blog
+      live "/blog/:slug", BlogLive, :show, as: :blog
       live "/blog/tags", TagsLive, :index
       live "/blog/tags/:tag", TagsLive, :show
       live "/stats", StatsLive, :show

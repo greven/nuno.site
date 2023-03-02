@@ -1,49 +1,47 @@
 defmodule App.Blog.Post do
-  @moduledoc """
-  Blog post
-  """
+  use Ecto.Schema
+  import Ecto.Changeset
 
-  @enforce_keys [:id, :title, :body, :description, :reading_time, :tags, :date]
-  defstruct [
-    :id,
-    :title,
-    :body,
-    :description,
-    :reading_time,
-    :tags,
-    :date,
-    published: true,
-    toc: false
-  ]
+  alias App.Blog.Tag
 
-  def build(filename, attrs, body) do
-    [year, month, day, id] =
-      filename
-      |> Path.rootname()
-      |> Path.split()
-      |> List.last()
-      |> String.split("-", parts: 4)
+  @required ~w(slug title excerpt body)a
+  @optional ~w(image featured status visibility external_link published_date)a
 
-    date = Date.from_iso8601!("#{year}-#{month}-#{day}")
+  @primary_key {:id, :binary_id, autogenerate: true}
+  schema "posts" do
+    field :slug, :string
+    field :title, :string
+    field :excerpt, :string
+    field :body, :string
+    field :image, :string
+    field :featured, :boolean, default: false
+    field :status, Ecto.Enum, values: ~w(draft review published)a, default: :draft
+    field :visibility, Ecto.Enum, values: ~w(public private protected)a, default: :public
+    field :external_link, :string
+    field :reading_time, :integer
+    field :published_date, :utc_datetime
 
-    struct!(
-      __MODULE__,
-      [
-        id: id,
-        date: date,
-        body: body,
-        reading_time: estimate_reading_time(body)
-      ] ++
-        Map.to_list(attrs)
-    )
+    many_to_many :tags, Tag, join_through: "posts_tags"
+
+    timestamps(type: :utc_datetime)
+  end
+
+  @doc false
+  def changeset(post, attrs) do
+    post
+    |> cast(attrs, @required ++ @optional)
+    |> validate_required(@required)
+    |> estimate_reading_time()
   end
 
   @avg_wpm 200
-  defp estimate_reading_time(body) do
-    body
+  defp estimate_reading_time(changeset) do
+    changeset
+    |> get_field(:body, "")
     |> String.split(" ")
     |> Enum.count()
     |> then(&(&1 / @avg_wpm))
     |> round()
+    |> then(&put_change(changeset, :reading_time, &1))
   end
 end
