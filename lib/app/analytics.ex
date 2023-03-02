@@ -67,6 +67,15 @@ defmodule App.Analytics do
     |> App.Repo.one()
   end
 
+  def get_page_view_count_by_date(path, date) do
+    from(m in Metric,
+      select: sum(m.counter),
+      where: [path: ^path, date: ^date],
+      group_by: m.path
+    )
+    |> App.Repo.one()
+  end
+
   def total_site_views do
     Metric
     |> select([m], sum(m.counter))

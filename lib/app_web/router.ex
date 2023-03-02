@@ -15,6 +15,10 @@ defmodule AppWeb.Router do
     plug Plugs.BumpMetric
   end
 
+  pipeline :robots do
+    plug :accepts, ~w[json txt xml webmanifest]
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -31,8 +35,13 @@ defmodule AppWeb.Router do
       live "/blog", BlogLive, :index, as: :blog
       live "/blog/:id", BlogLive, :show, as: :blog
       live "/blog/tags", TagsLive, :index
-      live "/blog/tags/:id", TagsLive, :show
+      live "/blog/tags/:tag", TagsLive, :show
+      live "/stats", StatsLive, :show
     end
+  end
+
+  scope "/", AppWeb, log: false do
+    pipe_through [:robots]
   end
 
   scope "/admin" do

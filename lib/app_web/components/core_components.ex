@@ -1,14 +1,8 @@
 defmodule AppWeb.CoreComponents do
   @moduledoc """
   Provides core UI components.
-
-  The components in this module use Tailwind CSS, a utility-first CSS framework.
-  See the [Tailwind CSS documentation](https://tailwindcss.com) to learn how to
-  customize the generated components in this module.
-
-  Icons are provided by [heroicons](https://heroicons.com), using the
-  [heroicons_elixir](https://github.com/mveytsman/heroicons_elixir) project.
   """
+
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
@@ -53,7 +47,11 @@ defmodule AppWeb.CoreComponents do
       phx-remove={hide_modal(@id)}
       class="relative z-50 hidden"
     >
-      <div id={"#{@id}-bg"} class="fixed inset-0 bg-zinc-50/90 transition-opacity" aria-hidden="true" />
+      <div
+        id={"#{@id}-bg"}
+        class="fixed inset-0 bg-neutral-50/90 transition-opacity"
+        aria-hidden="true"
+      />
       <div
         class="fixed inset-0 overflow-y-auto"
         aria-labelledby={"#{@id}-title"}
@@ -70,7 +68,7 @@ defmodule AppWeb.CoreComponents do
               phx-window-keydown={hide_modal(@on_cancel, @id)}
               phx-key="escape"
               phx-click-away={hide_modal(@on_cancel, @id)}
-              class="hidden relative rounded-2xl bg-white p-14 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition"
+              class="hidden relative rounded-2xl bg-white p-14 shadow-lg shadow-neutral-700/10 ring-1 ring-neutral-700/10 transition"
             >
               <div class="absolute top-6 right-5">
                 <button
@@ -84,13 +82,13 @@ defmodule AppWeb.CoreComponents do
               </div>
               <div id={"#{@id}-content"}>
                 <header :if={@title != []}>
-                  <h1 id={"#{@id}-title"} class="text-lg font-semibold leading-8 text-zinc-800">
+                  <h1 id={"#{@id}-title"} class="text-lg font-semibold leading-8 text-neutral-800">
                     <%= render_slot(@title) %>
                   </h1>
                   <p
                     :if={@subtitle != []}
                     id={"#{@id}-description"}
-                    class="mt-2 text-sm leading-6 text-zinc-600"
+                    class="mt-2 text-sm leading-6 text-neutral-600"
                   >
                     <%= render_slot(@subtitle) %>
                   </p>
@@ -109,7 +107,7 @@ defmodule AppWeb.CoreComponents do
                   <.link
                     :for={cancel <- @cancel}
                     phx-click={hide_modal(@on_cancel, @id)}
-                    class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+                    class="text-sm font-semibold leading-6 text-neutral-900 hover:text-neutral-700"
                   >
                     <%= render_slot(cancel) %>
                   </.link>
@@ -150,7 +148,7 @@ defmodule AppWeb.CoreComponents do
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
       class={[
-        "fixed hidden top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 shadow-md shadow-zinc-900/5 ring-1",
+        "fixed hidden top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 shadow-md shadow-neutral-900/5 ring-1",
         @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
         @kind == :error && "bg-rose-50 p-3 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
       ]}
@@ -256,7 +254,7 @@ defmodule AppWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
+        "phx-submit-loading:opacity-75 rounded-lg bg-neutral-900 hover:bg-neutral-700 py-2 px-3",
         "text-sm font-semibold leading-6 text-white active:text-white/80",
         @class
       ]}
@@ -316,7 +314,7 @@ defmodule AppWeb.CoreComponents do
 
     ~H"""
     <div phx-feedback-for={@name}>
-      <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
+      <label class="flex items-center gap-4 text-sm leading-6 text-neutral-600">
         <input type="hidden" name={@name} value="false" />
         <input
           type="checkbox"
@@ -324,7 +322,7 @@ defmodule AppWeb.CoreComponents do
           name={@name}
           value="true"
           checked={@checked}
-          class="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
+          class="rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900"
           {@rest}
         />
         <%= @label %>
@@ -341,7 +339,7 @@ defmodule AppWeb.CoreComponents do
       <select
         id={@id}
         name={@name}
-        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
+        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 sm:text-sm"
         multiple={@multiple}
         {@rest}
       >
@@ -361,10 +359,10 @@ defmodule AppWeb.CoreComponents do
         id={@id || @name}
         name={@name}
         class={[
-          "mt-2 block min-h-[6rem] w-full rounded-lg border-zinc-300 py-[7px] px-[11px]",
-          "text-zinc-900 focus:border-zinc-400 focus:outline-none focus:ring-4 focus:ring-zinc-800/5 sm:text-sm sm:leading-6",
-          "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
-          "border-zinc-300 focus:border-zinc-400 focus:ring-zinc-800/5",
+          "mt-2 block min-h-[6rem] w-full rounded-lg border-neutral-300 py-[7px] px-[11px]",
+          "text-neutral-900 focus:border-neutral-400 focus:outline-none focus:ring-4 focus:ring-neutral-800/5 sm:text-sm sm:leading-6",
+          "phx-no-feedback:border-neutral-300 phx-no-feedback:focus:border-neutral-400 phx-no-feedback:focus:ring-neutral-800/5",
+          "border-neutral-300 focus:border-neutral-400 focus:ring-neutral-800/5",
           @errors != [] && "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
         ]}
         {@rest}
@@ -384,10 +382,10 @@ defmodule AppWeb.CoreComponents do
         id={@id || @name}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
-          "mt-2 block w-full rounded-lg border-zinc-300 py-[7px] px-[11px]",
-          "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
-          "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
-          "border-zinc-300 focus:border-zinc-400 focus:ring-zinc-800/5",
+          "mt-2 block w-full rounded-lg border-neutral-300 py-[7px] px-[11px]",
+          "text-neutral-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
+          "phx-no-feedback:border-neutral-300 phx-no-feedback:focus:border-neutral-400 phx-no-feedback:focus:ring-neutral-800/5",
+          "border-neutral-300 focus:border-neutral-400 focus:ring-neutral-800/5",
           @errors != [] && "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
         ]}
         {@rest}
@@ -405,7 +403,7 @@ defmodule AppWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label for={@for} class="block text-sm font-semibold leading-6 text-neutral-800">
       <%= render_slot(@inner_block) %>
     </label>
     """
@@ -438,10 +436,10 @@ defmodule AppWeb.CoreComponents do
     ~H"""
     <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
       <div>
-        <h1 class="text-lg font-semibold leading-8 text-zinc-800">
+        <h1 class="text-lg font-semibold leading-8 text-neutral-800">
           <%= render_slot(@inner_block) %>
         </h1>
-        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
+        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-neutral-600">
           <%= render_slot(@subtitle) %>
         </p>
       </div>
@@ -484,7 +482,7 @@ defmodule AppWeb.CoreComponents do
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
       <table class="mt-11 w-[40rem] sm:w-full">
-        <thead class="text-left text-[0.8125rem] leading-6 text-zinc-500">
+        <thead class="text-left text-[0.8125rem] leading-6 text-neutral-500">
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>
             <th class="relative p-0 pb-4"><span class="sr-only"><%= gettext("Actions") %></span></th>
@@ -493,27 +491,27 @@ defmodule AppWeb.CoreComponents do
         <tbody
           id={@id}
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
-          class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700"
+          class="relative divide-y divide-neutral-100 border-t border-neutral-200 text-sm leading-6 text-neutral-700"
         >
-          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-zinc-50">
+          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-neutral-50">
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
               class={["relative p-0", @row_click && "hover:cursor-pointer"]}
             >
               <div class="block py-4 pr-6">
-                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
-                <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
+                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-neutral-50 sm:rounded-l-xl" />
+                <span class={["relative", i == 0 && "font-semibold text-neutral-900"]}>
                   <%= render_slot(col, @row_item.(row)) %>
                 </span>
               </div>
             </td>
             <td :if={@action != []} class="relative p-0 w-14">
               <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-50 sm:rounded-r-xl" />
+                <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-neutral-50 sm:rounded-r-xl" />
                 <span
                   :for={action <- @action}
-                  class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+                  class="relative ml-4 font-semibold leading-6 text-neutral-900 hover:text-neutral-700"
                 >
                   <%= render_slot(action, @row_item.(row)) %>
                 </span>
@@ -543,10 +541,12 @@ defmodule AppWeb.CoreComponents do
   def list(assigns) do
     ~H"""
     <div class="mt-14">
-      <dl class="-my-4 divide-y divide-zinc-100">
+      <dl class="-my-4 divide-y divide-neutral-100">
         <div :for={item <- @item} class="flex gap-4 py-4 sm:gap-8">
-          <dt class="w-1/4 flex-none text-[0.8125rem] leading-6 text-zinc-500"><%= item.title %></dt>
-          <dd class="text-sm leading-6 text-zinc-700"><%= render_slot(item) %></dd>
+          <dt class="w-1/4 flex-none text-[0.8125rem] leading-6 text-neutral-500">
+            <%= item.title %>
+          </dt>
+          <dd class="text-sm leading-6 text-neutral-700"><%= render_slot(item) %></dd>
         </div>
       </dl>
     </div>
@@ -563,17 +563,21 @@ defmodule AppWeb.CoreComponents do
   attr :navigate, :any, required: true
   attr :class, :string, default: nil
 
-  slot :inner_block, required: true
+  slot :inner_block
 
   def back(assigns) do
     ~H"""
     <div class={@class}>
       <.link
         navigate={@navigate}
-        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+        class="flex items-center gap-1 text-sm font-semibold leading-6 text-neutral-400 no-underline transition-colors hover:text-neutral-800"
       >
-        <Heroicons.arrow_left solid class="w-3 h-3 stroke-current inline" />
-        <%= render_slot(@inner_block) %>
+        <Heroicons.chevron_left solid class="w-3 h-3 stroke-current inline" />
+        <%= if length(@inner_block) == 0 do %>
+          <%= gettext("Back") %>
+        <% else %>
+          <%= render_slot(@inner_block) %>
+        <% end %>
       </.link>
     </div>
     """
@@ -585,7 +589,10 @@ defmodule AppWeb.CoreComponents do
 
   def badge(assigns) do
     ~H"""
-    <span class={["inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 hover:bg-neutral-200 transition duration-200", @class]}>
+    <span class={[
+      "inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 hover:bg-neutral-200 transition duration-200",
+      @class
+    ]}>
       <%= render_slot(@inner_block) %>
     </span>
     """

@@ -7,11 +7,9 @@ defmodule AppWeb.BlogLive do
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     post = App.Blog.get_post_by_id!(id)
-    dbg(post)
 
     socket =
       socket
-      |> assign(:uri, nil)
       |> assign(:post, post)
 
     {:ok, socket}
@@ -35,7 +33,6 @@ defmodule AppWeb.BlogLive do
 
     socket =
       socket
-      |> assign(:uri, path)
       |> assign(:post, post)
       |> track_page_views(path)
       |> track_readers(post)
@@ -47,11 +44,8 @@ defmodule AppWeb.BlogLive do
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
   @impl true
-  def handle_info(%{event: "metrics_update"}, %{assigns: %{uri: path}} = socket) do
-    socket =
-      socket
-      |> assign(:page_views, App.Analytics.get_page_view_count(path))
-
+  def handle_info(%{event: "metrics_update", payload: %{metric: %{path: path}}}, socket) do
+    socket = assign_page_views(socket, path)
     {:noreply, socket}
   end
 
@@ -68,7 +62,13 @@ defmodule AppWeb.BlogLive do
       App.Analytics.subscribe(path)
     end
 
-    assign(socket, :page_views, App.Analytics.get_page_view_count(path))
+    assign_page_views(socket, path)
+  end
+
+  defp assign_page_views(socket, path) do
+    socket
+    |> assign(:today_views, App.Analytics.get_page_view_count_by_date(path, Date.utc_today()))
+    |> assign(:page_views, App.Analytics.get_page_view_count(path))
   end
 
   defp track_readers(socket, post) do
@@ -81,12 +81,5 @@ defmodule AppWeb.BlogLive do
     end
 
     assign(socket, :readers, readers)
-  end
-
-  defp reading_time(reading_time) do
-    cond do
-      reading_time < 1 -> "<1"
-      true -> "#{reading_time}"
-    end
   end
 end

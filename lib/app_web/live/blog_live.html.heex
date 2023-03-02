@@ -17,23 +17,59 @@
 <% end %>
 
 <%= if @live_action == :show do %>
-  <div class="mx-auto prose prose-primary">
-    <.back navigate={~p"/blog/"} class="mb-4">All posts</.back>
+  <div class="grid grid-cols-12 gap-4">
+    <%!-- Sidebar --%>
+    <div class="col-span-12 lg:col-span-3">
+      <.back navigate={~p"/blog/"} />
+      <%!-- Stats --%>
+      <div class="hidden lg:mt-6 lg:flex flex-col gap-2 text-xs font-medium text-neutral-400 uppercase">
+        <div class="flex items-center gap-1.5 mb-2">
+          <Heroicons.chart_bar_square class="w-5 h-5 stroke-current inline" />
+          <h3 class="font-headings text-sm font-semibold text-neutral-600">Statistics</h3>
+        </div>
 
-    <h1 class="mb-2"><%= @post.title %></h1>
-    <div class="flex text-neutral-500">
-      <.publication_date date={@post.date} />
+        <div class="pl-1">
+          <span class="mr-1 text-neutral-700"><%= @readers %></span>
+          <%= ngettext(
+            "current reader",
+            "current readers",
+            @readers
+          ) %>
+        </div>
+
+        <div class="pl-1">
+          <span class="mr-1 text-neutral-700"><%= App.Utils.format_number(@today_views) %></span><%= gettext(
+            "views today"
+          ) %>
+        </div>
+
+        <div class="pl-1">
+          <span class="mr-1 text-neutral-700"><%= App.Utils.format_number(@page_views) %></span><%= gettext(
+            "page views"
+          ) %>
+        </div>
+      </div>
     </div>
 
-    <div class="flex">
-      <div>Views: <%= @page_views %></div>
-      <div>Readers: <%= @readers %></div>
-      <%!-- <div>Reading time: <%= reading_time(@post.reading_time) %><span class="font-medium">m</span></div> --%>
-      <%!-- <.post_tags tags={@post.tags} /> --%>
-    </div>
+    <%!-- Post --%>
+    <div class="col-span-12 lg:col-span-9 prose prose-primary">
+      <h1 class="mb-2"><%= @post.title %></h1>
 
-    <div class="my-8">
-      <%= raw(@post.body) %>
+      <div class="flex flex-wrap items-center text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">
+        <.publication_date post={@post} />
+        <span class="mx-2 text-neutral-300" aria-hidden="true">•</span>
+        <span class="mr-1 text-neutral-700"><%= @post.reading_time %></span><%= ngettext(
+          "minute read",
+          "minutes read",
+          @post.reading_time
+        ) %>
+      </div>
+
+      <.post_tags tags={@post.tags} />
+
+      <div class="my-8">
+        <%= raw(@post.body) %>
+      </div>
     </div>
   </div>
 <% end %>

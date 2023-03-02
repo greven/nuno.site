@@ -27,7 +27,7 @@ defmodule AppWeb.PageComponents do
   attr :class, :string, default: nil
 
   def publication_date(assigns) do
-    assigns = assign(assigns, :date, relative_date(assigns.date))
+    assigns = assign(assigns, :date, relative_date(assigns.post.date))
 
     ~H"""
     <time><%= @date %></time>
