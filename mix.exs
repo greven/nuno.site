@@ -51,6 +51,9 @@ defmodule App.MixProject do
       {:ecto_sqlite3, ">= 0.0.0"},
       # {:litestream, "~> 0.3.0"},
 
+      # Mail
+      {:swoosh, "~> 1.9"},
+
       # Content
       # {:makeup_elixir, ">= 0.0.0"},
 
