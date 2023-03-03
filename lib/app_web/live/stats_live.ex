@@ -2,6 +2,13 @@ defmodule AppWeb.StatsLive do
   use AppWeb, :live_view
 
   @impl true
+  def render(assigns) do
+    ~H"""
+    Stats
+    """
+  end
+
+  @impl true
   def mount(_params, _session, socket) do
     socket =
       socket
