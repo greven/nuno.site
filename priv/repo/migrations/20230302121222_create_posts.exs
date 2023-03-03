@@ -18,5 +18,8 @@ defmodule App.Repo.Migrations.CreatePosts do
 
       timestamps(type: :utc_datetime)
     end
+
+    create unique_index(:posts, [:title])
+    create index(:posts, [:slug])
   end
 end

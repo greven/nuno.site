@@ -6,7 +6,7 @@ defmodule AppWeb.BlogLive do
   # Show
   @impl true
   def mount(%{"slug" => slug}, _session, socket) do
-    post = App.Blog.get_post_by_slug!(slug)
+    post = App.Blog.get_post!(slug)
 
     socket =
       socket
@@ -22,6 +22,10 @@ defmodule AppWeb.BlogLive do
       |> assign(:page_title, "Blog")
       |> stream(:posts, App.Blog.list_published_posts())
 
+    if connected?(socket) do
+      App.Blog.subscribe()
+    end
+
     {:ok, socket}
   end
 
@@ -29,7 +33,7 @@ defmodule AppWeb.BlogLive do
   @impl true
   def handle_params(%{"slug" => slug}, uri, socket) do
     %URI{path: path} = URI.parse(uri)
-    post = App.Blog.get_post_by_slug!(slug)
+    post = App.Blog.get_post!(slug)
 
     socket =
       socket
@@ -44,6 +48,11 @@ defmodule AppWeb.BlogLive do
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
   @impl true
+  def handle_info(%{event: "blog"}, socket) do
+    socket = stream(socket, :posts, App.Blog.list_published_posts())
+    {:noreply, socket}
+  end
+
   def handle_info(%{event: "metrics_update", payload: %{metric: %{path: path}}}, socket) do
     socket = assign_page_views(socket, path)
     {:noreply, socket}

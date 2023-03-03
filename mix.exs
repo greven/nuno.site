@@ -69,6 +69,7 @@ defmodule App.MixProject do
 
       # Utils
       {:timex, "~> 3.7"},
+      {:slugify, "~> 1.3"},
       {:floki, ">= 0.30.0", only: :test},
 
       # Assets

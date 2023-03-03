@@ -7,6 +7,7 @@ defmodule App.Blog.Post do
   @required ~w(slug title excerpt body)a
   @optional ~w(image featured status visibility external_link published_date)a
 
+  @derive {Phoenix.Param, key: :slug}
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "posts" do
     field :slug, :string
@@ -30,14 +31,26 @@ defmodule App.Blog.Post do
   def changeset(post, attrs) do
     post
     |> cast(attrs, @required ++ @optional)
-    |> validate_required(@required)
+    |> build_slug()
     |> estimate_reading_time()
+    |> validate_required(@required)
+    |> unique_constraint(:title)
+  end
+
+  defp build_slug(changeset) do
+    if title = get_field(changeset, :title) do
+      slug = Slug.slugify(title)
+      put_change(changeset, :slug, slug)
+    else
+      changeset
+    end
   end
 
   @avg_wpm 200
   defp estimate_reading_time(changeset) do
-    changeset
-    |> get_field(:body, "")
+    body = get_field(changeset, :body) || ""
+
+    body
     |> String.split(" ")
     |> Enum.count()
     |> then(&(&1 / @avg_wpm))

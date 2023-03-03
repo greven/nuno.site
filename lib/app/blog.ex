@@ -40,35 +40,27 @@ defmodule App.Blog do
 
   ## Examples
 
-      iex> get_post!(123)
+      iex> get_post!("hello-world")
       %Post{}
 
-      iex> get_post!(456)
+      iex> get_post!("i-do-not-exist")
       ** (Ecto.NoResultsError)
 
   """
-  def get_post!(id), do: Repo.get!(Post, id)
+  def get_post!(slug), do: Repo.get_by!(Post, slug: slug)
 
-  def get_post!(id, preload: preload) do
+  def get_post!(slug, preload: preload) do
+    Post
+    |> preload(^preload)
+    |> Repo.get_by!(Post, slug: slug)
+  end
+
+  def get_post_by_id!(id), do: Repo.get!(Post, id)
+
+  def get_post_by_id!(id, preload: preload) do
     Post
     |> preload(^preload)
     |> Repo.get!(id)
-  end
-
-  def get_post_by_slug!(%Post{slug: slug}), do: get_post_by_slug!(slug)
-
-  def get_post_by_slug!(slug) do
-    Repo.get_by!(Post, slug: slug)
-  end
-
-  def get_post_by_slug!(%Post{slug: slug}, preload: preload) do
-    get_post_by_slug!(slug, preload: preload)
-  end
-
-  def get_post_by_slug!(slug, preload: preload) do
-    Post
-    |> preload(^preload)
-    |> Repo.get_by!(slug: slug)
   end
 
   @doc """
@@ -98,6 +90,7 @@ defmodule App.Blog do
     %Post{}
     |> Post.changeset(attrs)
     |> Repo.insert()
+    |> after_post_change("post_created")
   end
 
   @doc """
@@ -116,6 +109,7 @@ defmodule App.Blog do
     post
     |> Post.changeset(attrs)
     |> Repo.update()
+    |> after_post_change("post_updated")
   end
 
   @doc """
@@ -132,6 +126,7 @@ defmodule App.Blog do
   """
   def delete_post(%Post{} = post) do
     Repo.delete(post)
+    |> after_post_change("post_deleted")
   end
 
   @doc """
@@ -153,6 +148,13 @@ defmodule App.Blog do
   def change_post(%Post{} = post, attrs \\ %{}) do
     Post.changeset(post, attrs)
   end
+
+  def after_post_change({:ok, %Post{} = record}, event_type) do
+    broadcast(%{event: event_type, payload: record})
+    {:ok, record}
+  end
+
+  def after_post_change(error, _event), do: error
 
   # ------------------------------------------
   #  Tags
@@ -186,4 +188,11 @@ defmodule App.Blog do
 
   """
   def get_tag!(id), do: Repo.get!(Tag, id)
+
+  # ------------------------------------------
+  #  PubSub
+  # ------------------------------------------
+
+  def broadcast(event), do: Phoenix.PubSub.broadcast(App.PubSub, "blog", event)
+  def subscribe, do: Phoenix.PubSub.subscribe(App.PubSub, "blog")
 end

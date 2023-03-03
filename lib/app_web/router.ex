@@ -44,8 +44,12 @@ defmodule AppWeb.Router do
     pipe_through [:robots]
   end
 
-  scope "/admin" do
-    pipe_through [:browser, :require_auth]
+  scope "/admin", AppWeb do
+    pipe_through [:browser]
+
+    live_session :admin do
+      live "/", AdminLive, :home
+    end
 
     live_dashboard "/dashboard", metrics: AppWeb.Telemetry
   end
