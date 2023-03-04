@@ -34,7 +34,7 @@ defmodule App.MixProject do
     [
       {:bcrypt_elixir, "~> 3.0"},
       # Phoenix Framework
-      {:phoenix, "~> 1.7.0"},
+      {:phoenix, "~> 1.7.1"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_view, "~> 0.18.16"},
@@ -77,7 +77,6 @@ defmodule App.MixProject do
       {:floki, ">= 0.30.0", only: :test},
 
       # Assets
-      {:heroicons, "~> 0.5"},
       {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.1.8", runtime: Mix.env() == :dev},
 

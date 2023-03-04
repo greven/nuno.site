@@ -6,7 +6,85 @@ defmodule AppWeb.PageComponents do
   use Phoenix.Component
   use AppWeb, :verified_routes
 
-  import AppWeb.CoreComponents, only: [badge: 1]
+  import AppWeb.Gettext
+  import AppWeb.CoreComponents
+
+  attr :class, :string, default: nil
+  attr :post, :any, required: true
+
+  # <h1 class="mb-2"><%= @post.title %></h1>
+  #
+  # <div class="flex flex-wrap items-center text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">
+  # <.publication_date post={@post} />
+  # <span class="mx-2 text-neutral-300" aria-hidden="true">•</span>
+  # <span class="mr-1 text-neutral-700"><%= @post.reading_time %></span><%= ngettext(
+  # "minute read",
+  # "minutes read",
+  # @post.reading_time
+  # ) %>
+  # </div>
+
+  def post_header(assigns) do
+    ~H"""
+    <div class={@class}>
+      <.header>
+        <%= @post.title %>
+
+        <:subtitle>
+          <div class="flex flex-wrap items-center text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">
+            <.publication_date post={@post} />
+            <span class="" aria-hidden="true">•</span>
+            <span class=""><%= @post.reading_time %></span>
+            <%= ngettext("minute read", "minutes read", @post.reading_time) %>
+          </div>
+        </:subtitle>
+      </.header>
+    </div>
+    """
+  end
+
+  attr :class, :string, default: nil
+  attr :readers, :integer, required: true
+  attr :today_views, :integer, required: true
+  attr :page_views, :integer, required: true
+
+  def post_sidebar(assigns) do
+    ~H"""
+    <div class={@class}>
+      <.back navigate={~p"/blog/"} />
+      <%!-- Stats --%>
+      <div class="hidden lg:mt-6 lg:flex flex-col gap-2 text-xs font-medium text-neutral-400 uppercase">
+        <div class="flex items-center gap-1.5 mb-2">
+          <.icon name="hero-chart-bar-square" class="w-5 h-5 stroke-current inline" />
+          <h3 class="font-headings text-sm font-semibold text-neutral-600">Statistics</h3>
+        </div>
+
+        <div class="pl-1">
+          <span class="mr-1 text-neutral-700"><%= @readers %></span>
+          <%= ngettext(
+            "current reader",
+            "current readers",
+            @readers
+          ) %>
+        </div>
+
+        <div class="pl-1">
+          <span class="mr-1 text-neutral-700">
+            <%= if @today_views, do: App.Helpers.format_number(@today_views), else: "-" %>
+          </span>
+          <%= gettext("views today") %>
+        </div>
+
+        <div class="pl-1">
+          <span class="mr-1 text-neutral-700">
+            <%= if @page_views, do: App.Helpers.format_number(@page_views), else: "-" %>
+          </span>
+          <%= gettext("page views") %>
+        </div>
+      </div>
+    </div>
+    """
+  end
 
   attr :tags, :list, required: true
   attr :class, :string, default: nil
