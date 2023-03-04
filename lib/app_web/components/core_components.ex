@@ -429,7 +429,11 @@ defmodule AppWeb.CoreComponents do
   attr :class, :string, default: nil
 
   slot :inner_block, required: true
-  slot :subtitle
+
+  slot :subtitle do
+    attr :class, :string
+  end
+
   slot :actions
 
   def header(assigns) do
@@ -439,8 +443,12 @@ defmodule AppWeb.CoreComponents do
         <h1 class="text-4xl font-normal leading-8">
           <%= render_slot(@inner_block) %>
         </h1>
-        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-neutral-600">
-          <%= render_slot(@subtitle) %>
+        <p
+          :for={subtitle <- @subtitle}
+          :if={@subtitle != []}
+          class={["mt-3 text-sm leading-6 font-medium text-neutral-500 uppercase", subtitle[:class]]}
+        >
+          <%= render_slot(subtitle) %>
         </p>
       </div>
       <div class="flex-none"><%= render_slot(@actions) %></div>
