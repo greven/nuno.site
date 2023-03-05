@@ -29,28 +29,33 @@ defmodule AppWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/", AppWeb, log: false do
+    pipe_through [:robots]
+  end
+
   scope "/", AppWeb do
     pipe_through :browser
 
-    live_session :default do
+    live_session :default,
+      on_mount: [{AppWeb.UserAuth, :mount_current_user}] do
       live "/", PageLive, :home
-      live "/blog", BlogLive, :index, as: :blog
-      live "/blog/:slug", BlogLive, :show, as: :blog
-      live "/blog/tags", TagsLive, :index
-      live "/blog/tags/:tag", TagsLive, :show
+      live "/about", PageLive, :about
+      live "/writing", BlogLive, :index, as: :blog
+      live "/writing/:slug", BlogLive, :show, as: :blog
+      live "/writing/tags", TagsLive, :index
+      live "/writing/tags/:tag", TagsLive, :show
       live "/stats", StatsLive, :show
     end
-  end
-
-  scope "/", AppWeb, log: false do
-    pipe_through [:robots]
   end
 
   scope "/admin", AppWeb do
     pipe_through [:browser, :require_authenticated_user, :ensure_admin]
 
     live_session :admin,
-      on_mount: [{AppWeb.UserAuth, :ensure_authenticated}, {AppWeb.UserAuth, :ensure_admin}] do
+      on_mount: [
+        {AppWeb.UserAuth, :ensure_authenticated},
+        {AppWeb.UserAuth, :ensure_admin}
+      ] do
       live "/", AdminLive, :home
       live "/posts", PostsLive, :index
     end

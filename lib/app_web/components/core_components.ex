@@ -446,7 +446,7 @@ defmodule AppWeb.CoreComponents do
         <p
           :for={subtitle <- @subtitle}
           :if={@subtitle != []}
-          class={["mt-3 text-sm leading-6 font-medium text-neutral-500 uppercase", subtitle[:class]]}
+          class={["mt-3 text-sm leading-6 font-medium text-neutral-400 uppercase", subtitle[:class]]}
         >
           <%= render_slot(subtitle) %>
         </p>

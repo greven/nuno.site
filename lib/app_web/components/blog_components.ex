@@ -1,6 +1,6 @@
-defmodule AppWeb.PageComponents do
+defmodule AppWeb.BlogComponents do
   @moduledoc """
-  Components and page helpers.
+  Blog components and helpers.
   """
 
   use Phoenix.Component
@@ -21,8 +21,10 @@ defmodule AppWeb.PageComponents do
         <:subtitle class="flex gap-2">
           <.publication_date post={@post} />
           <span class="text-neutral-300" aria-hidden="true">•</span>
-          <span class="text-neutral-600"><%= @post.reading_time %></span>
-          <%= ngettext("minute read", "minutes read", @post.reading_time) %>
+          <span>
+            <%= @post.reading_time %>
+            <%= ngettext("minute read", "minutes read", @post.reading_time) %>
+          </span>
         </:subtitle>
       </.header>
     </div>
@@ -37,7 +39,7 @@ defmodule AppWeb.PageComponents do
   def post_sidebar(assigns) do
     ~H"""
     <div class={@class}>
-      <.back navigate={~p"/blog/"} />
+      <.back navigate={~p"/writing/"} />
       <%!-- Stats --%>
       <div class="hidden lg:mt-6 lg:flex flex-col gap-2 text-xs font-medium text-neutral-400 uppercase">
         <div class="flex items-center gap-1.5 mb-2">
@@ -79,7 +81,7 @@ defmodule AppWeb.PageComponents do
     ~H"""
     <div class="not-prose flex items-center gap-1.5">
       <%= for tag <- @tags do %>
-        <.link navigate={~p"/blog/tags/#{tag}"}>
+        <.link navigate={~p"/writing/tags/#{tag}"}>
           <.badge><%= tag %></.badge>
         </.link>
       <% end %>
