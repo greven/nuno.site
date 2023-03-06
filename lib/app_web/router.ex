@@ -37,7 +37,7 @@ defmodule AppWeb.Router do
     pipe_through :browser
 
     live_session :default,
-      on_mount: [{AppWeb.UserAuth, :mount_current_user}] do
+      on_mount: [{AppWeb.UserAuth, :mount_current_user}, AppWeb.Hooks.ActiveLink] do
       live "/", PageLive, :home
       live "/about", PageLive, :about
       live "/writing", BlogLive, :index, as: :blog
@@ -46,21 +46,6 @@ defmodule AppWeb.Router do
       live "/writing/tags/:tag", TagsLive, :show
       live "/stats", StatsLive, :show
     end
-  end
-
-  scope "/admin", AppWeb do
-    pipe_through [:browser, :require_authenticated_user, :ensure_admin]
-
-    live_session :admin,
-      on_mount: [
-        {AppWeb.UserAuth, :ensure_authenticated},
-        {AppWeb.UserAuth, :ensure_admin}
-      ] do
-      live "/", AdminLive, :home
-      live "/posts", PostsLive, :index
-    end
-
-    live_dashboard "/dashboard", metrics: AppWeb.Telemetry
   end
 
   # Other scopes may use custom stacks.
@@ -99,10 +84,26 @@ defmodule AppWeb.Router do
 
     delete "/users/log_out", UserSessionController, :delete
 
-    live_session :current_user,
+    live_session :authenticated,
       on_mount: [{AppWeb.UserAuth, :mount_current_user}] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
+  end
+
+  scope "/admin", AppWeb do
+    pipe_through [:browser, :require_authenticated_user, :ensure_admin]
+
+    live_session :admin,
+      on_mount: [
+        {AppWeb.UserAuth, :ensure_authenticated},
+        {AppWeb.UserAuth, :ensure_admin},
+        AppWeb.Hooks.ActiveLink
+      ] do
+      live "/", AdminLive, :home
+      live "/posts", PostsLive, :index
+    end
+
+    live_dashboard "/dashboard", metrics: AppWeb.Telemetry
   end
 end

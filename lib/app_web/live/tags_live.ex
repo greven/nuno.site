@@ -10,7 +10,7 @@ defmodule AppWeb.TagsLive do
       <ul :for={{dom_id, post} <- @streams.posts} class="list-none p-0">
         <li id={dom_id} class="my-4">
           <h2>
-            <.link href={~p"/blog/#{post}"} class="underline text-primary font-medium">
+            <.link href={~p"/writing/#{post}"} class="underline text-primary font-medium">
               <%= post.title %>
             </.link>
           </h2>
