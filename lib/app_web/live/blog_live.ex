@@ -9,8 +9,8 @@ defmodule AppWeb.BlogLive do
     <%= if @live_action == :index do %>
       <h1 class="text-4xl mb-6">Listing all posts</h1>
 
-      <ul :for={{dom_id, post} <- @streams.posts} class="list-none p-0">
-        <li id={dom_id} class="my-4">
+      <ul :for={post <- @posts} class="list-none p-0">
+        <li id={post.id} class="my-4">
           <h2>
             <.link href={~p"/writing/#{post}"} class="underline text-primary font-medium">
               <%= post.title %>
@@ -33,8 +33,8 @@ defmodule AppWeb.BlogLive do
 
         <%!-- Post --%>
         <div class="col-span-12 lg:col-span-9">
+          <.post_tags tags={@post.tags} class="mb-4" />
           <.post_header post={@post} />
-          <%!-- <.post_tags tags={@post.tags} /> --%>
 
           <article class="my-8 prose prose-primary">
             <%= raw(@post.body) %>
@@ -48,11 +48,9 @@ defmodule AppWeb.BlogLive do
   # Show
   @impl true
   def mount(%{"slug" => slug}, _session, socket) do
-    post = App.Blog.get_post!(slug)
+    post = App.Blog.get_post!(slug, preload: :tags)
 
-    socket =
-      socket
-      |> assign(:post, post)
+    socket = socket |> assign(:post, post)
 
     {:ok, socket}
   end
@@ -62,7 +60,7 @@ defmodule AppWeb.BlogLive do
     socket =
       socket
       |> assign(:page_title, "Blog")
-      |> stream(:posts, App.Blog.list_published_posts())
+      |> assign(:posts, App.Blog.list_published_posts())
 
     if connected?(socket) do
       App.Blog.subscribe()
@@ -75,7 +73,7 @@ defmodule AppWeb.BlogLive do
   @impl true
   def handle_params(%{"slug" => slug}, uri, socket) do
     %URI{path: path} = URI.parse(uri)
-    post = App.Blog.get_post!(slug)
+    post = App.Blog.get_post!(slug, preload: :tags)
 
     socket =
       socket
@@ -90,8 +88,13 @@ defmodule AppWeb.BlogLive do
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
   @impl true
-  def handle_info(%{event: "blog"}, socket) do
-    socket = stream(socket, :posts, App.Blog.list_published_posts())
+  def handle_info(%{event: "post_created"}, socket) do
+    socket = assign(socket, :posts, App.Blog.list_published_posts())
+    {:noreply, socket}
+  end
+
+  def handle_info(%{event: "post_updated"}, socket) do
+    socket = assign(socket, :posts, App.Blog.list_published_posts())
     {:noreply, socket}
   end
 

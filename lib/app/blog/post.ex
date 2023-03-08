@@ -3,6 +3,7 @@ defmodule App.Blog.Post do
   import Ecto.Changeset
 
   alias App.Blog.Tag
+  alias App.Blog.PostTag
 
   @required ~w(slug title excerpt body)a
   @optional ~w(image featured status visibility external_link published_date)a
@@ -15,6 +16,7 @@ defmodule App.Blog.Post do
     field :excerpt, :string
     field :body, :string
     field :image, :string
+    field :likes, :integer
     field :featured, :boolean, default: false
     field :status, Ecto.Enum, values: ~w(draft review published)a, default: :draft
     field :visibility, Ecto.Enum, values: ~w(public private protected)a, default: :public
@@ -22,7 +24,7 @@ defmodule App.Blog.Post do
     field :reading_time, :integer
     field :published_date, :utc_datetime
 
-    many_to_many :tags, Tag, join_through: "posts_tags"
+    many_to_many :tags, Tag, join_through: PostTag
 
     timestamps(type: :utc_datetime)
   end

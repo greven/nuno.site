@@ -11,7 +11,7 @@ defmodule App.Blog.Tag do
     field :name, :string
     field :enabled, :boolean
 
-    many_to_many :posts, Post, join_through: "posts_tags"
+    many_to_many :posts, Post, join_through: PostTag
   end
 
   @doc false

@@ -9,6 +9,7 @@ defmodule App.Repo.Migrations.CreatePosts do
       add :excerpt, :text, null: false
       add :body, :text, null: false
       add :image, :string
+      add :likes, :integer
       add :featured, :boolean, default: false
       add :status, :string, null: false, default: "draft"
       add :visibility, :string, null: false, default: "public"

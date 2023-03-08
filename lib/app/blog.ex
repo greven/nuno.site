@@ -26,10 +26,24 @@ defmodule App.Blog do
     Repo.all(Post)
   end
 
+  def list_posts(preload: preloads) do
+    Post
+    |> preload(^preloads)
+    |> Repo.all()
+  end
+
   def list_published_posts do
     Post
     |> where(status: :published)
     |> where([p], p.published_date <= ^DateTime.utc_now())
+    |> Repo.all()
+  end
+
+  def list_published_posts(preload: preloads) do
+    Post
+    |> where(status: :published)
+    |> where([p], p.published_date <= ^DateTime.utc_now())
+    |> preload(^preloads)
     |> Repo.all()
   end
 
@@ -49,17 +63,21 @@ defmodule App.Blog do
   """
   def get_post!(slug), do: Repo.get_by!(Post, slug: slug)
 
-  def get_post!(slug, preload: preload) do
-    Post
-    |> preload(^preload)
-    |> Repo.get_by!(Post, slug: slug)
+  def get_post!(slug, preload: preloads) do
+    query =
+      from p in Post,
+        where: p.slug == ^slug,
+        join: pr in assoc(p, ^preloads),
+        preload: ^preloads
+
+    Repo.one!(query)
   end
 
   def get_post_by_id!(id), do: Repo.get!(Post, id)
 
-  def get_post_by_id!(id, preload: preload) do
+  def get_post_by_id!(id, preload: preloads) do
     Post
-    |> preload(^preload)
+    |> preload(^preloads)
     |> Repo.get!(id)
   end
 

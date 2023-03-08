@@ -446,7 +446,7 @@ defmodule AppWeb.CoreComponents do
         <p
           :for={subtitle <- @subtitle}
           :if={@subtitle != []}
-          class={["mt-3 text-sm leading-6 font-medium text-neutral-400 uppercase", subtitle[:class]]}
+          class={["mt-3 text-sm leading-6 font-medium text-neutral-500 uppercase", subtitle[:class]]}
         >
           <%= render_slot(subtitle) %>
         </p>
@@ -627,7 +627,7 @@ defmodule AppWeb.CoreComponents do
   def badge(assigns) do
     ~H"""
     <span class={[
-      "inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-800 hover:bg-neutral-200 transition duration-200",
+      "inline-flex items-center rounded-full bg-neutral-800 px-2 py-0.5 text-xs font-semibold text-neutral-50 hover:bg-neutral-600 transition duration-200",
       @class
     ]}>
       <%= render_slot(@inner_block) %>

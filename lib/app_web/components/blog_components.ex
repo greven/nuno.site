@@ -20,9 +20,9 @@ defmodule AppWeb.BlogComponents do
 
         <:subtitle class="flex gap-2">
           <.publication_date post={@post} />
-          <span class="text-neutral-300" aria-hidden="true">•</span>
+          <span class="text-neutral-400" aria-hidden="true">•</span>
           <span>
-            <%= @post.reading_time %>
+            <span class="font-bold"><%= @post.reading_time %></span>
             <%= ngettext("minute read", "minutes read", @post.reading_time) %>
           </span>
         </:subtitle>
@@ -41,7 +41,7 @@ defmodule AppWeb.BlogComponents do
     <div class={@class}>
       <.back navigate={~p"/writing/"} />
       <%!-- Stats --%>
-      <div class="hidden lg:mt-6 lg:flex flex-col gap-2 text-xs font-medium text-neutral-400 uppercase">
+      <div class="hidden lg:mt-6 lg:flex flex-col gap-2 text-xs font-medium text-neutral-500 uppercase">
         <div class="flex items-center gap-1.5 mb-2">
           <.icon name="hero-chart-bar-square" class="w-5 h-5 stroke-current inline" />
           <h3 class="font-headings text-sm font-semibold text-neutral-600">Statistics</h3>
@@ -79,10 +79,10 @@ defmodule AppWeb.BlogComponents do
 
   def post_tags(assigns) do
     ~H"""
-    <div class="not-prose flex items-center gap-1.5">
+    <div class={["not-prose flex items-center gap-1.5", @class]}>
       <%= for tag <- @tags do %>
         <.link navigate={~p"/writing/tags/#{tag}"}>
-          <.badge><%= tag %></.badge>
+          <.badge><%= tag.name %></.badge>
         </.link>
       <% end %>
     </div>

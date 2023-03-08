@@ -20,8 +20,6 @@ defmodule AppWeb.Hooks.ActiveLink do
         {_, _} -> nil
       end
 
-    dbg(active_link)
-
     {:cont, assign(socket, active_link: active_link)}
   end
 end
