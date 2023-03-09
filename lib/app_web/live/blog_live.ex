@@ -9,8 +9,8 @@ defmodule AppWeb.BlogLive do
     <%= if @live_action == :index do %>
       <h1 class="text-4xl mb-6">Listing all posts</h1>
 
-      <ul :for={post <- @posts} class="list-none p-0">
-        <li id={post.id} class="my-4">
+      <ul :for={{dom_id, post} <- @streams.posts} id="posts" class="list-none p-0" phx-update="stream">
+        <li id={dom_id} class="my-4">
           <h2>
             <.link href={~p"/writing/#{post}"} class="underline text-primary font-medium">
               <%= post.title %>
@@ -60,7 +60,7 @@ defmodule AppWeb.BlogLive do
     socket =
       socket
       |> assign(:page_title, "Blog")
-      |> assign(:posts, App.Blog.list_published_posts())
+      |> stream(:posts, App.Blog.list_published_posts())
 
     if connected?(socket) do
       App.Blog.subscribe()
@@ -88,13 +88,17 @@ defmodule AppWeb.BlogLive do
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
   @impl true
-  def handle_info(%{event: "post_created"}, socket) do
-    socket = assign(socket, :posts, App.Blog.list_published_posts())
+  def handle_info(%{event: "post_created", payload: new_post}, socket) do
+    socket = stream_insert(socket, :posts, new_post, at: 0)
     {:noreply, socket}
   end
 
-  def handle_info(%{event: "post_updated"}, socket) do
-    socket = assign(socket, :posts, App.Blog.list_published_posts())
+  def handle_info(%{event: "post_updated", payload: updated_post}, socket) do
+    socket =
+      socket
+      |> stream_delete(:posts, updated_post)
+      |> stream_insert(:songs, updated_post, at: -1)
+
     {:noreply, socket}
   end
 

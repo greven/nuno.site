@@ -29,6 +29,7 @@ defmodule App.Blog do
   def list_posts(preload: preloads) do
     Post
     |> preload(^preloads)
+    |> order_by(desc: :inserted_at)
     |> Repo.all()
   end
 
@@ -36,6 +37,7 @@ defmodule App.Blog do
     Post
     |> where(status: :published)
     |> where([p], p.published_date <= ^DateTime.utc_now())
+    |> order_by(desc: :published_date)
     |> Repo.all()
   end
 
@@ -43,6 +45,7 @@ defmodule App.Blog do
     Post
     |> where(status: :published)
     |> where([p], p.published_date <= ^DateTime.utc_now())
+    |> order_by(desc: :published_date)
     |> preload(^preloads)
     |> Repo.all()
   end
@@ -63,14 +66,12 @@ defmodule App.Blog do
   """
   def get_post!(slug), do: Repo.get_by!(Post, slug: slug)
 
+  # TODO: How to do this query with 1 query only instead of 2?
   def get_post!(slug, preload: preloads) do
-    query =
-      from p in Post,
-        where: p.slug == ^slug,
-        join: pr in assoc(p, ^preloads),
-        preload: ^preloads
-
-    Repo.one!(query)
+    Post
+    |> where(slug: ^slug)
+    |> preload(^preloads)
+    |> Repo.one!()
   end
 
   def get_post_by_id!(id), do: Repo.get!(Post, id)
@@ -147,12 +148,13 @@ defmodule App.Blog do
     |> after_post_change("post_deleted")
   end
 
-  @doc """
-  Sets a draft post to published and sets the `published_date` if `nil`.
-  If the `published_date` is a date in the future it represents a scheduled post.
-  """
-  def publish_post(%Post{} = post) do
-  end
+  # TODO: Publish draft post
+  # @doc """
+  # Sets a draft post to published and sets the `published_date` if `nil`.
+  # If the `published_date` is a date in the future it represents a scheduled post.
+  # """
+  # def publish_post(%Post{} = post) do
+  # end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking post changes.
