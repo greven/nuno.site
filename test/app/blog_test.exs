@@ -21,7 +21,12 @@ defmodule App.BlogTest do
     end
 
     test "create_post/1 with valid data creates a post" do
-      valid_attrs = %{body: "some body", excerpt: "some excerpt", slug: "some slug", title: "some title"}
+      valid_attrs = %{
+        body: "some body",
+        excerpt: "some excerpt",
+        slug: "some slug",
+        title: "some title"
+      }
 
       assert {:ok, %Post{} = post} = Blog.create_post(valid_attrs)
       assert post.body == "some body"
@@ -36,7 +41,13 @@ defmodule App.BlogTest do
 
     test "update_post/2 with valid data updates the post" do
       post = post_fixture()
-      update_attrs = %{body: "some updated body", excerpt: "some updated excerpt", slug: "some updated slug", title: "some updated title"}
+
+      update_attrs = %{
+        body: "some updated body",
+        excerpt: "some updated excerpt",
+        slug: "some updated slug",
+        title: "some updated title"
+      }
 
       assert {:ok, %Post{} = post} = Blog.update_post(post, update_attrs)
       assert post.body == "some updated body"

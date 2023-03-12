@@ -3,8 +3,6 @@ defmodule App.Helpers do
   Small utilities and helper functions.
   """
 
-  
-
   @doc """
   Format number shortening big numbers into shorter versions
   """
