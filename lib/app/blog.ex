@@ -66,7 +66,7 @@ defmodule App.Blog do
   """
   def get_post!(slug), do: Repo.get_by!(Post, slug: slug)
 
-  # TODO: How to do this query with 1 query only instead of 2?
+  # Note: How to do this query with 1 query only instead of 2?
   def get_post!(slug, preload: preloads) do
     Post
     |> where(slug: ^slug)

@@ -43,15 +43,15 @@ defmodule AppWeb.BlogComponents do
       <%!-- Stats --%>
       <div class="hidden lg:mt-6 lg:flex flex-col gap-2 text-xs font-medium text-neutral-500 uppercase">
         <div class="flex items-center gap-1.5 mb-2">
-          <.icon name="hero-chart-bar-square" class="w-5 h-5 stroke-current inline" />
+          <.icon name="hero-presentation-chart-bar" class="w-5 h-5 stroke-current inline" />
           <h3 class="font-headings text-sm font-semibold text-neutral-600">Statistics</h3>
         </div>
 
         <div class="pl-1">
           <span class="mr-1 text-neutral-700"><%= @readers %></span>
           <%= ngettext(
-            "current reader",
-            "current readers",
+            "reader",
+            "readers",
             @readers
           ) %>
         </div>

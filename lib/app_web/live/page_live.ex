@@ -4,7 +4,13 @@ defmodule AppWeb.PageLive do
   @impl true
   def render(assigns) do
     ~H"""
-    Page Live
+    <%= if @live_action == :home do %>
+      Page Live
+    <% end %>
+
+    <%= if @live_action == :about do %>
+      About Page
+    <% end %>
     """
   end
 

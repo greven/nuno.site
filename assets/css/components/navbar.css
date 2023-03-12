@@ -1,11 +1,8 @@
 /* ---- Navbar ---- */
 
 .navbar-link {
-  @apply relative text-sm font-semibold uppercase transition text-neutral-400 hover:text-neutral-800;
-}
-
-.navbar-link[aria-current="true"] {
-  @apply text-neutral-800 underline underline-offset-8 decoration-primary decoration-2;
+  @apply relative text-sm font-semibold uppercase transition
+  text-neutral-400 hover:text-neutral-800;
 }
 
 .navbar-link::before,
@@ -13,17 +10,17 @@
   position: absolute;
   bottom: -5px;
   left: 0;
-  width: 100%;
+  right: 0;
+  width: 16px;
   height: 2px;
-  background: theme("colors.neutral.500");
+  margin-left: auto;
+  margin-right: auto;
+  background: theme(colors.neutral.500);
   pointer-events: none;
 }
 
-.navbar-link:not([aria-current="true"])::before {
-  content: "";
-}
-
 .navbar-link::before {
+  content: "";
   transform-origin: 100% 50%;
   transform: scale3d(0, 1, 1);
   transition: transform 0.3s;
@@ -32,4 +29,23 @@
 .navbar-link:hover::before {
   transform-origin: 0% 50%;
   transform: scale3d(1, 1, 1);
+}
+
+.navbar-link[aria-current="true"] {
+  color: theme(colors.neutral.800);
+}
+
+.navbar-link[aria-current="true"]::before,
+.navbar-link[aria-current="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  width: 16px;
+  height: 2px;
+  margin-left: auto;
+  margin-right: auto;
+  background: theme(colors.primary);
+  pointer-events: none;
 }

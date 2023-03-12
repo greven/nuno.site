@@ -12,11 +12,10 @@ defmodule AppWeb.Layouts do
     <nav class={["bg-transparent", @class]}>
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="relative flex h-20 items-center justify-between">
-          <div class="flex items-center justify-center gap-3.5">
+          <div class="flex items-center justify-center gap-2.5">
+            <.icon name="hero-cube-transparent-mini" class="w-6 h-6 text-primary" />
             <h1 class="text-xl font-medium">
-              <.link navigate={~p"/"}>
-                nuno.fm
-              </.link>
+              <.link navigate={~p"/"}>Nuno</.link>
             </h1>
           </div>
 

@@ -7,7 +7,7 @@ defmodule AppWeb.BlogLive do
   def render(assigns) do
     ~H"""
     <%= if @live_action == :index do %>
-      <h1 class="text-4xl mb-6">Listing all posts</h1>
+      <h1 class="text-4xl mb-6">The Blog</h1>
 
       <ul :for={{dom_id, post} <- @streams.posts} id="posts" class="list-none p-0" phx-update="stream">
         <li id={dom_id} class="my-4">
