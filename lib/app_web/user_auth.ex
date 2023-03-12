@@ -1,4 +1,6 @@
 defmodule AppWeb.UserAuth do
+  @moduledoc false
+
   use AppWeb, :verified_routes
 
   import Plug.Conn
@@ -174,12 +176,7 @@ defmodule AppWeb.UserAuth do
     end
   end
 
-  def on_mount(:ensure_admin, _params, session, socket) do
-    socket = mount_current_user(session, socket)
-    ensure_role(socket, [:admin])
-  end
-
-  defp mount_current_user(session, socket) do
+  def mount_current_user(session, socket) do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do
         Accounts.get_user_by_session_token(user_token)
@@ -220,29 +217,23 @@ defmodule AppWeb.UserAuth do
 
   ## Roles
 
-  def ensure_admin(conn, _opts) do
-    ensure_role(conn, [:admin])
-  end
+  def ensure_role(%Plug.Conn{halted: true} = conn, _roles), do: conn
 
-  defp ensure_role(%Plug.Conn{assigns: %{current_user: current_user}} = conn, roles) do
+  def ensure_role(%Plug.Conn{assigns: %{current_user: current_user}} = conn, roles) do
     current_user
     |> Accounts.has_role?(roles)
     |> maybe_halt(conn)
   end
 
-  defp ensure_role({:cont, socket}, roles) do
-    ensure_role(socket, roles)
-  end
+  def ensure_role({:cont, socket}, roles), do: ensure_role(socket, roles)
 
-  defp ensure_role(%{assigns: %{current_user: current_user}} = socket, roles) do
+  def ensure_role(%{assigns: %{current_user: current_user}} = socket, roles) do
     current_user
     |> Accounts.has_role?(roles)
     |> maybe_halt(socket)
   end
 
-  defp ensure_role(socket, _roles) do
-    maybe_halt(false, socket)
-  end
+  def ensure_role(socket, _roles), do: maybe_halt(false, socket)
 
   defp maybe_halt(true, %Plug.Conn{} = conn), do: conn
 
@@ -269,11 +260,11 @@ defmodule AppWeb.UserAuth do
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
   end
 
-  defp maybe_store_return_to(%{method: "GET"} = conn) do
+  def maybe_store_return_to(%{method: "GET"} = conn) do
     put_session(conn, :user_return_to, current_path(conn))
   end
 
-  defp maybe_store_return_to(conn), do: conn
+  def maybe_store_return_to(conn), do: conn
 
   defp signed_in_path(_conn), do: ~p"/"
 end

@@ -14,9 +14,9 @@ defmodule AppWeb.UserLoginLive do
 
         <:actions>
           <.input field={@form[:remember_me]} type="checkbox" label="Keep me logged in" />
-          <.link href={~p"/users/reset_password"} class="text-sm font-semibold">
-            Forgot your password?
-          </.link>
+          <%!-- <.link href={~p"/users/reset_password"} class="text-sm font-semibold"> --%>
+          <%!-- Forgot your password? --%>
+          <%!-- </.link> --%>
         </:actions>
         <:actions>
           <.button phx-disable-with="Signing in..." class="w-full">

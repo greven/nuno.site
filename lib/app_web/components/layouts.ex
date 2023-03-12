@@ -5,11 +5,15 @@ defmodule AppWeb.Layouts do
 
   embed_templates("layouts/*")
 
+  ## Layout Components
+
+  ## Components
+
   attr :class, :string, default: nil
   attr :current_user, :any, default: nil
   attr :active_link, :atom, default: nil
 
-  def navbar(assigns) do
+  def site_navbar(assigns) do
     ~H"""
     <nav class={["bg-transparent", @class]}>
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

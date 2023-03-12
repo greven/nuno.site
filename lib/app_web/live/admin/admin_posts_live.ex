@@ -1,4 +1,4 @@
-defmodule AppWeb.PostsLive do
+defmodule AppWeb.AdminPostsLive do
   use AppWeb, :live_view
 
   @impl true

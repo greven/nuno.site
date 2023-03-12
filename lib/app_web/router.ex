@@ -3,6 +3,7 @@ defmodule AppWeb.Router do
 
   import Phoenix.LiveDashboard.Router
   import AppWeb.UserAuth
+  import AppWeb.AdminAuth
 
   alias AppWeb.Plugs
 
@@ -60,49 +61,46 @@ defmodule AppWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{AppWeb.UserAuth, :redirect_if_user_is_authenticated}, AppWeb.Hooks.ActiveLink] do
-      # live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
-      live "/users/reset_password", UserForgotPasswordLive, :new
-      live "/users/reset_password/:token", UserResetPasswordLive, :edit
+      # live "/users/register", UserRegistrationLive, :new
+      # live "/users/reset_password", UserForgotPasswordLive, :new
+      # live "/users/reset_password/:token", UserResetPasswordLive, :edit
     end
 
     post "/users/log_in", UserSessionController, :create
   end
 
-  scope "/", AppWeb do
-    pipe_through [:browser, :require_authenticated_user]
+  # scope "/", AppWeb do
+  #   pipe_through [:browser, :require_authenticated_user]
 
-    live_session :require_authenticated_user,
-      on_mount: [{AppWeb.UserAuth, :ensure_authenticated}, AppWeb.Hooks.ActiveLink] do
-      live "/users/settings", UserSettingsLive, :edit
-      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-    end
-  end
+  #   live_session :require_authenticated_user,
+  #     on_mount: [{AppWeb.UserAuth, :ensure_authenticated}, AppWeb.Hooks.ActiveLink] do
+  #     live "/users/settings", UserSettingsLive, :edit
+  #     live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+  #   end
+  # end
 
   scope "/", AppWeb do
     pipe_through [:browser]
 
     delete "/users/log_out", UserSessionController, :delete
 
-    live_session :authenticated,
-      on_mount: [{AppWeb.UserAuth, :mount_current_user}, AppWeb.Hooks.ActiveLink] do
-      live "/users/confirm/:token", UserConfirmationLive, :edit
-      live "/users/confirm", UserConfirmationInstructionsLive, :new
-    end
+    # live_session :authenticated,
+    #   on_mount: [{AppWeb.UserAuth, :mount_current_user}, AppWeb.Hooks.ActiveLink] do
+    #   live "/users/confirm/:token", UserConfirmationLive, :edit
+    #   live "/users/confirm", UserConfirmationInstructionsLive, :new
+    # end
   end
 
   scope "/admin", AppWeb do
-    pipe_through [:browser, :require_authenticated_user, :ensure_admin]
+    pipe_through [:browser, :require_admin_user]
 
     live_session :admin,
-      on_mount: [
-        {AppWeb.UserAuth, :ensure_authenticated},
-        {AppWeb.UserAuth, :ensure_admin},
-        AppWeb.Hooks.ActiveLink
-      ] do
-      live "/", AdminLive, :home
-      live "/posts", PostsLive, :index
-      live "/posts/new", PostsLive, :new
+      layout: {AppWeb.Layouts, :admin},
+      on_mount: [AppWeb.AdminAuth, AppWeb.Hooks.ActiveLink] do
+      live "/", AdminLive, :index
+      live "/posts", AdminPostsLive, :index
+      live "/posts/new", AdminPostsLive, :new
     end
 
     live_dashboard "/dashboard", metrics: AppWeb.Telemetry
