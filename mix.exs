@@ -37,7 +37,7 @@ defmodule App.MixProject do
       {:phoenix, "~> 1.7.1"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 3.3"},
-      {:phoenix_live_view, "~> 0.18.16"},
+      {:phoenix_live_view, "~> 0.18.17"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
       {:phoenix_live_dashboard, "~> 0.7"},
 
@@ -77,8 +77,8 @@ defmodule App.MixProject do
       {:floki, ">= 0.30.0", only: :test},
 
       # Assets
-      {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.1.8", runtime: Mix.env() == :dev},
+      {:esbuild, "~> 0.6.1", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.1.10", runtime: Mix.env() == :dev},
 
       # Development
       {:credo, "~> 1.6", only: [:dev], runtime: false}
