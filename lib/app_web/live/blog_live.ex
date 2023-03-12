@@ -9,8 +9,8 @@ defmodule AppWeb.BlogLive do
     <%= if @live_action == :index do %>
       <h1 class="text-4xl mb-6">The Blog</h1>
 
-      <ul :for={{dom_id, post} <- @streams.posts} id="posts" class="list-none p-0" phx-update="stream">
-        <li id={dom_id} class="my-4">
+      <ul id="posts" class="list-none p-0" phx-update="stream">
+        <li :for={{dom_id, post} <- @streams.posts} id={dom_id} class="my-4">
           <h2>
             <.link href={~p"/writing/#{post}"} class="underline text-primary font-medium">
               <%= post.title %>

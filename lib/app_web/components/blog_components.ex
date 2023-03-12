@@ -20,10 +20,10 @@ defmodule AppWeb.BlogComponents do
 
         <:subtitle class="flex gap-2">
           <.publication_date post={@post} />
-          <span class="text-neutral-400" aria-hidden="true">•</span>
+          <span class="text-secondary-400" aria-hidden="true">•</span>
           <span>
             <span class="font-bold"><%= @post.reading_time %></span>
-            <%= ngettext("minute read", "minutes read", @post.reading_time) %>
+            <%= gettext("min read") %>
           </span>
         </:subtitle>
       </.header>
@@ -41,33 +41,33 @@ defmodule AppWeb.BlogComponents do
     <div class={@class}>
       <.back navigate={~p"/writing/"} />
       <%!-- Stats --%>
-      <div class="hidden lg:mt-6 lg:flex flex-col gap-2 text-xs font-medium text-neutral-500 uppercase">
+      <div class="hidden lg:mt-6 lg:flex flex-col gap-2 text-xs font-medium text-secondary-500 uppercase">
         <div class="flex items-center gap-1.5 mb-2">
-          <.icon name="hero-presentation-chart-bar" class="w-5 h-5 stroke-current inline" />
-          <h3 class="font-headings text-sm font-semibold text-neutral-600">Statistics</h3>
+          <.icon name="hero-presentation-chart-line" class="w-5 h-5 stroke-current inline" />
+          <h3 class="font-headings text-sm font-semibold text-secondary-800">Statistics</h3>
         </div>
 
         <div class="pl-1">
-          <span class="mr-1 text-neutral-700"><%= @readers %></span>
-          <%= ngettext(
-            "reader",
-            "readers",
-            @readers
-          ) %>
-        </div>
-
-        <div class="pl-1">
-          <span class="mr-1 text-neutral-700">
+          <span class="mr-1 text-secondary-700">
             <%= if @today_views, do: App.Helpers.format_number(@today_views), else: "-" %>
           </span>
           <%= gettext("views today") %>
         </div>
 
         <div class="pl-1">
-          <span class="mr-1 text-neutral-700">
+          <span class="mr-1 text-secondary-700">
             <%= if @page_views, do: App.Helpers.format_number(@page_views), else: "-" %>
           </span>
           <%= gettext("page views") %>
+        </div>
+
+        <div class="pl-1">
+          <span class="mr-1 text-secondary-700"><%= @readers %></span>
+          <%= ngettext(
+            "reader",
+            "readers",
+            @readers
+          ) %>
         </div>
       </div>
     </div>

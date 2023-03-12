@@ -2,13 +2,13 @@
 @import "./fonts.css";
 
 ::selection {
-  background-color: theme("colors.primary");
-  color: theme("colors.white");
+  background-color: theme(colors.primary.600);
+  color: theme(colors.white);
 }
 
 body {
-  color: theme("colors.text.light");
-  font-family: theme("fontFamily.sans");
+  color: theme(colors.text.light);
+  font-family: theme(fontFamily.sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -19,5 +19,5 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: theme("fontFamily.headings");
+  font-family: theme(fontFamily.headings);
 }

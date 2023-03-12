@@ -21,7 +21,7 @@ defmodule App.Blog.Post do
     field :status, Ecto.Enum, values: ~w(draft review published)a, default: :draft
     field :visibility, Ecto.Enum, values: ~w(public private protected)a, default: :public
     field :external_link, :string
-    field :reading_time, :integer
+    field :reading_time, :float
     field :published_date, :utc_datetime
 
     many_to_many :tags, Tag, join_through: PostTag
@@ -56,7 +56,10 @@ defmodule App.Blog.Post do
     |> String.split(" ")
     |> Enum.count()
     |> then(&(&1 / @avg_wpm))
-    |> round()
+    |> case do
+      value when value < 1 -> 0.5
+      value -> round(value)
+    end
     |> then(&put_change(changeset, :reading_time, &1))
   end
 end

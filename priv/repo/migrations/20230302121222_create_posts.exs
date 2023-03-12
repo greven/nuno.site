@@ -14,7 +14,7 @@ defmodule App.Repo.Migrations.CreatePosts do
       add :status, :string, null: false, default: "draft"
       add :visibility, :string, null: false, default: "public"
       add :external_link, :string
-      add :reading_time, :integer
+      add :reading_time, :float
       add :published_date, :utc_datetime
 
       timestamps(type: :utc_datetime)

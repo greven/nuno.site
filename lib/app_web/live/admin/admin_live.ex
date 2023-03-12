@@ -4,13 +4,9 @@ defmodule AppWeb.AdminLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div>Admin Area</div>
+    <div class="my-4">Admin Area</div>
 
-    <.link
-      href={~p"/users/log_out"}
-      method="delete"
-      class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-    >
+    <.link href={~p"/users/log_out"} method="delete" class="btn btn--primary">
       Log out
     </.link>
     """

@@ -1,8 +1,15 @@
 /* ---- Navbar ---- */
 
+.navbar-link,
+.navbar-item {
+  @apply relative p-1 text-sm font-semibold uppercase rounded-sm transition
+  text-secondary-500 hover:text-secondary-800
+  focus:outline-none focus-visible:text-secondary-800 focus-visible:ring-2
+  focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-light;
+}
+
 .navbar-link {
-  @apply relative text-sm font-semibold uppercase transition
-  text-neutral-400 hover:text-neutral-800;
+  @apply focus-visible:ring-offset-[3px];
 }
 
 .navbar-link::before,
@@ -15,7 +22,7 @@
   height: 2px;
   margin-left: auto;
   margin-right: auto;
-  background: theme(colors.neutral.500);
+  background: theme(colors.secondary.500);
   pointer-events: none;
 }
 
@@ -32,7 +39,7 @@
 }
 
 .navbar-link[aria-current="true"] {
-  color: theme(colors.neutral.800);
+  @apply text-secondary-800 focus-visible:text-primary-900;
 }
 
 .navbar-link[aria-current="true"]::before,
@@ -46,6 +53,15 @@
   height: 2px;
   margin-left: auto;
   margin-right: auto;
-  background: theme(colors.primary);
+  background: theme(colors.primary.DEFAULT);
   pointer-events: none;
+}
+
+.navbar-item {
+  @apply block border-l-4 py-2 pl-3 pr-4 rounded-sm border-transparent
+  hover:border-secondary-400 hover:bg-secondary-100 hover:text-secondary-800;
+}
+
+.navbar-item[aria-current="true"] {
+  @apply border-primary-500 bg-primary-50 text-secondary-900;
 }

@@ -6,6 +6,7 @@ const path = require("path");
 
 const plugin = require("tailwindcss/plugin");
 const defaultTheme = require("tailwindcss/defaultTheme");
+const colors = require("tailwindcss/colors");
 
 module.exports = {
   content: ["./js/**/*.js", "../lib/*_web.ex", "../lib/*_web/**/*.*ex"],
@@ -17,9 +18,33 @@ module.exports = {
         headings: ["Montserrat", ...defaultTheme.fontFamily.serif],
       },
       colors: {
-        primary: "#DD4C4F",
-        secondary: "#222222",
-        complementary: "#4cddda",
+        primary: {
+          DEFAULT: "#DD4C4F",
+          50: "#FDF3F3",
+          100: "#FBE5E5",
+          200: "#F9CFD0",
+          300: "#F4ADAE",
+          400: "#EB7E80",
+          500: "#DD4C4F",
+          600: "#CB373A",
+          700: "#AA2B2E",
+          800: "#8D2729",
+          900: "#762628",
+        },
+        secondary: colors.neutral,
+        complementary: {
+          DEFAULT: "#4CDDDA",
+          50: "#F1FCFC",
+          100: "#CFF8F5",
+          200: "#9EF1EC",
+          300: "#4CDDDA",
+          400: "#37C8CA",
+          500: "#1DABAF",
+          600: "#15868C",
+          700: "#156B70",
+          800: "#15565A",
+          900: "#16484B",
+        },
         surface: {
           light: "#FBFBFB",
           dark: "#222222",
@@ -28,6 +53,10 @@ module.exports = {
           light: "#15141A",
           dark: "#FBFBFB",
         },
+      },
+
+      animation: {
+        "spin-slow": "spin 2s linear infinite",
       },
       typography: ({ theme }) => ({
         DEFAULT: {
@@ -48,8 +77,8 @@ module.exports = {
         primary: {
           css: {
             "--tw-prose-headings": "#222222",
-            "--tw-prose-links": theme("colors.primary"),
-            "--tw-prose-bullets": theme("colors.primary"),
+            "--tw-prose-links": theme("colors.primary.DEFAULT"),
+            "--tw-prose-bullets": theme("colors.primary.DEFAULT"),
           },
         },
       }),
