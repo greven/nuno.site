@@ -583,6 +583,32 @@ defmodule AppWeb.CoreComponents do
     """
   end
 
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def menu_button(assigns) do
+    ~H"""
+    <button
+      type="button"
+      class={[
+        "inline-flex items-center justify-center rounded-md p-1
+              text-secondary-400 hover:text-secondary-800 transition
+              focus:outline-none focus-visible:text-secondary-800 focus-visible:ring-2
+              focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-light",
+        @class
+      ]}
+      aria-controls="mobile-menu"
+      aria-expanded="false"
+      phx-click={toggle_mobile_menu()}
+      {@rest}
+    >
+      <span class="sr-only"><%= gettext("Open main menu") %></span>
+      <.icon id="mobile-menu-open" name="hero-bars-2" class="w-7 h-7" />
+      <.icon id="mobile-menu-close" name="hero-x-mark" class="w-7 h-7 hidden" />
+    </button>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do
@@ -628,6 +654,15 @@ defmodule AppWeb.CoreComponents do
     |> JS.hide(to: "##{id}", transition: {"block", "block", "hidden"})
     |> JS.remove_class("overflow-hidden", to: "body")
     |> JS.pop_focus()
+  end
+
+  # TODO: Toggle aria-expanded on button: https://elixirforum.com/t/liveview-js-toggle-for-setting-aria-attributes-on-dropdowns/45485
+  # TODO: Animate the hamburger to the X icon
+  def toggle_mobile_menu(js \\ %JS{}) do
+    js
+    |> JS.toggle(to: "#mobile-menu")
+    |> JS.toggle(to: "#mobile-menu-open")
+    |> JS.toggle(to: "#mobile-menu-close")
   end
 
   @doc """

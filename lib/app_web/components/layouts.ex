@@ -33,26 +33,10 @@ defmodule AppWeb.Layouts do
             </.link>
           </h1>
 
-          <div class="-mr-2 flex items-center min-[480px]:hidden">
-            <!-- Mobile menu button -->
-            <button
-              type="button"
-              class="inline-flex items-center justify-center rounded-md p-1
-              text-secondary-400 hover:text-secondary-800 transition
-              focus:outline-none focus-visible:text-secondary-800 focus-visible:ring-2
-              focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-light"
-              aria-controls="mobile-menu"
-              aria-expanded="false"
-              phx-click={toggle_mobile_menu()}
-            >
-              <span class="sr-only"><%= gettext("Open main menu") %></span>
-              <.icon id="mobile-menu-open" name="hero-bars-2" class="w-7 h-7" />
-              <.icon id="mobile-menu-close" name="hero-x-mark" class="w-7 h-7 hidden" />
-            </button>
-          </div>
+          <.menu_button class="min-[540px]:hidden" />
 
           <%!-- Desktop Menu --%>
-          <div id="desktop-menu" class="hidden min-[480px]:ml-6 min-[480px]:block">
+          <div id="desktop-menu" class="hidden min-[540px]:ml-6 min-[540px]:block">
             <div class="flex space-x-5">
               <.navbar_item
                 item={:home}
@@ -97,7 +81,7 @@ defmodule AppWeb.Layouts do
       <!-- Mobile menu -->
       <div id="mobile-menu" class="hidden">
         <div
-          class="space-y-1.5 px-2 pt-2 pb-3 min-[480px]:hidden"
+          class="space-y-1.5 px-2 pt-2 pb-3 min-[540px]:hidden"
           phx-click-away={toggle_mobile_menu()}
         >
           <.navbar_item item={:home} navigate={~p"/"} active_link={@active_link} class="navbar-item">
@@ -155,16 +139,5 @@ defmodule AppWeb.Layouts do
       <%= render_slot(@inner_block) %>
     </.link>
     """
-  end
-
-  ## JS Commands
-
-  # TODO: Toggle aria-expanded on button: https://elixirforum.com/t/liveview-js-toggle-for-setting-aria-attributes-on-dropdowns/45485
-  # TODO: Animate the hamburger to the X icon
-  def toggle_mobile_menu(js \\ %JS{}) do
-    js
-    |> JS.toggle(to: "#mobile-menu")
-    |> JS.toggle(to: "#mobile-menu-open")
-    |> JS.toggle(to: "#mobile-menu-close")
   end
 end
