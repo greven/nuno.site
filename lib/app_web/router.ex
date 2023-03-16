@@ -101,6 +101,7 @@ defmodule AppWeb.Router do
       live "/", AdminLive, :index
       live "/posts", AdminPostsLive, :index
       live "/posts/new", AdminPostsLive, :new
+      live "/posts/:id", AdminPostsLive, :show
     end
 
     live_dashboard "/dashboard", metrics: AppWeb.Telemetry

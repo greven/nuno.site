@@ -1,8 +1,6 @@
 defmodule AppWeb.Layouts do
   use AppWeb, :html
 
-  alias Phoenix.LiveView.JS
-
   embed_templates("layouts/*")
 
   ## Layout Components
