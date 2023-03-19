@@ -4,10 +4,6 @@ defmodule AppWeb.PageLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <%= if @live_action == :home do %>
-      Page Live
-    <% end %>
-
     <%= if @live_action == :about do %>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum sapiente neque itaque sed nostrum mollitia eaque animi minima impedit. Ducimus commodi molestias esse! Dignissimos voluptatem, voluptate quae ea nihil vero.
       Magni neque quaerat voluptatem possimus perferendis ullam expedita qui maiores porro fuga aut, distinctio iure nostrum sint dolores eius facere consequuntur ipsum soluta ad eveniet quam! Officia, id esse. Nihil?
@@ -25,11 +21,6 @@ defmodule AppWeb.PageLive do
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply, socket |> apply_action(socket.assigns.live_action, params)}
-  end
-
-  defp apply_action(socket, :home, _params) do
-    socket
-    |> assign(:page_title, "Home")
   end
 
   defp apply_action(socket, :about, _params) do

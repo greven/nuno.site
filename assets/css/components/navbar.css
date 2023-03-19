@@ -1,8 +1,7 @@
 /* ---- Navbar ---- */
 
-.navbar-link,
-.navbar-item {
-  @apply relative p-1 text-sm font-semibold uppercase rounded-sm transition
+.navbar-link {
+  @apply relative text-sm font-medium capitalize rounded-sm transition duration-300
   text-secondary-500 hover:text-secondary-800
   focus:outline-none focus-visible:text-secondary-800 focus-visible:ring-2
   focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-light;
@@ -15,7 +14,7 @@
 .navbar-link::before,
 .navbar-link::after {
   position: absolute;
-  bottom: -5px;
+  bottom: -6px;
   left: 0;
   right: 0;
   width: 16px;
@@ -46,7 +45,7 @@
 .navbar-link[aria-current="true"]::after {
   content: "";
   position: absolute;
-  bottom: -5px;
+  bottom: -6px;
   left: 0;
   right: 0;
   width: 16px;
@@ -55,13 +54,4 @@
   margin-right: auto;
   background: theme(colors.primary.DEFAULT);
   pointer-events: none;
-}
-
-.navbar-item {
-  @apply block border-l-4 py-2 pl-3 pr-4 rounded-sm border-transparent
-  hover:border-secondary-400 hover:bg-secondary-100 hover:text-secondary-800;
-}
-
-.navbar-item[aria-current="true"] {
-  @apply border-primary-500 bg-primary-50 text-secondary-900;
 }

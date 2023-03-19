@@ -68,11 +68,9 @@ defmodule App.MixProject do
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
 
-      # Security
-      {:sobelow, "~> 0.11", only: :dev},
-
       # Utils
       {:timex, "~> 3.7"},
+      {:earmark, "~> 1.4"},
       {:slugify, "~> 1.3"},
       {:floki, ">= 0.30.0", only: :test},
 
@@ -81,7 +79,8 @@ defmodule App.MixProject do
       {:tailwind, "~> 0.1.10", runtime: Mix.env() == :dev},
 
       # Development
-      {:credo, "~> 1.6", only: [:dev], runtime: false}
+      {:credo, "~> 1.6", only: [:dev], runtime: false},
+      {:sobelow, "~> 0.11", only: :dev}
     ]
   end
 

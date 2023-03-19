@@ -1,9 +1,9 @@
 defmodule AppWeb.Layouts do
   use AppWeb, :html
 
-  embed_templates("layouts/*")
+  import AppWeb.LiveComponents, only: [finder: 1]
 
-  ## Layout Components
+  embed_templates("layouts/*")
 
   ## Components
 
@@ -16,26 +16,12 @@ defmodule AppWeb.Layouts do
     <nav class={["bg-transparent", @class]}>
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="relative flex h-20 items-center justify-between">
-          <h1 class="text-xl font-semibold">
-            <.link
-              navigate={~p"/"}
-              class="group flex items-center justify-center gap-2 rounded-md p-1 focus:outline-none
-                focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2
-                focus-visible:ring-offset-surface-light"
-            >
-              <.icon
-                name="hero-cube-transparent"
-                class="w-6 h-6 text-primary
-              group-hover:animate-spin-slow group-focus-visible:animate-spin-slow"
-              /> Nuno Freire
-            </.link>
+          <h1 class="text-lg font-medium">
+            <.link navigate={~p"/"}>Logo</.link>
           </h1>
 
-          <.menu_button class="min-[540px]:hidden" />
-
-          <%!-- Desktop Menu --%>
-          <div id="desktop-menu" class="hidden min-[540px]:ml-6 min-[540px]:block">
-            <div class="flex space-x-5">
+          <div id="menu" class="hidden min-[540px]:ml-6 min-[540px]:flex items-center">
+            <div class="flex space-x-5 mr-5">
               <.navbar_item
                 item={:home}
                 navigate={~p"/"}
@@ -62,57 +48,9 @@ defmodule AppWeb.Layouts do
               >
                 Writing
               </.navbar_item>
-
-              <.navbar_item
-                :if={@current_user && @current_user.role == :admin}
-                item={:admin}
-                navigate={~p"/admin"}
-                active_link={@active_link}
-                class="navbar-link"
-              >
-                Admin
-              </.navbar_item>
             </div>
+            <.finder />
           </div>
-        </div>
-      </div>
-      <!-- Mobile menu -->
-      <div id="mobile-menu" class="hidden">
-        <div
-          class="space-y-1.5 px-2 pt-2 pb-3 min-[540px]:hidden"
-          phx-click-away={toggle_mobile_menu()}
-        >
-          <.navbar_item item={:home} navigate={~p"/"} active_link={@active_link} class="navbar-item">
-            <%= gettext("Home") %>
-          </.navbar_item>
-
-          <.navbar_item
-            item={:about}
-            navigate={~p"/about"}
-            active_link={@active_link}
-            class="navbar-item"
-          >
-            <%= gettext("About") %>
-          </.navbar_item>
-
-          <.navbar_item
-            item={:writing}
-            navigate={~p"/writing"}
-            active_link={@active_link}
-            class="navbar-item"
-          >
-            <%= gettext("Writing") %>
-          </.navbar_item>
-
-          <.navbar_item
-            :if={@current_user && @current_user.role == :admin}
-            item={:admin}
-            navigate={~p"/admin"}
-            active_link={@active_link}
-            class="navbar-item"
-          >
-            <%= gettext("Admin") %>
-          </.navbar_item>
         </div>
       </div>
     </nav>

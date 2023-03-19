@@ -2,7 +2,7 @@ defmodule AppWeb.Hooks.ActiveLink do
   use Phoenix.Component
   import Phoenix.LiveView
 
-  alias AppWeb.{PageLive, BlogLive, AdminLive}
+  alias AppWeb.{HomeLive, PageLive, BlogLive, AdminLive}
 
   def on_mount(:default, _params, _session, socket) do
     {:cont,
@@ -13,7 +13,7 @@ defmodule AppWeb.Hooks.ActiveLink do
   defp handle_active_link_params(_params, _url, socket) do
     active_link =
       case {socket.view, socket.assigns.live_action} do
-        {PageLive, :home} -> :home
+        {HomeLive, :index} -> :home
         {PageLive, :about} -> :about
         {BlogLive, _} -> :writing
         {AdminLive, _} -> :admin

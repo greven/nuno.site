@@ -7,8 +7,6 @@
 @import "tailwindcss/utilities";
 @import "./phoenix.css";
 
-@import "./vendor.css";
-
 @layer utilities {
   .animation-delay-75 {
     animation-delay: 75ms;

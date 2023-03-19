@@ -39,7 +39,7 @@ defmodule AppWeb.Router do
 
     live_session :default,
       on_mount: [{AppWeb.UserAuth, :mount_current_user}, AppWeb.Hooks.ActiveLink] do
-      live "/", PageLive, :home
+      live "/", HomeLive, :index
       live "/about", PageLive, :about
       live "/writing", BlogLive, :index, as: :blog
       live "/writing/:slug", BlogLive, :show, as: :blog
@@ -101,7 +101,7 @@ defmodule AppWeb.Router do
       live "/", AdminLive, :index
       live "/posts", AdminPostsLive, :index
       live "/posts/new", AdminPostsLive, :new
-      live "/posts/:id", AdminPostsLive, :show
+      live "/posts/:slug", AdminPostsLive, :show
     end
 
     live_dashboard "/dashboard", metrics: AppWeb.Telemetry

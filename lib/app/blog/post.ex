@@ -56,10 +56,6 @@ defmodule App.Blog.Post do
     |> String.split(" ")
     |> Enum.count()
     |> then(&(&1 / @avg_wpm))
-    |> case do
-      value when value < 1 -> 0.5
-      value -> round(value)
-    end
     |> then(&put_change(changeset, :reading_time, &1))
   end
 end

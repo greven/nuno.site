@@ -10,7 +10,7 @@ defmodule AppWeb.BlogLive do
       <h1 class="text-4xl mb-6">The Blog</h1>
 
       <ul id="posts" class="list-none p-0" phx-update="stream">
-        <li :for={{dom_id, post} <- @streams.posts} id={dom_id} class="my-4">
+        <li :for={{id, post} <- @streams.posts} id={id} class="my-4">
           <h2>
             <.link href={~p"/writing/#{post}"} class="underline text-primary font-medium">
               <%= post.title %>
@@ -50,7 +50,9 @@ defmodule AppWeb.BlogLive do
   def mount(%{"slug" => slug}, _session, socket) do
     post = App.Blog.get_post!(slug, preload: :tags)
 
-    socket = socket |> assign(:post, post)
+    socket =
+      socket
+      |> assign(:post, post)
 
     {:ok, socket}
   end
