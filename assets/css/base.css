@@ -25,5 +25,5 @@ h6 {
 mark {
   background-color: theme(colors.primary.600 / 0.85);
   color: theme(colors.white);
-  padding: 0 theme(spacing[1]);
+  padding: theme(spacing[0.5]) theme(spacing[1]);
 }
