@@ -21,3 +21,9 @@ h5,
 h6 {
   font-family: theme(fontFamily.headings);
 }
+
+mark {
+  background-color: theme(colors.primary.600 / 0.85);
+  color: theme(colors.white);
+  padding: 0 theme(spacing[1]);
+}

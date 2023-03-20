@@ -16,7 +16,7 @@ defmodule AppWeb.LiveComponents do
       |> assign(:module, LiveComponents.FinderComponent)
 
     ~H"""
-    <div class={@class}>
+    <div class={["finder-component", @class]}>
       <.live_component {assigns} />
     </div>
     """

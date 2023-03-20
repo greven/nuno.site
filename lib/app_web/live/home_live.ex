@@ -4,9 +4,7 @@ defmodule AppWeb.HomeLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div>
-      Home
-    </div>
+    <div class="home"></div>
     """
   end
 

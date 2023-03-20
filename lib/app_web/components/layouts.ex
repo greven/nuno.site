@@ -2,6 +2,7 @@ defmodule AppWeb.Layouts do
   use AppWeb, :html
 
   import AppWeb.LiveComponents, only: [finder: 1]
+  import AppWeb.PageComponents, only: [avatar_picture: 1]
 
   embed_templates("layouts/*")
 
@@ -13,44 +14,31 @@ defmodule AppWeb.Layouts do
 
   def site_navbar(assigns) do
     ~H"""
-    <nav class={["bg-transparent", @class]}>
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="relative flex h-20 items-center justify-between">
-          <h1 class="text-lg font-medium">
-            <.link navigate={~p"/"}>Logo</.link>
-          </h1>
+    <nav class={@class}>
+      <div class="relative flex h-12 items-center justify-between">
+        <.avatar_picture />
 
-          <div id="menu" class="hidden min-[540px]:ml-6 min-[540px]:flex items-center">
-            <div class="flex space-x-5 mr-5">
-              <.navbar_item
-                item={:home}
-                navigate={~p"/"}
-                active_link={@active_link}
-                class="navbar-link"
-              >
-                Home
-              </.navbar_item>
+        <div id="menu" class="hidden min-[540px]:ml-6 min-[540px]:flex items-center">
+          <div class="flex space-x-5 mr-5">
+            <.navbar_item
+              item={:about}
+              navigate={~p"/about"}
+              active_link={@active_link}
+              class="navbar-link"
+            >
+              About
+            </.navbar_item>
 
-              <.navbar_item
-                item={:about}
-                navigate={~p"/about"}
-                active_link={@active_link}
-                class="navbar-link"
-              >
-                About
-              </.navbar_item>
-
-              <.navbar_item
-                item={:writing}
-                navigate={~p"/writing"}
-                active_link={@active_link}
-                class="navbar-link"
-              >
-                Writing
-              </.navbar_item>
-            </div>
-            <.finder />
+            <.navbar_item
+              item={:writing}
+              navigate={~p"/writing"}
+              active_link={@active_link}
+              class="navbar-link"
+            >
+              Writing
+            </.navbar_item>
           </div>
+          <.finder />
         </div>
       </div>
     </nav>

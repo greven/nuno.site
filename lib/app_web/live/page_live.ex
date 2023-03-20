@@ -5,15 +5,38 @@ defmodule AppWeb.PageLive do
   def render(assigns) do
     ~H"""
     <%= if @live_action == :about do %>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum sapiente neque itaque sed nostrum mollitia eaque animi minima impedit. Ducimus commodi molestias esse! Dignissimos voluptatem, voluptate quae ea nihil vero.
-      Magni neque quaerat voluptatem possimus perferendis ullam expedita qui maiores porro fuga aut, distinctio iure nostrum sint dolores eius facere consequuntur ipsum soluta ad eveniet quam! Officia, id esse. Nihil?
-      Beatae odio labore et dolore laboriosam provident fugiat in sunt fuga quod maiores cumque voluptates saepe quos ut ea ullam doloremque autem, nostrum illo possimus magni. Assumenda soluta sed cumque.
-      Et, eius vero quo ipsa id doloribus consequuntur ipsam dolorum reprehenderit, dolore debitis? Minima reprehenderit unde excepturi ad aliquam? Magni quos at id nemo? Ipsum doloremque repellendus ea at id.
-      Officiis quaerat autem laudantium maxime provident quas nemo, molestiae earum saepe rerum adipisci in? Eaque, eum est! Incidunt, iure, animi nemo sint ut at voluptatibus totam vitae illo corrupti perspiciatis.
-      At, omnis deleniti, labore quae qui non perspiciatis autem accusamus repudiandae voluptatibus eligendi veritatis, eum obcaecati. Doloribus illo iure consectetur quasi? Dignissimos soluta illo aperiam quia incidunt temporibus sequi adipisci!
-      Facilis dolorem cumque illo optio maxime ipsum labore laborum ad saepe ratione voluptate modi, tempore autem sint quis laboriosam atque voluptatum nihil neque et. Totam nulla magni sapiente numquam hic!
-      Quos nulla dolore eum sapiente officiis natus obcaecati. Odio reprehenderit laudantium itaque at nam excepturi aliquam ipsum modi ut mollitia beatae consequuntur cumque ab, delectus ex harum commodi temporibus quasi.
-      Hic quam nihil minus, adipisci magni, veritatis autem deserunt perferendis ducimus blanditiis totam assumenda cumque recusandae necessitatibus ex alias sapiente, eveniet repudiandae iusto consequatur? Incidunt nihil tempore aut officia molestias!
+      <div class="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
+        <div class="flex justify-center lg:pl-20">
+          <div class="relative max-w-[200px] lg:max-w-[300px]">
+            <div class="absolute -inset-2 aspect-square rounded-full border-2 border-dashed border-primary-600">
+            </div>
+            <img
+              src="images/profile.png"
+              alt="Profile picture"
+              class="relative aspect-square rounded-full"
+            />
+          </div>
+        </div>
+
+        <div class="lg:order-first lg:row-span-2">
+          <h1 class="text-4xl font-headings font-light tracking-tight">
+            HEY! I'm <mark class="font-medium">Nuno</mark>, a
+            <span class="font-semibold">Software Developer</span>
+            based in <span class="font-normal uppercase">Lisbon</span>.
+          </h1>
+
+          <div class="mt-6 space-y-6 text-base text-secondary-600 dark:text-secondary-400">
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Inventore unde veniam repellendus odio beatae ullam, recusandae repudiandae mollitia natus voluptate, explicabo ab possimus aut. In commodi cum sint maiores odit!
+            </p>
+
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis doloribus error nemo nulla aperiam odio molestias veniam ut, quis in laboriosam nihil expedita ex quo repudiandae? Earum repellendus nihil aperiam?
+              Alias deserunt provident accusantium asperiores non autem facilis totam eveniet numquam sunt enim, dolores illo blanditiis veritatis qui. Incidunt harum corrupti temporibus ducimus magni beatae eius voluptas hic atque vitae!
+            </p>
+          </div>
+        </div>
+      </div>
     <% end %>
     """
   end

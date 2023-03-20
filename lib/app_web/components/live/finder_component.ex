@@ -9,7 +9,7 @@ defmodule AppWeb.LiveComponents.FinderComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="finder-component">
+    <div class="finder-component__body">
       <.icon
         name="hero-magnifying-glass-mini"
         class="w-5 h-5 text-secondary-500 hover:text-secondary-700 hover:cursor-pointer"
