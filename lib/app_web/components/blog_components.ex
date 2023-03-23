@@ -9,8 +9,8 @@ defmodule AppWeb.BlogComponents do
   import AppWeb.Gettext
   import AppWeb.CoreComponents
 
-  attr :class, :string, default: nil
-  attr :post, :any, required: true
+  attr(:class, :string, default: nil)
+  attr(:post, :any, required: true)
 
   def post_header(assigns) do
     ~H"""
@@ -22,8 +22,8 @@ defmodule AppWeb.BlogComponents do
           <.publication_date post={@post} />
           <span class="text-secondary-400" aria-hidden="true">•</span>
           <span>
-            <span class="font-bold"><%= @post.reading_time %></span>
-            <%= gettext("min read") %>
+            <.reading_time time={@post.reading_time} class="font-bold" />
+            <%= gettext("read") %>
           </span>
         </:subtitle>
       </.header>
@@ -31,10 +31,30 @@ defmodule AppWeb.BlogComponents do
     """
   end
 
-  attr :class, :string, default: nil
-  attr :readers, :integer, required: true
-  attr :today_views, :integer, required: true
-  attr :page_views, :integer, required: true
+  attr(:time, :float, required: true)
+  attr(:rest, :global, include: ~w(class))
+
+  def reading_time(%{time: time} = assigns) do
+    {duration, unit} =
+      cond do
+        time < 1.0 ->
+          {Timex.Duration.from_minutes(time) |> Timex.Duration.to_seconds() |> round(), "sec"}
+
+        true ->
+          {time |> round(), "min"}
+      end
+
+    assigns = assign(assigns, :time, "#{duration} #{unit}")
+
+    ~H"""
+    <span {@rest}><%= @time %></span>
+    """
+  end
+
+  attr(:class, :string, default: nil)
+  attr(:readers, :integer, required: true)
+  attr(:today_views, :integer, required: true)
+  attr(:page_views, :integer, required: true)
 
   def post_sidebar(assigns) do
     ~H"""
@@ -74,8 +94,8 @@ defmodule AppWeb.BlogComponents do
     """
   end
 
-  attr :tags, :list, required: true
-  attr :class, :string, default: nil
+  attr(:tags, :list, required: true)
+  attr(:class, :string, default: nil)
 
   def post_tags(assigns) do
     ~H"""
@@ -89,8 +109,8 @@ defmodule AppWeb.BlogComponents do
     """
   end
 
-  attr :post, :any, required: true
-  attr :class, :string, default: nil
+  attr(:post, :any, required: true)
+  attr(:class, :string, default: nil)
 
   def publication_date(assigns) do
     assigns = assign(assigns, :date, relative_date(assigns.post.published_date))
