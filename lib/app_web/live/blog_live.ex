@@ -3,6 +3,8 @@ defmodule AppWeb.BlogLive do
 
   import AppWeb.BlogComponents
 
+  alias AppWeb.MarkdownHelpers
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -37,7 +39,7 @@ defmodule AppWeb.BlogLive do
           <.post_header post={@post} />
 
           <article class="my-8 prose prose-primary">
-            <%= raw(@post.body) %>
+            <%= MarkdownHelpers.as_html(@post.body) %>
           </article>
         </div>
       </div>
