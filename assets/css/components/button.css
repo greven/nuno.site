@@ -2,14 +2,16 @@
 
 .btn {
   @apply inline-flex items-center gap-x-2.5 rounded-full border-2 border-transparent
-  bg-secondary-900 hover:bg-secondary-700 py-1 px-3
-  text-sm font-semibold leading-6 tracking-wide text-white active:text-white/80
-  transition;
+  bg-secondary-900 py-1 px-3 text-sm font-semibold leading-6 tracking-wide
+  text-white transition
+  hover:bg-secondary-700
+  active:text-white/80;
 }
 
 .btn-secondary {
   @apply inline-flex items-center gap-x-2.5 rounded-full
-  bg-transparent py-1 px-3 border-2 border-secondary-900 hover:border-primary-600
-  text-sm font-semibold leading-6 tracking-wide text-secondary-900 hover:text-primary-600
-  active:text-primary-600/80 transition;
+  bg-transparent py-1 px-3 border-2 border-secondary-900
+  text-sm font-semibold leading-6 tracking-wide text-secondary-900 transition
+  hover:border-primary-600 hover:text-primary-600
+  active:text-primary-600/80;
 }

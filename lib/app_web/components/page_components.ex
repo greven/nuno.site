@@ -7,7 +7,6 @@ defmodule AppWeb.PageComponents do
   use AppWeb, :verified_routes
 
   attr :class, :string, default: nil
-  attr :post, :any, required: true
 
   def avatar_picture(assigns) do
     ~H"""
