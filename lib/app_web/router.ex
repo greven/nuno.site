@@ -41,11 +41,12 @@ defmodule AppWeb.Router do
       on_mount: [{AppWeb.UserAuth, :mount_current_user}, AppWeb.Hooks.ActiveLink] do
       live "/", HomeLive, :index
       live "/about", PageLive, :about
+      live "/updates", UpdatesLive, :index
+      live "/stats", StatsLive, :index
       live "/writing", BlogLive, :index, as: :blog
       live "/writing/:slug", BlogLive, :show, as: :blog
       live "/writing/tags", TagsLive, :index
       live "/writing/tags/:tag", TagsLive, :show
-      live "/stats", StatsLive, :show
     end
   end
 
