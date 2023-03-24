@@ -4,6 +4,7 @@ defmodule App.Blog do
   """
 
   import Ecto.Query, warn: false
+  alias App.Pagination
   alias App.Repo
 
   alias App.Blog.Post
@@ -22,32 +23,29 @@ defmodule App.Blog do
       [%Post{}, ...]
 
   """
-  def list_posts do
-    Repo.all(Post)
-  end
 
-  def list_posts(preload: preloads) do
+  def list_posts(opts \\ []) do
+    preloads = Keyword.get(opts, :preload, [])
+    offset = Keyword.get(opts, :offset)
+    limit = Keyword.get(opts, :limit)
+
     Post
     |> preload(^preloads)
     |> order_by(desc: :inserted_at)
-    |> Repo.all()
+    |> Pagination.paginate(offset, limit: limit)
   end
 
-  def list_published_posts do
-    Post
-    |> where(status: :published)
-    |> where([p], p.published_date <= ^DateTime.utc_now())
-    |> order_by(desc: :published_date)
-    |> Repo.all()
-  end
+  def list_published_posts(opts \\ []) do
+    preloads = Keyword.get(opts, :preload, [])
+    offset = Keyword.get(opts, :offset)
+    limit = Keyword.get(opts, :limit)
 
-  def list_published_posts(preload: preloads) do
     Post
     |> where(status: :published)
     |> where([p], p.published_date <= ^DateTime.utc_now())
     |> order_by(desc: :published_date)
     |> preload(^preloads)
-    |> Repo.all()
+    |> Pagination.paginate(offset, limit: limit)
   end
 
   @doc """
@@ -85,11 +83,19 @@ defmodule App.Blog do
   @doc """
   Gets all posts that have the argument tag or tag id.
   """
-  def get_posts_by_tag!(%Tag{id: id}), do: get_posts_by_tag!(id)
+  def get_posts_by_tag!(tag, opts \\ [])
 
-  def get_posts_by_tag!(tag_id) do
+  def get_posts_by_tag!(%Tag{id: id}, opts) do
+    get_posts_by_tag!(id, opts)
+  end
+
+  def get_posts_by_tag!(tag_id, opts) do
+    offset = Keyword.get(opts, :offset)
+    limit = Keyword.get(opts, :limit)
+
     Post
     |> join(:inner, [p], t in assoc(p, :tags), on: t.id == ^tag_id)
+    |> Pagination.paginate(offset, limit: limit)
     |> Repo.all()
   end
 

@@ -9,7 +9,10 @@ defmodule AppWeb.BlogLive do
   def render(assigns) do
     ~H"""
     <%= if @live_action == :index do %>
-      <h1 class="mb-6 text-4xl font-medium">The Blog</h1>
+      <h1 class="mb-2 text-4xl font-medium">The Blog</h1>
+      <p class="mb-6 font-light text-secondary-500">
+        Written thoughts, mostly about web development.
+      </p>
 
       <ul id="posts" class="list-none p-0" phx-update="stream">
         <li :for={{id, post} <- @streams.posts} id={id} class="my-4">
@@ -22,6 +25,20 @@ defmodule AppWeb.BlogLive do
           <time><%= post.published_date %></time>
         </li>
       </ul>
+
+      <div class="flex">
+        <div :if={@has_prev_page} class="">
+          <.link navigate={~p"/writing?page=#{@prev_page}"}>
+            <.icon name="hero-chevron-left" />
+          </.link>
+        </div>
+
+        <div :if={@has_next_page} class="">
+          <.link navigate={~p"/writing?page=#{@next_page}"}>
+            <.icon name="hero-chevron-right" />
+          </.link>
+        </div>
+      </div>
     <% end %>
 
     <%= if @live_action == :show do %>
@@ -61,10 +78,7 @@ defmodule AppWeb.BlogLive do
 
   # Index
   def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> assign(:page_title, "Blog")
-      |> stream(:posts, App.Blog.list_published_posts())
+    socket = socket |> assign(:page_title, "Blog")
 
     if connected?(socket) do
       App.Blog.subscribe()
@@ -89,7 +103,27 @@ defmodule AppWeb.BlogLive do
   end
 
   # Index
-  def handle_params(_params, _uri, socket), do: {:noreply, socket}
+  def handle_params(params, _uri, socket) do
+    offset = Map.get(params, "page", 1)
+
+    %{
+      has_next: has_next,
+      has_prev: has_prev,
+      prev_page: prev_page,
+      next_page: next_page,
+      entries: posts
+    } = App.Blog.list_published_posts(offset: offset)
+
+    socket =
+      socket
+      |> stream(:posts, posts)
+      |> assign(:next_page, next_page)
+      |> assign(:prev_page, prev_page)
+      |> assign(:has_next_page, has_next)
+      |> assign(:has_prev_page, has_prev)
+
+    {:noreply, socket}
+  end
 
   @impl true
   def handle_info(%{event: "post_created", payload: new_post}, socket) do
