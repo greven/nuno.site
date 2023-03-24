@@ -572,7 +572,7 @@ defmodule AppWeb.CoreComponents do
 
   def badge(assigns) do
     ~H"""
-    <span class={["btn-secondary px-2 py-0", @class]}>
+    <span class={["btn-secondary px-2 py-0 group", @class]}>
       <%= render_slot(@inner_block) %>
     </span>
     """

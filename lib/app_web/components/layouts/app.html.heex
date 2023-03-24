@@ -1,12 +1,6 @@
-<header class="flex flex-col relative z-50">
-  <div class="sticky top-0 z-10 pt-2">
-    <div class="relative w-full mx-auto max-w-5xl px-4 sm:px-16 lg:px-20">
-      <.site_navbar current_user={@current_user} active_link={@active_link} />
-    </div>
-  </div>
-</header>
+<.site_header current_user={@current_user} active_link={@active_link} />
 
-<main class="relative w-full mx-auto max-w-5xl px-4 sm:px-16 lg:px-20 mt-16 sm:mt-20">
+<main id="main" class="relative w-full mx-auto max-w-5xl px-4 sm:px-16 lg:px-20 mt-16 sm:mt-20">
   <.flash_group flash={@flash} />
   <%= @inner_content %>
 </main>
