@@ -1,7 +1,9 @@
 defmodule App.Helpers do
   @moduledoc """
-  Small utilities and helper functions.
+  General utilities and helper functions.
   """
+
+  ## Numbers
 
   @doc """
   Format number shortening big numbers into shorter versions

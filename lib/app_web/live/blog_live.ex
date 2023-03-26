@@ -102,8 +102,8 @@ defmodule AppWeb.BlogLive do
 
     socket =
       socket
-      |> assign(:page_title, "Blog")
       |> stream(:posts, posts)
+      |> assign(:page_title, "Blog")
       |> assign(:top_tags, Blog.list_top_tags(3))
 
     if connected?(socket) do
@@ -131,33 +131,10 @@ defmodule AppWeb.BlogLive do
   # Index
   def handle_params(params, _uri, socket) do
     params = parse_params(params)
-    offset = Map.get(params, "page", 1)
-    tag = Map.get(params, "tag", "all")
-
-    %{
-      has_next: has_next,
-      has_prev: has_prev,
-      prev_page: prev_page,
-      next_page: next_page,
-      entries: posts
-    } =
-      case tag do
-        "all" ->
-          Blog.list_published_posts(offset: offset)
-
-        tag_name ->
-          Blog.get_tag_by_name!(tag_name)
-          |> Blog.get_posts_by_tag!(offset: offset)
-      end
 
     socket =
       socket
-      # |> stream(:posts, posts)
-      |> assign(:selected_tag, tag)
-      |> assign(:next_page, next_page)
-      |> assign(:prev_page, prev_page)
-      |> assign(:has_next_page, has_next)
-      |> assign(:has_prev_page, has_prev)
+      |> assign_posts(params)
       |> assign(:params, params)
 
     {:noreply, socket}
@@ -211,6 +188,35 @@ defmodule AppWeb.BlogLive do
     end
 
     assign_page_views(socket, path)
+  end
+
+  defp assign_posts(socket, params) do
+    offset = Map.get(params, "page", 1)
+    tag = Map.get(params, "tag", "all")
+
+    %{
+      has_next: has_next,
+      has_prev: has_prev,
+      prev_page: prev_page,
+      next_page: next_page,
+      entries: posts
+    } =
+      case tag do
+        "all" ->
+          Blog.list_published_posts(offset: offset)
+
+        tag_name ->
+          Blog.get_tag_by_name!(tag_name)
+          |> Blog.get_posts_by_tag!(offset: offset)
+      end
+
+    socket
+    |> AppWeb.Stream.reset(:posts, posts)
+    |> assign(:selected_tag, tag)
+    |> assign(:next_page, next_page)
+    |> assign(:prev_page, prev_page)
+    |> assign(:has_next_page, has_next)
+    |> assign(:has_prev_page, has_prev)
   end
 
   defp assign_page_views(socket, path) do
