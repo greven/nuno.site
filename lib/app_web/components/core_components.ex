@@ -40,6 +40,7 @@ defmodule AppWeb.CoreComponents do
       id={@id}
       phx-mounted={@show && show_modal(@id)}
       phx-remove={hide_modal(@id)}
+      data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
       <div
@@ -60,14 +61,14 @@ defmodule AppWeb.CoreComponents do
             <.focus_wrap
               id={"#{@id}-container"}
               phx-mounted={@show && show_modal(@id)}
-              phx-window-keydown={hide_modal(@on_cancel, @id)}
+              phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
-              phx-click-away={hide_modal(@on_cancel, @id)}
+              phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
               class="hidden relative rounded-2xl bg-white p-14 shadow-lg shadow-secondary-700/10 ring-1 ring-secondary-700/10 transition"
             >
               <div class="absolute top-6 right-5">
                 <button
-                  phx-click={hide_modal(@on_cancel, @id)}
+                  phx-click={JS.exec("data-cancel", to: "##{@id}")}
                   type="button"
                   class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
                   aria-label={gettext("close")}
@@ -192,6 +193,22 @@ defmodule AppWeb.CoreComponents do
   end
 
   @doc """
+  Renders a badge.
+  """
+
+  attr :class, :string, default: nil
+
+  slot :inner_block, required: true
+
+  def badge(assigns) do
+    ~H"""
+    <span class={["btn-outline btn-xs group", @class]}>
+      <%= render_slot(@inner_block) %>
+    </span>
+    """
+  end
+
+  @doc """
   Renders a button.
 
   ## Examples
@@ -201,16 +218,112 @@ defmodule AppWeb.CoreComponents do
   """
   attr :type, :string, default: nil
   attr :class, :string, default: nil
+  attr :size, :atom, values: ~w(xs sm md lg)a, default: :md
+  attr :variant, :atom, values: ~w(default outline basic)a, default: :default
   attr :rest, :global, include: ~w(disabled form name value)
 
   slot :inner_block, required: true
 
   def button(assigns) do
     ~H"""
-    <button type={@type} class={["btn phx-submit-loading:opacity-75", @class]} {@rest}>
+    <button
+      type={@type}
+      class={[
+        "phx-submit-loading:opacity-75",
+        button_variant_class(@variant),
+        button_size_class(@size),
+        @class
+      ]}
+      {@rest}
+    >
       <%= render_slot(@inner_block) %>
     </button>
     """
+  end
+
+  @doc """
+  Renders a a Toggle Button that can be used to group
+  related options.
+  """
+
+  attr :class, :string, default: nil
+  attr :selected, :boolean, default: false
+  attr :size, :atom, values: ~w(xs sm md lg)a, default: :md
+  # attr :on_click, JS, default: %JS{}
+  attr :rest, :global
+
+  slot :inner_block, required: true
+
+  def toggle_button(assigns) do
+    ~H"""
+    <button
+      type="button"
+      class={[
+        if(@selected, do: "btn", else: "btn-basic"),
+        button_size_class(@size),
+        @class
+      ]}
+      aria-pressed={@selected}
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
+
+  @doc """
+  The common container to use to group related
+  `toggle_button` elements.
+  """
+
+  attr :value, :any, required: true
+  attr :on_change, :string, required: true
+  attr :class, :string, default: nil
+  attr :size, :atom, values: ~w(xs sm md lg)a, default: :md
+  attr :rest, :global
+
+  # slot :inner_block, required: true
+  slot :button do
+    attr :value, :any, required: true
+    attr :class, :any
+    attr :size, :atom
+    attr :aria_label, :string
+  end
+
+  def toggle_button_group(assigns) do
+    ~H"""
+    <div role="group" class={["flex gap-2", @class]} {@rest}>
+      <%= for button <- @button do %>
+        <.toggle_button
+          size={@size}
+          selected={@value == button.value}
+          phx-click={JS.push(@on_change, value: %{value: button.value})}
+          aria-label={button[:aria_label]}
+        >
+          <%= render_slot(button) %>
+        </.toggle_button>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp button_variant_class(size) do
+    cond do
+      size == :default -> "btn"
+      size == :outline -> "btn-outline"
+      size == :basic -> "btn-basic"
+      true -> "btn"
+    end
+  end
+
+  defp button_size_class(size) do
+    cond do
+      size == :xs -> "btn-xs"
+      size == :sm -> "btn-sm"
+      size == :md -> "btn-md"
+      size == :lg -> "btn-lg"
+      true -> "btn-md"
+    end
   end
 
   @doc """
@@ -563,18 +676,6 @@ defmodule AppWeb.CoreComponents do
   def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""
     <span class={[@name, @class]} {@rest} />
-    """
-  end
-
-  attr :class, :string, default: nil
-
-  slot :inner_block, required: true
-
-  def badge(assigns) do
-    ~H"""
-    <span class={["btn-secondary px-2 py-0 group", @class]}>
-      <%= render_slot(@inner_block) %>
-    </span>
     """
   end
 

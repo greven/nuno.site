@@ -68,6 +68,10 @@ defmodule App.MixProject do
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
 
+      # Caching
+      {:nebulex, "~> 2.4"},
+      {:decorator, "~> 1.4"},
+
       # Utils
       {:timex, "~> 3.7"},
       {:earmark, "~> 1.4"},
@@ -75,8 +79,8 @@ defmodule App.MixProject do
       {:floki, ">= 0.30.0", only: :test},
 
       # Assets
-      {:esbuild, "~> 0.6.1", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.1.10", runtime: Mix.env() == :dev},
+      {:esbuild, "~> 0.7.0", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
 
       # Development
       {:credo, "~> 1.6", only: [:dev], runtime: false},

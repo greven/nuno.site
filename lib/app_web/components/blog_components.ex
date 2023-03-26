@@ -107,10 +107,8 @@ defmodule AppWeb.BlogComponents do
     ~H"""
     <div class={["not-prose flex items-center gap-1.5", @class]}>
       <%= for tag <- @tags do %>
-        <.link navigate={~p"/writing/tags/#{tag}"}>
-          <.badge>
-            <span><span class="text-secondary-500 group-hover:text-current">#</span><%= tag.name %></span>
-          </.badge>
+        <.link :if={tag.enabled} navigate={~p"/writing/tags/#{tag}"}>
+          <.badge><%= tag.name %></.badge>
         </.link>
       <% end %>
     </div>

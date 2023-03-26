@@ -19,13 +19,19 @@ defmodule AppWeb.PageLive do
         </div>
 
         <div class="lg:order-first lg:row-span-2">
-          <h1 class="text-4xl font-headings font-light tracking-tight">
-            HEY! I'm <em class="not-italic font-medium underline decoration-4 decoration-primary-600 underline-offset-4">Nuno Moço</em>, a
-            <span class="font-semibold">Software Developer</span>
-            based in <span class="font-normal uppercase">Lisbon</span>.
+          <h1 class="text-3xl md:text-4xl font-headings font-light tracking-tight">
+            HEY! My name is <em class="not-italic font-medium underline decoration-4 decoration-primary-600 underline-offset-4">Nuno</em>.
           </h1>
 
-          <div class="mt-6 space-y-6 text-base text-secondary-600 dark:text-secondary-400">
+          <p class="mt-2.5 text-lg md:text-xl font-light">
+            I'm a <span class="font-semibold">Software Developer</span>
+            from <span class="font-normal uppercase"><.icon
+                name="hero-map-pin"
+                class="w-5 h-5 mr-0.5 mb-1 hidden md:inline-block"
+              />Lisbon</span>.
+          </p>
+
+          <div class="mt-8 space-y-6 text-base text-secondary-600 dark:text-secondary-400">
             <p>
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Inventore unde veniam repellendus odio beatae ullam, recusandae repudiandae mollitia natus voluptate, explicabo ab possimus aut. In commodi cum sint maiores odit!
             </p>
@@ -38,10 +44,10 @@ defmodule AppWeb.PageLive do
         </div>
 
         <div class="lg:pl-20">
-          <ul role="list" class="flex flex-wrap gap-4 mb-8 lg:justify-center">
+          <ul role="list" class="flex flex-wrap gap-4 mb-8 justify-center">
             <%!-- Email --%>
             <li>
-              <a href="mailto:hello@nuno.site" class="btn">
+              <a href="mailto:hello@nuno.site" class="btn btn-sm">
                 <.icon name="hero-envelope-solid" class="w-5 h-5" />
                 <span>Email</span>
               </a>
@@ -49,7 +55,7 @@ defmodule AppWeb.PageLive do
 
             <%!-- Github --%>
             <li>
-              <a href="https://github.com/greven" class="group btn-secondary">
+              <a href="https://github.com/greven" class="group btn-outline btn-sm">
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden="true"
@@ -68,7 +74,7 @@ defmodule AppWeb.PageLive do
 
             <%!-- Twitter --%>
             <li>
-              <a href="https://twitter.com/grv_pt" class="group btn-secondary">
+              <a href="https://twitter.com/grv_pt" class="group btn-outline btn-sm">
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden="true"

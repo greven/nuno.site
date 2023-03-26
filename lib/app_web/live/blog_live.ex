@@ -5,17 +5,37 @@ defmodule AppWeb.BlogLive do
 
   alias AppWeb.MarkdownHelpers
 
+  alias App.Blog
+
+  @valid_params ~w(tag)
+
   @impl true
   def render(assigns) do
     ~H"""
     <%= if @live_action == :index do %>
       <h1 class="mb-2 text-4xl font-medium">The Blog</h1>
-      <p class="mb-6 font-light text-secondary-500">
+      <p class="text-secondary-500">
         Written thoughts, mostly about web development.
       </p>
 
-      <ul id="posts" class="list-none p-0" phx-update="stream">
-        <li :for={{id, post} <- @streams.posts} id={id} class="my-4">
+      <.toggle_button_group
+        value={@selected_tag}
+        on_change="tag_filter_changed"
+        size={:xs}
+        class="mt-8 flex-wrap"
+        aria-label="tag filter"
+      >
+        <:button value="all">All</:button>
+        <:button :for={%{tag: tag} <- @top_tags} value={tag.name}>
+          <%= tag.name %>
+        </:button>
+        <:button value="more" aria_label="more tags">
+          <.icon name="hero-chevron-right-mini" class="w-5 h-5" />
+        </:button>
+      </.toggle_button_group>
+
+      <div id="posts" class="mt-8 " phx-update="stream">
+        <article :for={{id, post} <- @streams.posts} id={id} class="my-4">
           <h2>
             <.link href={~p"/writing/#{post}"} class="underline text-primary font-medium">
               <%= post.title %>
@@ -23,8 +43,8 @@ defmodule AppWeb.BlogLive do
           </h2>
 
           <time><%= post.published_date %></time>
-        </li>
-      </ul>
+        </article>
+      </div>
 
       <div class="flex">
         <div :if={@has_prev_page} class="">
@@ -67,7 +87,7 @@ defmodule AppWeb.BlogLive do
   # Show
   @impl true
   def mount(%{"slug" => slug}, _session, socket) do
-    post = App.Blog.get_post!(slug, preload: :tags)
+    post = Blog.get_post!(slug, preload: :tags)
 
     socket =
       socket
@@ -78,10 +98,16 @@ defmodule AppWeb.BlogLive do
 
   # Index
   def mount(_params, _session, socket) do
-    socket = socket |> assign(:page_title, "Blog")
+    posts = Blog.list_published_posts()
+
+    socket =
+      socket
+      |> assign(:page_title, "Blog")
+      |> stream(:posts, posts)
+      |> assign(:top_tags, Blog.list_top_tags(3))
 
     if connected?(socket) do
-      App.Blog.subscribe()
+      Blog.subscribe()
     end
 
     {:ok, socket}
@@ -91,7 +117,7 @@ defmodule AppWeb.BlogLive do
   @impl true
   def handle_params(%{"slug" => slug}, uri, socket) do
     %URI{path: path} = URI.parse(uri)
-    post = App.Blog.get_post!(slug, preload: :tags)
+    post = Blog.get_post!(slug, preload: :tags)
 
     socket =
       socket
@@ -104,7 +130,9 @@ defmodule AppWeb.BlogLive do
 
   # Index
   def handle_params(params, _uri, socket) do
+    params = parse_params(params)
     offset = Map.get(params, "page", 1)
+    tag = Map.get(params, "tag", "all")
 
     %{
       has_next: has_next,
@@ -112,17 +140,32 @@ defmodule AppWeb.BlogLive do
       prev_page: prev_page,
       next_page: next_page,
       entries: posts
-    } = App.Blog.list_published_posts(offset: offset)
+    } =
+      case tag do
+        "all" ->
+          Blog.list_published_posts(offset: offset)
+
+        tag_name ->
+          Blog.get_tag_by_name!(tag_name)
+          |> Blog.get_posts_by_tag!(offset: offset)
+      end
 
     socket =
       socket
-      |> stream(:posts, posts)
+      # |> stream(:posts, posts)
+      |> assign(:selected_tag, tag)
       |> assign(:next_page, next_page)
       |> assign(:prev_page, prev_page)
       |> assign(:has_next_page, has_next)
       |> assign(:has_prev_page, has_prev)
+      |> assign(:params, params)
 
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("tag_filter_changed", %{"value" => value}, socket) do
+    {:noreply, push_patch(socket, to: self_path(socket, %{"tag" => value}))}
   end
 
   @impl true
@@ -151,6 +194,15 @@ defmodule AppWeb.BlogLive do
       ) do
     readers = count + map_size(joins) - map_size(leaves)
     {:noreply, assign(socket, :readers, readers)}
+  end
+
+  defp self_path(socket, params) do
+    params = Enum.into(params, socket.assigns.params)
+    ~p"/writing?#{params}"
+  end
+
+  defp parse_params(params) when is_map(params) do
+    Map.take(params, @valid_params)
   end
 
   defp track_page_views(socket, path) do

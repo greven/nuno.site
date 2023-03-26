@@ -3,9 +3,12 @@ defmodule App.Blog do
   The Blog context.
   """
 
+  use Nebulex.Caching
+
   import Ecto.Query, warn: false
-  alias App.Pagination
+
   alias App.Repo
+  alias App.Pagination
 
   alias App.Blog.Post
   alias App.Blog.Tag
@@ -40,12 +43,16 @@ defmodule App.Blog do
     offset = Keyword.get(opts, :offset)
     limit = Keyword.get(opts, :limit)
 
+    published_posts_query()
+    |> preload(^preloads)
+    |> Pagination.paginate(offset, limit: limit)
+  end
+
+  defp published_posts_query do
     Post
     |> where(status: :published)
     |> where([p], p.published_date <= ^DateTime.utc_now())
     |> order_by(desc: :published_date)
-    |> preload(^preloads)
-    |> Pagination.paginate(offset, limit: limit)
   end
 
   @doc """
@@ -64,7 +71,6 @@ defmodule App.Blog do
   """
   def get_post!(slug), do: Repo.get_by!(Post, slug: slug)
 
-  # Note: How to do this query with 1 query only instead of 2?
   def get_post!(slug, preload: preloads) do
     Post
     |> where(slug: ^slug)
@@ -93,10 +99,9 @@ defmodule App.Blog do
     offset = Keyword.get(opts, :offset)
     limit = Keyword.get(opts, :limit)
 
-    Post
+    published_posts_query()
     |> join(:inner, [p], t in assoc(p, :tags), on: t.id == ^tag_id)
     |> Pagination.paginate(offset, limit: limit)
-    |> Repo.all()
   end
 
   @doc """
@@ -200,6 +205,22 @@ defmodule App.Blog do
   end
 
   @doc """
+  List the top tags (till limit) by post count.
+  """
+
+  @decorate cacheable(cache: App.Cache, keys: {:top_tags, limit}, opts: [ttl: :timer.hours(12)])
+  def list_top_tags(limit \\ 10) do
+    from(t in Tag,
+      join: p in assoc(t, :posts),
+      select: %{tag: t, post_count: count(p.id)},
+      group_by: t.id,
+      order_by: [desc: count(p.id)],
+      limit: ^limit
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single tag.
 
   Raises `Ecto.NoResultsError` if the Tag does not exist.
@@ -214,6 +235,10 @@ defmodule App.Blog do
 
   """
   def get_tag!(id), do: Repo.get!(Tag, id)
+
+  def get_tag_by_name!(name) when is_binary(name) do
+    Repo.get_by(Tag, name: name)
+  end
 
   # ------------------------------------------
   #  PubSub

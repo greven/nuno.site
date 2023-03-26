@@ -61,6 +61,11 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :app, App.Cache,
+  max_size: 1_000_000,
+  allocated_memory: 100 * 1_000_000,
+  gc_interval: :timer.hours(48)
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

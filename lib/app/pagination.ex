@@ -10,19 +10,6 @@ defmodule App.Pagination do
   @default_limit 10
 
   @doc """
-  Pagination query that sets a limit and offset
-  """
-  def query(query, offset, limit: limit) when is_binary(offset) do
-    query(query, String.to_integer(offset), limit: limit)
-  end
-
-  def query(query, offset, limit: limit) do
-    query
-    |> limit(^(limit + 1))
-    |> offset(^(limit * (offset - 1)))
-  end
-
-  @doc """
   Paginate the passed query
   """
   def paginate(query, offset, limit: limit) when is_binary(offset) do
@@ -33,21 +20,37 @@ defmodule App.Pagination do
 
   def paginate(query, offset, limit: limit) do
     limit = limit || @default_limit
-    results = query(query, offset, limit: limit) |> Repo.all()
+
+    entries = query(query, offset, limit: limit) |> Repo.all()
     count = from(t in subquery(query), select: count("*")) |> Repo.one()
-    has_next = length(results) > limit
+
+    first_page = (offset - 1) * limit + 1
+    last_page = Enum.min([offset * limit, count])
+
+    has_next = length(entries) > limit
     has_prev = offset > 1
 
     %{
-      has_next: has_next,
-      has_prev: has_prev,
+      entries: Enum.slice(entries, 0, limit),
+      count: count,
       page: offset,
+      first_page: first_page,
+      last_page: last_page,
       prev_page: offset - 1,
       next_page: offset + 1,
-      first_page: (offset - 1) * limit + 1,
-      last_page: Enum.min([offset * limit, count]),
-      entries: Enum.slice(results, 0, limit),
-      count: count
+      has_next: has_next,
+      has_prev: has_prev
     }
+  end
+
+  # Pagination query that sets a limit and offset
+  defp query(query, offset, limit: limit) when is_binary(offset) do
+    query(query, String.to_integer(offset), limit: limit)
+  end
+
+  defp query(query, offset, limit: limit) do
+    query
+    |> limit(^(limit + 1))
+    |> offset(^(limit * (offset - 1)))
   end
 end

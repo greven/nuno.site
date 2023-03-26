@@ -3,6 +3,7 @@ defmodule App.Blog.Tag do
   import Ecto.Changeset
 
   alias App.Blog.Post
+  alias App.Blog.PostTag
 
   @required ~w(name)a
   @optional ~w(enabled)a

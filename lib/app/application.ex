@@ -18,6 +18,8 @@ defmodule App.Application do
       AppWeb.Presence,
       # Start Finch
       {Finch, name: App.Finch},
+      # Start the Nebulex Cache adapter
+      App.Cache,
       # App analytics
       App.Analytics,
       # Start the Endpoint (http/https)
