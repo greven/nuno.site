@@ -38,11 +38,6 @@ defmodule App.Blog do
     |> Pagination.paginate(offset, limit: limit)
   end
 
-  @decorate cacheable(
-              cache: App.Cache,
-              keys: {:published_posts, opts},
-              opts: [ttl: :timer.hours(1)]
-            )
   def list_published_posts(opts \\ []) do
     preloads = Keyword.get(opts, :preload, [])
     offset = Keyword.get(opts, :offset)

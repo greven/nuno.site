@@ -7,7 +7,7 @@ defmodule AppWeb.BlogLive do
 
   alias App.Blog
 
-  @valid_params ~w(tag)
+  @valid_params ~w(page tag)
 
   @impl true
   def render(assigns) do
@@ -34,8 +34,8 @@ defmodule AppWeb.BlogLive do
         </:button>
       </.toggle_button_group>
 
-      <div id="posts" class="mt-8 " phx-update="stream">
-        <article :for={{id, post} <- @streams.posts} id={id} class="my-4">
+      <div id="posts" class="mt-8">
+        <article :for={post <- @posts} id={post.id} class="my-4">
           <h2>
             <.link href={~p"/writing/#{post}"} class="underline text-primary font-medium">
               <%= post.title %>
@@ -98,12 +98,10 @@ defmodule AppWeb.BlogLive do
 
   # Index
   def mount(_params, _session, socket) do
-    posts = Blog.list_published_posts()
-
     socket =
       socket
-      |> stream(:posts, posts)
       |> assign(:page_title, "Blog")
+      |> assign(:selected_tag, "all")
       |> assign(:top_tags, Blog.list_top_tags(3))
 
     if connected?(socket) do
@@ -142,20 +140,20 @@ defmodule AppWeb.BlogLive do
 
   @impl true
   def handle_event("tag_filter_changed", %{"value" => value}, socket) do
-    {:noreply, push_patch(socket, to: self_path(socket, %{"tag" => value}))}
+    {:noreply, push_patch(socket, to: self_path(socket, %{"page" => 1, "tag" => value}))}
   end
 
   @impl true
   def handle_info(%{event: "post_created", payload: new_post}, socket) do
-    socket = stream_insert(socket, :posts, new_post, at: 0)
+    # socket = stream_insert(socket, :posts, new_post, at: 0)
     {:noreply, socket}
   end
 
   def handle_info(%{event: "post_updated", payload: updated_post}, socket) do
-    socket =
-      socket
-      |> stream_delete(:posts, updated_post)
-      |> stream_insert(:songs, updated_post, at: -1)
+    # socket =
+    #   socket
+    #   |> stream_delete(:posts, updated_post)
+    #   |> stream_insert(:songs, updated_post, at: -1)
 
     {:noreply, socket}
   end
@@ -191,8 +189,8 @@ defmodule AppWeb.BlogLive do
   end
 
   defp assign_posts(socket, params) do
-    offset = Map.get(params, "page", 1)
     tag = Map.get(params, "tag", "all")
+    offset = Map.get(params, "page", 1)
 
     %{
       has_next: has_next,
@@ -203,15 +201,15 @@ defmodule AppWeb.BlogLive do
     } =
       case tag do
         "all" ->
-          Blog.list_published_posts(offset: offset)
+          Blog.list_published_posts(offset: offset, limit: 1)
 
         tag_name ->
           Blog.get_tag_by_name!(tag_name)
-          |> Blog.get_posts_by_tag!(offset: offset)
+          |> Blog.get_posts_by_tag!(offset: offset, limit: 1)
       end
 
     socket
-    |> AppWeb.Stream.reset(:posts, posts)
+    |> assign(:posts, posts)
     |> assign(:selected_tag, tag)
     |> assign(:next_page, next_page)
     |> assign(:prev_page, prev_page)
