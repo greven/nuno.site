@@ -30,6 +30,7 @@ module.exports = {
           700: "#AA2B2E",
           800: "#8D2729",
           900: "#762628",
+          950: "#3A1313",
         },
         secondary: colors.neutral,
         complementary: {
@@ -44,6 +45,7 @@ module.exports = {
           700: "#156B70",
           800: "#15565A",
           900: "#16484B",
+          950: "#12383B",
         },
         surface: {
           light: "#FBFBFB",

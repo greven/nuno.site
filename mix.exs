@@ -42,7 +42,7 @@ defmodule App.MixProject do
       {:phoenix_live_dashboard, "~> 0.7"},
 
       # HTTP server
-      {:bandit, "~> 0.6"},
+      {:bandit, "~> 0.7"},
 
       # HTTP Client
       {:finch, "~> 0.14"},
