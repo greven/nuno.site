@@ -19,7 +19,7 @@ defmodule AppWeb.BlogLive do
       </p>
 
       <.toggle_button_group
-        value={@selected_tag}
+        value={@current_tag}
         on_change="tag_filter_changed"
         size={:xs}
         class="mt-8 flex-wrap"
@@ -48,13 +48,13 @@ defmodule AppWeb.BlogLive do
 
       <div class="flex">
         <div :if={@has_prev_page} class="">
-          <.link navigate={~p"/writing?page=#{@prev_page}"}>
+          <.link patch={~p"/writing?#{%{@options | page: @prev_page}}"}>
             <.icon name="hero-chevron-left" />
           </.link>
         </div>
 
         <div :if={@has_next_page} class="">
-          <.link navigate={~p"/writing?page=#{@next_page}"}>
+          <.link patch={~p"/writing?#{%{@options | page: @next_page}}"}>
             <.icon name="hero-chevron-right" />
           </.link>
         </div>
@@ -101,7 +101,7 @@ defmodule AppWeb.BlogLive do
     socket =
       socket
       |> assign(:page_title, "Blog")
-      |> assign(:selected_tag, "all")
+      |> assign(:current_tag, "all")
       |> assign(:top_tags, Blog.list_top_tags(3))
 
     if connected?(socket) do
@@ -200,17 +200,16 @@ defmodule AppWeb.BlogLive do
       entries: posts
     } =
       case tag do
-        "all" ->
-          Blog.list_published_posts(offset: offset, limit: 1)
-
-        tag_name ->
-          Blog.get_tag_by_name!(tag_name)
-          |> Blog.get_posts_by_tag!(offset: offset, limit: 1)
+        "all" -> Blog.list_published_posts(offset: offset)
+        tag_name -> Blog.get_tag_by_name!(tag_name) |> Blog.get_posts_by_tag!(offset: offset)
       end
+
+    options = %{tag: tag, page: offset}
 
     socket
     |> assign(:posts, posts)
-    |> assign(:selected_tag, tag)
+    |> assign(:current_tag, tag)
+    |> assign(:options, options)
     |> assign(:next_page, next_page)
     |> assign(:prev_page, prev_page)
     |> assign(:has_next_page, has_next)
