@@ -9,11 +9,8 @@ defmodule App.Http do
     |> decode()
   end
 
-  def post(url, headers, body \\ "")
-
+  def post(url, headers, body \\ ""), do: call(:post, url, headers, body)
   def post(url), do: call(:post, url, [], "")
-
-  def post(url, headers, body), do: call(:post, url, headers, body)
 
   def call(method, url, headers, body \\ nil) when is_atom(method) do
     Finch.build(method, url, headers, body)
