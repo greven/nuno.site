@@ -31,16 +31,17 @@ defmodule App.Services.Spotify do
   defp parse_now_playing_response({:ok, status, response}) do
     cond do
       status == 200 ->
-        %{
-          artist: response["item"]["artists"] |> Enum.map(& &1["name"]) |> Enum.join(", "),
-          song: response["item"]["name"],
-          song_url: response["item"]["external_urls"]["spotify"],
-          album: response["item"]["album"]["name"],
-          album_art: response["item"]["album"]["images"] |> List.first() |> Map.get("url"),
-          duration: response["item"]["duration_ms"],
-          progress: response["progress_ms"],
-          is_playing: response["is_playing"]
-        }
+        {:ok,
+         %{
+           artist: response["item"]["artists"] |> Enum.map(& &1["name"]) |> Enum.join(", "),
+           song: response["item"]["name"],
+           song_url: response["item"]["external_urls"]["spotify"],
+           album: response["item"]["album"]["name"],
+           album_art: response["item"]["album"]["images"] |> List.first() |> Map.get("url"),
+           duration: response["item"]["duration_ms"],
+           progress: response["progress_ms"],
+           is_playing: response["is_playing"]
+         }}
 
       status == 204 || status > 400 ->
         {:error, status}

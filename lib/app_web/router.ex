@@ -9,7 +9,7 @@ defmodule AppWeb.Router do
 
   # https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
   # https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html
-  @content_security_policy "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' blob:; connect-src 'self' *.nuno.site wss: ws:;"
+  @content_security_policy "style-src 'self' 'unsafe-inline'; script-src 'self' blob:; connect-src 'self' *.nuno.site wss: ws:;"
 
   pipeline :browser do
     plug(:accepts, ["html"])
