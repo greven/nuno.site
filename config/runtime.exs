@@ -1,4 +1,7 @@
 import Config
+import Dotenvy
+
+source!([".env", System.get_env()])
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -19,6 +22,15 @@ import Config
 if System.get_env("PHX_SERVER") do
   config :app, AppWeb.Endpoint, server: true
 end
+
+## External Services
+
+config :app, :spotify,
+  client_id: env!("SPOTIFY_CLIENT_ID", :string!),
+  client_secret: env!("SPOTIFY_CLIENT_SECRET", :string!),
+  refresh_token: env!("SPOTIFY_REFRESH_TOKEN", :string!)
+
+## Production configuration
 
 if config_env() == :prod do
   database_path =

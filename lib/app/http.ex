@@ -9,11 +9,15 @@ defmodule App.Http do
     |> decode()
   end
 
-  def post(url, body, headers \\ []), do: call(:post, url, headers, body)
+  def post(url, headers, body \\ "")
+
+  def post(url), do: call(:post, url, [], "")
+
+  def post(url, headers, body), do: call(:post, url, headers, body)
 
   def call(method, url, headers, body \\ nil) when is_atom(method) do
     Finch.build(method, url, headers, body)
-    |> Finch.request(Iki.Finch)
+    |> Finch.request(App.Finch)
     |> case do
       {:ok, %{status: status, body: body, headers: headers}} -> {:ok, status, body, headers}
       {:error, %{reason: reason}} -> {:error, reason}
@@ -24,8 +28,8 @@ defmodule App.Http do
 
   def content_type({:error, _} = error), do: error
 
-  def content_type({:ok, _status, body, headers}) do
-    {:ok, body, content_type(headers)}
+  def content_type({:ok, status, body, headers}) do
+    {:ok, status, body, content_type(headers)}
   end
 
   def content_type([]), do: "application/json"
@@ -42,22 +46,22 @@ defmodule App.Http do
 
   def decode({:error, _} = error), do: error
 
-  def decode({:ok, body, "application/json"}) do
+  def decode({:ok, status, body, "application/json"}) do
     body
     |> Jason.decode()
     |> case do
-      {:ok, parsed} -> {:ok, parsed}
-      _ -> {:error, body}
+      {:ok, parsed} -> {:ok, status, parsed}
+      _ -> {:error, status, body}
     end
   end
 
-  def decode({:ok, body, "application/xml"}) do
+  def decode({:ok, status, body, "application/xml"}) do
     try do
-      {:ok, body |> :binary.bin_to_list() |> :xmerl_scan.string()}
+      {:ok, status, body |> :binary.bin_to_list() |> :xmerl_scan.string()}
     catch
-      :exit, _e -> {:error, body}
+      :exit, _e -> {:error, status, body}
     end
   end
 
-  def decode({:ok, body, _}), do: {:ok, body}
+  def decode({:ok, status, body, _}), do: {:ok, status, body}
 end

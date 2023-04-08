@@ -75,6 +75,7 @@ defmodule App.MixProject do
       # Utils
       {:timex, "~> 3.7"},
       {:earmark, "~> 1.4"},
+      {:dotenvy, "~> 0.7"},
       {:slugify, "~> 1.3"},
       {:floki, ">= 0.30.0", only: :test},
 

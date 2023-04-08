@@ -1,21 +1,21 @@
 /* ---- Buttons ---- */
 
 .btn {
-  @apply inline-flex items-center gap-x-2.5 rounded-full border-2 border-transparent
+  @apply inline-flex items-center gap-x-2.5 rounded-full border border-transparent
   bg-secondary-900 text-sm font-semibold leading-6 tracking-wide
   text-white transition hover:bg-secondary-700 active:text-white/80;
 }
 
 .btn-outline {
   @apply inline-flex items-center gap-x-2.5 rounded-full
-  bg-transparent border-2 border-secondary-900
+  bg-transparent border border-secondary-900
   text-sm font-semibold leading-6 tracking-wide text-secondary-900 transition
   hover:border-primary-600 hover:text-primary-600 active:text-primary-600/80;
 }
 
 .btn-basic {
   @apply inline-flex items-center gap-x-2.5 rounded-full
-  bg-transparent border-2 border-secondary-300
+  bg-white border border-secondary-300
   text-sm font-semibold leading-6 tracking-wide text-secondary-900 transition
   hover:bg-secondary-100 hover:border-secondary-400;
 }

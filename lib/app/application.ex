@@ -23,7 +23,9 @@ defmodule App.Application do
       # App analytics
       App.Analytics,
       # Start the Endpoint (http/https)
-      AppWeb.Endpoint
+      AppWeb.Endpoint,
+      # General Tasks Supervisor
+      {Task.Supervisor, name: App.TaskSupervisor}
       # Start a worker by calling: App.Worker.start_link(arg)
       # {App.Worker, arg}
     ]
