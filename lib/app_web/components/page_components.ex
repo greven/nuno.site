@@ -35,7 +35,9 @@ defmodule AppWeb.PageComponents do
         <img class="w-44 rounded-lg shadow" src={@playing.album_art} />
         <div class="w-44 mt-2 flex flex-col">
           <div class="font-medium line-clamp-1">
-            <a href={@playing.song_url}><%= @playing.song %></a>
+            <a href={@playing.song_url} class="hover:text-primary-600 transition-colors">
+              <%= @playing.song %>
+            </a>
           </div>
           <div class="text-sm text-secondary-700 line-clamp-1"><%= @playing.artist %></div>
         </div>

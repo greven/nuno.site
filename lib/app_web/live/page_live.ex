@@ -47,7 +47,7 @@ defmodule AppWeb.PageLive do
           <ul role="list" class="flex flex-wrap gap-4 mb-8 justify-center">
             <%!-- Email --%>
             <li>
-              <a href="mailto:hello@nuno.site" class="btn btn-sm">
+              <a href="mailto:hello@nuno.site" class="btn btn-sm border-2">
                 <.icon name="hero-envelope-solid" class="w-5 h-5" />
                 <span>Email</span>
               </a>
@@ -55,7 +55,7 @@ defmodule AppWeb.PageLive do
 
             <%!-- Github --%>
             <li>
-              <a href="https://github.com/greven" class="group btn-outline btn-sm">
+              <a href="https://github.com/greven" class="group btn-outline btn-sm border-2">
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden="true"
@@ -74,7 +74,7 @@ defmodule AppWeb.PageLive do
 
             <%!-- Twitter --%>
             <li>
-              <a href="https://twitter.com/grv_pt" class="group btn-outline btn-sm">
+              <a href="https://twitter.com/grv_pt" class="group btn-outline btn-sm border-2">
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden="true"
