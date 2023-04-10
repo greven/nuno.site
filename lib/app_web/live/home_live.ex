@@ -3,11 +3,18 @@ defmodule AppWeb.HomeLive do
 
   alias AppWeb.PageComponents
 
+  @now_playing_update_interval :timer.seconds(30)
+
   @impl true
   def render(assigns) do
     ~H"""
     <div class="home flex">
-      <PageComponents.now_playing class="mt-2" playing={@now_playing} last_played={@last_played} />
+      <PageComponents.now_playing
+        class="mt-2"
+        loading={@now_playing_loading}
+        last_played={@last_played}
+        playing={@now_playing}
+      />
     </div>
     """
   end
@@ -22,6 +29,8 @@ defmodule AppWeb.HomeLive do
       socket
       |> assign(:page_title, "Home")
       |> assign(:now_playing, nil)
+      |> assign(:now_playing_loading, false)
+      |> assign(:now_playing_task, nil)
       |> assign_last_played()
 
     {:ok, socket}
@@ -29,18 +38,25 @@ defmodule AppWeb.HomeLive do
 
   @impl true
   def handle_info(:update_now_playing, socket) do
-    task = Task.async(fn -> App.Services.Spotify.get_now_playing() end)
-    now_playing_response = Task.await(task)
+    %{ref: ref} = Task.async(fn -> App.Services.Spotify.get_now_playing() end)
+    {:noreply, assign(socket, now_playing_loading: true, now_playing_task: ref)}
+  end
 
-    socket =
-      case now_playing_response do
-        {:ok, now_playing} -> assign(socket, :now_playing, now_playing)
-        {:error, _} -> assign(socket, :now_playing, nil)
-      end
+  def handle_info({ref, result}, %{assigns: %{now_playing_task: ref}} = socket) do
+    Process.demonitor(ref, [:flush])
 
-    Process.send_after(self(), :update_now_playing, :timer.seconds(30))
+    socket = assign_now_playing(socket, result)
+    Process.send_after(self(), :update_now_playing, @now_playing_update_interval)
 
-    {:noreply, socket}
+    {:noreply, assign(socket, now_playing_loading: false)}
+  end
+
+  defp assign_now_playing(socket, response) do
+    case response do
+      {:ok, now_playing} -> assign(socket, :now_playing, now_playing)
+      {:error, _} -> assign(socket, :now_playing, nil)
+      _ -> socket
+    end
   end
 
   defp assign_last_played(socket) do

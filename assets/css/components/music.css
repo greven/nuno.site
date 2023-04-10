@@ -1,6 +1,6 @@
 /* ---- Music and Now Playing ---- */
 
-/* Source: https://samuelkraft.com/blog/animated-music-bars */
+/* Based on https://samuelkraft.com/blog/animated-music-bars */
 .now-playing-icon {
   height: 13px;
   width: 13px;
@@ -11,20 +11,12 @@
 }
 
 .now-playing-icon > span {
-  height: 2px;
-  width: 3px;
-  background-color: theme(colors.neutral.500);
-  border-radius: 3px;
-  transition: color 0.2s ease;
-  content: "";
-}
-
-.now-playing-icon.is-playing > span {
   height: 100%;
-  align-items: flex-start;
+  width: 3px;
   background-color: theme(colors.emerald.500);
-  animation: bar-bounce 2.2s ease infinite alternate;
+  border-radius: 3px;
   transform-origin: bottom;
+  animation: spectrum 2.2s ease infinite alternate;
 }
 
 .now-playing-icon > span:nth-of-type(2) {
@@ -35,7 +27,7 @@
   animation-delay: -3.7s;
 }
 
-@keyframes bar-bounce {
+@keyframes spectrum {
   10% {
     transform: scaleY(0.3); /* start by scaling to 30% */
   }

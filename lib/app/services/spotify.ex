@@ -14,7 +14,7 @@ defmodule App.Services.Spotify do
   @token_endpoint "https://accounts.spotify.com/api/token"
   @api_endpoint "https://api.spotify.com/v1/me/player"
 
-  @cache_ttl :timer.minutes(30)
+  @cache_ttl :timer.minutes(10)
 
   def get_now_playing do
     access_token_response = get_access_token()
@@ -55,13 +55,16 @@ defmodule App.Services.Spotify do
 
   defp parse_now_playing_response({:error, status, _}), do: {:error, status}
 
-  def get_recently_played do
-    if App.Cache.ttl(:recently_played) do
+  def get_recently_played(opts \\ []) do
+    ttl = Keyword.get(opts, :ttl, @cache_ttl)
+    use_cache? = Keyword.get(opts, :use_cache, true)
+
+    if App.Cache.ttl(:recently_played) && use_cache? do
       {:ok, App.Cache.get(:recently_played)}
     else
       case do_get_recently_played() do
         {:ok, recently_played} ->
-          App.Cache.put(:recently_played, recently_played, ttl: @cache_ttl)
+          App.Cache.put(:recently_played, recently_played, ttl: ttl)
           {:ok, recently_played}
 
         {:error, status} ->
@@ -70,12 +73,14 @@ defmodule App.Services.Spotify do
     end
   end
 
-  defp do_get_recently_played do
+  defp do_get_recently_played(opts \\ []) do
+    limit = Keyword.get(opts, :limit, 10)
+
     access_token_response = get_access_token()
 
     case access_token_response do
       {:ok, access_token} ->
-        (@api_endpoint <> "/recently-played?limit=10")
+        (@api_endpoint <> "/recently-played?limit=#{limit}")
         |> get([{"Authorization", "Bearer #{access_token}"}])
         |> parse_recently_played_response()
 

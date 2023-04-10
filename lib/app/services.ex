@@ -8,5 +8,5 @@ defmodule App.Services do
   ## Spotify
 
   def get_spotify_now_playing, do: Spotify.get_now_playing()
-  def get_spotify_recently_played, do: Spotify.get_recently_played()
+  def get_spotify_recently_played(opts \\ []), do: Spotify.get_recently_played(opts)
 end
