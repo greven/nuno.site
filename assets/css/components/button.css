@@ -20,16 +20,23 @@
   hover:bg-secondary-100 hover:border-secondary-400;
 }
 
+.btn-link {
+  @apply inline-flex items-center gap-x-2.5 rounded-full
+  bg-white border border-transparent
+  text-sm font-semibold leading-6 tracking-wide text-secondary-900 transition
+  hover:text-primary-600 active:text-primary-600/80;
+}
+
 .btn-xs {
-  @apply py-0.5 px-2.5;
+  @apply py-0.5 px-3 gap-x-2;
 }
 
 .btn-sm {
-  @apply py-1 px-2.5;
+  @apply py-1 px-3;
 }
 
 .btn-md {
-  @apply py-1.5 px-3;
+  @apply py-1.5 px-3.5;
 }
 
 .btn-lg {

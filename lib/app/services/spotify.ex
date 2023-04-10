@@ -12,14 +12,16 @@ defmodule App.Services.Spotify do
   import App.Http
 
   @token_endpoint "https://accounts.spotify.com/api/token"
-  @now_playing_endpoint "https://api.spotify.com/v1/me/player/currently-playing"
+  @api_endpoint "https://api.spotify.com/v1/me/player"
+
+  @cache_ttl :timer.minutes(30)
 
   def get_now_playing do
     access_token_response = get_access_token()
 
     case access_token_response do
       {:ok, access_token} ->
-        @now_playing_endpoint
+        (@api_endpoint <> "/currently-playing")
         |> get([{"Authorization", "Bearer #{access_token}"}])
         |> parse_now_playing_response()
 
@@ -33,7 +35,7 @@ defmodule App.Services.Spotify do
       status == 200 ->
         {:ok,
          %{
-           artist: response["item"]["artists"] |> Enum.map(& &1["name"]) |> Enum.join(", "),
+           artist: response["item"]["artists"] |> List.first() |> Map.get("name"),
            song: response["item"]["name"],
            song_url: response["item"]["external_urls"]["spotify"],
            album: response["item"]["album"]["name"],
@@ -52,6 +54,61 @@ defmodule App.Services.Spotify do
   end
 
   defp parse_now_playing_response({:error, status, _}), do: {:error, status}
+
+  def get_recently_played do
+    if App.Cache.ttl(:recently_played) do
+      {:ok, App.Cache.get(:recently_played)}
+    else
+      case do_get_recently_played() do
+        {:ok, recently_played} ->
+          App.Cache.put(:recently_played, recently_played, ttl: @cache_ttl)
+          {:ok, recently_played}
+
+        {:error, status} ->
+          {:error, status}
+      end
+    end
+  end
+
+  defp do_get_recently_played do
+    access_token_response = get_access_token()
+
+    case access_token_response do
+      {:ok, access_token} ->
+        (@api_endpoint <> "/recently-played?limit=10")
+        |> get([{"Authorization", "Bearer #{access_token}"}])
+        |> parse_recently_played_response()
+
+      {:error, status} ->
+        {:error, status}
+    end
+  end
+
+  defp parse_recently_played_response({:ok, status, response}) do
+    cond do
+      status == 200 ->
+        {:ok,
+         response["items"]
+         |> Enum.map(fn item ->
+           %{
+             artist: item["track"]["artists"] |> List.first() |> Map.get("name"),
+             song: item["track"]["name"],
+             song_url: item["track"]["external_urls"]["spotify"],
+             album: item["track"]["album"]["name"],
+             album_art: item["track"]["album"]["images"] |> List.first() |> Map.get("url"),
+             played_at: item["played_at"]
+           }
+         end)}
+
+      status == 204 || status > 400 ->
+        {:error, status}
+
+      true ->
+        {:error, status}
+    end
+  end
+
+  defp parse_recently_played_response({:error, status, _}), do: {:error, status}
 
   def get_access_token do
     query = [
@@ -105,7 +162,7 @@ defmodule App.Services.Spotify do
       client_id: client_id(),
       response_type: "code",
       redirect_uri: "http://localhost:4000/dev/spotify/callback",
-      scope: "user-read-currently-playing"
+      scope: "user-read-currently-playing user-read-recently-played"
     ]
 
     base_url <> "?" <> URI.encode_query(query)

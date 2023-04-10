@@ -5,5 +5,8 @@ defmodule App.Services do
 
   alias App.Services.Spotify
 
+  ## Spotify
+
   def get_spotify_now_playing, do: Spotify.get_now_playing()
+  def get_spotify_recently_played, do: Spotify.get_recently_played()
 end
