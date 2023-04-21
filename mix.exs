@@ -32,12 +32,11 @@ defmodule App.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bcrypt_elixir, "~> 3.0"},
       # Phoenix Framework
-      {:phoenix, "~> 1.7.1"},
+      {:phoenix, "~> 1.7.2"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 3.3"},
-      {:phoenix_live_view, "~> 0.18.17"},
+      {:phoenix_live_view, "~> 0.18"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
       {:phoenix_live_dashboard, "~> 0.7"},
 
@@ -45,15 +44,18 @@ defmodule App.MixProject do
       {:bandit, "~> 0.7"},
 
       # HTTP Client
-      {:finch, "~> 0.14"},
+      {:finch, "~> 0.16"},
 
       # Database
-      {:ecto_sql, "~> 3.9"},
-      {:ecto_sqlite3, ">= 0.0.0"},
+      {:ecto_sql, "~> 3.10"},
+      {:ecto_sqlite3, "~> 0.10"},
       # {:litestream, "~> 0.3.0"},
 
       # Mail
       {:swoosh, "~> 1.9"},
+
+      # Crypto,
+      {:bcrypt_elixir, "~> 3.0"},
 
       # Content
       # {:makeup_elixir, ">= 0.0.0"},
@@ -85,7 +87,7 @@ defmodule App.MixProject do
 
       # Development
       {:credo, "~> 1.6", only: [:dev], runtime: false},
-      {:sobelow, "~> 0.11", only: :dev}
+      {:sobelow, "~> 0.12", only: :dev}
     ]
   end
 
@@ -103,7 +105,11 @@ defmodule App.MixProject do
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind default", "esbuild default"],
-      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
+      "assets.deploy": [
+        "tailwind default --minify",
+        "esbuild default --minify",
+        "phx.digest"
+      ],
       translate: ["gettext.extract", "gettext.merge priv/gettext"]
     ]
   end
