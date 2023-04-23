@@ -79,7 +79,7 @@ defmodule App.MixProject do
       {:earmark, "~> 1.4"},
       {:dotenvy, "~> 0.7"},
       {:slugify, "~> 1.3"},
-      {:floki, ">= 0.30.0", only: :test},
+      {:floki, "~> 0.34"},
 
       # Assets
       {:esbuild, "~> 0.7.0", runtime: Mix.env() == :dev},

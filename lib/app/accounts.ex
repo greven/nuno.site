@@ -220,6 +220,7 @@ defmodule App.Accounts do
     %User{}
     |> User.registration_changeset(attrs)
     |> User.role_changeset(%{role: "admin"})
+    |> User.confirm_changeset()
     |> Repo.insert()
   end
 

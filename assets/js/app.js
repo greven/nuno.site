@@ -4,7 +4,7 @@ import { LiveSocket } from "phoenix_live_view";
 
 import hooks from "./hooks";
 import { morphdomOptions } from "./dom";
-import { registerTopbar } from "./events";
+import { registerTopbar, pageLoadingTransitions } from "./events";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
@@ -18,6 +18,9 @@ let liveSocket = new LiveSocket("/live", Socket, {
 
 // Show progress bar on live navigation and form submits
 registerTopbar();
+
+// Add page loading transitions
+pageLoadingTransitions();
 
 // connect if there are any LiveViews on the page
 liveSocket.connect();

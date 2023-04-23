@@ -118,6 +118,12 @@ module.exports = {
       ])
     ),
     plugin(({ addVariant }) =>
+      addVariant("phx-page-loading", [
+        ".phx-page-loading&",
+        ".phx-page-loading &",
+      ])
+    ),
+    plugin(({ addVariant }) =>
       addVariant("phx-error", [".phx-error&", ".phx-error &"])
     ),
     plugin(({ addVariant }) =>

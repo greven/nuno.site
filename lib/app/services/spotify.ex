@@ -11,10 +11,10 @@ defmodule App.Services.Spotify do
 
   import App.Http
 
+  @cache_ttl :timer.minutes(10)
+
   @token_endpoint "https://accounts.spotify.com/api/token"
   @api_endpoint "https://api.spotify.com/v1/me/player"
-
-  @cache_ttl :timer.minutes(10)
 
   def get_now_playing do
     access_token_response = get_access_token()
