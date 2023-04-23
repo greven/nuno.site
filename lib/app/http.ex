@@ -4,21 +4,25 @@ defmodule App.Http do
   """
 
   def get(url, headers \\ []) do
-    call(:get, url, headers)
+    request(:get, url, headers)
     |> content_type()
     |> decode()
   end
 
-  def post(url, headers, body \\ ""), do: call(:post, url, headers, body)
-  def post(url), do: call(:post, url, [], "")
+  def post(url, headers, body \\ ""), do: request(:post, url, headers, body)
+  def post(url), do: request(:post, url, [], "")
 
-  def call(method, url, headers, body \\ nil) when is_atom(method) do
-    Finch.build(method, url, headers, body)
-    |> Finch.request(App.Finch)
+  def request(method, url, headers, body \\ nil) when is_atom(method) do
+    call(method, url, headers, body)
     |> case do
       {:ok, %{status: status, body: body, headers: headers}} -> {:ok, status, body, headers}
       {:error, %{reason: reason}} -> {:error, reason}
     end
+  end
+
+  def call(method, url, headers, body \\ nil) when is_atom(method) do
+    Finch.build(method, url, headers, body)
+    |> Finch.request(App.Finch)
   end
 
   # Content Type
@@ -43,12 +47,14 @@ defmodule App.Http do
 
   def decode({:error, _} = error), do: error
 
+  def decode({:ok, status, body, "text/html"}), do: {:ok, status, body}
+
   def decode({:ok, status, body, "application/json"}) do
     body
     |> Jason.decode()
     |> case do
       {:ok, parsed} -> {:ok, status, parsed}
-      _ -> {:error, status, body}
+      _ -> {:error, status}
     end
   end
 
@@ -56,7 +62,7 @@ defmodule App.Http do
     try do
       {:ok, status, body |> :binary.bin_to_list() |> :xmerl_scan.string()}
     catch
-      :exit, _e -> {:error, status, body}
+      :exit, _e -> {:error, status}
     end
   end
 

@@ -53,7 +53,7 @@ defmodule App.Services.Spotify do
     end
   end
 
-  defp parse_now_playing_response({:error, status, _}), do: {:error, status}
+  defp parse_now_playing_response({:error, _} = error), do: error
 
   def get_recently_played(opts \\ []) do
     ttl = Keyword.get(opts, :ttl, @cache_ttl)
@@ -113,7 +113,7 @@ defmodule App.Services.Spotify do
     end
   end
 
-  defp parse_recently_played_response({:error, status, _}), do: {:error, status}
+  defp parse_recently_played_response({:error, _} = error), do: error
 
   def get_access_token do
     query = [
@@ -134,7 +134,7 @@ defmodule App.Services.Spotify do
     |> decode()
     |> case do
       {:ok, 200, %{"access_token" => access_token}} -> {:ok, access_token}
-      {:error, status, _body} -> {:error, status}
+      {:error, status} -> {:error, status}
     end
   end
 

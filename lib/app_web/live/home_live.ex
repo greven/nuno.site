@@ -8,13 +8,27 @@ defmodule AppWeb.HomeLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="home flex">
-      <PageComponents.now_playing
-        class="mt-2"
-        loading={@now_playing_loading}
-        last_played={@last_played}
-        playing={@now_playing}
-      />
+    <div class="home">
+      <div class="flex flex-wrap gap-8">
+        <PageComponents.now_playing
+          class="mt-2"
+          loading={@now_playing_loading}
+          last_played={@last_played}
+          playing={@now_playing}
+        />
+
+        <div class="flex flex-col gap-6">
+          <%= for book <- @currently_reading do %>
+            <div class="flex gap-4">
+              <img src={book.cover_url} alt="book_cover" class="w-12 rounded-sm shadow-sm border-4 border-white" />
+              <div class="flex flex-col text-sm">
+                <div class="font-medium line-clamp-1"><%= book.title %></div>
+                <div class="text-gray-600"><%= book.author %></div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
     """
   end
@@ -31,6 +45,7 @@ defmodule AppWeb.HomeLive do
       |> assign(:now_playing, nil)
       |> assign(:now_playing_loading, false)
       |> assign(:now_playing_task, nil)
+      |> assign_currently_reading()
       |> assign_last_played()
 
     {:ok, socket}
@@ -70,6 +85,16 @@ defmodule AppWeb.HomeLive do
 
       {:error, _} ->
         assign(socket, :last_played, nil)
+    end
+  end
+
+  defp assign_currently_reading(socket) do
+    case App.Services.Goodreads.get_currently_reading() do
+      {:ok, currently_reading} ->
+        assign(socket, :currently_reading, currently_reading)
+
+      {:error, _} ->
+        assign(socket, :currently_reading, nil)
     end
   end
 end
