@@ -1,6 +1,6 @@
 defmodule App.Services do
   @moduledoc """
-  This module is a container for all 3rd party the services in the application.
+  This module is a container for all 3rd party services used in the application.
   """
 
   alias App.Services.Spotify

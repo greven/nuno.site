@@ -48,10 +48,12 @@ defmodule App.Services.Goodreads do
             %{
               title: book_title(row),
               author: book_author(row),
+              book_url: book_url(row),
               cover_url: book_cover_url(row),
               date_started: book_date_started(row)
             }
           end)
+          |> Enum.sort_by(& &1.date_started)
 
         {:ok, books}
 
@@ -66,12 +68,37 @@ defmodule App.Services.Goodreads do
     Floki.find(row, ".field.title a") |> Floki.attribute("title") |> Floki.text()
   end
 
+  # Find the book author and invert the name order
   defp book_author(row) do
-    Floki.find(row, ".field.author a") |> Floki.text()
+    Floki.find(row, ".field.author a")
+    |> Floki.text()
+    |> String.split(", ")
+    |> Enum.reverse()
+    |> Enum.join(" ")
   end
 
-  defp book_cover_url(row) do
-    Floki.find(row, ".field.cover img") |> Floki.attribute("src")
+  defp book_url(row) do
+    book_relative_url =
+      Floki.find(row, ".field.title a")
+      |> Floki.attribute("href")
+      |> Floki.text()
+
+    "https://goodreads.com" <> book_relative_url
+  end
+
+  # Find the book cover image and get the medium image size
+  defp book_cover_url(row, image_size \\ 300) do
+    image_url =
+      Floki.find(row, ".field.cover img")
+      |> Floki.attribute("src")
+      |> List.first()
+
+    base_url =
+      image_url
+      |> String.split("._")
+      |> List.first()
+
+    base_url <> "._SX#{image_size}_.jpg"
   end
 
   defp book_date_started(row) do

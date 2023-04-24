@@ -11,22 +11,14 @@ defmodule AppWeb.HomeLive do
     <div class="home">
       <div class="flex flex-wrap gap-8">
         <PageComponents.now_playing
-          class="mt-2"
           loading={@now_playing_loading}
           last_played={@last_played}
           playing={@now_playing}
         />
 
-        <div class="flex flex-col gap-6">
-          <%= for book <- @currently_reading do %>
-            <div class="flex gap-4">
-              <img src={book.cover_url} alt="book_cover" class="w-12 rounded-sm shadow-sm border-4 border-white" />
-              <div class="flex flex-col text-sm">
-                <div class="font-medium line-clamp-1"><%= book.title %></div>
-                <div class="text-gray-600"><%= book.author %></div>
-              </div>
-            </div>
-          <% end %>
+        <div>
+          <h2 class="font-medium text-2xl">Currently Reading</h2>
+          <PageComponents.currently_reading books={@currently_reading} class="mt-3" />
         </div>
       </div>
     </div>
@@ -53,7 +45,7 @@ defmodule AppWeb.HomeLive do
 
   @impl true
   def handle_info(:update_now_playing, socket) do
-    %{ref: ref} = Task.async(fn -> App.Services.Spotify.get_now_playing() end)
+    %{ref: ref} = Task.async(fn -> App.Services.get_spotify_now_playing() end)
     {:noreply, assign(socket, now_playing_loading: true, now_playing_task: ref)}
   end
 
@@ -75,7 +67,7 @@ defmodule AppWeb.HomeLive do
   end
 
   defp assign_last_played(socket) do
-    task = Task.async(fn -> App.Services.Spotify.get_recently_played() end)
+    task = Task.async(fn -> App.Services.get_spotify_recently_played() end)
     recently_played_response = Task.await(task)
 
     case recently_played_response do
@@ -89,7 +81,7 @@ defmodule AppWeb.HomeLive do
   end
 
   defp assign_currently_reading(socket) do
-    case App.Services.Goodreads.get_currently_reading() do
+    case App.Services.get_goodreads_currently_reading() do
       {:ok, currently_reading} ->
         assign(socket, :currently_reading, currently_reading)
 
