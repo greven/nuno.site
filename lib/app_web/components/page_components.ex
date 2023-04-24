@@ -8,7 +8,7 @@ defmodule AppWeb.PageComponents do
 
   alias AppWeb.CoreComponents
 
-  attr(:class, :string, default: nil)
+  attr :class, :string, default: nil
 
   def avatar_picture(assigns) do
     ~H"""
@@ -26,11 +26,11 @@ defmodule AppWeb.PageComponents do
 
   ## Now Playing
 
-  attr(:class, :string, default: nil)
-  attr(:playing, :any, required: true)
-  attr(:last_played, :any, default: nil)
-  attr(:loading, :boolean, default: false)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :playing, :any, required: true
+  attr :last_played, :any, default: nil
+  attr :loading, :boolean, default: false
+  attr :rest, :global
 
   def now_playing(assigns) do
     assigns = assign(assigns, :has_content, assigns.playing || assigns.last_played)
@@ -76,10 +76,10 @@ defmodule AppWeb.PageComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:playing, :any, required: true)
-  attr(:last_played, :any, default: nil)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :playing, :any, required: true
+  attr :last_played, :any, default: nil
+  attr :rest, :global
 
   def now_playing_mini(assigns) do
     ~H"""
@@ -111,11 +111,11 @@ defmodule AppWeb.PageComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:playing, :any, required: true)
-  attr(:last_played, :any, default: nil)
-  attr(:loading, :boolean, default: false)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :playing, :any, required: true
+  attr :last_played, :any, default: nil
+  attr :loading, :boolean, default: false
+  attr :rest, :global
 
   def now_playing_cover(assigns) do
     ~H"""
@@ -143,10 +143,10 @@ defmodule AppWeb.PageComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:is_playing, :boolean, default: false)
-  attr(:last_played, :boolean, default: false)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :is_playing, :boolean, default: false
+  attr :last_played, :boolean, default: false
+  attr :rest, :global
 
   def playing_indicator(assigns) do
     ~H"""
@@ -169,9 +169,9 @@ defmodule AppWeb.PageComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:is_playing, :boolean, default: false)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :is_playing, :boolean, default: false
+  attr :rest, :global
 
   def playing_icon(assigns) do
     ~H"""
@@ -181,9 +181,9 @@ defmodule AppWeb.PageComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:books, :boolean, default: false)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :books, :boolean, default: false
+  attr :rest, :global
 
   def currently_reading(assigns) do
     ~H"""
