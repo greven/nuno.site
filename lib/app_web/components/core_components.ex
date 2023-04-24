@@ -651,6 +651,21 @@ defmodule AppWeb.CoreComponents do
     """
   end
 
+  attr :class, :string, default: nil
+
+  slot :inner_block, required: true
+
+  def keyboard(assigns) do
+    ~H"""
+    <span class={[
+      "h-full flex items-center px-1 font-mono font-bold text-xs text-neutral-500 bg-neutral-200/50 leading-normal tracking-wide text-center uppercase rounded transition",
+      @class
+    ]}>
+      <%= render_slot(@inner_block) %>
+    </span>
+    """
+  end
+
   @doc """
   Renders a [Hero Icon](https://heroicons.com).
 

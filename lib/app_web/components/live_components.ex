@@ -9,6 +9,8 @@ defmodule AppWeb.LiveComponents do
 
   attr :class, :string, default: nil
 
+  slot :inner_block
+
   def finder(assigns) do
     assigns =
       assigns
@@ -16,8 +18,10 @@ defmodule AppWeb.LiveComponents do
       |> assign(:module, LiveComponents.FinderComponent)
 
     ~H"""
-    <div class={["finder-component", @class]}>
+    <div class={["finder-component", "group flex items-center gap-2", @class]}>
       <.live_component {assigns} />
+      <span class="sr-only">Search</span>
+      <%= render_slot(@inner_block) %>
     </div>
     """
   end

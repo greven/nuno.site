@@ -105,7 +105,7 @@ defmodule AppWeb.PageComponents do
         class="h-6 -mr-1 btn-link btn-xs hidden sm:inline-flex"
       >
         <span>Profile</span>
-        <CoreComponents.icon name="hero-arrow-right-mini" class="w-4 h-4" />
+        <CoreComponents.icon name="hero-arrow-top-right-on-square-mini" class="w-4 h-4" />
       </.link>
     </div>
     """
@@ -192,11 +192,17 @@ defmodule AppWeb.PageComponents do
         <div class="w-44 relative group">
           <a href={book.book_url} target="_blank" class="flex flex-col gap-4">
             <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
-              <img
-                src={book.cover_url}
-                alt="book_cover"
-                class="border-4 border-white rounded-md shadow-md overflow-hidden"
-              />
+              <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
+                <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <CoreComponents.icon
+                      name="hero-arrow-top-right-on-square"
+                      class="w-8 h-8 text-white"
+                    />
+                  </div>
+                </div>
+                <img src={book.cover_url} alt="book_cover" />
+              </div>
             </div>
 
             <div>

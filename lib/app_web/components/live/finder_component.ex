@@ -12,7 +12,7 @@ defmodule AppWeb.LiveComponents.FinderComponent do
     <div class="finder-component__body">
       <.icon
         name="hero-magnifying-glass-mini"
-        class="w-5 h-5 text-secondary-500 hover:text-secondary-700 hover:cursor-pointer"
+        class="w-5 h-5 text-secondary-500 hover:bg-secondary-700 hover:cursor-pointer"
       />
     </div>
     """
