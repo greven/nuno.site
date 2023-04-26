@@ -9,6 +9,7 @@ defmodule App.Services.Spotify do
   4. Use the code to get a refresh token (`get_refresh_token/0`).
   """
 
+  require Logger
   import App.Http
 
   @cache_ttl :timer.minutes(10)
@@ -26,6 +27,7 @@ defmodule App.Services.Spotify do
         |> parse_now_playing_response()
 
       {:error, status} ->
+        Logger.error("Error getting currently playing: #{inspect(status)}")
         {:error, status}
     end
   end
@@ -68,6 +70,7 @@ defmodule App.Services.Spotify do
           {:ok, recently_played}
 
         {:error, status} ->
+          Logger.error("Error getting recently played: #{inspect(status)}")
           {:error, status}
       end
     end

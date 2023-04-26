@@ -4,6 +4,7 @@ defmodule App.Services.Goodreads do
   currently reading and total books read.
   """
 
+  require Logger
   import App.Http
 
   @cache_ttl :timer.hours(24)
@@ -23,6 +24,7 @@ defmodule App.Services.Goodreads do
           {:ok, books}
 
         {:error, status} ->
+          Logger.error("Error fetching currently reading books: #{inspect(status)}")
           {:error, status}
       end
     end
