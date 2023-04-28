@@ -670,7 +670,7 @@ defmodule AppWeb.CoreComponents do
   def keyboard(assigns) do
     ~H"""
     <span class={[
-      "flex items-center justify-center px-1 font-mono font-bold text-neutral-500 bg-neutral-200/50 tracking-wide text-center uppercase rounded group transition",
+      "flex items-center justify-center px-1.5 font-mono font-bold text-neutral-500 bg-neutral-200/50 tracking-wide text-center uppercase rounded group transition",
       @class
     ]}>
       <%= if @inner_block != [] do %>

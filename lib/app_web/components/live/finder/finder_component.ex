@@ -17,7 +17,7 @@ defmodule AppWeb.FinderComponent do
         on_cancel={JS.push("toggle_finder", target: @myself)}
         show_close_button={false}
         modal_class="w-full max-w-xl p-4 sm:p-6 lg:py-8"
-        wrapper_class="rounded-xl bg-white shadow-lg shadow-secondary-700/10 transition"
+        wrapper_class="rounded-xl bg-white shadow-lg shadow-neutral-700/10 transition"
         show
       >
         <.form
@@ -32,10 +32,10 @@ defmodule AppWeb.FinderComponent do
           <div class="relative">
             <.icon
               name="hero-magnifying-glass-mini"
-              class="h-5 w-5 absolute left-4 top-3.5 text-secondary-400 pointer-events-none"
+              class="h-5 w-5 absolute left-4 top-3.5 text-neutral-400 pointer-events-none"
             />
             <input
-              class="h-12 w-full pl-11 px-4 py-2.5 rounded-md border-0 placeholder-zinc-500 text-secondary-900 sm:text-sm focus:outline-none"
+              class="h-12 w-full pl-11 px-4 py-2.5 rounded-md border-0 placeholder-zinc-500 text-neutral-900 sm:text-sm focus:outline-none"
               id={f[:input].id}
               name={f[:input].name}
               value={f[:input].value}
@@ -51,20 +51,22 @@ defmodule AppWeb.FinderComponent do
         </.form>
 
         <ul
-          class="-mb-2 max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-secondary-800"
+          class="-mb-2 max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-neutral-800"
           id="options"
           role="listbox"
         >
           <li
             :for={{{id, opts}, index} <- Enum.with_index(Enum.take(@commands, 10))}
             class={[
-              if(@selected_index == index, do: "bg-zinc-100"),
-              "cursor-pointer select-none rounded-md flex items-center px-4 py-2 hover:bg-zinc-100"
+              if(@selected_index == index, do: "bg-neutral-100"),
+              "cursor-pointer select-none rounded-md flex items-center px-4 py-2 hover:bg-neutral-100"
             ]}
             phx-click={Finder.exec(id)}
             role="option"
             tabindex="-1"
           >
+            <.icon name={opts[:icon]} class="h-5 w-5 mr-2 text-neutral-600" />
+
             <%= Keyword.fetch!(opts, :name) %>
           </li>
         </ul>

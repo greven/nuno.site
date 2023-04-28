@@ -124,7 +124,7 @@ defmodule AppWeb.PageComponents do
         <% @playing -> %>
           <img class="rounded-lg brightness-110" src={@playing.album_art} />
         <% @loading -> %>
-          <div class="flex items-center justify-center rounded-lg bg-neutral-50">
+          <div class="flex items-center justify-center rounded-lg bg-neutral-50 aspect-square">
             <CoreComponents.icon
               name="hero-arrow-path-solid"
               class="w-8 h-8 bg-neutral-200 animate-spin"

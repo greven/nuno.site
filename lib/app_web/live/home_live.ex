@@ -58,6 +58,19 @@ defmodule AppWeb.HomeLive do
     {:noreply, assign(socket, now_playing_loading: false)}
   end
 
+  # Handle task :DOWN messages
+  def handle_info({:DOWN, ref, :process, _, _}, %{assigns: %{now_playing_task: ref}} = socket) do
+    Process.demonitor(ref, [:flush])
+
+    {:noreply,
+     assign(socket,
+       now_playing_loading: false,
+       now_playing_task: nil
+     )}
+  end
+
+  def handle_info({:DOWN, _, :process, _, _}, socket), do: {:noreply, socket}
+
   defp assign_now_playing(socket, response) do
     case response do
       {:ok, now_playing} -> assign(socket, :now_playing, now_playing)

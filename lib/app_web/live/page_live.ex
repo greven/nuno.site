@@ -102,10 +102,4 @@ defmodule AppWeb.PageLive do
     socket
     |> assign(:page_title, "About")
   end
-
-  def list_commands(_context, _query) do
-    [
-      {:about_page, name: "About Page", icon: "hero-archive-box"}
-    ]
-  end
 end

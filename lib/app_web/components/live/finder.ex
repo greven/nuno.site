@@ -13,7 +13,7 @@ defmodule AppWeb.Finder do
   alias AppWeb.FinderLive
 
   @commands [
-    {:nav_home, name: "Navigate to home", icon: "hero-link"}
+    {:nav_home, name: "Navigate to home", icon: "hero-home"}
   ]
 
   defmacro __using__(_opts) do
