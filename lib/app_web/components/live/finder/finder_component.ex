@@ -49,6 +49,25 @@ defmodule AppWeb.FinderComponent do
             />
           </div>
         </.form>
+
+        <ul
+          class="-mb-2 max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-secondary-800"
+          id="options"
+          role="listbox"
+        >
+          <li
+            :for={{{id, opts}, index} <- Enum.with_index(Enum.take(@commands, 10))}
+            class={[
+              if(@selected_index == index, do: "bg-zinc-100"),
+              "cursor-pointer select-none rounded-md flex items-center px-4 py-2 hover:bg-zinc-100"
+            ]}
+            phx-click={Finder.exec(id)}
+            role="option"
+            tabindex="-1"
+          >
+            <%= Keyword.fetch!(opts, :name) %>
+          </li>
+        </ul>
       </.modal>
     </div>
     """
@@ -59,6 +78,7 @@ defmodule AppWeb.FinderComponent do
     socket =
       socket
       |> assign(assigns)
+      |> assign_commands()
 
     {:ok, socket}
   end
@@ -91,8 +111,25 @@ defmodule AppWeb.FinderComponent do
     {:noreply, socket}
   end
 
-  defp assign_commands(socket, query) do
+  defp assign_commands(socket, query \\ "") do
+    has_local_commands? = function_exported?(socket.view, :list_commands, 2)
+
+    commands =
+      if has_local_commands? do
+        socket.view.list_commands(socket.assigns[:finder_context], query) ++
+          Finder.list_commands(:global, query)
+      else
+        Finder.list_commands(:global, query)
+      end
+      |> filter_commands(query)
+
     socket
-    |> assign(:commands, Finder.list_commands(:global, query))
+    |> assign(:commands, commands)
+    |> assign(:selected_index, 0)
+  end
+
+  defp filter_commands(commands, query) do
+    normalize = &String.downcase(String.replace(&1, ~r/\s/, ""))
+    Enum.filter(commands, fn {_id, opts} -> normalize.(opts[:name]) =~ normalize.(query) end)
   end
 end
