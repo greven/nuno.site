@@ -31,6 +31,13 @@ defmodule AppWeb.CoreComponents do
   attr :id, :string, required: true
   attr :show, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
+  attr :show_close_button, :boolean, default: true
+
+  attr :wrapper_class, :string,
+    default:
+      "rounded-2xl bg-white p-14 shadow-lg shadow-secondary-700/10 ring-1 ring-secondary-700/10 transition"
+
+  attr :content_class, :string, default: "relative"
 
   slot :inner_block, required: true
 
@@ -64,9 +71,9 @@ defmodule AppWeb.CoreComponents do
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="hidden relative rounded-2xl bg-white p-14 shadow-lg shadow-secondary-700/10 ring-1 ring-secondary-700/10 transition"
+              class={["hidden relative", @wrapper_class]}
             >
-              <div class="absolute top-6 right-5">
+              <div :if={@show_close_button} class="absolute top-6 right-5">
                 <button
                   phx-click={JS.exec("data-cancel", to: "##{@id}")}
                   type="button"
@@ -76,7 +83,8 @@ defmodule AppWeb.CoreComponents do
                   <.icon name="hero-x-mark-solid" class="w-5 h-5" />
                 </button>
               </div>
-              <div id={"#{@id}-content"}>
+
+              <div id={"#{@id}-content"} class={@content_class}>
                 <%= render_slot(@inner_block) %>
               </div>
             </.focus_wrap>

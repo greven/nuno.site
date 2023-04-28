@@ -119,12 +119,12 @@ defmodule AppWeb.PageComponents do
 
   def now_playing_cover(assigns) do
     ~H"""
-    <div class={["relative", @class]} {@rest}>
+    <div class={["w-32 relative aspect-square shrink-0", @class]} {@rest}>
       <%= cond do %>
         <% @playing -> %>
-          <img class="h-32 w-32 rounded-lg brightness-110" src={@playing.album_art} />
+          <img class="rounded-lg brightness-110" src={@playing.album_art} />
         <% @loading -> %>
-          <div class="h-32 w-32 flex items-center justify-center rounded-lg bg-neutral-50">
+          <div class="flex items-center justify-center rounded-lg bg-neutral-50">
             <CoreComponents.icon
               name="hero-arrow-path-solid"
               class="w-8 h-8 bg-neutral-200 animate-spin"
@@ -132,9 +132,9 @@ defmodule AppWeb.PageComponents do
           </div>
         <% true -> %>
           <%= if @last_played do %>
-            <img class="h-32 w-32 rounded-lg brightness-110" src={@last_played.album_art} />
+            <img class="rounded-lg brightness-110" src={@last_played.album_art} />
           <% else %>
-            <div class="h-32 w-32 flex items-center justify-center rounded-lg bg-neutral-50">
+            <div class="flex items-center justify-center rounded-lg bg-neutral-50">
               <CoreComponents.icon name="hero-play-circle-solid" class="w-8 h-8 bg-neutral-200" />
             </div>
           <% end %>
@@ -187,34 +187,43 @@ defmodule AppWeb.PageComponents do
 
   def currently_reading(assigns) do
     ~H"""
-    <div class={["currently-reading", "flex items-end gap-6", @class]} {@rest}>
+    <div
+      class={[
+        "currently-reading",
+        "w-full flex items-end gap-6 snap-x snap-mandatory overflow-x-auto",
+        @class
+      ]}
+      {@rest}
+    >
       <%= for book <- @books do %>
-        <div class="w-44 relative group">
-          <a href={book.book_url} target="_blank" class="flex flex-col gap-4">
-            <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
-              <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
-                <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
-                  <div class="absolute inset-0 flex items-center justify-center">
-                    <CoreComponents.icon
-                      name="hero-arrow-top-right-on-square"
-                      class="w-8 h-8 text-white"
-                    />
-                  </div>
+        <a
+          href={book.book_url}
+          target="_blank"
+          class="w-44 relative flex flex-col gap-4 group shrink-0 snap-start"
+        >
+          <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
+            <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
+              <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <CoreComponents.icon
+                    name="hero-arrow-top-right-on-square"
+                    class="w-8 h-8 text-white"
+                  />
                 </div>
-                <img src={book.cover_url} alt="book_cover" />
               </div>
+              <img src={book.cover_url} alt="book_cover" />
             </div>
+          </div>
 
-            <div>
-              <div class="font-headings font-semibold text-sm line-clamp-2 decoration-primary-500 decoration-2
+          <div class="w-full">
+            <div class="font-headings font-semibold text-sm line-clamp-2 decoration-primary-500 decoration-2
                   underline-offset-2 transition group-hover:underline">
-                <%= book.title %>
-              </div>
-
-              <div class="text-sm text-gray-600"><%= book.author %></div>
+              <%= book.title %>
             </div>
-          </a>
-        </div>
+
+            <div class="text-sm text-gray-600"><%= book.author %></div>
+          </div>
+        </a>
       <% end %>
     </div>
     """

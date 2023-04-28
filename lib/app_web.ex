@@ -54,6 +54,9 @@ defmodule AppWeb do
       use Phoenix.LiveView,
         layout: {AppWeb.Layouts, :app}
 
+      # Command palette
+      use AppWeb.Finder
+
       unquote(html_helpers())
     end
   end

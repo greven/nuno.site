@@ -5,24 +5,17 @@ defmodule AppWeb.LiveComponents do
 
   use Phoenix.Component
 
-  alias __MODULE__
-
   attr :class, :string, default: nil
-
-  slot :inner_block
+  attr :show, :boolean, default: false
 
   def finder(assigns) do
     assigns =
       assigns
-      |> assign_new(:id, fn -> "live_finder_" <> Ecto.UUID.generate() end)
-      |> assign(:module, LiveComponents.FinderComponent)
+      |> assign_new(:id, fn -> "live_finder" end)
+      |> assign(:module, AppWeb.FinderComponent)
 
     ~H"""
-    <div class={["finder-component", "group flex items-center gap-2", @class]}>
-      <.live_component {assigns} />
-      <span class="sr-only">Search</span>
-      <%= render_slot(@inner_block) %>
-    </div>
+    <.live_component {assigns} />
     """
   end
 end

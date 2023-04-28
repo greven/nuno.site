@@ -16,7 +16,7 @@ defmodule AppWeb.HomeLive do
           playing={@now_playing}
         />
 
-        <div>
+        <div class="w-full">
           <h2 class="font-medium text-2xl">Currently Reading</h2>
           <PageComponents.currently_reading books={@currently_reading} class="mt-3" />
         </div>
