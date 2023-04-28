@@ -11,7 +11,7 @@ defmodule AppWeb.LiveComponents do
   def finder(assigns) do
     assigns =
       assigns
-      |> assign_new(:id, fn -> "live_finder" end)
+      |> assign_new(:id, fn -> "finder" end)
       |> assign(:module, AppWeb.FinderComponent)
 
     ~H"""

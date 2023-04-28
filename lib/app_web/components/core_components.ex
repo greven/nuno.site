@@ -33,6 +33,8 @@ defmodule AppWeb.CoreComponents do
   attr :on_cancel, JS, default: %JS{}
   attr :show_close_button, :boolean, default: true
 
+  attr :modal_class, :string, default: "w-full max-w-3xl p-4 sm:p-6 lg:py-8"
+
   attr :wrapper_class, :string,
     default:
       "rounded-2xl bg-white p-14 shadow-lg shadow-secondary-700/10 ring-1 ring-secondary-700/10 transition"
@@ -64,7 +66,7 @@ defmodule AppWeb.CoreComponents do
         tabindex="0"
       >
         <div class="flex min-h-full items-center justify-center">
-          <div class="w-full max-w-3xl p-4 sm:p-6 lg:py-8">
+          <div class={@modal_class}>
             <.focus_wrap
               id={"#{@id}-container"}
               phx-mounted={@show && show_modal(@id)}
@@ -660,16 +662,23 @@ defmodule AppWeb.CoreComponents do
   end
 
   attr :class, :string, default: nil
+  attr :key, :string, default: nil
+  attr :modifier, :string, default: nil
 
-  slot :inner_block, required: true
+  slot :inner_block
 
   def keyboard(assigns) do
     ~H"""
     <span class={[
-      "h-full flex items-center px-1 font-mono font-bold text-xs text-neutral-500 bg-neutral-200/50 leading-normal tracking-wide text-center uppercase rounded transition",
+      "flex items-center justify-center px-1 font-mono font-bold text-neutral-500 bg-neutral-200/50 tracking-wide text-center uppercase rounded group transition",
       @class
     ]}>
-      <%= render_slot(@inner_block) %>
+      <%= if @inner_block != [] do %>
+        <%= render_slot(@inner_block) %>
+      <% else %>
+        <span class="text-base leading-tight mr-1"><%= @modifier %></span>
+        <span class="text-xs"><%= @key %></span>
+      <% end %>
     </span>
     """
   end

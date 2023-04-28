@@ -22,7 +22,7 @@ defmodule AppWeb.Finder do
     end
   end
 
-  def list_commands, do: @commands
+  def list_commands(:global, _input), do: @commands
 
   def handle_command(:nav_home, _context, socket) do
     push_navigate(socket, to: ~p"/")

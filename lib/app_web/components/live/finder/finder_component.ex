@@ -13,13 +13,42 @@ defmodule AppWeb.FinderComponent do
     <div phx-window-keydown="keydown" phx-key="k" phx-throttle="400" phx-target={@myself}>
       <.modal
         :if={@show}
-        id="finder-component-modal"
+        id="finder-modal"
         on_cancel={JS.push("toggle_finder", target: @myself)}
         show_close_button={false}
-        wrapper_class="rounded-xl bg-white p-4 shadow-lg shadow-secondary-700/10 transition"
+        modal_class="w-full max-w-xl p-4 sm:p-6 lg:py-8"
+        wrapper_class="rounded-xl bg-white shadow-lg shadow-secondary-700/10 transition"
         show
       >
-        Finder content
+        <.form
+          :let={f}
+          id="finder-content"
+          for={%{}}
+          as={:command}
+          phx-change="change"
+          phx-submit="submit"
+          phx-target={@myself}
+        >
+          <div class="relative">
+            <.icon
+              name="hero-magnifying-glass-mini"
+              class="h-5 w-5 absolute left-4 top-3.5 text-secondary-400 pointer-events-none"
+            />
+            <input
+              class="h-12 w-full pl-11 px-4 py-2.5 rounded-md border-0 placeholder-zinc-500 text-secondary-900 sm:text-sm focus:outline-none"
+              id={f[:input].id}
+              name={f[:input].name}
+              value={f[:input].value}
+              phx-keydown="keydown"
+              phx-target={@myself}
+              autocomplete="off"
+              placeholder="Search..."
+              role="combobox"
+              aria-expanded="false"
+              aria-controls="options"
+            />
+          </div>
+        </.form>
       </.modal>
     </div>
     """
@@ -50,5 +79,20 @@ defmodule AppWeb.FinderComponent do
       _ ->
         {:noreply, socket}
     end
+  end
+
+  def handle_event("change", %{"command" => %{"input" => query}}, socket) do
+    IO.inspect(query)
+    {:noreply, assign_commands(socket, query)}
+  end
+
+  def handle_event("submit", %{"command" => %{"input" => query}}, socket) do
+    IO.inspect(query)
+    {:noreply, socket}
+  end
+
+  defp assign_commands(socket, query) do
+    socket
+    |> assign(:commands, Finder.list_commands(:global, query))
   end
 end
