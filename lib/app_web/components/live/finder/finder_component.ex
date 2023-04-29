@@ -29,13 +29,13 @@ defmodule AppWeb.FinderComponent do
           phx-submit="submit"
           phx-target={@myself}
         >
-          <div class="relative">
+          <div class="relative divide-y divide-gray-100">
             <.icon
               name="hero-magnifying-glass-mini"
-              class="h-5 w-5 absolute left-4 top-3.5 text-neutral-400 pointer-events-none"
+              class="absolute left-4 top-3.5 h-5 w-5 text-neutral-400 pointer-events-none"
             />
             <input
-              class="h-12 w-full pl-11 px-4 py-2.5 rounded-md border-0 placeholder-zinc-500 text-neutral-900 sm:text-sm focus:outline-none"
+              class="h-12 w-full pl-11 px-4 py-2.5 rounded-md bg-transparent border-0 placeholder:text-neutral-500 text-neutral-900 sm:text-sm focus:outline-none focus:ring-0"
               id={f[:input].id}
               name={f[:input].name}
               value={f[:input].value}
@@ -51,7 +51,7 @@ defmodule AppWeb.FinderComponent do
         </.form>
 
         <ul
-          class="-mb-2 max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-neutral-800"
+          class="max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-neutral-800"
           id="options"
           role="listbox"
         >

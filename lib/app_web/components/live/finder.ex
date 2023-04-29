@@ -13,7 +13,9 @@ defmodule AppWeb.Finder do
   alias AppWeb.FinderLive
 
   @commands [
-    {:nav_home, name: "Navigate to home", icon: "hero-home"}
+    {:nav_home, name: "Home", description: "Go Home", icon: "hero-home"},
+    {:nav_about, name: "About", description: "About me", icon: "hero-user-circle"},
+    {:nav_music, name: "Music", description: "My Music", icon: "hero-musical-note"}
   ]
 
   defmacro __using__(_opts) do
@@ -24,9 +26,10 @@ defmodule AppWeb.Finder do
 
   def list_commands(:global, _query), do: @commands
 
-  def handle_command(:nav_home, _context, socket) do
-    push_navigate(socket, to: ~p"/")
-  end
+  ## Handle commands
+  def handle_command(:nav_home, _context, socket), do: push_navigate(socket, to: ~p"/")
+  def handle_command(:nav_about, _context, socket), do: push_navigate(socket, to: ~p"/about")
+  def handle_command(:nav_music, _context, socket), do: push_navigate(socket, to: ~p"/music")
 
   ## Deletgates
 

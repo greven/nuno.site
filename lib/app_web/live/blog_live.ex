@@ -34,8 +34,8 @@ defmodule AppWeb.BlogLive do
         </:button>
       </.toggle_button_group>
 
-      <div id="posts" class="mt-8">
-        <article :for={post <- @posts} id={post.id} class="my-4">
+      <div id="posts" class="mt-8" phx-update="stream">
+        <article :for={{dom_id, post} <- @streams.posts} id={dom_id} class="my-4">
           <h2>
             <.link href={~p"/writing/#{post}"} class="underline text-primary font-medium">
               <%= post.title %>
@@ -100,6 +100,7 @@ defmodule AppWeb.BlogLive do
   def mount(_params, _session, socket) do
     socket =
       socket
+      |> stream(:posts, [])
       |> assign(:page_title, "Blog")
       |> assign(:current_tag, "all")
       |> assign(:top_tags, Blog.list_top_tags(3))
@@ -200,14 +201,17 @@ defmodule AppWeb.BlogLive do
       entries: posts
     } =
       case tag do
-        "all" -> Blog.list_published_posts(offset: offset)
-        tag_name -> Blog.get_tag_by_name!(tag_name) |> Blog.get_posts_by_tag!(offset: offset)
+        "all" ->
+          Blog.list_published_posts(offset: offset)
+
+        tag_name ->
+          Blog.get_tag_by_name!(tag_name) |> Blog.get_posts_by_tag!(offset: offset)
       end
 
     options = %{tag: tag, page: offset}
 
     socket
-    |> assign(:posts, posts)
+    |> stream(:posts, posts, reset: true)
     |> assign(:current_tag, tag)
     |> assign(:options, options)
     |> assign(:next_page, next_page)
@@ -218,7 +222,10 @@ defmodule AppWeb.BlogLive do
 
   defp assign_page_views(socket, path) do
     socket
-    |> assign(:today_views, App.Analytics.get_page_view_count_by_date(path, Date.utc_today()))
+    |> assign(
+      :today_views,
+      App.Analytics.get_page_view_count_by_date(path, Date.utc_today())
+    )
     |> assign(:page_views, App.Analytics.get_page_view_count(path))
   end
 
