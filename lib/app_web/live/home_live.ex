@@ -16,9 +16,12 @@ defmodule AppWeb.HomeLive do
           playing={@now_playing}
         />
 
-        <div class="w-full">
+        <div class="my-4 w-full flex flex-col space-y-12">
           <h2 class="font-medium text-2xl">Currently Reading</h2>
-          <PageComponents.currently_reading books={@currently_reading} class="mt-3" />
+          <PageComponents.currently_reading books={@currently_reading} />
+
+          <h2 class="font-medium text-2xl">Recently Played Games</h2>
+          <PageComponents.recently_played_games games={@recently_played_games} />
         </div>
       </div>
     </div>
@@ -38,6 +41,7 @@ defmodule AppWeb.HomeLive do
       |> assign(:now_playing_loading, false)
       |> assign(:now_playing_task, nil)
       |> assign_currently_reading()
+      |> assign_recently_played_games()
       |> assign_last_played()
 
     {:ok, socket}
@@ -100,6 +104,16 @@ defmodule AppWeb.HomeLive do
 
       {:error, _} ->
         assign(socket, :currently_reading, nil)
+    end
+  end
+
+  defp assign_recently_played_games(socket) do
+    case App.Services.get_steam_recently_played() do
+      {:ok, recently_played_games} ->
+        assign(socket, :recently_played_games, recently_played_games)
+
+      {:error, _} ->
+        assign(socket, :recently_played_games, nil)
     end
   end
 end

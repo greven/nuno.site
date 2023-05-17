@@ -5,6 +5,7 @@ defmodule App.Services do
 
   alias App.Services.Spotify
   alias App.Services.Goodreads
+  alias App.Services.Steam
 
   ## Spotify
 
@@ -14,4 +15,8 @@ defmodule App.Services do
   ## Goodreads
 
   def get_goodreads_currently_reading(opts \\ []), do: Goodreads.get_currently_reading(opts)
+
+  ## Steam
+
+  def get_steam_recently_played(), do: Steam.get_recently_played_games()
 end

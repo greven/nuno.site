@@ -133,7 +133,6 @@ defmodule App.Services.Spotify do
 
     (@token_endpoint <> "?" <> URI.encode_query(query))
     |> post(headers)
-    |> content_type()
     |> decode()
     |> case do
       {:ok, 200, %{"access_token" => access_token}} -> {:ok, access_token}
@@ -159,7 +158,6 @@ defmodule App.Services.Spotify do
 
     (base_url <> "?" <> URI.encode_query(query))
     |> post(headers)
-    |> content_type()
     |> decode()
   end
 
@@ -178,7 +176,8 @@ defmodule App.Services.Spotify do
 
   defp auth_token, do: Base.encode64("#{client_id()}:#{client_secret()}")
 
-  # Credentials
+  ## Credentials
+
   defp client_id, do: Application.get_env(:app, :spotify)[:client_id]
   defp client_secret, do: Application.get_env(:app, :spotify)[:client_secret]
   defp refresh_token, do: Application.get_env(:app, :spotify)[:refresh_token]

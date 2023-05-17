@@ -30,6 +30,8 @@ config :app, :spotify,
   client_secret: env!("SPOTIFY_CLIENT_SECRET", :string!),
   refresh_token: env!("SPOTIFY_REFRESH_TOKEN", :string!)
 
+config :app, :steam, api_key: env!("STEAM_API_KEY", :string!)
+
 ## Production configuration
 
 if config_env() == :prod do

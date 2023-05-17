@@ -5,7 +5,6 @@ defmodule App.Http do
 
   def get(url, headers \\ []) do
     request(:get, url, headers)
-    |> content_type()
     |> decode()
   end
 
@@ -25,31 +24,15 @@ defmodule App.Http do
     |> Finch.request(App.Finch)
   end
 
-  # Content Type
-
-  def content_type({:error, _} = error), do: error
-
-  def content_type({:ok, status, body, headers}) do
-    {:ok, status, body, content_type(headers)}
-  end
-
-  def content_type([]), do: "application/json"
-
-  def content_type([{"Content-Type", val} | _]) do
-    val
-    |> String.split(";")
-    |> List.first()
-  end
-
-  def content_type([_ | t]), do: content_type(t)
-
   # Decode
 
   def decode({:error, _} = error), do: error
 
-  def decode({:ok, status, body, "text/html"}), do: {:ok, status, body}
+  def decode({:ok, status, body, headers}) do
+    decode(status, body, content_type(headers))
+  end
 
-  def decode({:ok, status, body, "application/json"}) do
+  def decode(status, body, "application/json") do
     body
     |> Jason.decode()
     |> case do
@@ -58,7 +41,7 @@ defmodule App.Http do
     end
   end
 
-  def decode({:ok, status, body, "application/xml"}) do
+  def decode(status, body, "application/xml") do
     try do
       {:ok, status, body |> :binary.bin_to_list() |> :xmerl_scan.string()}
     catch
@@ -66,5 +49,19 @@ defmodule App.Http do
     end
   end
 
-  def decode({:ok, status, body, _}), do: {:ok, status, body}
+  def decode(status, body, _), do: {:ok, status, body}
+
+  # Content Type
+
+  def content_type([]), do: "application/json"
+
+  def content_type([{"content-type", val} | t]), do: content_type([{"Content-Type", val} | t])
+
+  def content_type([{"Content-Type", val} | _]) do
+    val
+    |> String.split(";")
+    |> List.first()
+  end
+
+  def content_type([_ | t]), do: content_type(t)
 end
