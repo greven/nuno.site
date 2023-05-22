@@ -49,7 +49,7 @@ defmodule AppWeb.HomeLive do
 
   @impl true
   def handle_info(:update_now_playing, socket) do
-    %{ref: ref} = Task.async(fn -> App.Services.get_spotify_now_playing() end)
+    %{ref: ref} = Task.async(fn -> App.Services.get_now_playing() end)
     {:noreply, assign(socket, now_playing_loading: true, now_playing_task: ref)}
   end
 
@@ -84,7 +84,7 @@ defmodule AppWeb.HomeLive do
   end
 
   defp assign_last_played(socket) do
-    task = Task.async(fn -> App.Services.get_spotify_recently_played() end)
+    task = Task.async(fn -> App.Services.get_recently_played_music() end)
     recently_played_response = Task.await(task)
 
     case recently_played_response do
@@ -98,7 +98,7 @@ defmodule AppWeb.HomeLive do
   end
 
   defp assign_currently_reading(socket) do
-    case App.Services.get_goodreads_currently_reading() do
+    case App.Services.get_currently_reading() do
       {:ok, currently_reading} ->
         assign(socket, :currently_reading, currently_reading)
 
@@ -108,7 +108,7 @@ defmodule AppWeb.HomeLive do
   end
 
   defp assign_recently_played_games(socket) do
-    case App.Services.get_steam_recently_played() do
+    case App.Services.get_recently_played_games() do
       {:ok, recently_played_games} ->
         assign(socket, :recently_played_games, recently_played_games)
 

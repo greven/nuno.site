@@ -73,7 +73,7 @@ defmodule AppWeb.MusicLive do
   end
 
   defp assign_last_played(socket) do
-    task = Task.async(fn -> App.Services.get_spotify_recently_played(use_cache: false) end)
+    task = Task.async(fn -> App.Services.get_recently_played_music(use_cache: false) end)
     recently_played_response = Task.await(task)
 
     case recently_played_response do

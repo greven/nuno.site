@@ -7,16 +7,29 @@ defmodule App.Services do
   alias App.Services.Goodreads
   alias App.Services.Steam
 
-  ## Spotify
+  ## Music
 
-  def get_spotify_now_playing, do: Spotify.get_now_playing()
-  def get_spotify_recently_played(opts \\ []), do: Spotify.get_recently_played(opts)
+  def get_now_playing do
+    Spotify.get_now_playing()
+  end
 
-  ## Goodreads
+  def get_recently_played_music(opts \\ []) do
+    Spotify.get_recently_played(opts)
+  end
 
-  def get_goodreads_currently_reading(opts \\ []), do: Goodreads.get_currently_reading(opts)
+  ## Books
 
-  ## Steam
+  def get_currently_reading(opts \\ []) do
+    Goodreads.get_currently_reading(opts)
+  end
 
-  def get_steam_recently_played(), do: Steam.get_recently_played_games()
+  ## Games
+
+  def get_recently_played_games do
+    Steam.get_recently_played_games()
+  end
+
+  # TODO: Mix games from Steam, PSN, etc...
+  defp recently_played_games_mixer do
+  end
 end
