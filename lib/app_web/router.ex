@@ -45,6 +45,8 @@ defmodule AppWeb.Router do
       live "/about", PageLive, :about
       live "/stats", StatsLive, :index
       live "/music", MusicLive, :index
+      live "/books", BooksLive, :index
+      live "/games", GamesLive, :index
       live "/updates", UpdatesLive, :index
       live "/writing", BlogLive, :index, as: :blog
       live "/writing/:slug", BlogLive, :show, as: :blog
