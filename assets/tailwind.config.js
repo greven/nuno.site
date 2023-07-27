@@ -130,10 +130,10 @@ module.exports = {
       addVariant("phx-form-error", [":not(.phx-no-feedback).show-errors &"])
     ),
 
-    // Embeds Hero Icons (https://heroicons.com) into your app.css bundle
+    // Embeds Heroicons (https://heroicons.com) into your app.css bundle
     // See your `CoreComponents.icon/1` for more information.
     //
-    plugin(function ({ matchComponents, theme }) {
+    plugin(function({ matchComponents, theme }) {
       let iconsDir = path.join(__dirname, "./vendor/heroicons/optimized");
       let values = {};
       let icons = [
@@ -157,12 +157,13 @@ module.exports = {
             return {
               [`--hero-${name}`]: `url('data:image/svg+xml;utf8,${content}')`,
               "-webkit-mask": `var(--hero-${name})`,
-              mask: `var(--hero-${name})`,
+              "mask": `var(--hero-${name})`,
+              "mask-repeat": "no-repeat",
               "background-color": "currentColor",
               "vertical-align": "middle",
-              display: "inline-block",
-              width: theme("spacing.5"),
-              height: theme("spacing.5"),
+              "display": "inline-block",
+              "width": theme("spacing.5"),
+              "height": theme("spacing.5")
             };
           },
         },

@@ -33,13 +33,12 @@ defmodule App.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.7.2"},
+      {:phoenix, "~> 1.7.6"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 3.3"},
-      {:phoenix_live_view,
-       git: "https://github.com/phoenixframework/phoenix_live_view.git", override: true},
+      {:phoenix_live_view, "~> 0.19.3"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.7"},
+      {:phoenix_live_dashboard, "~> 0.8"},
 
       # HTTP server
       {:bandit, "~> 0.7"},

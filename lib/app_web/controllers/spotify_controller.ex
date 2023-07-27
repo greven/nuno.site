@@ -11,11 +11,10 @@ defmodule AppWeb.SpotifyController do
           |> assign(:status, status)
           |> assign(:response, body)
 
-        {:error, status, body} ->
+        {:error, status} ->
           conn
           |> assign(:error, true)
           |> assign(:status, status)
-          |> assign(:response, body)
       end
 
     conn
