@@ -16,9 +16,7 @@ defmodule App.Services.Spotify do
   @api_endpoint "https://api.spotify.com/v1/me/player"
 
   def get_now_playing do
-    access_token_response = get_access_token()
-
-    case access_token_response do
+    case access_token() do
       {:ok, access_token} ->
         (@api_endpoint <> "/currently-playing")
         |> Req.get(auth: {:bearer, access_token})
@@ -74,9 +72,7 @@ defmodule App.Services.Spotify do
   defp do_get_recently_played(opts \\ []) do
     limit = Keyword.get(opts, :limit, 10)
 
-    access_token_response = get_access_token()
-
-    case access_token_response do
+    case access_token() do
       {:ok, access_token} ->
         (@api_endpoint <> "/recently-played?limit=#{limit}")
         |> Req.get(auth: {:bearer, access_token})
@@ -110,6 +106,24 @@ defmodule App.Services.Spotify do
 
   defp parse_recently_played_response({:error, _} = error), do: error
 
+  def access_token do
+    if App.Cache.ttl(:spotify_access_token) do
+      {:ok, App.Cache.get(:spotify_access_token)}
+    else
+      case get_access_token() do
+        {:ok, response} ->
+          ttl = (Map.get(response, "expires_in", 3600) - 10) * 1000
+          App.Cache.put(:spotify_access_token, response["access_token"], ttl: ttl)
+
+          {:ok, response["access_token"]}
+
+        {:error, status} ->
+          Logger.error("Error getting access token: #{inspect(status)}")
+          {:error, status}
+      end
+    end
+  end
+
   def get_access_token do
     query =
       [
@@ -126,7 +140,7 @@ defmodule App.Services.Spotify do
       headers: %{"content-type" => "application/x-www-form-urlencoded", "content-length" => 0}
     )
     |> case do
-      {:ok, resp} -> {:ok, resp.body["access_token"]}
+      {:ok, resp} -> {:ok, resp.body}
       {:error, status} -> {:error, status}
     end
   end
