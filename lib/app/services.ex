@@ -28,8 +28,4 @@ defmodule App.Services do
   def get_recently_played_games do
     Steam.get_recently_played_games()
   end
-
-  # TODO: Mix games from Steam, PSN, etc...
-  defp recently_played_games_mixer do
-  end
 end

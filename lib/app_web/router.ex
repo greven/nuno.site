@@ -40,7 +40,7 @@ defmodule AppWeb.Router do
     pipe_through :browser
 
     live_session :default,
-      on_mount: [{AppWeb.UserAuth, :mount_current_user}, AppWeb.Hooks.ActiveLink] do
+      on_mount: [{AppWeb.UserAuth, :mount_current_user}, AppWeb.Hooks.Links] do
       live "/", HomeLive, :index
       live "/about", PageLive, :about
       live "/stats", StatsLive, :index
@@ -66,7 +66,7 @@ defmodule AppWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
-      on_mount: [{AppWeb.UserAuth, :redirect_if_user_is_authenticated}, AppWeb.Hooks.ActiveLink] do
+      on_mount: [{AppWeb.UserAuth, :redirect_if_user_is_authenticated}, AppWeb.Hooks.Links] do
       live "/users/log_in", UserLoginLive, :new
     end
 
@@ -84,7 +84,7 @@ defmodule AppWeb.Router do
 
     live_session :admin,
       layout: {AppWeb.Layouts, :admin},
-      on_mount: [AppWeb.AdminAuth, AppWeb.Hooks.ActiveLink] do
+      on_mount: [AppWeb.AdminAuth, AppWeb.Scope, AppWeb.Hooks.Links] do
       live "/", AdminLive, :index
       live "/posts", AdminPostsLive, :index
       live "/posts/new", AdminPostsLive, :new

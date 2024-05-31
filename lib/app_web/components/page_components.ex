@@ -6,9 +6,10 @@ defmodule AppWeb.PageComponents do
   use Phoenix.Component
   use AppWeb, :verified_routes
 
+  alias Phoenix.LiveView.AsyncResult
   alias AppWeb.CoreComponents
 
-  attr(:class, :string, default: nil)
+  attr :class, :string, default: nil
 
   def avatar_picture(assigns) do
     ~H"""
@@ -26,49 +27,58 @@ defmodule AppWeb.PageComponents do
 
   ## Now Playing
 
-  attr(:class, :string, default: nil)
-  attr(:playing, :any, required: true)
-  attr(:last_played, :any, default: nil)
-  attr(:loading, :boolean, default: false)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :playing, AsyncResult, required: true
+  attr :last_played, AsyncResult, default: nil
+  attr :rest, :global
 
   def now_playing(assigns) do
-    assigns = assign(assigns, :has_content, assigns.playing || assigns.last_played)
+    assigns = assign(assigns, :has_content, assigns.playing.result || assigns.last_played.result)
 
     ~H"""
     <div class={["relative flex bg-white p-2.5 rounded-xl shadow-sm", @class]} {@rest}>
-      <.now_playing_cover playing={@playing} last_played={@last_played} loading={@loading} />
+      <.now_playing_cover
+        playing={@playing.result}
+        last_played={@last_played.result}
+        loading={@playing.loading || @last_played.loading}
+      />
 
       <div class={["flex flex-col justify-center", @has_content && "w-64 ml-4"]}>
-        <.playing_indicator is_playing={!!@playing} last_played={!!@last_played} class="line-clamp-1" />
+        <.playing_indicator
+          is_playing={!!@playing.result}
+          last_played={!!@last_played.result}
+          class="line-clamp-1"
+        />
 
-        <%= if @playing do %>
+        <%= if @playing.result do %>
           <div class="leading-6">
             <div class="mt-1.5 font-semibold line-clamp-1">
               <a
-                href={@playing.song_url}
+                href={@playing.result.song_url}
                 target="_blank"
                 class="decoration-emerald-500 decoration-2 underline-offset-2 transition-colors hover:underline"
               >
-                <%= @playing.song %>
+                <%= @playing.result.song %>
               </a>
             </div>
-            <div class="text-sm text-secondary-500 line-clamp-1"><%= @playing.album %></div>
-            <div class="font-medium line-clamp-1"><%= @playing.artist %></div>
+            <div class="text-sm text-secondary-500 line-clamp-1"><%= @playing.result.album %></div>
+            <div class="font-medium line-clamp-1"><%= @playing.result.artist %></div>
           </div>
         <% else %>
-          <div :if={@last_played} class="leading-5">
+          <div :if={@last_played.result} class="leading-5">
             <div class="mt-1.5 font-semibold line-clamp-1">
               <a
-                href={@last_played.song_url}
+                href={@last_played.result.song_url}
                 target="_blank"
                 class="decoration-emerald-500 decoration-2 underline-offset-2 transition-colors hover:underline"
               >
-                <%= @last_played.song %>
+                <%= @last_played.result.song %>
               </a>
             </div>
-            <div class="text-sm text-secondary-500 line-clamp-1"><%= @last_played.album %></div>
-            <div class="font-medium line-clamp-1"><%= @last_played.artist %></div>
+            <div class="text-sm text-secondary-500 line-clamp-1">
+              <%= @last_played.result.album %>
+            </div>
+            <div class="font-medium line-clamp-1"><%= @last_played.result.artist %></div>
           </div>
         <% end %>
       </div>
@@ -76,10 +86,10 @@ defmodule AppWeb.PageComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:playing, :any, required: true)
-  attr(:last_played, :any, default: nil)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :playing, :any, required: true
+  attr :last_played, :any, default: nil
+  attr :rest, :global
 
   def now_playing_mini(assigns) do
     ~H"""
@@ -111,11 +121,11 @@ defmodule AppWeb.PageComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:playing, :any, required: true)
-  attr(:last_played, :any, default: nil)
-  attr(:loading, :boolean, default: false)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :playing, :any, required: true
+  attr :last_played, :any, default: nil
+  attr :loading, :boolean, default: false
+  attr :rest, :global
 
   def now_playing_cover(assigns) do
     ~H"""
@@ -143,10 +153,10 @@ defmodule AppWeb.PageComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:is_playing, :boolean, default: false)
-  attr(:last_played, :boolean, default: false)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :is_playing, :boolean, default: false
+  attr :last_played, :boolean, default: false
+  attr :rest, :global
 
   def playing_indicator(assigns) do
     ~H"""
@@ -169,9 +179,9 @@ defmodule AppWeb.PageComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:is_playing, :boolean, default: false)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :is_playing, :boolean, default: false
+  attr :rest, :global
 
   def playing_icon(assigns) do
     ~H"""
@@ -181,9 +191,10 @@ defmodule AppWeb.PageComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:books, :any, default: [])
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :books, :any, default: []
+  attr :loading, :boolean, default: false
+  attr :rest, :global
 
   def currently_reading(assigns) do
     ~H"""
@@ -195,43 +206,57 @@ defmodule AppWeb.PageComponents do
       ]}
       {@rest}
     >
-      <%= for book <- @books do %>
-        <a
-          href={book.book_url}
-          target="_blank"
-          class="w-44 relative flex flex-col gap-4 group shrink-0 snap-start"
-        >
-          <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
-            <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
-              <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <CoreComponents.icon
-                    name="hero-arrow-top-right-on-square"
-                    class="w-8 h-8 text-white"
-                  />
+      <%= if @loading do %>
+        <div class="flex flex-col items-center gap-4 animate-pulse">
+          <div class="px-8 flex items-center justify-center rounded-md">
+            <CoreComponents.icon
+              name="hero-arrow-path-solid"
+              class="w-8 h-8 bg-neutral-300 animate-spin"
+            />
+          </div>
+          <div class="text-neutral-400">Loading...</div>
+        </div>
+      <% else %>
+        <%= for {dom_id, book} <- @books do %>
+          <a
+            id={dom_id}
+            href={book.book_url}
+            target="_blank"
+            class="w-44 relative flex flex-col gap-4 group shrink-0 snap-start"
+          >
+            <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
+              <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
+                <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <CoreComponents.icon
+                      name="hero-arrow-top-right-on-square"
+                      class="w-8 h-8 text-white"
+                    />
+                  </div>
                 </div>
+                <img src={book.cover_url} alt="book cover" />
               </div>
-              <img src={book.cover_url} alt="book cover" />
             </div>
-          </div>
 
-          <div class="w-full">
-            <div class="font-headings font-semibold text-sm line-clamp-2 decoration-primary-500 decoration-2
+            <div class="w-full">
+              <div class="font-headings font-semibold text-sm line-clamp-2 decoration-primary-500 decoration-2
                   underline-offset-2 transition group-hover:underline">
-              <%= book.title %>
-            </div>
+                <%= book.title %>
+              </div>
 
-            <div class="text-sm text-neutral-600"><%= book.author %></div>
-          </div>
-        </a>
+              <div class="text-sm text-neutral-600"><%= book.author %></div>
+            </div>
+          </a>
+        <% end %>
       <% end %>
     </div>
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:games, :any, default: [])
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :games, :any, default: []
+  attr :loading, :boolean, default: false
+  attr :rest, :global
 
   def recently_played_games(assigns) do
     ~H"""
@@ -243,39 +268,52 @@ defmodule AppWeb.PageComponents do
       ]}
       {@rest}
     >
-      <%= for game <- @games do %>
-        <a
-          href={App.Services.Steam.game_store_url(game["appid"])}
-          target="_blank"
-          class="w-44 relative flex flex-col gap-4 group shrink-0 snap-start"
-        >
-          <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
-            <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
-              <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <CoreComponents.icon
-                    name="hero-arrow-top-right-on-square"
-                    class="w-8 h-8 text-white"
-                  />
+      <%= if @loading do %>
+        <div class="flex flex-col items-center gap-4 animate-pulse">
+          <div class="px-8 flex items-center justify-center rounded-md">
+            <CoreComponents.icon
+              name="hero-arrow-path-solid"
+              class="w-8 h-8 bg-neutral-300 animate-spin"
+            />
+          </div>
+          <div class="text-neutral-400">Loading...</div>
+        </div>
+      <% else %>
+        <%= for {dom_id, game} <- @games do %>
+          <a
+            id={dom_id}
+            href={App.Services.Steam.game_store_url(game["appid"])}
+            target="_blank"
+            class="w-44 relative flex flex-col gap-4 group shrink-0 snap-start"
+          >
+            <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
+              <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
+                <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <CoreComponents.icon
+                      name="hero-arrow-top-right-on-square"
+                      class="w-8 h-8 text-white"
+                    />
+                  </div>
                 </div>
+                <img src={App.Services.Steam.game_thumbnail_url(game["appid"])} alt="game cover" />
               </div>
-              <img src={App.Services.Steam.game_thumbnail_url(game["appid"])} alt="game cover" />
             </div>
-          </div>
 
-          <div class="w-full">
-            <div class="font-headings font-semibold text-sm line-clamp-2 decoration-primary-500 decoration-2
+            <div class="w-full">
+              <div class="font-headings font-semibold text-sm line-clamp-2 decoration-primary-500 decoration-2
                   underline-offset-2 transition group-hover:underline">
-              <%= game["name"] %>
-            </div>
+                <%= game["name"] %>
+              </div>
 
-            <div class="text-sm">
-              <span class="text-neutral-600"><%= format_playtime(game["playtime_2weeks"]) %></span>
-              <span class="text-neutral-400">&bull;</span>
-              <span><%= format_playtime(game["playtime_forever"]) %></span>
+              <div class="text-sm">
+                <span class="text-neutral-600"><%= format_playtime(game["playtime_2weeks"]) %></span>
+                <span class="text-neutral-400">&bull;</span>
+                <span><%= format_playtime(game["playtime_forever"]) %></span>
+              </div>
             </div>
-          </div>
-        </a>
+          </a>
+        <% end %>
       <% end %>
     </div>
     """

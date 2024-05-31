@@ -5,9 +5,8 @@ defmodule App.Services.Goodreads do
   """
 
   require Logger
-  import App.Http
 
-  @cache_ttl :timer.hours(24)
+  @cache_ttl :timer.hours(12)
 
   @base_url "https://www.goodreads.com/review/list/87020422-nuno-freire"
 
@@ -31,16 +30,17 @@ defmodule App.Services.Goodreads do
   end
 
   defp do_get_currently_reading do
-    url = @base_url <> "?shelf=currently-reading"
+    url =
+      @base_url <> "?shelf=currently-reading"
 
-    request(:get, url, [])
+    Req.get(url)
     |> parse_currently_reading_response()
   end
 
-  defp parse_currently_reading_response({:ok, status, body, _headers}) do
-    case status do
+  defp parse_currently_reading_response({:ok, resp}) do
+    case resp.status do
       200 ->
-        {:ok, document} = Floki.parse_document(body)
+        {:ok, document} = Floki.parse_document(resp.body)
 
         books =
           document
@@ -48,6 +48,7 @@ defmodule App.Services.Goodreads do
           |> Floki.find("tr.bookalike")
           |> Enum.map(fn row ->
             %{
+              id: book_id(row),
               title: book_title(row),
               author: book_author(row),
               book_url: book_url(row),
@@ -60,11 +61,19 @@ defmodule App.Services.Goodreads do
         {:ok, books}
 
       _ ->
-        {:error, status}
+        {:error, resp.status}
     end
   end
 
   defp parse_currently_reading_response({:error, _} = error), do: error
+
+  defp book_id(row) do
+    Floki.find(row, ".field.title a")
+    |> Floki.attribute("href")
+    |> Floki.text()
+    |> String.split("/")
+    |> List.last()
+  end
 
   defp book_title(row) do
     Floki.find(row, ".field.title a") |> Floki.attribute("title") |> Floki.text()
@@ -106,13 +115,20 @@ defmodule App.Services.Goodreads do
   defp book_date_started(row) do
     Floki.find(row, ".field .date_started_value")
     |> Floki.text()
-    |> Timex.parse("{Mshort} {D}, {YYYY}")
+    |> maybe_parse_date()
     |> case do
       {:ok, data_started} ->
         data_started
 
       _ ->
         nil
+    end
+  end
+
+  defp maybe_parse_date(date) when is_binary(date) do
+    case Timex.parse(date, "{Mshort} {D}, {YYYY}") do
+      {:ok, date} -> {:ok, date}
+      _ -> Timex.parse(date, "{Mshort} {YYYY}")
     end
   end
 end

@@ -1,27 +1,24 @@
 defmodule AppWeb.HomeLive do
   use AppWeb, :live_view
 
+  alias Phoenix.LiveView.AsyncResult
   alias AppWeb.PageComponents
 
-  @now_playing_update_interval :timer.seconds(30)
+  @now_playing_update_interval :timer.seconds(20)
 
   @impl true
   def render(assigns) do
     ~H"""
     <div class="home">
       <div class="flex flex-wrap gap-8">
-        <PageComponents.now_playing
-          loading={@now_playing_loading}
-          last_played={@last_played}
-          playing={@now_playing}
-        />
+        <PageComponents.now_playing last_played={@last_played} playing={@now_playing} />
 
         <div class="my-4 w-full flex flex-col space-y-12">
           <h2 class="font-medium text-2xl">Currently Reading</h2>
-          <PageComponents.currently_reading books={@currently_reading} />
+          <PageComponents.currently_reading loading={@books_loading} books={@streams.books} />
 
           <h2 class="font-medium text-2xl">Recently Played Games</h2>
-          <PageComponents.recently_played_games games={@recently_played_games} />
+          <PageComponents.recently_played_games games={@streams.games} />
         </div>
       </div>
     </div>
@@ -34,86 +31,113 @@ defmodule AppWeb.HomeLive do
       Process.send(self(), :update_now_playing, [])
     end
 
+    # TODO: Replace with assign_async and streams
     socket =
       socket
       |> assign(:page_title, "Home")
-      |> assign(:now_playing, nil)
-      |> assign(:now_playing_loading, false)
-      |> assign(:now_playing_task, nil)
-      |> assign_currently_reading()
-      |> assign_recently_played_games()
-      |> assign_last_played()
+      |> assign(:now_playing, AsyncResult.loading())
+      |> assign(:books_loading, true)
+      |> assign(:games_loading, true)
+      |> stream_configure(:games, dom_id: &"game-#{&1["appid"]}")
+      |> stream(:books, [])
+      |> stream(:games, [])
+      |> assign_async(:last_played, fn ->
+        {:ok, %{last_played: fetch_recently_played_music()}}
+      end)
+      |> start_async(:fetch_currently_reading, fn -> fetch_currently_reading() end)
+      |> start_async(:fetch_recent_games, fn -> fetch_recent_games() end)
 
     {:ok, socket}
   end
 
   @impl true
   def handle_info(:update_now_playing, socket) do
-    %{ref: ref} = Task.async(fn -> App.Services.get_now_playing() end)
-    {:noreply, assign(socket, now_playing_loading: true, now_playing_task: ref)}
-  end
-
-  def handle_info({ref, result}, %{assigns: %{now_playing_task: ref}} = socket) do
-    Process.demonitor(ref, [:flush])
-
-    socket = assign_now_playing(socket, result)
     Process.send_after(self(), :update_now_playing, @now_playing_update_interval)
 
-    {:noreply, assign(socket, now_playing_loading: false)}
+    socket =
+      socket
+      |> start_async(:fetch_now_playing, fn -> fetch_now_playing() end)
+
+    {:noreply, socket}
   end
 
-  # Handle task :DOWN messages
-  def handle_info({:DOWN, ref, :process, _, _}, %{assigns: %{now_playing_task: ref}} = socket) do
-    Process.demonitor(ref, [:flush])
+  @impl true
+  def handle_async(:fetch_now_playing, {:ok, fetched_now_playing}, socket) do
+    %{now_playing: now_playing} = socket.assigns
 
+    socket =
+      if fetched_now_playing do
+        assign(socket, :now_playing, AsyncResult.ok(now_playing, fetched_now_playing))
+      else
+        assign(
+          socket,
+          :now_playing,
+          AsyncResult.failed(now_playing, "Failed to fetch now playing")
+        )
+      end
+
+    {:noreply, socket}
+  end
+
+  def handle_async(:fetch_now_playing, {:exit, reason}, socket) do
+    %{now_playing: now_playing} = socket.assigns
+
+    {:noreply, assign(socket, :now_playing, AsyncResult.failed(now_playing, {:exit, reason}))}
+  end
+
+  def handle_async(:fetch_currently_reading, {:ok, fetched_books}, socket) do
     {:noreply,
-     assign(socket,
-       now_playing_loading: false,
-       now_playing_task: nil
-     )}
+     socket
+     |> assign(:books_loading, false)
+     |> stream(:books, fetched_books)}
   end
 
-  def handle_info({:DOWN, _, :process, _, _}, socket), do: {:noreply, socket}
+  def handle_async(:fetch_currently_reading, {:exit, _reason}, socket) do
+    {:noreply,
+     socket
+     |> assign(:books_loading, false)
+     |> assign(:books, [])}
+  end
 
-  defp assign_now_playing(socket, response) do
-    case response do
-      {:ok, now_playing} -> assign(socket, :now_playing, now_playing)
-      {:error, _} -> assign(socket, :now_playing, nil)
-      _ -> socket
+  def handle_async(:fetch_recent_games, {:ok, fetched_books}, socket) do
+    {:noreply,
+     socket
+     |> assign(:games_loading, false)
+     |> stream(:games, fetched_books)}
+  end
+
+  def handle_async(:fetch_recent_games, {:exit, _reason}, socket) do
+    {:noreply,
+     socket
+     |> assign(:games_loading, false)
+     |> assign(:games, [])}
+  end
+
+  defp fetch_now_playing do
+    case App.Services.get_now_playing() do
+      {:ok, now_playing} -> now_playing
+      {:error, _} -> nil
     end
   end
 
-  defp assign_last_played(socket) do
-    task = Task.async(fn -> App.Services.get_recently_played_music() end)
-    recently_played_response = Task.await(task)
-
-    case recently_played_response do
-      {:ok, recently_played} ->
-        last_played = recently_played |> List.first()
-        assign(socket, :last_played, last_played)
-
-      {:error, _} ->
-        assign(socket, :last_played, nil)
+  defp fetch_recently_played_music do
+    case App.Services.get_recently_played_music() do
+      {:ok, recently_played} -> recently_played |> List.first()
+      {:error, _} -> nil
     end
   end
 
-  defp assign_currently_reading(socket) do
+  defp fetch_currently_reading do
     case App.Services.get_currently_reading() do
-      {:ok, currently_reading} ->
-        assign(socket, :currently_reading, currently_reading)
-
-      {:error, _} ->
-        assign(socket, :currently_reading, nil)
+      {:ok, currently_reading} -> currently_reading
+      {:error, _} -> nil
     end
   end
 
-  defp assign_recently_played_games(socket) do
+  defp fetch_recent_games do
     case App.Services.get_recently_played_games() do
-      {:ok, recently_played_games} ->
-        assign(socket, :recently_played_games, recently_played_games)
-
-      {:error, _} ->
-        assign(socket, :recently_played_games, nil)
+      {:ok, played_games} -> played_games
+      {:error, _} -> nil
     end
   end
 end

@@ -16,8 +16,6 @@ defmodule App.Application do
       {Phoenix.PubSub, name: App.PubSub},
       # Start Phoenix Presence
       AppWeb.Presence,
-      # Start Finch
-      {Finch, name: App.Finch},
       # Start the Nebulex Cache adapter
       App.Cache,
       # App analytics

@@ -10,11 +10,9 @@ defmodule App.Services.Spotify do
   """
 
   require Logger
-  import App.Http
 
   @cache_ttl :timer.minutes(10)
 
-  @token_endpoint "https://accounts.spotify.com/api/token"
   @api_endpoint "https://api.spotify.com/v1/me/player"
 
   def get_now_playing do
@@ -23,7 +21,7 @@ defmodule App.Services.Spotify do
     case access_token_response do
       {:ok, access_token} ->
         (@api_endpoint <> "/currently-playing")
-        |> get([{"Authorization", "Bearer #{access_token}"}])
+        |> Req.get(auth: {:bearer, access_token})
         |> parse_now_playing_response()
 
       {:error, status} ->
@@ -32,26 +30,23 @@ defmodule App.Services.Spotify do
     end
   end
 
-  defp parse_now_playing_response({:ok, status, response}) do
+  defp parse_now_playing_response({:ok, resp}) do
     cond do
-      status == 200 ->
+      resp.status == 200 ->
         {:ok,
          %{
-           artist: response["item"]["artists"] |> List.first() |> Map.get("name"),
-           song: response["item"]["name"],
-           song_url: response["item"]["external_urls"]["spotify"],
-           album: response["item"]["album"]["name"],
-           album_art: response["item"]["album"]["images"] |> List.first() |> Map.get("url"),
-           duration: response["item"]["duration_ms"],
-           progress: response["progress_ms"],
-           is_playing: response["is_playing"]
+           artist: resp.body["item"]["artists"] |> List.first() |> Map.get("name"),
+           song: resp.body["item"]["name"],
+           song_url: resp.body["item"]["external_urls"]["spotify"],
+           album: resp.body["item"]["album"]["name"],
+           album_art: resp.body["item"]["album"]["images"] |> List.first() |> Map.get("url"),
+           duration: resp.body["item"]["duration_ms"],
+           progress: resp.body["progress_ms"],
+           is_playing: resp.body["is_playing"]
          }}
 
-      status == 204 || status > 400 ->
-        {:error, status}
-
       true ->
-        {:error, status}
+        {:error, resp.status}
     end
   end
 
@@ -84,7 +79,7 @@ defmodule App.Services.Spotify do
     case access_token_response do
       {:ok, access_token} ->
         (@api_endpoint <> "/recently-played?limit=#{limit}")
-        |> get([{"Authorization", "Bearer #{access_token}"}])
+        |> Req.get(auth: {:bearer, access_token})
         |> parse_recently_played_response()
 
       {:error, status} ->
@@ -92,11 +87,11 @@ defmodule App.Services.Spotify do
     end
   end
 
-  defp parse_recently_played_response({:ok, status, response}) do
+  defp parse_recently_played_response({:ok, resp}) do
     cond do
-      status == 200 ->
+      resp.status == 200 ->
         {:ok,
-         response["items"]
+         resp.body["items"]
          |> Enum.map(fn item ->
            %{
              artist: item["track"]["artists"] |> List.first() |> Map.get("name"),
@@ -108,45 +103,36 @@ defmodule App.Services.Spotify do
            }
          end)}
 
-      status == 204 || status > 400 ->
-        {:error, status}
-
       true ->
-        {:error, status}
+        {:error, resp.status}
     end
   end
 
   defp parse_recently_played_response({:error, _} = error), do: error
 
   def get_access_token do
-    query = [
-      client_id: client_id(),
-      client_secret: client_secret(),
-      grant_type: "refresh_token",
-      refresh_token: refresh_token()
-    ]
+    query =
+      [
+        client_id: client_id(),
+        client_secret: client_secret(),
+        grant_type: "refresh_token",
+        refresh_token: refresh_token()
+      ]
 
-    headers = [
-      {"Authorization", "Basic #{auth_token()}"},
-      {"Content-Type", "application/x-www-form-urlencoded"}
-    ]
+    url = "https://accounts.spotify.com/api/token?" <> URI.encode_query(query)
 
-    (@token_endpoint <> "?" <> URI.encode_query(query))
-    |> post(headers)
-    |> decode()
+    Req.post(url,
+      auth: {:basic, "#{client_id()}:#{client_secret()}"},
+      headers: %{"content-type" => "application/x-www-form-urlencoded", "content-length" => 0}
+    )
     |> case do
-      {:ok, 200, %{"access_token" => access_token}} -> {:ok, access_token}
+      {:ok, resp} -> {:ok, resp.body["access_token"]}
       {:error, status} -> {:error, status}
     end
   end
 
   def get_refresh_token(auth_code) do
     base_url = "https://accounts.spotify.com/api/token"
-
-    headers = [
-      {"Authorization", "Basic #{auth_token()}"},
-      {"Content-Type", "application/x-www-form-urlencoded"}
-    ]
 
     query = [
       client_id: client_id(),
@@ -156,9 +142,12 @@ defmodule App.Services.Spotify do
       redirect_uri: "http://localhost:4000/dev/spotify/callback"
     ]
 
-    (base_url <> "?" <> URI.encode_query(query))
-    |> post(headers)
-    |> decode()
+    url = base_url <> "?" <> URI.encode_query(query)
+
+    Req.post(url,
+      auth: {:basic, "#{client_id()}:#{client_secret()}"},
+      headers: %{"content-type" => "application/x-www-form-urlencoded", "content-length" => 0}
+    )
   end
 
   def request_authorization_url do
@@ -173,8 +162,6 @@ defmodule App.Services.Spotify do
 
     base_url <> "?" <> URI.encode_query(query)
   end
-
-  defp auth_token, do: Base.encode64("#{client_id()}:#{client_secret()}")
 
   ## Credentials
 
