@@ -77,17 +77,20 @@ defmodule App.MixProject do
       # TODO: Drop :timex for standard lib?
       {:floki, "~> 0.36"},
       {:timex, "~> 3.7"},
+      {:uuidv7, "~> 0.2"},
       {:earmark, "~> 1.4"},
       {:slugify, "~> 1.3"},
       {:dotenvy, "~> 0.8"},
       {:image, "~> 0.47"},
+      {:iconify_ex, "~> 0.4"},
 
       # Assets
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
 
       # Development
-      {:credo, "~> 1.7", only: [:dev], runtime: false},
+      {:kino, "~> 0.11", only: :dev},
+      {:credo, "~> 1.7", only: :dev, runtime: false},
       {:sobelow, "~> 0.13", only: :dev}
     ]
   end

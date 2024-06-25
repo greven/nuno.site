@@ -25,7 +25,7 @@ defmodule App.Services do
 
   ## Games
 
-  def get_recently_played_games do
-    Steam.get_recently_played_games()
+  def get_recently_played_games(opts \\ []) do
+    Steam.get_recently_played_games(opts)
   end
 end

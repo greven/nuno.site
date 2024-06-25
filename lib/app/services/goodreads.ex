@@ -8,7 +8,7 @@ defmodule App.Services.Goodreads do
 
   @cache_ttl :timer.hours(12)
 
-  @base_url "https://www.goodreads.com/review/list/87020422-nuno-freire"
+  def base_url, do: "https://www.goodreads.com/review/list/87020422-nuno-freire"
 
   def get_currently_reading(opts \\ []) do
     ttl = Keyword.get(opts, :ttl, @cache_ttl)
@@ -30,10 +30,8 @@ defmodule App.Services.Goodreads do
   end
 
   defp do_get_currently_reading do
-    url =
-      @base_url <> "?shelf=currently-reading"
-
-    Req.get(url)
+    "#{base_url()}?shelf=currently-reading"
+    |> Req.get()
     |> parse_currently_reading_response()
   end
 

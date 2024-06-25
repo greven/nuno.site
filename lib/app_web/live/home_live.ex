@@ -15,10 +15,10 @@ defmodule AppWeb.HomeLive do
 
         <div class="my-4 w-full flex flex-col space-y-12">
           <h2 class="font-medium text-2xl">Currently Reading</h2>
-          <PageComponents.currently_reading loading={@books_loading} books={@streams.books} />
+          <PageComponents.currently_reading async={@books_result} books={@streams.books} />
 
           <h2 class="font-medium text-2xl">Recently Played Games</h2>
-          <PageComponents.recently_played_games games={@streams.games} />
+          <PageComponents.recently_played_games async={@games_result} games={@streams.games} />
         </div>
       </div>
     </div>
@@ -36,8 +36,8 @@ defmodule AppWeb.HomeLive do
       socket
       |> assign(:page_title, "Home")
       |> assign(:now_playing, AsyncResult.loading())
-      |> assign(:books_loading, true)
-      |> assign(:games_loading, true)
+      |> assign(:books_result, AsyncResult.loading())
+      |> assign(:games_result, AsyncResult.loading())
       |> stream_configure(:games, dom_id: &"game-#{&1["appid"]}")
       |> stream(:books, [])
       |> stream(:games, [])
@@ -86,30 +86,38 @@ defmodule AppWeb.HomeLive do
   end
 
   def handle_async(:fetch_currently_reading, {:ok, fetched_books}, socket) do
+    %{books_result: books_result} = socket.assigns
+
     {:noreply,
      socket
-     |> assign(:books_loading, false)
+     |> assign(:books_result, AsyncResult.ok(books_result, []))
      |> stream(:books, fetched_books)}
   end
 
-  def handle_async(:fetch_currently_reading, {:exit, _reason}, socket) do
+  def handle_async(:fetch_currently_reading, {:exit, reason}, socket) do
+    %{books_result: books_result} = socket.assigns
+
     {:noreply,
      socket
-     |> assign(:books_loading, false)
+     |> assign(:books_result, AsyncResult.failed(books_result, {:exit, reason}))
      |> assign(:books, [])}
   end
 
   def handle_async(:fetch_recent_games, {:ok, fetched_books}, socket) do
+    %{games_result: games_result} = socket.assigns
+
     {:noreply,
      socket
-     |> assign(:games_loading, false)
+     |> assign(:games_result, AsyncResult.ok(games_result, []))
      |> stream(:games, fetched_books)}
   end
 
-  def handle_async(:fetch_recent_games, {:exit, _reason}, socket) do
+  def handle_async(:fetch_recent_games, {:exit, reason}, socket) do
+    %{games_result: games_result} = socket.assigns
+
     {:noreply,
      socket
-     |> assign(:games_loading, false)
+     |> assign(:games_result, AsyncResult.failed(games_result, {:exit, reason}))
      |> assign(:games, [])}
   end
 

@@ -64,8 +64,9 @@ $RECYCLE.BIN/
 *.code-workspace
 
 # Elixir language server
-.elixir_ls/
+.elixir_ls
 .elixir-tools
+.lexical
 
 # The directory Mix will write compiled artifacts to.
 /_build/

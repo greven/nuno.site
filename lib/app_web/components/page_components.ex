@@ -15,7 +15,7 @@ defmodule AppWeb.PageComponents do
     ~H"""
     <div class="h-10 w-10 rounded-full bg-white/90 p-0.5 shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:ring-white/10">
       <.link navigate={~p"/"} aria-label="Home" class="pointer-events-auto">
-        <img
+        <CoreComponents.image
           src="/images/avatar.png"
           alt="avatar"
           class={[@class, "rounded-full bg-zinc-100 object-cover dark:bg-zinc-800 h-9 w-9"]}
@@ -132,7 +132,11 @@ defmodule AppWeb.PageComponents do
     <div class={["w-32 relative aspect-square shrink-0", @class]} {@rest}>
       <%= cond do %>
         <% @playing -> %>
-          <img class="rounded-lg brightness-110" src={@playing.album_art} />
+          <CoreComponents.image
+            class="rounded-lg brightness-110"
+            src={@playing.album_art}
+            alt="Album cover"
+          />
         <% @loading -> %>
           <div class="flex items-center justify-center rounded-lg bg-neutral-50 aspect-square">
             <CoreComponents.icon
@@ -142,7 +146,11 @@ defmodule AppWeb.PageComponents do
           </div>
         <% true -> %>
           <%= if @last_played do %>
-            <img class="rounded-lg brightness-110" src={@last_played.album_art} />
+            <CoreComponents.image
+              class="rounded-lg brightness-110"
+              src={@last_played.album_art}
+              alt="Album cover"
+            />
           <% else %>
             <div class="flex items-center justify-center rounded-lg bg-neutral-50 aspect-square">
               <CoreComponents.icon name="hero-play-circle-solid" class="w-8 h-8 bg-neutral-200" />
@@ -193,7 +201,7 @@ defmodule AppWeb.PageComponents do
 
   attr :class, :string, default: nil
   attr :books, :any, default: []
-  attr :loading, :boolean, default: false
+  attr :async, AsyncResult, default: nil
   attr :rest, :global
 
   def currently_reading(assigns) do
@@ -206,56 +214,53 @@ defmodule AppWeb.PageComponents do
       ]}
       {@rest}
     >
-      <%= if @loading do %>
-        <div class="flex flex-col items-center gap-4 animate-pulse">
-          <div class="px-8 flex items-center justify-center rounded-md">
-            <CoreComponents.icon
-              name="hero-arrow-path-solid"
-              class="w-8 h-8 bg-neutral-300 animate-spin"
-            />
-          </div>
-          <div class="text-neutral-400">Loading...</div>
-        </div>
-      <% else %>
-        <%= for {dom_id, book} <- @books do %>
-          <a
-            id={dom_id}
-            href={book.book_url}
-            target="_blank"
-            class="w-44 relative flex flex-col gap-4 group shrink-0 snap-start"
-          >
-            <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
-              <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
-                <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
-                  <div class="absolute inset-0 flex items-center justify-center">
-                    <CoreComponents.icon
-                      name="hero-arrow-top-right-on-square"
-                      class="w-8 h-8 text-white"
-                    />
+      <.async_result :let={_books} assign={@async}>
+        <:loading>Loading...</:loading>
+        <:failed>Failed to load books</:failed>
+
+        <%= if @books do %>
+          <%= for {dom_id, book} <- @books do %>
+            <a
+              id={dom_id}
+              href={book.book_url}
+              target="_blank"
+              class="w-44 relative flex flex-col gap-4 group shrink-0 snap-start"
+            >
+              <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
+                <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
+                  <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <CoreComponents.icon
+                        name="hero-arrow-top-right-on-square"
+                        class="w-8 h-8 text-white"
+                      />
+                    </div>
                   </div>
+                  <CoreComponents.image src={book.cover_url} alt="book cover" />
                 </div>
-                <img src={book.cover_url} alt="book cover" />
               </div>
-            </div>
 
-            <div class="w-full">
-              <div class="font-headings font-semibold text-sm line-clamp-2 decoration-primary-500 decoration-2
+              <div class="w-full">
+                <div class="font-headings font-semibold text-sm line-clamp-2 decoration-primary-500 decoration-2
                   underline-offset-2 transition group-hover:underline">
-                <%= book.title %>
-              </div>
+                  <%= book.title %>
+                </div>
 
-              <div class="text-sm text-neutral-600"><%= book.author %></div>
-            </div>
-          </a>
+                <div class="text-sm text-neutral-600"><%= book.author %></div>
+              </div>
+            </a>
+          <% end %>
+        <% else %>
+          Currently not reading any books
         <% end %>
-      <% end %>
+      </.async_result>
     </div>
     """
   end
 
   attr :class, :string, default: nil
   attr :games, :any, default: []
-  attr :loading, :boolean, default: false
+  attr :async, AsyncResult, default: nil
   attr :rest, :global
 
   def recently_played_games(assigns) do
@@ -268,53 +273,55 @@ defmodule AppWeb.PageComponents do
       ]}
       {@rest}
     >
-      <%= if @loading do %>
-        <div class="flex flex-col items-center gap-4 animate-pulse">
-          <div class="px-8 flex items-center justify-center rounded-md">
-            <CoreComponents.icon
-              name="hero-arrow-path-solid"
-              class="w-8 h-8 bg-neutral-300 animate-spin"
-            />
-          </div>
-          <div class="text-neutral-400">Loading...</div>
-        </div>
-      <% else %>
-        <%= for {dom_id, game} <- @games do %>
-          <a
-            id={dom_id}
-            href={App.Services.Steam.game_store_url(game["appid"])}
-            target="_blank"
-            class="w-44 relative flex flex-col gap-4 group shrink-0 snap-start"
-          >
-            <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
-              <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
-                <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
-                  <div class="absolute inset-0 flex items-center justify-center">
-                    <CoreComponents.icon
-                      name="hero-arrow-top-right-on-square"
-                      class="w-8 h-8 text-white"
-                    />
+      <.async_result :let={_games} assign={@async}>
+        <:loading>Loading...</:loading>
+        <:failed>Failed to load games</:failed>
+
+        <%= if @games do %>
+          <%= for {dom_id, game} <- @games do %>
+            <a
+              id={dom_id}
+              href={game["store_url"]}
+              target="_blank"
+              class="w-44 relative flex flex-col gap-4 group shrink-0 snap-start"
+            >
+              <div class="w-full h-auto items-end object-cover object-top group-hover:scale-105 transition-transform">
+                <div class="relative border-4 border-white rounded-md shadow-md overflow-hidden">
+                  <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <CoreComponents.icon
+                        name="hero-arrow-top-right-on-square"
+                        class="w-8 h-8 text-white"
+                      />
+                    </div>
                   </div>
+                  <CoreComponents.image
+                    src={game["thumbnail"]}
+                    width={game["thumbnail_width"]}
+                    height={game["thumbnail_height"]}
+                    alt="game cover"
+                  />
                 </div>
-                <img src={App.Services.Steam.game_thumbnail_url(game["appid"])} alt="game cover" />
               </div>
-            </div>
 
-            <div class="w-full">
-              <div class="font-headings font-semibold text-sm line-clamp-2 decoration-primary-500 decoration-2
+              <div class="w-full">
+                <div class="font-headings font-semibold text-sm line-clamp-2 decoration-primary-500 decoration-2
                   underline-offset-2 transition group-hover:underline">
-                <%= game["name"] %>
-              </div>
+                  <%= game["name"] %>
+                </div>
 
-              <div class="text-sm">
-                <span class="text-neutral-600"><%= format_playtime(game["playtime_2weeks"]) %></span>
-                <span class="text-neutral-400">&bull;</span>
-                <span><%= format_playtime(game["playtime_forever"]) %></span>
+                <div class="text-sm">
+                  <span class="text-neutral-600">
+                    <%= format_playtime(game["playtime_2weeks"]) %>
+                  </span>
+                  <span class="text-neutral-400">&bull;</span>
+                  <span><%= format_playtime(game["playtime_forever"]) %></span>
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
+          <% end %>
         <% end %>
-      <% end %>
+      </.async_result>
     </div>
     """
   end

@@ -145,12 +145,12 @@ defmodule AppWeb.BlogLive do
   end
 
   @impl true
-  def handle_info(%{event: "post_created", payload: new_post}, socket) do
+  def handle_info(%{event: "post_created", payload: _new_post}, socket) do
     # socket = stream_insert(socket, :posts, new_post, at: 0)
     {:noreply, socket}
   end
 
-  def handle_info(%{event: "post_updated", payload: updated_post}, socket) do
+  def handle_info(%{event: "post_updated", payload: _updated_post}, socket) do
     # socket =
     #   socket
     #   |> stream_delete(:posts, updated_post)

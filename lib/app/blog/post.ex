@@ -9,7 +9,7 @@ defmodule App.Blog.Post do
   @optional ~w(image featured status visibility external_link published_date)a
 
   @derive {Phoenix.Param, key: :slug}
-  @primary_key {:id, :binary_id, autogenerate: true}
+  @primary_key {:id, UUIDv7, autogenerate: true}
   schema "posts" do
     field :slug, :string
     field :title, :string

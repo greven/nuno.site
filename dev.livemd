@@ -1,0 +1,21 @@
+# Dev
+
+## Section
+
+```elixir
+image_url = "https://steamcdn-a.akamaihd.net/steam/apps/562500/library_600x900.jpg"
+%{body: image_binary} = Req.get!(image_url)
+
+image = Image.from_binary!(image_binary)
+{width, height, _} = Image.shape(image)
+
+image
+```
+
+```elixir
+{:ok, hash} = Image.Blurhash.encode(image)
+{:ok, blurhash} = Image.Blurhash.decode(hash, width, height)
+
+{:ok, image} = Image.write(blurhash, :memory, suffix: ".jpg")
+Kino.Image.new(image, :jpeg)
+```

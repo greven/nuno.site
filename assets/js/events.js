@@ -19,12 +19,12 @@ export function pageLoadingTransitions() {
   window.addEventListener("phx:page-loading-start", (info) => {
     if (info.detail.kind == "redirect") {
       const main = document.querySelector("main");
-      main.classList.add("phx-page-loading");
+      main?.classList?.add("phx-page-loading");
     }
   });
 
   window.addEventListener("phx:page-loading-stop", (info) => {
     const main = document.querySelector("main");
-    main.classList.remove("phx-page-loading");
+    main?.classList?.remove("phx-page-loading");
   });
 }

@@ -4,8 +4,7 @@ defmodule App.Accounts.User do
 
   @roles ~w(admin editor user)a
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, UUIDv7, autogenerate: true}
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true

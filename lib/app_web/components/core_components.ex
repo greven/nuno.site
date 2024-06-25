@@ -17,8 +17,10 @@ defmodule AppWeb.CoreComponents do
 
   use Phoenix.Component
 
-  alias Phoenix.LiveView.JS
   import AppWeb.Gettext
+
+  alias Phoenix.LiveView.JS
+  alias AppWeb.ComponentsHelpers, as: Helpers
 
   @doc """
   Renders a modal.
@@ -45,13 +47,13 @@ defmodule AppWeb.CoreComponents do
   attr :on_cancel, JS, default: %JS{}
   attr :show_close_button, :boolean, default: true
 
-  attr :modal_class, :string, default: "w-full max-w-3xl p-4 sm:p-6 lg:py-8"
+  attr :modal_class, :any, default: "w-full max-w-3xl p-4 sm:p-6 lg:py-8"
 
-  attr :wrapper_class, :string,
+  attr :wrapper_class, :any,
     default:
       "rounded-2xl bg-white p-14 shadow-lg shadow-secondary-700/10 ring-1 ring-secondary-700/10 transition"
 
-  attr :content_class, :string, default: "relative"
+  attr :content_class, :any, default: "relative"
 
   slot :inner_block, required: true
 
@@ -701,6 +703,29 @@ defmodule AppWeb.CoreComponents do
     """
   end
 
+  @doc """
+  Renders an Iconify icon.
+  To see the available icons, visit [Iconify](https://icon-sets.iconify.design/)
+  or [Icônes](https://icones.js.org).
+
+  ## Examples
+
+      <.icon name="heroicons:paper-airplane" />
+      <.icon name="heroicons:arrow-path-20-solid" class="ml-1 w-3 h-3 animate-spin" />
+  """
+  attr :name, :string, required: true
+  attr :class, :string, default: nil
+
+  def icon(assigns) do
+    ~H"""
+    <%!-- <span class={[@name, @class]} /> --%>
+
+    <Iconify.iconify icon={@name} class={@class} />
+    """
+  end
+
+  @doc false
+
   attr :class, :string, default: nil
   attr :key, :string, default: nil
   attr :modifier, :string, default: nil
@@ -723,32 +748,74 @@ defmodule AppWeb.CoreComponents do
     """
   end
 
-  @doc """
-  Renders a [Heroicon](https://heroicons.com).
+  @doc false
 
-  Heroicons come in three styles – outline, solid, and mini.
-  By default, the outline style is used, but solid and mini may
-  be applied by using the `-solid` and `-mini` suffix.
+  # TODO: Remove the hash_image decoding after we save the hash image to the filesystem
 
-  You can customize the size and colors of the icons by setting
-  width, height, and background color classes.
+  attr :src, :string, required: true
+  attr :alt, :string, required: true
+  attr :width, :integer, default: nil
+  attr :height, :integer, default: nil
+  # attr :hash, :string, default: nil
+  # attr :hash_image, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
 
-  Icons are extracted from your `assets/vendor/heroicons` directory and bundled
-  within your compiled app.css by the plugin in your `assets/tailwind.config.js`.
+  # TODO: Inspiration: Next.js Image Component
+  attr :placeholder, :atom, values: ~w(nil color blur)a, default: nil
+  attr :blur_data_url, :string, default: nil
+  attr :loading, :atom, values: ~w(eager lazy)a, default: :lazy
+  attr :preload, :boolean, default: false
+  # TODO: How to add srcset and sizes attributes?
+  # attr :on_load, JS, default: %JS{}
+  # attr :on_error, JS, default: %JS{}
 
-  ## Examples
+  def image(assigns) do
+    assigns =
+      assigns
+      # |> assign_hashimage()
+      |> assign_new(:id, fn -> Helpers.use_id() end)
 
-      <.icon name="hero-x-mark-solid" />
-      <.icon name="hero-arrow-path" class="ml-1 w-3 h-3 animate-spin" />
-  """
-  attr :name, :string, required: true
-  attr :class, :string, default: nil
+    # |> assign(:class, [not is_nil(assigns.hash_image) && "hidden", assigns.class])
 
-  def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""
-    <span class={[@name, @class]} />
+    <%!-- <img
+      :if={@hash}
+      id={"#{@id}-hash"}
+      class={[@class, "transition-opacity"]}
+      src={data_image_url(@hash_image)}
+      {@rest}
+    />
+    <img
+      id={@id}
+      class={[@class, @hash && "hidden transition-opacity"]}
+      src={@src}
+      phx-hook="Image"
+      data-hash={!!@hash}
+      {@rest}
+    /> --%>
+
+    <img id={@id} class={[@class]} src={@src} {@rest} />
     """
   end
+
+  # defp data_image_url(data), do: "data:image/*;base64,#{Base.encode64(data)}"
+
+  # # TODO: Instead of saving the hash image to memory we should save it to the filesystem (or S3?) and serve it from there. This will allow us to use the image in the future without having to decode it again.
+  # defp assign_hashimage(%{hash: hash, width: width, height: height} = assigns)
+  #      when is_binary(hash) and is_integer(width) and is_integer(height) do
+  #   {:ok, blurhash} = Image.Blurhash.decode(hash, width, height)
+
+  #   case Image.write(blurhash, :memory, suffix: ".jpg") do
+  #     {:ok, image} ->
+  #       assign(assigns, :hash_image, image)
+
+  #     {:error, _} ->
+  #       assigns
+  #   end
+  # end
+
+  # defp assign_hashimage(assigns), do: assigns
 
   ## JS Commands
 
