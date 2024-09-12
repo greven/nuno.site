@@ -56,7 +56,7 @@ config :app, AppWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/app_web/(controllers|live|components)/.*(ex|heex)$",
-      ~r"posts/*/.*(md)$"
+      ~r"priv/content/.*(md|markdown)$"
     ]
   ]
 

@@ -4,20 +4,20 @@ defmodule App.BlogFixtures do
   entities via the `App.Blog` context.
   """
 
-  @doc """
-  Generate a post.
-  """
-  def post_fixture(attrs \\ %{}) do
-    {:ok, post} =
-      attrs
-      |> Enum.into(%{
-        body: "some body",
-        excerpt: "some excerpt",
-        slug: "some slug",
-        title: "some title"
-      })
-      |> App.Blog.create_post()
+  # @doc """
+  # Generate a post.
+  # """
+  # def post_fixture(attrs \\ %{}) do
+  # {:ok, post} =
+  #   attrs
+  #   |> Enum.into(%{
+  #     body: "some body",
+  #     excerpt: "some excerpt",
+  #     slug: "some slug",
+  #     title: "some title"
+  #   })
+  #   |> App.Blog.create_post()
 
-    post
-  end
+  # post
+  # end
 end

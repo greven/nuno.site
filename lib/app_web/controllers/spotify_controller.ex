@@ -5,7 +5,7 @@ defmodule AppWeb.SpotifyController do
   def index(conn, %{"auth_code" => auth_code}) do
     conn =
       case App.Services.Spotify.get_refresh_token(auth_code) do
-        {:ok, status, body} ->
+        {:ok, %Req.Response{body: body, status: status}} ->
           conn
           |> assign(:error, false)
           |> assign(:status, status)

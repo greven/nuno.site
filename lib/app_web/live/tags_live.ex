@@ -25,14 +25,15 @@ defmodule AppWeb.TagsLive do
   end
 
   @impl true
-  def mount(%{"tag" => tag_id}, _session, socket) do
-    tag = App.Blog.get_tag!(tag_id)
+  def mount(%{"tag" => _tag_id}, _session, socket) do
+    # tag = App.Blog.get_tag!(tag_id)
 
     socket =
       socket
       |> assign(:page_title, "Blog")
-      |> assign(:tag, tag)
-      |> assign(:posts, App.Blog.get_posts_by_tag!(tag_id))
+
+    # |> assign(:tag, tag)
+    # |> assign(:posts, App.Blog.get_posts_by_tag!(tag_id))
 
     {:ok, socket}
   end

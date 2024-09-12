@@ -1,0 +1,986 @@
+[
+  {
+    "date": "2008-10-18",
+    "origin": "Lisbon, Portugal",
+    "destination": "Geneva, Switzerland",
+    "airline": "EasyJet"
+  },
+  {
+    "date": "2008-10-20",
+    "origin": "Geneva, Switzerland",
+    "destination": "Lisbon, Portugal",
+    "airline": "EasyJet"
+  },
+  {
+    "date": "2013-08-26",
+    "origin": "Lisbon, Portugal",
+    "destination": "Cancun, Mexico",
+    "airline": "Orbest"
+  },
+  {
+    "date": "2013-09-04",
+    "origin": "Cancun, Mexico",
+    "destination": "Lisbon, Portugal",
+    "airline": "Orbest"
+  },
+  {
+    "date": "2013-11-12",
+    "origin": "Lisbon, Portugal",
+    "destination": "Paris, France",
+    "airline": "Air France"
+  },
+  {
+    "date": "2013-11-12",
+    "origin": "Paris, France",
+    "destination": "Johannesburg, South Africa",
+    "airline": "Air France"
+  },
+  {
+    "date": "2013-11-15",
+    "origin": "Johannesburg, South Africa",
+    "destination": "Maputo, Mozambique",
+    "airline": "LAM"
+  },
+  {
+    "date": "2013-12-24",
+    "origin": "Maputo, Mozambique",
+    "destination": "Johannesburg, South Africa",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2013-12-24",
+    "origin": "Johannesburg, South Africa",
+    "destination": "Amsterdam, Netherlands",
+    "airline": "KLM"
+  },
+  {
+    "date": "2013-12-25",
+    "origin": "Amsterdam, Netherlands",
+    "destination": "Lisbon, Portugal",
+    "airline": "KLM"
+  },
+  {
+    "date": "2014-01-19",
+    "origin": "Lisbon, Portugal",
+    "destination": "Amsterdam, Netherlands",
+    "airline": "KLM"
+  },
+  {
+    "date": "2014-01-19",
+    "origin": "Amsterdam, Netherlands",
+    "destination": "Johannesburg, South Africa",
+    "airline": "KLM"
+  },
+  {
+    "date": "2014-01-23",
+    "origin": "Johannesburg, South Africa",
+    "destination": "Maputo, Mozambique",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2014-04-01",
+    "origin": "Maputo, Mozambique",
+    "destination": "Johannesburg, South Africa",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2014-04-01",
+    "origin": "Johannesburg, South Africa",
+    "destination": "Paris, France",
+    "airline": "KLM"
+  },
+  {
+    "date": "2014-04-02",
+    "origin": "Paris, France",
+    "destination": "Lisbon, Portugal",
+    "airline": "KLM"
+  },
+  {
+    "date": "2014-10-19",
+    "origin": "Lisbon, Portugal",
+    "destination": "Paris, France",
+    "airline": "TAP"
+  },
+  {
+    "date": "2014-10-22",
+    "origin": "Paris, France",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2015-01-06",
+    "origin": "Lisbon, Portugal",
+    "destination": "Amsterdam, Netherlands",
+    "airline": "TAP"
+  },
+  {
+    "date": "2015-01-09",
+    "origin": "Amsterdam, Netherlands",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2015-02-03",
+    "origin": "Lisbon, Portugal",
+    "destination": "Frankfurt, Germany",
+    "airline": "TAP"
+  },
+  {
+    "date": "2015-02-13",
+    "origin": "Frankfurt, Germany",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2015-03-11",
+    "origin": "Lisbon, Portugal",
+    "destination": "Berlin, Germany",
+    "airline": "Privilege Style"
+  },
+  {
+    "date": "2015-03-13",
+    "origin": "Berlin, Germany",
+    "destination": "Lisbon, Portugal",
+    "airline": "Privilege Style"
+  },
+  {
+    "date": "2015-03-28",
+    "origin": "Lisbon, Portugal",
+    "destination": "Dole, France",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2015-04-05",
+    "origin": "Dole, France",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2015-07-18",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2015-07-18",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2015-09-29",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "EasyJet"
+  },
+  {
+    "date": "2015-10-05",
+    "origin": "London, United Kingdom",
+    "destination": "Shannon, Ireland",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2015-10-09",
+    "origin": "Dublin, Ireland",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2015-10-12",
+    "origin": "Lisbon, Portugal",
+    "destination": "Dublin, Ireland",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2015-10-23",
+    "origin": "Dublin, Ireland",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2015-10-26",
+    "origin": "Lisbon, Portugal",
+    "destination": "Dublin, Ireland",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2015-10-30",
+    "origin": "Dublin, Ireland",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2015-11-02",
+    "origin": "Lisbon, Portugal",
+    "destination": "Dublin, Ireland",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2015-11-06",
+    "origin": "Dublin, Ireland",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2015-11-19",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2015-11-23",
+    "origin": "London, United Kingdom",
+    "destination": "Shannon, Ireland",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2015-11-26",
+    "origin": "Shannon, Ireland",
+    "destination": "London, United Kingdom",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2015-11-30",
+    "origin": "London, United Kingdom",
+    "destination": "Shannon, Ireland",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2015-12-03",
+    "origin": "Shannon, Ireland",
+    "destination": "London, United Kingdom",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2015-12-07",
+    "origin": "London, United Kingdom",
+    "destination": "Shannon, Ireland",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2015-12-10",
+    "origin": "Shannon, Ireland",
+    "destination": "London, United Kingdom",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2015-12-14",
+    "origin": "London, United Kingdom",
+    "destination": "Shannon, Ireland",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2015-12-16",
+    "origin": "Shannon, Ireland",
+    "destination": "London, United Kingdom",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2015-12-17",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2016-01-04",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2016-02-05",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-02-14",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-02-15",
+    "origin": "London, United Kingdom",
+    "destination": "Shannon, Ireland",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2016-02-17",
+    "origin": "Shannon, Ireland",
+    "destination": "London, United Kingdom",
+    "airline": "Aer Lingus"
+  },
+  {
+    "date": "2016-02-18",
+    "origin": "London, United Kingdom",
+    "destination": "Dusseldorf, Germany",
+    "airline": "EuroWings"
+  },
+  {
+    "date": "2016-02-20",
+    "origin": "Dusseldorf, Germany",
+    "destination": "London, United Kingdom",
+    "airline": "EuroWings"
+  },
+  {
+    "date": "2016-02-24",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2016-02-28",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-03-18",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2016-03-27",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-05-11",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-05-15",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-06-02",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-06-13",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-07-15",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "EasyJet"
+  },
+  {
+    "date": "2016-07-24",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "Monarch"
+  },
+  {
+    "date": "2016-08-16",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-09-04",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-10-15",
+    "origin": "London, United Kingdom",
+    "destination": "Paris, France",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2016-10-16",
+    "origin": "Paris, France",
+    "destination": "London, United Kingdom",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2016-10-20",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-10-23",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-11-11",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-11-13",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-11-25",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-11-27",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-12-09",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-12-11",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2016-12-23",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-01-01",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2017-01-13",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-01-17",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-01-27",
+    "origin": "Leeds, United Kingdom",
+    "destination": "London, United Kingdom",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2017-01-27",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-01-29",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-02-24",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-02-26",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-03-29",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-04-02",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-04-09",
+    "origin": "London, United Kingdom",
+    "destination": "Leeds, United Kingdom",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2017-04-10",
+    "origin": "Leeds, United Kingdom",
+    "destination": "London, United Kingdom",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2017-04-11",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-04-22",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-05-20",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-05-25",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-09-02",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Dubai, United Arab Emirates",
+    "airline": "Emirates"
+  },
+  {
+    "date": "2017-09-06",
+    "origin": "Dubai, United Arab Emirates",
+    "destination": "Male, Maldives",
+    "airline": "Emirates"
+  },
+  {
+    "date": "2017-09-13",
+    "origin": "Male, Maldives",
+    "destination": "Dubai, United Arab Emirates",
+    "airline": "Emirates"
+  },
+  {
+    "date": "2017-09-14",
+    "origin": "Dubai, United Arab Emirates",
+    "destination": "Manchester, United Kingdom",
+    "airline": "Emirates"
+  },
+  {
+    "date": "2017-09-28",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2017-10-01",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2017-12-02",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-12-11",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-12-22",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2017-12-29",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-01-20",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Berlin, Germany",
+    "airline": "EasyJet"
+  },
+  {
+    "date": "2018-01-23",
+    "origin": "Berlin, Germany",
+    "destination": "Manchester, United Kingdom",
+    "airline": "EasyJet"
+  },
+  {
+    "date": "2018-04-15",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2018-04-23",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2018-05-19",
+    "origin": "Leeds, United Kingdom",
+    "destination": "Amsterdam, Netherlands",
+    "airline": "KLM"
+  },
+  {
+    "date": "2018-05-22",
+    "origin": "Amsterdam, Netherlands",
+    "destination": "Leeds, United Kingdom",
+    "airline": "KLM"
+  },
+  {
+    "date": "2018-08-22",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-09-09",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-09-30",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-10-05",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-11-06",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-11-13",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-11-21",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-12-01",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-12-02",
+    "origin": "Leeds, United Kingdom",
+    "destination": "Warsaw, Poland",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-12-05",
+    "origin": "Warsaw, Poland",
+    "destination": "Leeds, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2018-12-20",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2019-01-05",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2019-01-20",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2019-02-05",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2019-02-14",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2019-02-19",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-02-23",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-03-02",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-03-16",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-03-26",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "Ryanair"
+  },
+  {
+    "date": "2019-04-03",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-04-13",
+    "origin": "Lisbon, Portugal",
+    "destination": "Barcelona, Spain",
+    "airline": "Vueling"
+  },
+  {
+    "date": "2019-04-16",
+    "origin": "Barcelona, Spain",
+    "destination": "Lisbon, Portugal",
+    "airline": "Vueling"
+  },
+  {
+    "date": "2019-05-01",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-05-12",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "EasyJet"
+  },
+  {
+    "date": "2019-05-16",
+    "origin": "Lisbon, Portugal",
+    "destination": "Manchester, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-05-29",
+    "origin": "Manchester, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-06-18",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-06-20",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-07-09",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-07-13",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-08-21",
+    "origin": "Lisbon, Portugal",
+    "destination": "Funchal, Portugal",
+    "airline": "EasyJet"
+  },
+  {
+    "date": "2019-08-30",
+    "origin": "Funchal, Portugal",
+    "destination": "Lisbon, Portugal",
+    "airline": "EasyJet"
+  },
+  {
+    "date": "2019-09-10",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-09-12",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-09-30",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-10-02",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-10-07",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-10-10",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-10-21",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-10-23",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-11-12",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2019-11-16",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "British Airways"
+  },
+  {
+    "date": "2019-12-06",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2019-12-08",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2022-08-18",
+    "origin": "Lisbon, Portugal",
+    "destination": "Madrid, Spain",
+    "airline": "Iberia"
+  },
+  {
+    "date": "2022-08-18",
+    "origin": "Madrid, Spain",
+    "destination": "Lanzerote, Spain",
+    "airline": "Iberia"
+  },
+  {
+    "date": "2022-08-28",
+    "origin": "Lanzerote, Spain",
+    "destination": "Madrid, Spain",
+    "airline": "Iberia"
+  },
+  {
+    "date": "2022-08-28",
+    "origin": "Madrid, Spain",
+    "destination": "Lisbon, Portugal",
+    "airline": "Iberia"
+  },
+  {
+    "date": "2023-05-17",
+    "origin": "Lisbon, Portugal",
+    "destination": "London, United Kingdom",
+    "airline": "TAP"
+  },
+  {
+    "date": "2023-05-19",
+    "origin": "London, United Kingdom",
+    "destination": "Lisbon, Portugal",
+    "airline": "TAP"
+  },
+  {
+    "date": "2024-08-19",
+    "origin": "Lisbon, Portugal",
+    "destination": "Zurich, Switzerland",
+    "airline": "Swiss"
+  },
+  {
+    "date": "2024-08-19",
+    "origin": "Zurich, Switzerland",
+    "destination": "Athens, Greece",
+    "airline": "Aegean Airlines"
+  },
+  {
+    "date": "2024-08-29",
+    "origin": "Santorini, Greece",
+    "destination": "Frankfurt, Germany",
+    "airline": "Discover Airlines"
+  },
+  {
+    "date": "2024-08-29",
+    "origin": "Frankfurt, Germany",
+    "destination": "Lisbon, Portugal",
+    "airline": "Lufthansa"
+  }
+]

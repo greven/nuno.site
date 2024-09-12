@@ -5,7 +5,7 @@ defmodule App.Services.Steam do
 
   require Logger
 
-  alias App.Services.Helpers
+  # alias App.Services.Helpers
 
   @my_id "76561197997074383"
   @cache_ttl :timer.hours(12)
@@ -119,24 +119,24 @@ defmodule App.Services.Steam do
   end
 
   # TODO: Need to rethink how we generate and save this? Should it be client side? Or should we save it in the DB? Or should we save it in the cache? Or should we save it to a file?
-  defp generate_images_hashes(games, keys) do
-    games
-    |> Enum.map(fn game ->
-      Task.Supervisor.async_nolink(App.TaskSupervisor, fn -> hash_game_images(game, keys) end)
-    end)
-    |> Task.await_many()
-  end
+  # defp generate_images_hashes(games, keys) do
+  #   games
+  #   |> Enum.map(fn game ->
+  #     Task.Supervisor.async_nolink(App.TaskSupervisor, fn -> hash_game_images(game, keys) end)
+  #   end)
+  #   |> Task.await_many()
+  # end
 
-  defp hash_game_images(game, keys) do
-    Enum.reduce(keys, game, fn key, acc ->
-      {hash, width, height} = Helpers.encode_image_hash(acc[key])
+  # defp hash_game_images(game, keys) do
+  #   Enum.reduce(keys, game, fn key, acc ->
+  #     {hash, width, height} = Helpers.encode_image_hash(acc[key])
 
-      acc
-      |> Map.put(key <> "_hash", hash)
-      |> Map.put(key <> "_width", width)
-      |> Map.put(key <> "_height", height)
-    end)
-  end
+  #     acc
+  #     |> Map.put(key <> "_hash", hash)
+  #     |> Map.put(key <> "_width", width)
+  #     |> Map.put(key <> "_height", height)
+  #   end)
+  # end
 
   ## Game URLs
 

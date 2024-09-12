@@ -4,7 +4,7 @@ defmodule App.Accounts.User do
 
   @roles ~w(admin editor user)a
 
-  @primary_key {:id, UUIDv7, autogenerate: true}
+  @primary_key {:id, Uniq.UUID, version: 7, autogenerate: true}
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true

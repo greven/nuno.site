@@ -28,10 +28,10 @@ mark {
   padding: theme(spacing[0.5]) theme(spacing[1]);
 }
 
-[iconify] {
+/* [icon] {
   background-color: currentColor;
   -webkit-mask-size: cover;
   mask-size: cover;
   min-width: 0.5rem;
   min-height: 0.5rem;
-}
+} */

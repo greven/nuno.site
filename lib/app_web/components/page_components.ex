@@ -115,7 +115,7 @@ defmodule AppWeb.PageComponents do
         class="h-6 -mr-1 btn-link btn-xs hidden sm:inline-flex"
       >
         <span>Profile</span>
-        <CoreComponents.icon name="hero-arrow-top-right-on-square-mini" class="w-4 h-4" />
+        <CoreComponents.icon name="heroicons:arrow-top-right-on-square-mini" class="w-4 h-4" />
       </.link>
     </div>
     """
@@ -140,7 +140,7 @@ defmodule AppWeb.PageComponents do
         <% @loading -> %>
           <div class="flex items-center justify-center rounded-lg bg-neutral-50 aspect-square">
             <CoreComponents.icon
-              name="hero-arrow-path-solid"
+              name="heroicons:arrow-path-solid"
               class="w-8 h-8 bg-neutral-200 animate-spin"
             />
           </div>
@@ -153,7 +153,7 @@ defmodule AppWeb.PageComponents do
             />
           <% else %>
             <div class="flex items-center justify-center rounded-lg bg-neutral-50 aspect-square">
-              <CoreComponents.icon name="hero-play-circle-solid" class="w-8 h-8 bg-neutral-200" />
+              <CoreComponents.icon name="heroicons:play-circle-solid" class="w-8 h-8 bg-neutral-200" />
             </div>
           <% end %>
       <% end %>
@@ -177,7 +177,7 @@ defmodule AppWeb.PageComponents do
       <% else %>
         <div :if={@last_played} class="flex items-center gap-1.5">
           <CoreComponents.icon
-            name="hero-bolt-slash-solid"
+            name="heroicons:bolt-slash-solid"
             class="w-4 h-4 text-neutral-400 animate-pulse"
           />
           <span :if={@last_played} class="font-medium text-neutral-500">Last Played</span>
@@ -231,7 +231,7 @@ defmodule AppWeb.PageComponents do
                   <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
                     <div class="absolute inset-0 flex items-center justify-center">
                       <CoreComponents.icon
-                        name="hero-arrow-top-right-on-square"
+                        name="heroicons:arrow-top-right-on-square"
                         class="w-8 h-8 text-white"
                       />
                     </div>
@@ -290,7 +290,7 @@ defmodule AppWeb.PageComponents do
                   <div class="absolute inset-0 bg-neutral-900/60 opacity-0 transition-opacity group-hover:opacity-100">
                     <div class="absolute inset-0 flex items-center justify-center">
                       <CoreComponents.icon
-                        name="hero-arrow-top-right-on-square"
+                        name="heroicons:arrow-top-right-on-square"
                         class="w-8 h-8 text-white"
                       />
                     </div>

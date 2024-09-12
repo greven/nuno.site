@@ -2,10 +2,10 @@ defmodule AppWeb.UserAuth do
   @moduledoc false
 
   use AppWeb, :verified_routes
+  use Gettext, backend: AppWeb.Gettext
 
   import Plug.Conn
   import Phoenix.Controller
-  import AppWeb.Gettext
 
   alias Phoenix.LiveView
   alias App.Accounts

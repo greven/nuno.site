@@ -42,8 +42,8 @@ defmodule AppWeb do
         formats: [:html, :json],
         layouts: [html: AppWeb.Layouts]
 
+      use Gettext, backend: AppWeb.Gettext
       import Plug.Conn
-      import AppWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -84,11 +84,12 @@ defmodule AppWeb do
 
   defp html_helpers do
     quote do
+      # Translations
+      use Gettext, backend: AppWeb.Gettext
       # HTML escaping functionality
       import Phoenix.HTML
-      # Core UI components and translation
+      # Core UI components
       import AppWeb.CoreComponents
-      import AppWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

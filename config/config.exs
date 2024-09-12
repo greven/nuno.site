@@ -33,7 +33,7 @@ config :app, App.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.21.4",
+  version: "0.23.1",
   default: [
     args:
       ~w(js/app.js --bundle --target=es2017 --splitting --format=esm --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
@@ -43,7 +43,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.4.3",
+  version: "3.4.10",
   default: [
     args: ~w(
       --config=tailwind.config.js
@@ -65,6 +65,8 @@ config :app, App.Cache,
   max_size: 1_000_000,
   allocated_memory: 100 * 1_000_000,
   gc_interval: :timer.hours(48)
+
+config :app, :env, config_env()
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

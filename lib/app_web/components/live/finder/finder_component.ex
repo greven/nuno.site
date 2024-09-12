@@ -31,7 +31,7 @@ defmodule AppWeb.FinderComponent do
         >
           <div class="relative divide-y divide-gray-100">
             <.icon
-              name="hero-magnifying-glass-mini"
+              name="heroicons:magnifying-glass-mini"
               class="absolute left-4 top-3.5 h-5 w-5 text-neutral-400 pointer-events-none"
             />
             <input

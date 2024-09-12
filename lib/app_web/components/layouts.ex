@@ -72,7 +72,7 @@ defmodule AppWeb.Layouts do
     ~H"""
     <div class="group flex items-center gap-2 hover:cursor-pointer" phx-click={AppWeb.Finder.open()}>
       <.icon
-        name="hero-magnifying-glass-mini"
+        name="heroicons:magnifying-glass-mini"
         class="w-5 h-5 text-secondary-500 group-hover:bg-secondary-700"
       />
       <span class="sr-only">Search</span>

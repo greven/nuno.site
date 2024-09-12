@@ -13,13 +13,13 @@ defmodule AppWeb.HomeLive do
       <div class="flex flex-wrap gap-8">
         <PageComponents.now_playing last_played={@last_played} playing={@now_playing} />
 
-        <div class="my-4 w-full flex flex-col space-y-12">
+        <%!-- <div class="my-4 w-full flex flex-col space-y-12">
           <h2 class="font-medium text-2xl">Currently Reading</h2>
           <PageComponents.currently_reading async={@books_result} books={@streams.books} />
 
           <h2 class="font-medium text-2xl">Recently Played Games</h2>
           <PageComponents.recently_played_games async={@games_result} games={@streams.games} />
-        </div>
+        </div> --%>
       </div>
     </div>
     """
@@ -36,16 +36,17 @@ defmodule AppWeb.HomeLive do
       socket
       |> assign(:page_title, "Home")
       |> assign(:now_playing, AsyncResult.loading())
-      |> assign(:books_result, AsyncResult.loading())
-      |> assign(:games_result, AsyncResult.loading())
-      |> stream_configure(:games, dom_id: &"game-#{&1["appid"]}")
-      |> stream(:books, [])
-      |> stream(:games, [])
+      # |> assign(:books_result, AsyncResult.loading())
+      # |> assign(:games_result, AsyncResult.loading())
+      # |> stream_configure(:games, dom_id: &"game-#{&1["appid"]}")
+      # |> stream(:books, [])
+      # |> stream(:games, [])
       |> assign_async(:last_played, fn ->
         {:ok, %{last_played: fetch_recently_played_music()}}
       end)
-      |> start_async(:fetch_currently_reading, fn -> fetch_currently_reading() end)
-      |> start_async(:fetch_recent_games, fn -> fetch_recent_games() end)
+
+    # |> start_async(:fetch_currently_reading, fn -> fetch_currently_reading() end)
+    # |> start_async(:fetch_recent_games, fn -> fetch_recent_games() end)
 
     {:ok, socket}
   end
@@ -135,17 +136,17 @@ defmodule AppWeb.HomeLive do
     end
   end
 
-  defp fetch_currently_reading do
-    case App.Services.get_currently_reading() do
-      {:ok, currently_reading} -> currently_reading
-      {:error, _} -> nil
-    end
-  end
+  # defp fetch_currently_reading do
+  #   case App.Services.get_currently_reading() do
+  #     {:ok, currently_reading} -> currently_reading
+  #     {:error, _} -> nil
+  #   end
+  # end
 
-  defp fetch_recent_games do
-    case App.Services.get_recently_played_games() do
-      {:ok, played_games} -> played_games
-      {:error, _} -> nil
-    end
-  end
+  # defp fetch_recent_games do
+  #   case App.Services.get_recently_played_games() do
+  #     {:ok, played_games} -> played_games
+  #     {:error, _} -> nil
+  #   end
+  # end
 end

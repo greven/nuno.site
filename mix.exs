@@ -33,8 +33,8 @@ defmodule App.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.7.12"},
-      {:phoenix_live_view, "~> 1.0.0-rc.0", override: true},
+      {:phoenix, "~> 1.7.14"},
+      {:phoenix_live_view, "~> 1.0.0-rc.6", override: true},
       {:phoenix_ecto, "~> 4.6"},
       {:phoenix_live_reload, "~> 1.5", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
@@ -43,11 +43,11 @@ defmodule App.MixProject do
       {:bandit, "~> 1.5"},
 
       # HTTP Client
-      {:req, "~> 0.4"},
+      {:req, "~> 0.5"},
 
       # Database
-      {:ecto_sql, "~> 3.11"},
-      {:ecto_sqlite3, "~> 0.15"},
+      {:ecto_sql, "~> 3.12"},
+      {:ecto_sqlite3, "~> 0.17"},
       # {:litestream, "~> 0.3.0"},
 
       # Mail
@@ -58,31 +58,34 @@ defmodule App.MixProject do
 
       # JSON & CSV
       {:jason, "~> 1.4"},
+      {:nimble_csv, "~> 1.2"},
 
       # i18n
-      {:gettext, "~> 0.24"},
+      {:gettext, "~> 0.26"},
 
       # Telemetry
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.1"},
 
       # Caching
-      {:nebulex, "~> 2.5"},
+      {:nebulex, "~> 2.6"},
       {:decorator, "~> 1.4"},
 
       # Content
-      # {:makeup_elixir, ">= 0.0.0"},
+      {:mdex, "~> 0.1"},
+      {:nimble_publisher, "~> 1.1"},
+      {:phoenix_seo, "~> 0.1"},
+      {:atomex, "~> 0.5"},
 
       # Utils
       # TODO: Drop :timex for standard lib?
       {:floki, "~> 0.36"},
       {:timex, "~> 3.7"},
-      {:uuidv7, "~> 0.2"},
+      {:uniq, "~> 0.6"},
       {:earmark, "~> 1.4"},
-      {:slugify, "~> 1.3"},
       {:dotenvy, "~> 0.8"},
-      {:image, "~> 0.47"},
-      {:iconify_ex, "~> 0.4"},
+      {:image, "~> 0.54"},
+      {:geocalc, "~> 0.8"},
 
       # Assets
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},

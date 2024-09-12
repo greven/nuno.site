@@ -13,8 +13,8 @@ defmodule App.Accounts.UserToken do
   @change_email_validity_in_days 7
   @session_validity_in_days 60
 
-  @primary_key {:id, UUIDv7, autogenerate: true}
-  @foreign_key_type UUIDv7
+  @primary_key {:id, Uniq.UUID, version: 7, autogenerate: true}
+  @foreign_key_type Uniq.UUID
   schema "users_tokens" do
     field :token, :binary
     field :context, :string

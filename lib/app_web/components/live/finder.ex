@@ -13,9 +13,9 @@ defmodule AppWeb.Finder do
   alias AppWeb.FinderLive
 
   @commands [
-    {:nav_home, name: "Home", description: "Go Home", icon: "hero-home"},
-    {:nav_about, name: "About", description: "About me", icon: "hero-user-circle"},
-    {:nav_music, name: "Music", description: "My Music", icon: "hero-musical-note"}
+    {:nav_home, name: "Home", description: "Go Home", icon: "heroicons:home"},
+    {:nav_about, name: "About", description: "About me", icon: "heroicons:user-circle"},
+    {:nav_music, name: "Music", description: "My Music", icon: "heroicons:musical-note"}
   ]
 
   defmacro __using__(_opts) do

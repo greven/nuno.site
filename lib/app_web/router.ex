@@ -8,7 +8,6 @@ defmodule AppWeb.Router do
   alias AppWeb.Plugs
 
   # https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
-  # https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html
   @content_security_policy "style-src 'self' 'unsafe-inline'; script-src 'self' blob:; connect-src 'self' *.nuno.site wss: ws:;"
 
   pipeline :browser do
@@ -42,14 +41,14 @@ defmodule AppWeb.Router do
     live_session :default,
       on_mount: [{AppWeb.UserAuth, :mount_current_user}, AppWeb.Hooks.Links] do
       live "/", HomeLive, :index
-      live "/about", PageLive, :about
+      live "/about", AboutLive, :index
       live "/stats", StatsLive, :index
       live "/music", MusicLive, :index
       live "/books", BooksLive, :index
       live "/games", GamesLive, :index
       live "/updates", UpdatesLive, :index
       live "/writing", BlogLive, :index, as: :blog
-      live "/writing/:slug", BlogLive, :show, as: :blog
+      live "/writing/:id", BlogPostLive, :show, as: :blog
       live "/writing/tags", TagsLive, :index
       live "/writing/tags/:tag", TagsLive, :show
     end

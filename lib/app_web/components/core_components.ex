@@ -1,23 +1,11 @@
 defmodule AppWeb.CoreComponents do
   @moduledoc """
-  Provides core UI components.
-
-  At the first glance, this module may seem daunting, but its goal is
-  to provide some core building blocks in your application, such as modals,
-  tables, and forms. The components are mostly markup and well documented
-  with doc strings and declarative assigns. You may customize and style
-  them in any way you want, based on your application growth and needs.
-
-  The default components use Tailwind CSS, a utility-first CSS framework.
-  See the [Tailwind CSS documentation](https://tailwindcss.com) to learn
-  how to customize them or feel free to swap in another framework altogether.
-
-  Icons are provided by [heroicons](https://heroicons.com). See `icon/1` for usage.
+  Core UI components.
   """
 
   use Phoenix.Component
 
-  import AppWeb.Gettext
+  use Gettext, backend: AppWeb.Gettext
 
   alias Phoenix.LiveView.JS
   alias AppWeb.ComponentsHelpers, as: Helpers
@@ -96,7 +84,7 @@ defmodule AppWeb.CoreComponents do
                   class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
                   aria-label={gettext("close")}
                 >
-                  <.icon name="hero-x-mark-solid" class="w-5 h-5" />
+                  <.icon name="heroicons:x-mark-solid" class="w-5 h-5" />
                 </button>
               </div>
 
@@ -142,13 +130,13 @@ defmodule AppWeb.CoreComponents do
       {@rest}
     >
       <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6">
-        <.icon :if={@kind == :info} name="hero-information-circle-mini" class="w-4 h-4" />
-        <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="w-4 h-4" />
+        <.icon :if={@kind == :info} name="heroicons:information-circle-mini" class="w-4 h-4" />
+        <.icon :if={@kind == :error} name="heroicons:exclamation-circle-mini" class="w-4 h-4" />
         <%= @title %>
       </p>
       <p class="mt-2 text-sm leading-5"><%= msg %></p>
       <button type="button" class="group absolute top-1 right-1 p-2" aria-label={gettext("close")}>
-        <.icon name="hero-x-mark-solid" class="w-5 h-5 opacity-40 group-hover:opacity-70" />
+        <.icon name="heroicons:x-mark-solid" class="w-5 h-5 opacity-40 group-hover:opacity-70" />
       </button>
     </div>
     """
@@ -175,7 +163,7 @@ defmodule AppWeb.CoreComponents do
       phx-connected={hide("#client-error")}
       hidden
     >
-      Attempting to reconnect <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
+      Attempting to reconnect <.icon name="heroicons:arrow-path" class="ml-1 h-3 w-3 animate-spin" />
     </.flash>
 
     <.flash
@@ -187,7 +175,7 @@ defmodule AppWeb.CoreComponents do
       hidden
     >
       Hang in there while we get back on track
-      <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
+      <.icon name="heroicons:arrow-path" class="ml-1 h-3 w-3 animate-spin" />
     </.flash>
     """
   end
@@ -529,7 +517,7 @@ defmodule AppWeb.CoreComponents do
   def error(assigns) do
     ~H"""
     <p class="phx-no-feedback:hidden mt-3 flex gap-3 text-sm leading-6 text-rose-600">
-      <.icon name="hero-exclamation-circle-mini" class="mt-0.5 w-5 h-5 flex-none" />
+      <.icon name="heroicons:exclamation-circle-mini" class="mt-0.5 w-5 h-5 flex-none" />
       <%= render_slot(@inner_block) %>
     </p>
     """
@@ -692,7 +680,7 @@ defmodule AppWeb.CoreComponents do
         navigate={@navigate}
         class="flex items-center gap-1 text-sm font-semibold leading-6 text-secondary-400 no-underline transition-colors hover:text-secondary-800"
       >
-        <.icon name="hero-chevron-left-solid" class="w-3 h-3 stroke-current inline" />
+        <.icon name="heroicons:chevron-left-solid" class="w-3 h-3 stroke-current inline" />
         <%= if length(@inner_block) == 0 do %>
           <%= gettext("Back") %>
         <% else %>
@@ -704,23 +692,19 @@ defmodule AppWeb.CoreComponents do
   end
 
   @doc """
-  Renders an Iconify icon.
-  To see the available icons, visit [Iconify](https://icon-sets.iconify.design/)
-  or [Icônes](https://icones.js.org).
+  Renders an icon.
 
   ## Examples
 
-      <.icon name="heroicons:paper-airplane" />
-      <.icon name="heroicons:arrow-path-20-solid" class="ml-1 w-3 h-3 animate-spin" />
+      <.icon name="paper-airplane" />
+      <.icon name="arrow-path-20-solid" class="ml-1 w-3 h-3 animate-spin" />
   """
   attr :name, :string, required: true
   attr :class, :string, default: nil
 
   def icon(assigns) do
     ~H"""
-    <%!-- <span class={[@name, @class]} /> --%>
-
-    <Iconify.iconify icon={@name} class={@class} />
+    <span class={["icon", @name, @class]} />
     """
   end
 
