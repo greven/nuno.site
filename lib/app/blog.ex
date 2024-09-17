@@ -39,7 +39,7 @@ defmodule App.Blog do
   It supports the following Keyword options:
 
   - `offset` - For pagination page offset.
-  - `limit` - For limiting the number of return results (page size).
+  - `limit` - For limiting the number of results (page size).
   - `status` - An atom or list of atoms to filter the results by status.
   """
   def list_posts(opts \\ []) do

@@ -31,6 +31,7 @@ defmodule App.Geo.Country do
     field :region, :string
     field :subregion, :string
     field :world_region, :string
+    field :eu_member, :boolean
   end
 
   @doc false

@@ -15,7 +15,10 @@ defmodule App.Repo.Migrations.CreateGeoData do
       add :region, :string
       add :subregion, :string
       add :world_region, :string
+      add :eu_member, :boolean, default: false
     end
+
+    create index(:geo_countries, [:name])
 
     create table(:geo_places) do
       add :name, :string, null: false
@@ -29,5 +32,9 @@ defmodule App.Repo.Migrations.CreateGeoData do
       add :feature_code, :string
       add :timezone, :string
     end
+
+    create index(:geo_places, [:name])
+    create index(:geo_places, [:country_code])
+    create index(:geo_places, ["ascii_name COLLATE NOCASE"], name: :geo_places_ascii_name_index)
   end
 end

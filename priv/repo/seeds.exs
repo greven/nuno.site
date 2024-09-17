@@ -36,7 +36,8 @@ App.Repo.insert_all(
       continent: data["continent"],
       region: data["region"],
       subregion: data["subregion"],
-      world_region: data["world_region"]
+      world_region: data["world_region"],
+      eu_member: data["eu_member"]
     ]
   end),
   on_conflict: :nothing

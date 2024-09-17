@@ -6,182 +6,133 @@ defmodule App.Geo do
   # NimbleCSV.define(App.Geo.TSVParser, separator: "\t", escape: "\"")
 
   use Nebulex.Caching
+  import Ecto.Query
 
-  # alias App.Geo.TSVParser
-  # alias App.Geo.Place
+  alias App.Repo
+
+  alias App.Geo.Country
+  alias App.Geo.Place
 
   # ------------------------------------------
   #  Countries
   # ------------------------------------------
 
-  # @decorate cacheable(cache: App.Cache, key: {:cities})
-  # def countries do
-  #   countries_file()
-  #   |> File.read!()
-  #   |> Jason.decode!(keys: :atoms)
-  #   |> Enum.sort_by(fn {_code, data} -> :unicode.characters_to_nfd_binary(data.name) end)
-  # end
+  def list_countries do
+    Country
+    |> order_by(:name)
+    |> Repo.all()
+  end
 
-  # @doc """
-  # Return a list with all country codes (alpha2)
-  # """
-  # def codes(alpha \\ :alpha2)
+  def list_countries_codes(alpha \\ :alpha2)
 
-  # def codes(:alpha2) do
-  #   countries()
-  #   |> Enum.map(fn {_code, data} -> data.alpha2 end)
-  # end
+  @decorate cacheable(cache: App.Cache, key: {:codes_alpha2})
+  def list_countries_codes(:alpha2) do
+    list_countries()
+    |> Stream.map(fn country -> {country.name, country.alpha2} end)
+    |> Enum.sort_by(fn {name, _} -> :unicode.characters_to_nfd_binary(name) end)
+  end
 
-  # def codes(:alpha3) do
-  #   countries()
-  #   |> Enum.map(fn {_code, data} -> data.alpha3 end)
-  # end
+  @decorate cacheable(cache: App.Cache, key: {:codes_alpha3})
+  def list_countries_codes(:alpha3) do
+    list_countries()
+    |> Stream.map(fn country -> {country.name, country.alpha3} end)
+    |> Enum.sort_by(fn {name, _} -> :unicode.characters_to_nfd_binary(name) end)
+  end
 
-  # @doc """
-  # Return a list of two-item tuples with the country name as
-  # the first item and the country ISO code (alpha2) as the second.
-  # """
-  # def country_names do
-  #   countries()
-  #   |> Enum.map(fn {_code, data} -> {data.name, data.alpha2} end)
-  # end
+  def list_countries_where(attribute, value) do
+    Country
+    |> where([c], fragment("? = ?", field(c, ^attribute), ^value))
+    |> Repo.all()
+  end
 
-  # @doc """
-  # Get a country by its country ISO-2 code (alpha2)
-  # """
-  # def get_country(iso_code) when is_binary(iso_code) do
-  #   iso_code = String.upcase(iso_code) |> String.to_existing_atom()
+  @doc """
+  Get a country by its country ISO-2 code (alpha2)
+  """
+  def get_country(alpha2) when is_binary(alpha2) do
+    iso_code = String.upcase(alpha2)
 
-  #   countries()
-  #   |> Map.new()
-  #   |> Map.get(iso_code)
-  # end
+    Country
+    |> where([c], c.alpha2 == ^iso_code)
+    |> Repo.one()
+  end
 
-  # def get_country(iso_code) when is_atom(iso_code) do
-  #   Atom.to_string(iso_code)
-  #   |> get_country()
-  # end
+  def get_country(alpha2) when is_atom(alpha2) do
+    alpha2
+    |> Atom.to_string()
+    |> get_country()
+  end
 
-  # def get_country_by_name(name) do
-  #   countries()
-  #   |> Enum.find(fn {_code, data} ->
-  #     String.downcase(data.name) == String.downcase(name)
-  #   end)
-  #   |> case do
-  #     {_code, data} -> data
-  #     _ -> nil
-  #   end
-  # end
+  def get_country_by_name(name) do
+    Country
+    |> where([c], c.name == ^name)
+    |> Repo.one()
+  end
 
-  # def countries_filter_by(attribute, value) do
-  #   countries()
-  #   |> Enum.filter(fn {_code, data} ->
-  #     Map.get(data, attribute) == value
-  #   end)
-  # end
+  def country_exists?(alpha2) when is_binary(alpha2) do
+    get_country(alpha2) != nil
+  end
 
-  # @doc """
-  # Checks if country with country_code (alpha2) exists
-  # """
-  # def country_exists?(iso_code) when is_binary(iso_code) do
-  #   country_exists_with?(:alpha2, String.upcase(iso_code))
-  # end
+  def country_exists?(alpha2) when is_atom(alpha2) do
+    alpha2
+    |> Atom.to_string()
+    |> country_exists?()
+  end
 
-  # def country_exists?(iso_code) when is_atom(iso_code) do
-  #   country_exists?(Atom.to_string(iso_code))
-  # end
-
-  # def eu_member?(iso_code) do
-  #   case get_country(iso_code) do
-  #     nil -> :not_found
-  #     country -> Map.get(country, :eu_member) == true
-  #   end
-  # end
-
-  # # Checks if the country with attribute value exists
-  # defp country_exists_with?(attribute, value) when is_atom(attribute) do
-  #   countries_filter_by(attribute, value) != []
-  # end
+  def eu_member?(alpha2) do
+    get_country(alpha2)
+    |> case do
+      %Country{eu_member: true} -> true
+      _ -> false
+    end
+  end
 
   # ------------------------------------------
   #  Places (cities, villages, ...)
   # ------------------------------------------
 
-  # TODO: Load the data into the DB... Use Ecto, seed the database, etc.
-
   @doc """
-  List all places.
+  List places.
+
+  It supports the following Keyword options:
+
+  - `offset` - For pagination page offset.
+  - `limit` - For limiting the number of results (page size).
   """
-
-  # def list_places, do: places()
-
-  # def list_places_by_country(iso_code) when is_atom(iso_code) do
-  #   Atom.to_string(iso_code)
-  #   |> list_places_by_country()
-  # end
-
-  # def list_places_by_country(iso_code) when is_binary(iso_code) do
-  #   places()
-  #   |> Enum.filter(fn %Place{country_code: country_code} ->
-  #     country_code == String.upcase(iso_code)
-  #   end)
-  # end
-
-  # @doc """
-  # Find place by name and country.
-  # This always returns the first result even if multiple are returned,
-  # for example, a country might have more than one city with the same name,
-  # in this case the city with the biggest population is the one returned.
-  # """
-  # @decorate cacheable(cache: App.Cache, key: {:place, name, iso_code})
-  # def find_place(name, iso_code) when is_binary(iso_code) do
-  #   places()
-  #   |> Enum.filter(fn %Place{name: city_name, country_code: country_code} ->
-  #     String.downcase(city_name) == String.downcase(name) &&
-  #       String.downcase(country_code) == String.downcase(iso_code)
-  #   end)
-  #   |> Enum.sort_by(& &1.population, :desc)
-  #   |> List.first()
-  # end
-
-  # def find_place(name, iso_code) when is_atom(iso_code) do
-  #   iso_code = Atom.to_string(iso_code)
-  #   find_place(name, iso_code)
-  # end
-
-  # # Parse the cities tsv data file and maps the items.
-  # # @decorate cacheable(cache: App.Cache, key: {:places}, opts: [ttl: :timer.minutes(5)])
-  # defp places do
-  #   maybe_download_cities_file()
-  #   |> File.stream!(read_ahead: 100_000)
-  #   |> Stream.map(fn i -> String.replace(i, "\"", "") end)
-  #   |> TSVParser.parse_stream(skip_headers: false)
-  #   |> Stream.filter(fn
-  #     [_, _, _, _, _, _, _, feature_code, _, _, _, _, _, _, _, _, _, _, _] ->
-  #       feature_code in ["PPL", "PPLC", "PPLA", "PPLA2", "PPLA3"]
-  #   end)
-  # |> Stream.map(fn
-  #   [_, name, ascii, _, lat, lng, _, _, iso2, _, _, _, _, _, pop, _, _, _, _] ->
-  #     %Place{
-  #       name: name,
-  #       ascii_name: ascii,
-  #       country_code: iso2,
-  #       population: pop,
-  #       lat: parse_coordinate(lat),
-  #       lng: parse_coordinate(lng)
-  #     }
-  # end)
-  #   |> Enum.to_list()
-  # end
-
-  def parse_coordinate(str) when is_binary(str) do
-    case Float.parse(str) do
-      :error -> nil
-      {float, _} -> float
-    end
+  def list_places(opts \\ []) do
+    Place
+    |> Repo.all()
   end
 
-  def parse_coordinate(_), do: nil
+  @doc """
+  Find place by name and country.
+  This always returns the first result even if multiple are returned,
+  for example, a country might have more than one city with the same name,
+  in this case the city with the biggest population is the one returned.
+  """
+  @decorate cacheable(cache: App.Cache, key: {:place, name, alpha2})
+  def find_place(name, alpha2) when is_binary(alpha2) do
+    iso_code = String.upcase(alpha2)
+
+    Place
+    |> where([p], p.name == ^name and p.country_code == ^iso_code)
+    |> order_by([p], desc: p.population)
+    |> limit(1)
+    |> Repo.one()
+  end
+
+  @doc """
+  Search for a place by name.
+  Returns a list of places that match the name, it can be a city, village, etc.
+  The differente between this function and `find_place/2` is that this one
+  returns a list of places where `find_place/2` returns only one.
+  """
+  def search_place(name, clauses) do
+    Place
+    |> where([p], fragment("ascii_name LIKE ?", ^"%#{name}%"))
+    |> where([p], ^clauses)
+    |> order_by([p], desc: p.population)
+    |> Repo.all()
+  end
 
   @doc """
   Returns the file path if file exists or download

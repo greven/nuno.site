@@ -78,7 +78,6 @@ defmodule App.MixProject do
       {:atomex, "~> 0.5"},
 
       # Utils
-      # TODO: Drop :timex for standard lib?
       {:floki, "~> 0.36"},
       {:timex, "~> 3.7"},
       {:uniq, "~> 0.6"},
