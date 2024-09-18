@@ -91,16 +91,22 @@ defmodule App.Geo do
   # ------------------------------------------
 
   @doc """
-  List places.
+  List places with pagination.
 
   It supports the following Keyword options:
 
   - `offset` - For pagination page offset.
   - `limit` - For limiting the number of results (page size).
+  - `preload` - A list of associations to preload.
   """
-  def list_places(opts \\ []) do
+  def paginate_places(opts \\ []) do
+    preload = Keyword.get(opts, :preload, [])
+    offset = Keyword.get(opts, :offset)
+    limit = Keyword.get(opts, :limit)
+
     Place
-    |> Repo.all()
+    |> preload(^preload)
+    |> Repo.paginate(limit, offset)
   end
 
   @doc """
@@ -120,11 +126,20 @@ defmodule App.Geo do
     |> Repo.one()
   end
 
+  def find_place(name, alpha2) when is_atom(alpha2) do
+    find_place(name, Atom.to_string(alpha2))
+  end
+
   @doc """
   Search for a place by name.
-  Returns a list of places that match the name, it can be a city, village, etc.
-  The differente between this function and `find_place/2` is that this one
-  returns a list of places where `find_place/2` returns only one.
+  Returns a list of places that contains the passed name,
+  it can be a city, village, etc. The differente between this function
+  and `find_place/2` is that this one returns a list of places where `find_place/2`
+  returns only one.
+
+  It supports the following Keyword options:
+
+  - `clauses` - A list of Ecto.Query clauses to filter the results.
   """
   def search_place(name, clauses) do
     Place
