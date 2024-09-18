@@ -8,6 +8,55 @@ defmodule App.Repo do
   alias Ecto.Query
   alias __MODULE__
 
+  ## Transactions
+
+  @doc """
+  A small wrapper around `Repo.transaction/2'.
+
+  Commits the transaction if the lambda returns `:ok` or `{:ok, result}`,
+  rolling it back if the lambda returns `:error` or `{:error, reason}`. In both
+  cases, the function returns the result of the lambda.
+
+  This function accepts the same options as `Ecto.Repo.transaction/2`.
+
+  Example:
+
+    def register_user(params) do
+      Repo.transaction_with(fn ->
+        with {:ok, user} <- Accounts.create_user(params),
+            {:ok, _log} <- Logs.log_action(:user_registered, user),
+            {:ok, _job} <- Mailer.enqueue_email_confirmation(user) do
+          {:ok, user}
+        end
+      end)
+    end
+  """
+  @spec transaction_with((-> any()), keyword()) :: {:ok, any()} | {:error, any()}
+  def transaction_with(fun, opts \\ []) do
+    transaction_result =
+      transaction(
+        fn repo ->
+          lambda_result =
+            case Function.info(fun, :arity) do
+              {:arity, 0} -> fun.()
+              {:arity, 1} -> fun.(repo)
+            end
+
+          case lambda_result do
+            :ok -> {__MODULE__, :transact, :ok}
+            :error -> rollback({__MODULE__, :transact, :error})
+            {:ok, result} -> result
+            {:error, reason} -> rollback(reason)
+          end
+        end,
+        opts
+      )
+
+    with {outcome, {__MODULE__, :transact, outcome}}
+         when outcome in [:ok, :error] <- transaction_result,
+         do: outcome
+  end
+
   ## Aggregations
 
   @doc """
@@ -36,7 +85,19 @@ defmodule App.Repo do
 
   @doc """
   Paginate the passed query.
-  Offset represents the current page where limit is the number of entries per page.
+  The function accepts either a map with the keys `:page` and `:page_size` or
+  the `page` and `page_size` as keyword list
+  """
+  def paginate(query, %{page: page, page_size: size}) do
+    paginate(query, size, get_offset(page, size))
+  end
+
+  def paginate(query, page: page, page_size: size) do
+    paginate(query, size, get_offset(page, size))
+  end
+
+  @doc """
+  Paginate the passed query using `limit` and `offset` values.
   """
   def paginate(query, limit, offset) when is_binary(offset) do
     paginate(query, String.to_integer(offset), limit: limit)
@@ -69,6 +130,12 @@ defmodule App.Repo do
 
   defp apply_offset(query, nil), do: query
   defp apply_offset(query, offset), do: Query.offset(query, ^offset)
+
+  defp get_offset(page, size) when is_number(page) and is_number(size) do
+    max(0, (page - 1) * size)
+  end
+
+  defp get_offset(_, _), do: 0
 
   defp get_current_page(limit, offset, total_pages) when is_number(offset) and offset > 0 do
     min(ceil(offset / limit) + 1, total_pages)

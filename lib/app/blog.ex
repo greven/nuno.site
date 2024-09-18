@@ -133,6 +133,7 @@ defmodule App.Blog do
   @doc """
   Paginate list items (posts, tags...)
   """
+  # TODO: Convert to page and page_size?
   def paginate(items, opts \\ []) do
     offset = Keyword.get(opts, :offset, 0)
     limit = Keyword.get(opts, :limit)

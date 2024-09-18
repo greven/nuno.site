@@ -100,13 +100,13 @@ defmodule App.Geo do
   - `preload` - A list of associations to preload.
   """
   def paginate_places(opts \\ []) do
+    page = Keyword.get(opts, :page)
+    page_size = Keyword.get(opts, :page_size)
     preload = Keyword.get(opts, :preload, [])
-    offset = Keyword.get(opts, :offset)
-    limit = Keyword.get(opts, :limit)
 
     Place
     |> preload(^preload)
-    |> Repo.paginate(limit, offset)
+    |> Repo.paginate(page: page, page_size: page_size)
   end
 
   @doc """
@@ -141,7 +141,7 @@ defmodule App.Geo do
 
   - `clauses` - A list of Ecto.Query clauses to filter the results.
   """
-  def search_place(name, clauses) do
+  def search_place(name, clauses \\ []) do
     Place
     |> where([p], fragment("ascii_name LIKE ?", ^"%#{name}%"))
     |> where([p], ^clauses)
