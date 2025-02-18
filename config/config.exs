@@ -7,20 +7,20 @@
 # General application configuration
 import Config
 
-config :app,
-  ecto_repos: [App.Repo],
-  generators: [binary_id: true]
+config :site,
+  ecto_repos: [Site.Repo],
+  generators: [binary_id: true, timestamp_type: :utc_datetime]
 
 # Configures the endpoint
-config :app, AppWeb.Endpoint,
+config :site, SiteWeb.Endpoint,
   url: [host: "localhost"],
+  adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: AppWeb.ErrorHTML, json: AppWeb.ErrorJSON],
+    formats: [html: SiteWeb.ErrorHTML, json: SiteWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: App.PubSub,
-  live_view: [signing_salt: "fU1ufwZU"],
-  adapter: Bandit.PhoenixAdapter
+  pubsub_server: Site.PubSub,
+  live_view: [signing_salt: "MbdicE17"]
 
 # Configures the mailer
 #
@@ -29,28 +29,27 @@ config :app, AppWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :app, App.Mailer, adapter: Swoosh.Adapters.Local
+config :site, Site.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.23.1",
-  default: [
+  version: "0.24.2",
+  site: [
     args:
-      ~w(js/app.js --bundle --target=es2017 --splitting --format=esm --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+      ~w(js/app.js --bundle --target=es2020 --splitting --format=esm --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.4.10",
-  default: [
+  version: "4.0.3",
+  site: [
     args: ~w(
-      --config=tailwind.config.js
-      --input=css/app.css
-      --output=../priv/static/assets/app.css
+      --input=assets/css/app.css
+      --output=priv/static/assets/app.css
     ),
-    cd: Path.expand("../assets", __DIR__)
+    cd: Path.expand("../", __DIR__)
   ]
 
 # Configures Elixir's Logger
@@ -59,14 +58,14 @@ config :logger, :console,
   metadata: [:request_id]
 
 # Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
+config :phoenix, :json_library, JSON
 
-config :app, App.Cache,
+config :site, Site.Cache,
   max_size: 1_000_000,
   allocated_memory: 100 * 1_000_000,
   gc_interval: :timer.hours(48)
 
-config :app, :env, config_env()
+config :site, :env, config_env()
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

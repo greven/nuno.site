@@ -1,0 +1,44 @@
+@theme {
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+  --font-headings: "Montserrat", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
+  /* Colors */
+
+  --color-primary-50: oklch(0.9719 0.0108 17.34);
+  --color-primary-100: oklch(0.9396 0.0241 17.59);
+  --color-primary-200: oklch(0.8907 0.0474 16.46);
+  --color-primary-300: oklch(0.815 0.0837 18.11);
+  --color-primary-400: oklch(0.7151 0.1344 19.85);
+  --color-primary-500: oklch(0.6173 0.181 23);
+  --color-primary-600: oklch(0.5622 0.1848 24.45);
+  --color-primary-700: oklch(0.4911 0.1634 24.46);
+  --color-primary-800: oklch(0.434 0.1372 23.95);
+  --color-primary-900: oklch(0.3913 0.1122 22.52);
+  --color-primary-950: oklch(0.2492 0.0622 22.68);
+
+  --color-secondary-50: oklch(0.9829 0.0116 196.97);
+  --color-secondary-100: oklch(0.9495 0.0423 191.01);
+  --color-secondary-200: oklch(0.9037 0.0811 190.99);
+  --color-secondary-300: oklch(0.8211 0.1212 193.06);
+  --color-secondary-400: oklch(0.7605 0.1176 196.36);
+  --color-secondary-500: oklch(0.6749 0.1099 197.95);
+  --color-secondary-600: oklch(0.5658 0.0919 200.66);
+  --color-secondary-700: oklch(0.4827 0.0762 200.99);
+  --color-secondary-800: oklch(0.4158 0.0628 201.11);
+  --color-secondary-900: oklch(0.3701 0.0524 200.78);
+  --color-secondary-950: oklch(0.3152 0.0427 202.43);
+
+  /* Surface colors */
+  --color-surf-1-light: var(--color-neutral-50);
+  --color-surf-2-light: var(--color-neutral-100);
+  --color-surf-1-dark: var(--color-neutral-900);
+  --color-surf-2-dark: var(--color-neutral-800);
+
+  /* Text colors */
+  --color-txt-1-light: var(--color-neutral-800);
+  --color-txt-2-light: var(--color-neutral-700);
+  --color-txt-1-dark: var(--color-neutral-100);
+  --color-txt-2-dark: var(--color-neutral-200);
+}

@@ -2,34 +2,30 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 
+import topbar from "../vendor/topbar";
+
 import hooks from "./hooks";
 import { morphdomOptions } from "./dom";
-import { registerTopbar, pageLoadingTransitions } from "./events";
 
-let csrfToken = document
-  .querySelector("meta[name='csrf-token']")
-  .getAttribute("content");
+let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
 
 let liveSocket = new LiveSocket("/live", Socket, {
+  longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
   dom: morphdomOptions,
   hooks: hooks,
-  metadata: {
-    keydown: (e, el) => {
-      return {
-        key: e.key,
-        metaKey: e.metaKey,
-        repeat: e.repeat,
-      };
-    },
-  },
 });
 
 // Show progress bar on live navigation and form submits
-registerTopbar();
+topbar.config({
+  barColors: { 0: "#DD4C4F" },
+  barThickness: 3,
+  shadowColor: "rgba(0, 0, 0, .3)",
+  shadowBlur: 4,
+});
 
-// Add page loading transitions
-pageLoadingTransitions();
+window.addEventListener("phx:page-loading-start", (_info) => topbar.show(300));
+window.addEventListener("phx:page-loading-stop", (_info) => topbar.hide());
 
 // connect if there are any LiveViews on the page
 liveSocket.connect();

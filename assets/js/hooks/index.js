@@ -1,7 +1,5 @@
-import { Admin } from "./admin";
-import { Image } from "./image";
+import { SiteHeader } from "./site-header";
 
 export default {
-  Admin,
-  Image
+  SiteHeader
 };

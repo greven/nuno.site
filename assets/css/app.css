@@ -1,20 +1,16 @@
-@import "tailwindcss/base";
-@import "./base.css";
-
-@import "tailwindcss/components";
+@import "tailwindcss";
+@import "./variants.css";
+@import "./utilities.css";
 @import "./components.css";
+@import "./fonts.css";
+@import "./theme.css";
 
-@import "tailwindcss/utilities";
-@import "./phoenix.css";
+/* Phoenix Variants */
+@custom-variant phx-click-loading (.phx-click-loading&, .phx-click-loading &);
+@custom-variant phx-submit-loading (.phx-submit-loading&, .phx-submit-loading &);
+@custom-variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);
 
-@layer utilities {
-  .animation-delay-75 {
-    animation-delay: 75ms;
-  }
-  .animation-delay-500 {
-    animation-delay: 500ms;
-  }
-  .animation-delay-1000 {
-    animation-delay: 1s;
-  }
+/* Phoenix Styles */
+[data-phx-root-id] {
+  display: contents;
 }

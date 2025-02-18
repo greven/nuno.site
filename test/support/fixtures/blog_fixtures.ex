@@ -1,23 +1,20 @@
-defmodule App.BlogFixtures do
+defmodule Site.BlogFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `App.Blog` context.
+  entities via the `Site.Blog` context.
   """
 
-  # @doc """
-  # Generate a post.
-  # """
+  @doc """
+  Generate a post.
+  """
   # def post_fixture(attrs \\ %{}) do
-  # {:ok, post} =
-  #   attrs
-  #   |> Enum.into(%{
-  #     body: "some body",
-  #     excerpt: "some excerpt",
-  #     slug: "some slug",
-  #     title: "some title"
-  #   })
-  #   |> App.Blog.create_post()
+  #   {:ok, post} =
+  #     attrs
+  #     |> Enum.into(%{
 
-  # post
+  #     })
+  #     |> Site.Blog.create_post()
+
+  #   post
   # end
 end
