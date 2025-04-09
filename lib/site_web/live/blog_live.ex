@@ -6,7 +6,9 @@ defmodule SiteWeb.BlogLive do
   @impl true
   def render(assigns) do
     ~H"""
-    Blog Live!
+    <Layouts.app flash={@flash} active_link={@active_link}>
+      Blog Live!
+    </Layouts.app>
     """
   end
 end

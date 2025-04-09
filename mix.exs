@@ -9,7 +9,8 @@ defmodule Site.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      listeners: [Phoenix.CodeReloader]
     ]
   end
 
@@ -33,66 +34,65 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.7.19"},
-      {:phoenix_live_view, "~> 1.0.2"},
+      {:phoenix, "~> 1.8.0-rc.0", override: true},
+      {:phoenix_live_view, "~> 1.0"},
       {:phoenix_ecto, "~> 4.6"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_html, "~> 4.2"},
+      {:phoenix_live_reload, "~> 1.5", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
 
       # HTTP server
-      {:bandit, "~> 1.5"},
+      {:bandit, "~> 1.6"},
 
       # Database
       {:ecto_sql, "~> 3.12"},
       {:ecto_sqlite3, ">= 0.0.0"},
       # {:litestream, "~> 0.3.0"},
 
-      # i18n
-      {:gettext, "~> 0.26"},
-
       # Mail
-      {:swoosh, "~> 1.17"},
+      {:swoosh, "~> 1.18"},
 
       # Telemetry
-      {:telemetry_metrics, "~> 1.0"},
+      {:telemetry_metrics, "~> 1.1"},
       {:telemetry_poller, "~> 1.1"},
+
+      # i18n
+      {:gettext, "~> 0.26"},
 
       # Caching
       {:nebulex, "~> 2.6"},
       {:decorator, "~> 1.4"},
 
       # Utils
-      {:uniq, "~> 0.6"},
+      {:req, "~> 0.5"},
+      {:dns_cluster, "~> 0.2"},
+      {:lazy_html, "~> 0.1.0"},
       {:nimble_csv, "~> 1.2"},
-      {:earmark, "~> 1.4"},
-      {:dotenvy, "~> 1.0"},
-      {:image, "~> 0.56"},
-      # {:geocalc, "~> 0.8"},
-      {:dns_cluster, "~> 0.1.3"},
-      {:floki, ">= 0.30.0", only: :test},
+      {:dotenvy, "~> 1.1"},
+      {:geocalc, "~> 0.8"},
+      # {:uniq, "~> 0.6"},
+      # {:earmark, "~> 1.4"},
+      # {:image, "~> 0.56"},
 
       # Assets
-      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
-      # {:iconify_ex, "~> 0.6"},
+      {:esbuild, "~> 0.9", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.3", runtime: Mix.env() == :dev},
+      {:heroicons,
+       github: "tailwindlabs/heroicons",
+       tag: "v2.1.5",
+       sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1},
 
       # Content
       {:mdex, "~> 0.3"},
       {:nimble_publisher, "~> 1.1"},
-      {:phoenix_seo, "~> 0.1"},
-      {:atomex, "~> 0.5"},
+      # {:phoenix_seo, "~> 0.1"},
+      # {:atomex, "~> 0.5"},
 
       # Development
-      {:credo, "~> 1.7", only: :dev, runtime: false},
-
-      # TODO: --> TO REMOVE
-      {:heroicons,
-       github: "tailwindlabs/heroicons",
-       tag: "v2.1.1",
-       sparse: "optimized",
-       app: false,
-       compile: false,
-       depth: 1}
+      {:credo, "~> 1.7", only: :dev, runtime: false}
     ]
   end
 
@@ -114,6 +114,9 @@ defmodule Site.MixProject do
         "tailwind site --minify",
         "esbuild site --minify",
         "phx.digest"
+      ],
+      "vendor.update": [
+        "cmd cd ./assets/vendor && curl -sLO https://raw.githubusercontent.com/buunguyen/topbar/refs/heads/master/topbar.js"
       ]
     ]
   end

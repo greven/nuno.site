@@ -18,7 +18,7 @@ defmodule Site.Application do
       Site.Cache,
       # Site analytics
       Site.Analytics,
-      # Start the Endpoint (http/https)
+      # Start to serve requests, typically the last entry
       SiteWeb.Endpoint
     ]
 
@@ -38,6 +38,6 @@ defmodule Site.Application do
 
   defp skip_migrations?() do
     # By default, sqlite migrations are run when using a release
-    System.get_env("RELEASE_NAME") != nil
+    System.get_env("RELEASE_NAME") == nil
   end
 end

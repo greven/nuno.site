@@ -27,11 +27,6 @@ end
 
 config :site, :steam, api_key: env!("STEAM_API_KEY", :string!)
 
-config :site, :spotify,
-  client_id: env!("SPOTIFY_CLIENT_ID", :string!),
-  client_secret: env!("SPOTIFY_CLIENT_SECRET", :string!),
-  refresh_token: env!("SPOTIFY_REFRESH_TOKEN", :string!)
-
 if config_env() == :prod do
   database_path =
     System.get_env("DATABASE_PATH") ||
@@ -117,7 +112,7 @@ if config_env() == :prod do
   #       domain: System.get_env("MAILGUN_DOMAIN")
   #
   # For this example you need include a HTTP client required by Swoosh API client.
-  # Swoosh supports Hackney and Finch out of the box:
+  # Swoosh supports Hackney, Req and Finch out of the box:
   #
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #

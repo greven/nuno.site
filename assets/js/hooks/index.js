@@ -1,5 +1,5 @@
-import { SiteHeader } from "./site-header";
+import { SiteHeader } from './site-header';
 
 export default {
-  SiteHeader
+  SiteHeader,
 };

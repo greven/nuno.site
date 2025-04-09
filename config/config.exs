@@ -20,7 +20,7 @@ config :site, SiteWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Site.PubSub,
-  live_view: [signing_salt: "MbdicE17"]
+  live_view: [signing_salt: "yb7vRhBT"]
 
 # Configures the mailer
 #
@@ -33,38 +33,40 @@ config :site, Site.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.24.2",
+  version: "0.25.2",
   site: [
     args:
-      ~w(js/app.js --bundle --target=es2020 --splitting --format=esm --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+      ~w(js/app.js --bundle --target=es2022 --splitting --format=esm --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "4.0.3",
+  version: "4.1.2",
   site: [
     args: ~w(
       --input=assets/css/app.css
-      --output=priv/static/assets/app.css
+      --output=priv/static/assets/css/app.css
     ),
-    cd: Path.expand("../", __DIR__)
+    cd: Path.expand("..", __DIR__)
   ]
 
 # Configures Elixir's Logger
-config :logger, :console,
+config :logger, :default_formatter,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, JSON
 
+# Application configuration
 config :site, Site.Cache,
   max_size: 1_000_000,
   allocated_memory: 100 * 1_000_000,
   gc_interval: :timer.hours(48)
 
+# Inject the environment into the config
 config :site, :env, config_env()
 
 # Import environment specific config. This must remain at the bottom

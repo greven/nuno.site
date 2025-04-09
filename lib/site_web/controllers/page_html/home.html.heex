@@ -1,12 +1,3 @@
-<div class="flex w-full flex-col">
-  <.site_header active_link={@active_link} />
-
-  <main id="home" class="relative wrapper text-txt-1-light">
-    <.flash_group flash={@flash} />
-
-    <div class="mt-24">
-      <h1 class="font-headings text-5xl text-txt-1-light">Hello World</h1>
-      <p class="mt-4 text-lg text-txt-2-light">Welcome to my website.</p>
-    </div>
-  </main>
-</div>
+<Layouts.app flash={@flash} active_link={@active_link}>
+  Home Page!
+</Layouts.app>

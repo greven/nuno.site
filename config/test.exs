@@ -14,7 +14,7 @@ config :site, Site.Repo,
 # you can enable the server option below.
 config :site, SiteWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "IUgoA0ERAz4OuCFKhVTqPK2flFpKGqMVRaEt3hgSdEg7zu1ahq5/rXpZ1JCxDRos",
+  secret_key_base: "7Il9LN7yqQUKnZi5vQgetLkpr7oZnBVsbqHc07BJM36tauxJz5JrLVtjYK/jIX4I",
   server: false
 
 # In test we don't send emails

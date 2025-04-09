@@ -4,17 +4,13 @@ defmodule SiteWeb.Router do
   alias SiteWeb.Plugs
   alias SiteWeb.Hooks
 
-  # https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
-  @content_security_policy "style-src 'self' 'unsafe-inline'; script-src 'self' blob:; connect-src 'self' *.nuno.site wss: ws:;"
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, html: {SiteWeb.Layouts, :root}
     plug :protect_from_forgery
-    plug :put_secure_browser_headers, %{"content-security-policy" => @content_security_policy}
-    # plug :fetch_current_user
+    plug :put_secure_browser_headers
     plug Plugs.ActiveLinks
     plug Plugs.BumpMetric
   end
@@ -28,6 +24,7 @@ defmodule SiteWeb.Router do
 
     get "/", PageController, :home
     get "/about", PageController, :about
+    get "/kitchensink", PageController, :sink
 
     live_session :default, on_mount: [Hooks.ActiveLinks] do
       live "/blog", BlogLive, :index

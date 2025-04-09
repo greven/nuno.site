@@ -1,9 +1,0 @@
-/* ---- Table of Contents ---- */
-
-h6#table-of-contents {
-  @apply mt-12 text-lg font-semibold;
-}
-
-h6#table-of-contents + ol {
-  @apply mb-16;
-}

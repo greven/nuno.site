@@ -1,0 +1,202 @@
+<Layouts.app flash={@flash}>
+  <.header>
+    Kitchen Sink
+    <:subtitle>
+      Collection of all the website components
+    </:subtitle>
+
+    <:actions>
+      <Layouts.theme_toggle />
+    </:actions>
+  </.header>
+
+  <div class="my-16 flex flex-col gap-16">
+    <%!--Colours --%>
+
+    <div class="flex flex-col gap-6">
+      <h2 class="text-2xl font-medium">Colours</h2>
+
+      <div class="flex gap-8">
+        <div>
+          <h3 class="text-lg mb-2 text-content-20">Surface</h3>
+          <div class="flex gap-8">
+            <SiteComponents.color_swatch color="--color-surface-10" label="10" />
+            <SiteComponents.color_swatch color="--color-surface-20" label="20" />
+            <SiteComponents.color_swatch color="--color-surface-30" label="30" />
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg mb-2 text-content-20">Content</h3>
+          <div class="flex gap-8">
+            <SiteComponents.color_swatch color="--color-content-10" label="10" />
+            <SiteComponents.color_swatch color="--color-content-20" label="20" />
+            <SiteComponents.color_swatch color="--color-content-30" label="30" />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Gray</h3>
+        <div class="flex gap-8">
+          <SiteComponents.color_swatch color="--color-gray-50" label="50" />
+          <SiteComponents.color_swatch color="--color-gray-100" label="100" />
+          <SiteComponents.color_swatch color="--color-gray-200" label="200" />
+          <SiteComponents.color_swatch color="--color-gray-300" label="300" />
+          <SiteComponents.color_swatch color="--color-gray-400" label="400" />
+          <SiteComponents.color_swatch color="--color-gray-500" label="500" />
+          <SiteComponents.color_swatch color="--color-gray-600" label="600" />
+          <SiteComponents.color_swatch color="--color-gray-700" label="700" />
+          <SiteComponents.color_swatch color="--color-gray-800" label="800" />
+          <SiteComponents.color_swatch color="--color-gray-900" label="900" />
+          <SiteComponents.color_swatch color="--color-gray-950" label="950" />
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Primary</h3>
+        <div class="flex gap-8">
+          <SiteComponents.color_swatch color="--color-primary-contrast" label="C" />
+          <SiteComponents.color_swatch color="--color-primary-lighter" label="LR" />
+          <SiteComponents.color_swatch color="--color-primary-light" label="L" />
+          <SiteComponents.color_swatch color="--color-primary" label="B" />
+          <SiteComponents.color_swatch color="--color-primary-dark" label="D" />
+          <SiteComponents.color_swatch color="--color-primary-darker" label="DR" />
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Secondary</h3>
+        <div class="flex gap-8">
+          <SiteComponents.color_swatch color="--color-secondary-contrast" label="C" />
+          <SiteComponents.color_swatch color="--color-secondary-lighter" label="LR" />
+          <SiteComponents.color_swatch color="--color-secondary-light" label="L" />
+          <SiteComponents.color_swatch color="--color-secondary" label="B" />
+          <SiteComponents.color_swatch color="--color-secondary-dark" label="D" />
+          <SiteComponents.color_swatch color="--color-secondary-darker" label="DR" />
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Info</h3>
+        <div class="flex gap-8">
+          <SiteComponents.color_swatch color="--color-info-contrast" label="C" />
+          <SiteComponents.color_swatch color="--color-info-lighter" label="LR" />
+          <SiteComponents.color_swatch color="--color-info-light" label="L" />
+          <SiteComponents.color_swatch color="--color-info" label="B" />
+          <SiteComponents.color_swatch color="--color-info-dark" label="D" />
+          <SiteComponents.color_swatch color="--color-info-darker" label="DR" />
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Success</h3>
+        <div class="flex gap-8">
+          <SiteComponents.color_swatch color="--color-success-contrast" label="C" />
+          <SiteComponents.color_swatch color="--color-success-lighter" label="LR" />
+          <SiteComponents.color_swatch color="--color-success-light" label="L" />
+          <SiteComponents.color_swatch color="--color-success" label="B" />
+          <SiteComponents.color_swatch color="--color-success-dark" label="D" />
+          <SiteComponents.color_swatch color="--color-success-darker" label="DR" />
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Warning</h3>
+        <div class="flex gap-8">
+          <SiteComponents.color_swatch color="--color-warning-contrast" label="C" />
+          <SiteComponents.color_swatch color="--color-warning-lighter" label="LR" />
+          <SiteComponents.color_swatch color="--color-warning-light" label="L" />
+          <SiteComponents.color_swatch color="--color-warning" label="B" />
+          <SiteComponents.color_swatch color="--color-warning-dark" label="D" />
+          <SiteComponents.color_swatch color="--color-warning-darker" label="DR" />
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Danger</h3>
+        <div class="flex gap-8">
+          <SiteComponents.color_swatch color="--color-danger-contrast" label="C" />
+          <SiteComponents.color_swatch color="--color-danger-lighter" label="LR" />
+          <SiteComponents.color_swatch color="--color-danger-light" label="L" />
+          <SiteComponents.color_swatch color="--color-danger" label="B" />
+          <SiteComponents.color_swatch color="--color-danger-dark" label="D" />
+          <SiteComponents.color_swatch color="--color-danger-darker" label="DR" />
+        </div>
+      </div>
+    </div>
+
+    <%!-- Avatar --%>
+    <div class="flex flex-col gap-6">
+      <h2 class="text-2xl font-medium">Avatar</h2>
+      <div class="flex gap-8">
+        <SiteComponents.avatar_picture />
+      </div>
+    </div>
+
+    <%!-- Buttons --%>
+    <div class="flex flex-col gap-6">
+      <h2 class="text-2xl font-medium">Buttons</h2>
+
+      <%!-- Default --%>
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Default</h3>
+        <div class="flex gap-8">
+          <.button>Default</.button>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Solid</h3>
+        <div class="flex gap-4">
+          <.button variant="solid">Default</.button>
+          <.button variant="solid" color="primary">Primary</.button>
+          <.button variant="solid" color="secondary">Secondary</.button>
+          <.button variant="solid" color="info">Info</.button>
+          <.button variant="solid" color="success">Success</.button>
+          <.button variant="solid" color="warning">Warning</.button>
+          <.button variant="solid" color="danger">Error</.button>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Light</h3>
+        <div class="flex gap-4">
+          <.button variant="light">Default</.button>
+          <.button variant="light" color="primary">Primary</.button>
+          <.button variant="light" color="secondary">Secondary</.button>
+          <.button variant="light" color="info">Info</.button>
+          <.button variant="light" color="success">Success</.button>
+          <.button variant="light" color="warning">Warning</.button>
+          <.button variant="light" color="danger">Error</.button>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Outlined</h3>
+        <div class="flex gap-4">
+          <.button variant="outlined">Default</.button>
+          <.button variant="outlined" color="primary">Primary</.button>
+          <.button variant="outlined" color="secondary">Secondary</.button>
+          <.button variant="outlined" color="info">Info</.button>
+          <.button variant="outlined" color="success">Success</.button>
+          <.button variant="outlined" color="warning">Warning</.button>
+          <.button variant="outlined" color="danger">Error</.button>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Ghost</h3>
+        <div class="flex gap-4">
+          <.button variant="ghost">Default</.button>
+          <.button variant="ghost" color="primary">Primary</.button>
+          <.button variant="ghost" color="secondary">Secondary</.button>
+          <.button variant="ghost" color="info">Info</.button>
+          <.button variant="ghost" color="success">Success</.button>
+          <.button variant="ghost" color="warning">Warning</.button>
+          <.button variant="ghost" color="danger">Error</.button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layouts.app>

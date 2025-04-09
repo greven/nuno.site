@@ -1,17 +1,44 @@
 <!DOCTYPE html>
-<html lang="en" class="[scrollbar-gutter:stable]">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Nuno's Site">
-      {assigns[:page_title] || "Hello World"}
+    <.live_title default="Hello World" suffix=" · Nuno's Site">
+      {assigns[:page_title]}
     </.live_title>
-    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
-    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
+    </script>
+    <script type="text/javascript">
+          (() => {
+        const storageKey = 'phx:theme';
+        const getSystemTheme = () => {
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        const setTheme = (theme) => {
+          if (theme === 'system') {
+            localStorage.removeItem(storageKey);
+            document.documentElement.setAttribute('data-theme', getSystemTheme());
+            document.documentElement.setAttribute('data-theme-mode', 'system');
+          } else {
+            localStorage.setItem(storageKey, theme);
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.setAttribute('data-theme-mode', 'user');
+          }
+        };
+
+        setTheme(localStorage.getItem(storageKey) || 'system');
+
+        window.addEventListener('storage', (e) => e.key === storageKey && setTheme(e.newValue || 'system'));
+        window.addEventListener('phx:set-theme', ({ detail: { theme } }) => setTheme(theme));
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (!localStorage.getItem(storageKey)) { setTheme('system'); }
+        });
+      })();
     </script>
   </head>
-  <body class="relative min-h-screen scroll-smooth bg-surf-1-light">
+  <body>
     {@inner_content}
   </body>
 </html>
