@@ -279,7 +279,10 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <header class={[@actions != [] && "flex items-center justify-between gap-6", "pb-4", @class]}>
       <div>
-        <.dynamic_tag tag_name={@tag} class={["font-medium leading-8", header_font_size(@tag)]}>
+        <.dynamic_tag
+          tag_name={@tag}
+          class={["flex items-center gap-2.5 font-medium leading-9", header_font_size(@tag)]}
+        >
           {render_slot(@inner_block)}
         </.dynamic_tag>
         <p :if={@subtitle != []} class={["text-content-20/70", header_subtitle_font_size(@tag)]}>

@@ -12,7 +12,8 @@ defmodule SiteWeb.Plugs.ActiveLinks do
   defp active_link(conn, _opts) do
     case conn do
       %Plug.Conn{path_info: []} -> assign(conn, :active_link, :home)
-      %Plug.Conn{path_info: ["about" | _]} -> assign(conn, :active_link, :about)
+      %Plug.Conn{path_info: ["about"]} -> assign(conn, :active_link, :about)
+      %Plug.Conn{path_info: ["blog"]} -> assign(conn, :active_link, :blog)
       _ -> assign(conn, :active_link, nil)
     end
   end

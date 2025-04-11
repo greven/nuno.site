@@ -18,7 +18,6 @@ defmodule Site.Blog do
     html_converter: Site.Markdown
 
   @posts Enum.sort_by(@posts, & &1.date, {:desc, Date})
-
   @tags @posts |> Enum.flat_map(& &1.tags) |> Enum.uniq() |> Enum.sort()
 
   @doc """
@@ -114,13 +113,9 @@ defmodule Site.Blog do
       raise NotFoundError, "post with id=#{id} not found"
   end
 
-  @doc """
-  Given a map of attributes, required to create a post,
-  create a new Post struct and the respective markdown file.
-  This is to be used in development as the markdown files
-  need to be committed to the repository.
-  """
-  def create_post(%Post{}) do
+  def get_post_by_slug!(slug) do
+    Enum.find(all_posts(), &(&1.slug == slug)) ||
+      raise NotFoundError, "post with slug=#{slug} not found"
   end
 
   defp maybe_select_fields(posts, fields) do
@@ -156,7 +151,6 @@ defmodule Site.Blog do
   @doc """
   Paginate list items (posts, tags...)
   """
-  # TODO: Convert to page and page_size?
   def paginate(items, opts \\ []) do
     offset = Keyword.get(opts, :offset, 0)
     limit = Keyword.get(opts, :limit)
@@ -169,11 +163,4 @@ defmodule Site.Blog do
       Enum.drop(items, offset)
     end
   end
-
-  # ------------------------------------------
-  #  PubSub
-  # ------------------------------------------
-
-  # def broadcast(event), do: Phoenix.PubSub.broadcast(Site.PubSub, "blog", event)
-  # def subscribe, do: Phoenix.PubSub.subscribe(Site.PubSub, "blog")
 end

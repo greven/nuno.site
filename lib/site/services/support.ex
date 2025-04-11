@@ -1,17 +1,17 @@
 defmodule Site.Services.Support do
-  def encode_image_hash(image_url) when is_binary(image_url) do
-    with {:ok, binary} <- fetch_image(image_url),
-         {:ok, image} <- Image.from_binary(binary),
-         {width, height, _} <- Image.shape(image),
-         {:ok, hash} <- Image.Blurhash.encode(image) do
-      {hash, width, height}
-    else
-      _ ->
-        nil
-    end
-  end
+  # def encode_image_hash(image_url) when is_binary(image_url) do
+  #   with {:ok, binary} <- fetch_image(image_url),
+  #        {:ok, image} <- Image.from_binary(binary),
+  #        {width, height, _} <- Image.shape(image),
+  #        {:ok, hash} <- Image.Blurhash.encode(image) do
+  #     {hash, width, height}
+  #   else
+  #     _ ->
+  #       nil
+  #   end
+  # end
 
-  def encode_image_hash(_), do: nil
+  # def encode_image_hash(_), do: nil
 
   def fetch_image(image_url) do
     case Req.get(image_url) do

@@ -1,7 +1,7 @@
 defmodule SiteWeb.FinderComponent do
-  @moduledoc """
-  A finder / command palette that provides search and navigation functionality to the website.
-  """
+  # @moduledoc """
+  # A finder / command palette that provides search and navigation functionality to the website.
+  # """
 
   # use SiteWeb, :live_component
 

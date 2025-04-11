@@ -9,8 +9,6 @@ defmodule SiteWeb.Layouts do
   """
   use SiteWeb, :html
 
-  alias SiteWeb.SiteComponents
-
   embed_templates "layouts/*"
 
   def app(assigns) do
@@ -19,55 +17,15 @@ defmodule SiteWeb.Layouts do
       |> assign_new(:active_link, fn -> nil end)
 
     ~H"""
-    <.site_header active_link={@active_link} />
+    <div class="min-h-screen flex flex-col">
+      <.site_header active_link={@active_link} />
 
-    <main id="main" class="relative wrapper flex-auto sm:px-8 mt-16 lg:mt-32">
-      {render_slot(@inner_block)}
-    </main>
+      <main id="main" class="relative wrapper flex-auto sm:px-8 mt-16 lg:mt-32">
+        {render_slot(@inner_block)}
+      </main>
 
-    <.flash_group flash={@flash} />
-    """
-  end
-
-  @doc """
-  Shows the flash group with standard titles and content.
-
-  ## Examples
-
+      <.site_footer />
       <.flash_group flash={@flash} />
-  """
-  attr :flash, :map, required: true, doc: "the map of flash messages"
-  attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
-
-  def flash_group(assigns) do
-    ~H"""
-    <div id={@id} aria-live="polite">
-      <.flash kind={:info} flash={@flash} />
-      <.flash kind={:error} flash={@flash} />
-
-      <.flash
-        id="client-error"
-        kind={:error}
-        title={gettext("We can't find the internet")}
-        phx-disconnected={show(".phx-client-error #client-error") |> JS.remove_attribute("hidden")}
-        phx-connected={hide("#client-error") |> JS.set_attribute({"hidden", ""})}
-        hidden
-      >
-        {gettext("Attempting to reconnect")}
-        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 motion-safe:animate-spin" />
-      </.flash>
-
-      <.flash
-        id="server-error"
-        kind={:error}
-        title={gettext("Something went wrong!")}
-        phx-disconnected={show(".phx-client-error #client-error") |> JS.remove_attribute("hidden")}
-        phx-connected={hide("#client-error") |> JS.set_attribute({"hidden", ""})}
-        hidden
-      >
-        {gettext("Hang in there while we get back on track")}
-        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 motion-safe:animate-spin" />
-      </.flash>
     </div>
     """
   end
@@ -94,18 +52,45 @@ defmodule SiteWeb.Layouts do
     >
       <div class="wrapper">
         <div class="flex items-center justify-between py-3">
-          <div class="flex items-center gap-3.5">
-            <SiteComponents.avatar_picture link />
-            <span class="font-headings flex items-baseline gap-0.5">
-              <span class="text-2xl text-content-10">nuno</span>
-              <span class="font-semibold text-xl text-primary">.</span>
-              <span class="text-xl text-content-20">site</span>
-            </span>
-          </div>
+          <.site_logo />
           <.site_nav {assigns} />
         </div>
       </div>
     </header>
+    """
+  end
+
+  @doc false
+
+  def site_logo(assigns) do
+    ~H"""
+    <.link href={~p"/"} class="flex items-center">
+      <span class="font-headings flex items-baseline gap-0.5">
+        <span class="text-2xl text-content-10">nuno</span>
+        <span class="font-semibold text-xl text-primary">.</span>
+        <span class="text-xl text-content-20">site</span>
+      </span>
+    </.link>
+    """
+  end
+
+  @doc false
+
+  def site_footer(assigns) do
+    ~H"""
+    <footer class="wrapper">
+      <div class="my-4 flex items-center gap-1 justify-center text-sm text-content-30">
+        <span class="font-light">
+          <span class="">&copy; {Date.utc_today().year}, Made with</span>
+          <.icon name="hero-heart-solid" class="size-4 bg-primary dark:bg-primary-dark" />
+          by Nuno Freire
+        </span>
+        <span class="font-light text-content-40 opacity-75">&bull;</span>
+        <span class="font-light underline underline-offset-2 hover:decoration-primary transition-colors">
+          <a href="/sitemap">Sitemap</a>
+        </span>
+      </div>
+    </footer>
     """
   end
 
@@ -156,6 +141,64 @@ defmodule SiteWeb.Layouts do
     >
       {render_slot(@inner_block)}
     </.link>
+    """
+  end
+
+  @doc false
+
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :inner_block, required: true
+
+  def page_content(assigns) do
+    ~H"""
+    <div class={["mt-16 relative", @class]} {@rest}>
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  @doc """
+  Shows the flash group with standard titles and content.
+
+  ## Examples
+
+      <.flash_group flash={@flash} />
+  """
+  attr :flash, :map, required: true, doc: "the map of flash messages"
+  attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
+
+  def flash_group(assigns) do
+    ~H"""
+    <div id={@id} aria-live="polite">
+      <.flash kind={:info} flash={@flash} />
+      <.flash kind={:error} flash={@flash} />
+
+      <.flash
+        id="client-error"
+        kind={:error}
+        title={gettext("We can't find the internet")}
+        phx-disconnected={show(".phx-client-error #client-error") |> JS.remove_attribute("hidden")}
+        phx-connected={hide("#client-error") |> JS.set_attribute({"hidden", ""})}
+        hidden
+      >
+        {gettext("Attempting to reconnect")}
+        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 motion-safe:animate-spin" />
+      </.flash>
+
+      <.flash
+        id="server-error"
+        kind={:error}
+        title={gettext("Something went wrong!")}
+        phx-disconnected={show(".phx-client-error #client-error") |> JS.remove_attribute("hidden")}
+        phx-connected={hide("#client-error") |> JS.set_attribute({"hidden", ""})}
+        hidden
+      >
+        {gettext("Hang in there while we get back on track")}
+        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 motion-safe:animate-spin" />
+      </.flash>
+    </div>
     """
   end
 

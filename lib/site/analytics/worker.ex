@@ -37,6 +37,6 @@ defmodule Site.Analytics.Worker do
   def terminate(_, {path, counter}), do: Site.Analytics.upsert_page_counter!(path, counter)
 
   defp schedule_upsert() do
-    Process.send_after(self(), :upsert, Enum.random(5..20) * 1_000)
+    Process.send_after(self(), :upsert, Enum.random(5..12) * 1_000)
   end
 end

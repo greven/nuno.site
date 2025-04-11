@@ -1,4 +1,8 @@
 defmodule SiteWeb.Hooks.ActiveLinks do
+  @moduledoc """
+  A Plug that sets the active link and breadcrumbs for LiveViews.
+  """
+
   use Phoenix.Component
   import Phoenix.LiveView
 
@@ -12,8 +16,9 @@ defmodule SiteWeb.Hooks.ActiveLinks do
   defp handle_active_link_params(_params, _url, socket) do
     active_link =
       case {socket.view, socket.assigns.live_action} do
-        {SiteWeb.BlogLive, _} -> :blog
-        # {SiteWeb.AdminLive, _} -> :admin
+        # {SiteWeb.AdminLive.Index, _} -> :admin
+        {SiteWeb.BlogLive.Index, _} -> :blog
+        {SiteWeb.BlogLive.Show, _} -> :blog
         {_, _} -> nil
       end
 

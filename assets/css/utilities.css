@@ -1,5 +1,13 @@
+@utility animate-spin-slow {
+  @apply animate-spin;
+}
+
 @layer utilities {
   .wrapper {
     @apply w-screen mx-auto max-w-5xl px-4 sm:px-16 lg:px-20;
+  }
+
+  .link {
+    @apply underline underline-offset-2 decoration-2 decoration-content-20 hover:decoration-primary transition-colors;
   }
 }

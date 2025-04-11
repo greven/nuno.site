@@ -1,26 +1,26 @@
 defmodule SiteWeb.FinderLive do
-  @doc """
-  LiveView functionality for the finder that attaches hooks to the socket.
-  This module is haavily based on the `command_k` hex package.
-  """
+  # @doc """
+  # LiveView functionality for the finder that attaches hooks to the socket.
+  # This module is haavily based on the `command_k` hex package.
+  # """
 
-  import Phoenix.LiveView
+  # import Phoenix.LiveView
   # import Phoenix.Component
 
   # alias Phoenix.LiveView.JS
 
   # alias SiteWeb.Finder
 
-  def on_mount(:default, _params, _session, socket) do
-    # socket =
-    #   socket
-    #   |> assign(show_finder: false)
-    #   |> assign(finder_context: %{})
-    #   |> attach_hook(:__finder_event__, :handle_event, &handle_finder_event/3)
-    #   |> attach_hook(:__finder_info__, :handle_info, &handle_finder_info/2)
+  # def on_mount(:default, _params, _session, socket) do
+  # socket =
+  #   socket
+  #   |> assign(show_finder: false)
+  #   |> assign(finder_context: %{})
+  #   |> attach_hook(:__finder_event__, :handle_event, &handle_finder_event/3)
+  #   |> attach_hook(:__finder_info__, :handle_info, &handle_finder_info/2)
 
-    {:cont, socket}
-  end
+  # {:cont, socket}
+  # end
 
   ## Events
 

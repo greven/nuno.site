@@ -17,7 +17,7 @@ alias Site.Geo.TSVParser
 ## Geodata
 
 countries_file = Path.join([:code.priv_dir(:site), "data/countries.json"])
-countries_data = File.read!(countries_file) |> Jason.decode!()
+countries_data = File.read!(countries_file) |> JSON.decode!()
 
 IO.puts("Inserting countries...")
 

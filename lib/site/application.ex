@@ -14,6 +14,8 @@ defmodule Site.Application do
        repos: Application.fetch_env!(:site, :ecto_repos), skip: skip_migrations?()},
       {DNSCluster, query: Application.get_env(:site, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Site.PubSub},
+      # Start Phoenix Presence
+      SiteWeb.Presence,
       # Nebulex Cache adapter
       Site.Cache,
       # Site analytics

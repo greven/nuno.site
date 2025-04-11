@@ -16,4 +16,21 @@ defmodule Site.Support do
   end
 
   def format_number(number), do: number
+
+  @doc """
+  Create URL-friendly slugs.
+  """
+  def slugify(string, options \\ []) do
+    separator = Keyword.get(options, :separator, "-")
+    lowercase? = Keyword.get(options, :lowercase, true)
+
+    string
+    |> maybe_downcase(lowercase?)
+    |> String.replace(~r/[^a-z0-9\s-]/, "")
+    |> String.replace(~r/\s+/, separator)
+    |> String.trim(separator)
+  end
+
+  defp maybe_downcase(string, true), do: String.downcase(string)
+  defp maybe_downcase(string, false), do: string
 end

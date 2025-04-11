@@ -24,11 +24,13 @@ defmodule SiteWeb.Router do
 
     get "/", PageController, :home
     get "/about", PageController, :about
-    get "/kitchensink", PageController, :sink
+    get "/sitemap", PageController, :sitemap
+    get "/sink", PageController, :sink
 
-    live_session :default, on_mount: [Hooks.ActiveLinks] do
-      live "/blog", BlogLive, :index
-      # live "/blog/:id", BlogPostLive, :show
+    live_session :default,
+      on_mount: [Hooks.ActiveLinks, Hooks.Metrics] do
+      live "/blog", BlogLive.Index, :index
+      live "/blog/:year/:slug", BlogLive.Show, :show
     end
   end
 

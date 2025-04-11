@@ -1,17 +1,18 @@
 /* See the Tailwind configuration guide for advanced usage
    https://tailwindcss.com/docs/configuration */
 
-@import "tailwindcss" source(none);
+@import 'tailwindcss' source(none);
 @source "../../lib/site_web";
 @source "../css";
 @source "../js";
 
-@import "./base.css";
-@import "./fonts.css";
-@import "./theme.css";
-@import "./variants.css";
-@import "./utilities.css";
-@import "./components.css";
+@import './base.css';
+@import './fonts.css';
+@import './theme.css';
+@import './variants.css';
+@import './utilities.css';
+@import './components.css';
+@import './pages.css';
 
 /* Plugins */
 @plugin "../vendor/heroicons";

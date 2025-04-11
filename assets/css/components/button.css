@@ -1,6 +1,8 @@
 .btn {
+  /* TODO: Conver the apply to CSS styles? */
   @apply relative inline-flex flex-nowrap flex-shrink-0 items-center justify-center overflow-hidden whitespace-nowrap
     text-sm transition-all cursor-pointer align-middle text-center no-underline;
+
   border-style: solid;
   border-width: var(--btn-border);
   border-color: var(--btn-border-color);

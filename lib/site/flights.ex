@@ -41,7 +41,7 @@ defmodule Site.Flights do
   defp flights do
     flights_file()
     |> File.read!()
-    |> Jason.decode!()
+    |> JSON.decode!()
     |> Stream.map(fn item ->
       Map.put(item, "date", Date.from_iso8601!(item["date"]))
     end)
@@ -73,5 +73,5 @@ defmodule Site.Flights do
   #   [dest_city_name, dest_country_name] = String.split(destination, ", ")
   # end
 
-  defp flights_file, do: Path.join([:code.priv_dir(:app), "content/flights.json"])
+  defp flights_file, do: Path.join([:code.priv_dir(:site), "content/flights.json"])
 end

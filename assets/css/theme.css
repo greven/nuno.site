@@ -10,17 +10,19 @@
 
 /* Colors */
 @theme {
-  --neutral-base: var(--color-neutral-500);
+  --neutral-base: var(--color-zinc-500);
 
   /* Surface */
   --color-surface-10: oklch(0.98 0 0);
   --color-surface-20: oklch(0.94 0 0);
   --color-surface-30: oklch(0.86 0 0);
+  --color-surface-40: oklch(0.68 0 0);
 
   /* Content */
   --color-content-10: oklch(from var(--neutral-base) 0.34 0 h);
   --color-content-20: oklch(from var(--neutral-base) 0.44 0 h);
   --color-content-30: oklch(from var(--neutral-base) 0.54 0 h);
+  --color-content-40: oklch(from var(--neutral-base) 0.64 0 h);
 
   /* Gray (Neutral) */
   --color-gray-*: initial;
@@ -41,7 +43,7 @@
   --color-primary: oklch(0.62 0.17 23);
   --color-primary-light: oklch(from var(--color-primary) calc(l * 1.15) calc(c * 0.9) h);
   --color-primary-lighter: oklch(from var(--color-primary) calc(l * 1.35) calc(c * 0.5) h);
-  --color-primary-dark: oklch(from var(--color-primary) calc(l * 0.85) calc(c * 0.9) h);
+  --color-primary-dark: oklch(from var(--color-primary) calc(l * 0.86) calc(c * 0.9) h);
   --color-primary-darker: oklch(from var(--color-primary) calc(l * 0.7) calc(c * 0.75) h);
   --color-primary-contrast: oklch(from var(--color-primary) 99% 1% h);
 
@@ -112,9 +114,11 @@
     --color-surface-10: oklch(from var(--neutral-base) 0.18 0.005 h);
     --color-surface-20: oklch(from var(--neutral-base) 0.22 0.006 h);
     --color-surface-30: oklch(from var(--neutral-base) 0.28 0.006 h);
+    --color-surface-40: oklch(from var(--neutral-base) 0.36 0.004 h);
 
-    --color-content-10: oklch(from var(--neutral-base) 0.81 0.001 h);
+    --color-content-10: oklch(from var(--neutral-base) 0.86 0.001 h);
     --color-content-20: oklch(from var(--neutral-base) 0.74 0 h);
     --color-content-30: oklch(from var(--neutral-base) 0.64 0 h);
+    --color-content-40: oklch(from var(--neutral-base) 0.48 0 h);
   }
 }

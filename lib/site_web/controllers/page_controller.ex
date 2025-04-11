@@ -6,7 +6,7 @@ defmodule SiteWeb.PageController do
   end
 
   def about(conn, _params) do
-    render(conn, :about)
+    render(conn, :about, page_title: "About")
   end
 
   def sink(conn, _params) do
