@@ -84,6 +84,16 @@ defmodule Site.MixProject do
        app: false,
        compile: false,
        depth: 1},
+      {
+        :lucide_icons,
+        # Use the latest version available
+        github: "lucide-icons/lucide",
+        tag: "0.487.0",
+        sparse: "icons",
+        app: false,
+        compile: false,
+        depth: 1
+      },
 
       # Content
       {:mdex, "~> 0.3"},
