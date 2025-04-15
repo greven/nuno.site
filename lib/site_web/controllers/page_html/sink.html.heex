@@ -14,7 +14,9 @@
     <%!--Colours --%>
 
     <div class="flex flex-col gap-6">
-      <h2 class="text-2xl font-medium">Colours</h2>
+      <h2 class="flex items-center gap-1 text-2xl font-medium">
+        <a name="colours" href="#colours" class="text-content-40 scroll-my-24">#</a>Colours
+      </h2>
 
       <div class="flex gap-8">
         <div>
@@ -130,21 +132,80 @@
 
     <%!-- Avatar --%>
     <div class="flex flex-col gap-6">
-      <h2 class="text-2xl font-medium">Avatar</h2>
+      <h2 class="flex items-center gap-1 text-2xl font-medium ">
+        <a name="avatar" href="#avatar" class="text-content-40 scroll-my-24">#</a>Avatars
+      </h2>
+
       <div class="flex gap-8">
         <SiteComponents.avatar_picture />
       </div>
     </div>
 
+    <%!-- Badges --%>
+    <div class="flex flex-col gap-6">
+      <h2 class="flex items-center gap-1 text-2xl font-medium ">
+        <a name="badges" href="#badges" class="text-content-40 scroll-my-24">#</a>Badges
+      </h2>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Default</h3>
+        <div class="max-w-[564px] flex flex-wrap gap-2">
+          <.badge>Badge</.badge>
+          <.badge color="red">Red</.badge>
+          <.badge color="orange">Orange</.badge>
+          <.badge color="amber">Amber</.badge>
+          <.badge color="yellow">Yellow</.badge>
+          <.badge color="lime">Lime</.badge>
+          <.badge color="green">Green</.badge>
+          <.badge color="emerald">Emerald</.badge>
+          <.badge color="teal">Teal</.badge>
+          <.badge color="cyan">Cyan</.badge>
+          <.badge color="sky">Sky</.badge>
+          <.badge color="blue">Blue</.badge>
+          <.badge color="indigo">Indigo</.badge>
+          <.badge color="violet">Violet</.badge>
+          <.badge color="purple">Purple</.badge>
+          <.badge color="pink">Pink</.badge>
+          <.badge color="rose">Rose</.badge>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg mb-2 text-content-20">Outlined</h3>
+        <div class="max-w-[564px] flex flex-wrap gap-2">
+          <.badge variant="dot">Badge</.badge>
+          <.badge variant="dot" color="red">Red</.badge>
+          <.badge variant="dot" color="orange">Orange</.badge>
+          <.badge variant="dot" color="amber">Amber</.badge>
+          <.badge variant="dot" color="yellow">Yellow</.badge>
+          <.badge variant="dot" color="lime">Lime</.badge>
+          <.badge variant="dot" color="green">Green</.badge>
+          <.badge variant="dot" color="emerald">Emerald</.badge>
+          <.badge variant="dot" color="teal">Teal</.badge>
+          <.badge variant="dot" color="cyan">Cyan</.badge>
+          <.badge variant="dot" color="sky">Sky</.badge>
+          <.badge variant="dot" color="blue">Blue</.badge>
+          <.badge variant="dot" color="indigo">Indigo</.badge>
+          <.badge variant="dot" color="violet">Violet</.badge>
+          <.badge variant="dot" color="purple">Purple</.badge>
+          <.badge variant="dot" color="pink">Pink</.badge>
+          <.badge variant="dot" color="rose">Rose</.badge>
+        </div>
+      </div>
+    </div>
+
     <%!-- Buttons --%>
     <div class="flex flex-col gap-6">
-      <h2 class="text-2xl font-medium">Buttons</h2>
+      <h2 class="flex items-center gap-1 text-2xl font-medium ">
+        <a name="buttons" href="#buttons" class="text-content-40 scroll-my-24">#</a>Buttons
+      </h2>
 
       <%!-- Default --%>
       <div>
         <h3 class="text-lg mb-2 text-content-20">Default</h3>
-        <div class="flex gap-8">
+        <div class="flex gap-4">
           <.button>Default</.button>
+          <.button disabled>Default</.button>
         </div>
       </div>
 

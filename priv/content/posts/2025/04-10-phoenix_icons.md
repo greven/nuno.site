@@ -1,7 +1,7 @@
 %{
-  title: "Another Post!",
-  tags: ~w(offtopic),
-  excerpt: "Some other post",
+  title: "Phoenix Icons",
+  tags: ~w(development elixir phoenix),
+  excerpt: "Phoenix CSS icons",
   status: :published
 }
 ---

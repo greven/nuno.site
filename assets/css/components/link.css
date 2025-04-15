@@ -1,0 +1,3 @@
+.link-ghost {
+  @apply text-content-20 underline underline-offset-2 decoration-transparent transition-colors hover:text-content-10 hover:decoration-primary;
+}

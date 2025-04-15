@@ -2,6 +2,7 @@ defmodule SiteWeb.BlogLive.Index do
   use SiteWeb, :live_view
 
   alias Site.Blog
+  alias Site.Support
 
   @valid_params ~w(page tag)
 
@@ -25,7 +26,7 @@ defmodule SiteWeb.BlogLive.Index do
             </.link>
           </h2>
 
-          <time>{post.date}</time>
+          <time>{Support.time_ago(post.date)}</time>
         </article>
       </div>
     </Layouts.app>

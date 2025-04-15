@@ -1,0 +1,33 @@
+<Layouts.app flash={@flash} active_link={@active_link}>
+  <Layouts.page_content class="text-center">
+    <h1 class="text-5xl font-light">
+      {@resume["profile"]["name"]}
+    </h1>
+
+    <%!-- Header Info --%>
+    <div class="mt-3 flex items-center justify-center gap-4 text-content-20/90 text-sm">
+      <div class="flex items-center justify-center gap-1.5">
+        <.icon name="hero-map-pin" class="size-5 text-primary" />
+        {@resume["profile"]["location"]["city"]},
+        <span class="font-medium">{@resume["profile"]["location"]["country_code"]}</span>
+      </div>
+
+      <div class="flex items-center justify-center gap-1.5">
+        <.icon name="hero-at-symbol" class="size-5 text-primary" />
+        <a href={"mailto:#{@resume["profile"]["email"]}"}>{@resume["profile"]["email"]}</a>
+      </div>
+
+      <div class="flex items-center justify-center gap-1.5">
+        <.icon name="si-github" class="size-4 text-primary" />
+        <a href="https://github.com/greven">github</a>
+      </div>
+    </div>
+
+    <%!-- Summary --%>
+    <div class="mt-8 flex justify-center w-full text-center">
+      <div class="max-w-[64ch] font-light text-content-20/90 text-pretty text-lg/8 sm:text-xl/8">
+        {@resume["profile"]["summary"]}
+      </div>
+    </div>
+  </Layouts.page_content>
+</Layouts.app>

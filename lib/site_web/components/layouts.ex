@@ -79,16 +79,23 @@ defmodule SiteWeb.Layouts do
   def site_footer(assigns) do
     ~H"""
     <footer class="wrapper">
-      <div class="my-4 flex items-center gap-1 justify-center text-sm text-content-30">
-        <span class="font-light">
-          <span class="">&copy; {Date.utc_today().year}, Made with</span>
-          <.icon name="hero-heart-solid" class="size-4 bg-primary dark:bg-primary-dark" />
-          by Nuno Freire
-        </span>
-        <span class="font-light text-content-40 opacity-75">&bull;</span>
-        <span class="font-light underline underline-offset-2 hover:decoration-primary transition-colors">
-          <a href="/sitemap">Sitemap</a>
-        </span>
+      <div class="flex flex-col items-center gap-4 pt-6 pb-3 md:pt-12 md:pb-6">
+        <div class="my-1 flex items-center gap-1 justify-center text-sm font-headings text-content-30">
+          <span class="flex items-center gap-1">
+            &copy; {Date.utc_today().year} nuno.site
+            <span class="font-sans text-xs text-gray-400">&bull;</span>
+            Mixed with
+            <.icon name="si-elixir" class="size-3.5 bg-purple-500 dark:bg-purple-700" title="Elixir" />
+            by
+            <span class="link-ghost">
+              <a href={~p"/about"}>Nuno Moço</a>
+            </span>
+          </span>
+          <span class="hidden md:inline-block font-sans text-xs text-gray-400">&bull;</span>
+          <span class="hidden md:inline-block link-ghost">
+            <a href={~p"/sitemap"}>Sitemap</a>
+          </span>
+        </div>
       </div>
     </footer>
     """
@@ -153,7 +160,7 @@ defmodule SiteWeb.Layouts do
 
   def page_content(assigns) do
     ~H"""
-    <div class={["mt-16 relative", @class]} {@rest}>
+    <div class={["relative", @class]} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """

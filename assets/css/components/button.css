@@ -1,15 +1,16 @@
 .btn {
-  /* TODO: Conver the apply to CSS styles? */
+  /* TODO: Convert the apply to CSS styles? */
   @apply relative inline-flex flex-nowrap flex-shrink-0 items-center justify-center overflow-hidden whitespace-nowrap
     text-sm transition-all cursor-pointer align-middle text-center no-underline;
 
-  border-style: solid;
+  min-width: 64px;
+  border-radius: var(--btn-radius);
   border-width: var(--btn-border);
   border-color: var(--btn-border-color);
-  border-radius: var(--btn-radius);
-  padding: var(--btn-py) var(--btn-px);
-  font-size: var(--btn-font-size);
-  font-weight: var(--btn-font-weight);
+  font-weight: var(--font-weight-medium);
+  height: --spacing(10);
+  padding-inline: --spacing(2.5);
+  font-size: var(--text-sm);
 
   &::after {
     content: '';
@@ -30,6 +31,20 @@
   &:active::after {
     opacity: 0;
   }
+}
+
+/* Size */
+
+.btn-sm {
+  height: --spacing(9);
+  padding-inline: --spacing(2.5);
+  font-size: var(--text-sm);
+}
+
+.btn-md {
+  height: --spacing(10);
+  padding-inline: --spacing(2.5);
+  font-size: var(--text-sm);
 }
 
 /* Colors */
@@ -111,8 +126,8 @@
   }
 }
 
-.btn-light {
-}
+/* .btn-light {
+} */
 
 .btn-ghost {
   --btn-border-color: transparent;
@@ -121,5 +136,19 @@
 
   &:hover {
     background-color: --alpha(var(--btn-bg) / 0.1);
+  }
+}
+
+.btn-link {
+  --btn-border-color: transparent;
+
+  padding-inline: 0;
+  color: color-mix(in oklch, var(--btn-bg), #000 10%);
+  text-decoration: underline;
+  text-underline-offset: 0.125rem;
+  text-decoration-color: transparent;
+
+  &:hover {
+    text-decoration-color: var(--color-primary);
   }
 }

@@ -13,16 +13,16 @@
   --neutral-base: var(--color-zinc-500);
 
   /* Surface */
-  --color-surface-10: oklch(0.98 0 0);
+  --color-surface-10: oklch(0.985 0 0);
   --color-surface-20: oklch(0.94 0 0);
-  --color-surface-30: oklch(0.86 0 0);
-  --color-surface-40: oklch(0.68 0 0);
+  --color-surface-30: oklch(0.88 0 0);
+  --color-surface-40: oklch(0.82 0 0);
 
   /* Content */
-  --color-content-10: oklch(from var(--neutral-base) 0.34 0 h);
+  --color-content-10: oklch(from var(--neutral-base) 0.28 0 h);
   --color-content-20: oklch(from var(--neutral-base) 0.44 0 h);
-  --color-content-30: oklch(from var(--neutral-base) 0.54 0 h);
-  --color-content-40: oklch(from var(--neutral-base) 0.64 0 h);
+  --color-content-30: oklch(from var(--neutral-base) 0.62 0 h);
+  --color-content-40: oklch(from var(--neutral-base) 0.72 0 h);
 
   /* Gray (Neutral) */
   --color-gray-*: initial;
@@ -99,13 +99,12 @@
   /* --size-selector: 0.21875rem; */
 
   /* Button */
-  --btn-text-size: var(--text-sm);
-  --btn-font-weight: var(--font-weight-medium);
   --btn-shadow: var(--shadow-field);
   --btn-radius: var(--radius-field);
   --btn-border: var(--border);
-  --btn-px: --spacing(3.5);
-  --btn-py: --spacing(2);
+
+  /* Badge */
+  --badge-radius: 9999px;
 }
 
 /* Dark Theme */
@@ -119,6 +118,6 @@
     --color-content-10: oklch(from var(--neutral-base) 0.86 0.001 h);
     --color-content-20: oklch(from var(--neutral-base) 0.74 0 h);
     --color-content-30: oklch(from var(--neutral-base) 0.64 0 h);
-    --color-content-40: oklch(from var(--neutral-base) 0.48 0 h);
+    --color-content-40: oklch(from var(--neutral-base) 0.52 0 h);
   }
 }

@@ -1,0 +1,256 @@
+{
+  "profile": {
+    "name": "Nuno Moço",
+    "title": "Senior Fullstack Developer",
+    "image": null,
+    "email": "mail@nuno.site",
+    "phone": "964 895 114",
+    "url": "https://nuno.site",
+    "summary": "I’m a software engineer with more than 15 years experience, mostly focused on Web Development and User Experience (UX). I have a master’s degree in Electronic and Computer Engineering but my passion has always been with software development. My current technology focus is on Elixir and Phoenix LiveView.",
+    "location": {
+      "address": null,
+      "postalCode": null,
+      "city": "Lisbon",
+      "region": "Lisbon",
+      "countryCode": "PT"
+    }
+  },
+  "work": [
+    {
+      "role": "Co-Founder | CTO & Fullstack Developer",
+      "company": "eikko.ai",
+      "location": "Lisbon, Portugal",
+      "url": "https://eikko.ai",
+      "startDate": "2020-01-01",
+      "endDate": "2025-03-01",
+      "summary": "Co-founded a small Startup to develop a recruiting platform with a strong focus on people and fair processes. The platform is skill based first, backed by personality and culture tests to match candidates with the right jobs. The platform was developed from the ground up with Elixir, Phoenix LiveView and PostgreSQL. Custom made CSS library and Phoenix Components.",
+      "highlights": [
+        "Co-founded the company"
+      ]
+    },
+    {
+      "role": "Senior UX/UI Developer",
+      "company": "Innogy SE UK (E.ON)",
+      "location": "Leeds, United Kingdom",
+      "url": "https://www.eonenergy.com",
+      "startDate": "2017-06-01",
+      "endDate": "2019-05-01",
+      "summary": "While at Innogy I worked for npower RWE as Senior Full-stack Developer. I maintained SAPUI5 and NodeJS applications. I was part of the CRM team, which was leading the initiative to re-write internal applications.",
+      "highlights": null
+    },
+    {
+      "role": "Senior UX/UI Consultant",
+      "company": "Itelligence UK (NTT Data)",
+      "location": "London, United Kingdom",
+      "url": "https://uk.nttdata.com",
+      "startDate": "2015-09-01",
+      "endDate": "2017-05-01",
+      "summary": "Front-end development and UX consulting with SAPUI5, Javascript, VueJS, CSS, and OData.",
+      "highlights": null
+    },
+    {
+      "role": "Mobile Development Associate Consultant",
+      "company": "SAP",
+      "location": "Lisbon, Portugal",
+      "url": "https://www.sap.com/",
+      "startDate": "2014-07-01",
+      "endDate": "2015-09-01",
+      "summary": "Front-end development and UX consulting with SAPUI5, Javascript, VueJS, CSS, and OData.",
+      "highlights": [
+        "Won a best consultant award in 2015."
+      ]
+    },
+    {
+      "role": "Full-stack Web Developer Consultant",
+      "company": "Freelancer",
+      "location": "Lisbon, Portugal",
+      "url": "https://www.nuno.site/",
+      "startDate": "2008-01-01",
+      "endDate": "2020-01-01",
+      "summary": "Freelancing / contracting projects in web development, frontend and backend. UX, Javascript, NodeJS, ReactJS, VueJS, Python, Elixir, Django, Phoenix, CSS, SQL, etc.",
+      "highlights": null
+    }
+  ],
+  "education": [
+    {
+      "institution": "Instituto Superior Técnico",
+      "url": "https://tecnico.ulisboa.pt",
+      "area": "Electrical and Electronics Engineering",
+      "studyType": "Master of Science",
+      "startDate": "2008-09-01",
+      "endDate": "2013-07-01",
+      "score": "14",
+      "courses": null
+    },
+    {
+      "institution": "Instituto Superior Técnico",
+      "url": "https://tecnico.ulisboa.pt",
+      "area": "Electrical and Electronics Engineering",
+      "studyType": "Graduate",
+      "startDate": "2005-07-01",
+      "endDate": "2000-09-01",
+      "score": "14",
+      "courses": null
+    }
+  ],
+  "languages": [
+    {
+      "language": "Portuguese",
+      "fluency": "Native speaker"
+    },
+    {
+      "language": "English",
+      "fluency": "Full professional proficiency"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Elixir",
+      "level": 5,
+      "category": "Programming Language",
+      "favourite": true
+    },
+    {
+      "name": "Phoenix",
+      "level": 5,
+      "category": "Backend",
+      "favourite": true
+    },
+    {
+      "name": "Phoenix LiveView",
+      "level": 5,
+      "category": "Frontend",
+      "favourite": true
+    },
+    {
+      "name": "CSS",
+      "level": 5,
+      "category": "Frontend",
+      "favourite": true
+    },
+    {
+      "name": "JavaScript",
+      "level": 5,
+      "category": "Frontend",
+      "favourite": true
+    },
+    {
+      "name": "ReactJS",
+      "level": 4,
+      "category": "Frontend",
+      "favourite": false
+    },
+    {
+      "name": "VueJS",
+      "level": 3,
+      "category": "Frontend",
+      "favourite": false
+    },
+    {
+      "name": "SAPUI5",
+      "level": 4,
+      "category": "Frontend",
+      "favourite": false
+    },
+    {
+      "name": "UX",
+      "level": 5,
+      "category": "Frontend",
+      "favourite": true
+    },
+    {
+      "name": "NodeJS",
+      "level": 4,
+      "category": "Backend",
+      "favourite": false
+    },
+    {
+      "name": "PostgreSQL",
+      "level": 4,
+      "category": "Databases",
+      "favourite": false
+    },
+    {
+      "name": "Python",
+      "level": 3,
+      "category": "Programming Language",
+      "favourite": false
+    }
+  ],
+  "awards": [
+    {
+      "title": "SAP Portugal 2015 Q1 Champion",
+      "date": "2015-04-01",
+      "awarder": "SAP",
+      "summary": "SAP Portugal - Employees Recognition Program Q1 2015. Recognition by the local Management Team as one of Portugal 2015 champions."
+    }
+  ],
+  "certificates": [
+    {
+      "name": "ITIL Foundation",
+      "date": "2018-01-01",
+      "issuer": "AXELOS Global Best Practice",
+      "url": "https://candidate.peoplecert.org/ReportsLink.aspx?argType=1&id=D5873106447D36BDE647B25F3DB1CD13B2D155E743CC2E4137484B9121F6984AAF151A6569B648A2"
+    }
+  ],
+  "publications": [
+    {
+      "name": "Smartphone-Based Palmprint Recognition System",
+      "publisher": "IEEE",
+      "releaseDate": "2014-05-01",
+      "url": "https://ieeexplore.ieee.org/document/6845158",
+      "summary": "The increasing popularity of mobile devices, such as smartphones, has changed the way people access and manage data. In particular, with the increased capabilities of mobile phones, many services are now available and routinely used on the go (e.g., home banking, e-commerce, remote work, internet access and entertainment). As a result, more and more confidential data is now stored on these devices, which significantly increases the risk of information or identity theft by non-authorized access to the mobile device. In this paper, a native biometric recognition system for the Android platform is proposed, offering an additional layer of security when accessing mobile services or important data. The proposed biometric system is based on palmprint features using the Orthogonal Line Ordinal Features (OLOF) extraction technique, achieving promising results in terms of recognition accuracy and speed for a mobile device"
+    }
+  ],
+  "interests": [
+    {
+      "name": "Photography",
+      "keywords": [
+        "Lanscapes",
+        "Street"
+      ]
+    },
+    {
+      "name": "Web Design",
+      "keywords": [
+        "User Experience",
+        "User Interface"
+      ]
+    },
+    {
+      "name": "Computer Vision",
+      "keywords": [
+        "Image Processing",
+        "Object Detection",
+        "Machine Learning"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Compass Group (Freelance)",
+      "startDate": "2019-05-01",
+      "endDate": "2019-12-01",
+      "description": "Front-end development in ReactJS. Services in OData with SAP Hana backend. Custom implementation of a meals planner application in ReactJS backed by a SAP backend REST service. Freelancing / Contracting on Site in London.",
+      "url": "https://www.compass-group.co.uk",
+      "highlights": null
+    },
+    {
+      "name": "Exertis (Itelligence UK, London)",
+      "startDate": "2016-04-01",
+      "endDate": "2019-10-01",
+      "description": "Worked as a UX Consultant for Exertis (England) on the implementation of a standard Fiori Application as well as in the development of another custom Fiori MM application.",
+      "url": "https://www.exertis.co.uk",
+      "highlights": null
+    },
+    {
+      "name": "Smyths Toys (Itelligence UK, London)",
+      "startDate": "2015-10-01",
+      "endDate": "2016-03-01",
+      "description": "Worked as a SAP Fiori Consultant and Developer on bespoke Fiori applications throughout the whole development cycle of the applications for Smyths Toys (Ireland).",
+      "url": "https://www.smythstoys.com",
+      "highlights": null
+    }
+  ],
+  "references": []
+}

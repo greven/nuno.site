@@ -68,6 +68,7 @@ defmodule Site.MixProject do
       {:dns_cluster, "~> 0.2"},
       {:lazy_html, "~> 0.1.0"},
       {:nimble_csv, "~> 1.2"},
+      {:recase, "~> 0.8"},
       {:dotenvy, "~> 1.1"},
       {:geocalc, "~> 0.8"},
       # {:uniq, "~> 0.6"},
@@ -86,7 +87,6 @@ defmodule Site.MixProject do
        depth: 1},
       {
         :lucide_icons,
-        # Use the latest version available
         github: "lucide-icons/lucide",
         tag: "0.487.0",
         sparse: "icons",
@@ -94,6 +94,13 @@ defmodule Site.MixProject do
         compile: false,
         depth: 1
       },
+      {:simple_icons,
+       github: "simple-icons/simple-icons",
+       tag: "14.12.1",
+       sparse: "icons",
+       app: false,
+       compile: false,
+       depth: 1},
 
       # Content
       {:mdex, "~> 0.3"},

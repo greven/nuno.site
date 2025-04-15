@@ -62,4 +62,79 @@ defmodule SiteWeb.SiteComponents do
     </div>
     """
   end
+
+  @doc """
+  Render my experience shortlist for the about page.
+  """
+
+  attr :items, :list, default: []
+  attr :class, :string, default: nil
+
+  def experience_shortlist(assigns) do
+    ~H"""
+    <div class={@class}>
+      <ul class="flex flex-col gap-8 divide-y divide-content-40/40 divide-dashed">
+        <%= for item <- @items do %>
+          <.experience_shortlist_item
+            role={item["role"]}
+            company={item["company"]}
+            location={item["location"]}
+            start_date={item["start_date"]}
+            end_date={item["end_date"]}
+            link={item["url"]}
+          />
+        <% end %>
+      </ul>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :role, :string, required: true
+  attr :company, :string, required: true
+  attr :location, :string, default: nil
+  attr :start_date, :string, default: nil
+  attr :end_date, :string, default: nil
+  attr :link, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def experience_shortlist_item(assigns) do
+    ~H"""
+    <li class="space-y-1 pb-8">
+      <div class="flex items-center gap-1.5">
+        <.icon name="hero-calendar-mini" class="size-4.5 text-content-40" />
+        <span :if={@start_date} class="text-content-30 uppercase text-sm">
+          <%= if @start_date && @end_date do %>
+            {parse_date(@start_date)} - {parse_date(@end_date)}
+          <% else %>
+            {@start_date}
+          <% end %>
+        </span>
+      </div>
+      <div class="font-headings text-xl">{@role}</div>
+      <div class="text-content-20">
+        <%= if @link do %>
+          <.link href={@link} target="_blank" rel="noopener noreferrer" class="link-ghost">
+            {@company}
+          </.link>
+        <% else %>
+          {@company}
+        <% end %>
+        <span :if={@location} class="text-content-30">- {@location}</span>
+      </div>
+    </li>
+    """
+  end
+
+  # Shortened date string, e.g. "2023-10-01" -> "Oct 2023"
+  defp parse_date(nil), do: "Present"
+
+  defp parse_date(string) do
+    case Date.from_iso8601(string) do
+      {:ok, date} -> Calendar.strftime(date, "%b %Y")
+      {:error, _} -> nil
+    end
+  end
 end

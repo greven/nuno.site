@@ -67,7 +67,6 @@ defmodule SiteWeb.BlogComponents do
   #     <%!-- Stats --%>
   #     <div class="hidden lg:mt-6 lg:flex flex-col gap-2 text-xs font-medium text-secondary-500 uppercase">
   #       <div class="flex items-center gap-1.5 mb-2">
-  #         <.icon name="heroicons:presentation-chart-line" class="w-5 h-5 stroke-current inline" />
   #         <h3 class="font-headings text-sm font-semibold text-secondary-800">Statistics</h3>
   #       </div>
 

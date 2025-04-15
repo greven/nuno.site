@@ -8,12 +8,16 @@
   }
 
   /* Make LiveView wrapper divs transparent for layout */
-  [data-phx-root-id] {
+  [data-phx-session] {
     display: contents;
   }
 
   ::selection {
     background-color: --alpha(var(--color-secondary) / 0.3);
+  }
+
+  * {
+    outline-color: var(--color-primary);
   }
 
   body {

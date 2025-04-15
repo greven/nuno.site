@@ -5,6 +5,7 @@ defmodule SiteWeb.CoreComponents do
   use Gettext, backend: SiteWeb.Gettext
 
   alias Phoenix.LiveView.JS
+  alias SiteWeb.Theme
 
   @doc """
   Renders flash notices.
@@ -55,6 +56,35 @@ defmodule SiteWeb.CoreComponents do
   end
 
   @doc """
+  Renders a badge.
+  Badges are small, compact labels that can be used to display
+  contextual information, such as status or categories.
+  """
+  attr :rest, :global, include: ~w(href navigate patch method)
+  attr :class, :string, default: nil
+  attr :color, :string, values: Theme.colors(:tailwind), default: "gray"
+  attr :variant, :string, values: ~w(default dot), default: "default"
+  slot :inner_block, required: true
+
+  def badge(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :base_class,
+        "inline-flex items-center ring-1 ring-inset whitespace-nowrap gap-x-1.5 px-2.5 py-0.5 text-sm [&>.icon]:size-[0.9375rem] rounded-[var(--badge-radius)]"
+      )
+      |> assign(:variant_class, Theme.badge_color_class(assigns[:variant], assigns[:color]))
+
+    ~H"""
+    <span class={@class}>
+      <span class={[@base_class, @variant_class]}>
+        {render_slot(@inner_block)}
+      </span>
+    </span>
+    """
+  end
+
+  @doc """
   Renders a button with navigation support.
 
   ## Examples
@@ -63,47 +93,29 @@ defmodule SiteWeb.CoreComponents do
       <.button phx-click="go" variant="solid">Send!</.button>
       <.button navigate={~p"/"}>Home</.button>
   """
-  attr :rest, :global, include: ~w(href navigate patch method)
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
   attr :class, :string, default: nil
-  attr :color, :string, values: ~w(primary secondary info success warning danger)
-  attr :variant, :string, values: ~w(default solid light outlined ghost)
+  attr :color, :string, values: Theme.colors(:theme)
+  attr :variant, :string, values: ~w(default solid light outlined ghost link), default: "default"
+  attr :size, :string, values: ~w(sm md), default: "md"
   slot :inner_block, required: true
 
   def button(%{rest: rest} = assigns) do
-    variants = %{
-      "default" => "btn-default",
-      "solid" => "btn-solid",
-      "light" => "btn-light",
-      "outlined" => "btn-outlined",
-      "ghost" => "btn-ghost",
-      nil => "btn-default"
-    }
-
-    color = %{
-      "primary" => "btn-primary",
-      "secondary" => "btn-secondary",
-      "accent" => "btn-accent",
-      "info" => "btn-info",
-      "success" => "btn-success",
-      "warning" => "btn-warning",
-      "danger" => "btn-danger",
-      nil => "btn-neutral"
-    }
-
     assigns =
       assigns
-      |> assign(:variant_class, Map.fetch!(variants, assigns[:variant]))
-      |> assign(:color_class, Map.fetch!(color, assigns[:color]))
+      |> assign(:size_class, Theme.button_size_class(assigns[:size]))
+      |> assign(:variant_class, Theme.button_variant_class(assigns[:variant]))
+      |> assign(:color_class, Theme.button_color_class(assigns[:color]))
 
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
-      <.link class={["btn", @variant_class, @color_class, @class]} {@rest}>
+      <.link class={["btn", @size_class, @variant_class, @color_class, @class]} {@rest}>
         {render_slot(@inner_block)}
       </.link>
       """
     else
       ~H"""
-      <button class={["btn", @variant_class, @color_class, @class]} {@rest}>
+      <button class={["btn", @size_class, @variant_class, @color_class, @class]} {@rest}>
         {render_slot(@inner_block)}
       </button>
       """
@@ -285,7 +297,7 @@ defmodule SiteWeb.CoreComponents do
         >
           {render_slot(@inner_block)}
         </.dynamic_tag>
-        <p :if={@subtitle != []} class={["text-content-20/70", header_subtitle_font_size(@tag)]}>
+        <p :if={@subtitle != []} class={["text-content-10/70", header_subtitle_font_size(@tag)]}>
           {render_slot(@subtitle)}
         </p>
       </div>
@@ -405,9 +417,10 @@ defmodule SiteWeb.CoreComponents do
   @doc """
   Renders an icon.
 
-  Supports two icon libraries:
+  Supports three icon libraries:
   - [Heroicons](https://heroicons.com) - prefixed with "hero-"
   - [Lucide](https://lucide.dev) - prefixed with "lucide-"
+  - [Simple Icons](https://simpleicons.org) - prefixed with "si-"
 
   You can customize the size and colors of the icons by setting
   width, height, and background color classes.
@@ -420,20 +433,28 @@ defmodule SiteWeb.CoreComponents do
       <.icon name="hero-x-mark-solid" />
       <.icon name="hero-arrow-path" class="ml-1 size-3 motion-safe:animate-spin" />
       <.icon name="lucide-github" />
-      <.icon name="lucide-heart" class="size-5 text-red-500" />
+      <.icon name="si-github" class="size-6" />
+      <.icon name="si-elixir" class="size-5 text-purple-600" />
   """
   attr :name, :string, required: true
   attr :class, :string, default: "size-4"
+  attr :rest, :global
 
   def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""
-    <span class={[@name, @class]} />
+    <span class={[@name, @class]} {@rest} />
     """
   end
 
   def icon(%{name: "lucide-" <> _} = assigns) do
     ~H"""
-    <span class={[@name, @class]} />
+    <span class={[@name, @class]} {@rest} />
+    """
+  end
+
+  def icon(%{name: "si-" <> _} = assigns) do
+    ~H"""
+    <span class={[@name, @class]} {@rest} />
     """
   end
 
@@ -443,13 +464,29 @@ defmodule SiteWeb.CoreComponents do
   attr :alt, :string, required: true
   attr :width, :integer, required: true
   attr :height, :integer, required: true
+  attr :picture, :boolean, default: true
+  attr :source_ext, :list, default: ~w(webp)
   attr :class, :any, default: nil
   attr :rest, :global
 
   def image(assigns) do
     ~H"""
-    <img class={[@class]} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
+    <%= if @picture do %>
+      <picture>
+        <%= for ext <- @source_ext do %>
+          <source type={"image/#{ext}"} srcset={srcset(@src, ext)} />
+        <% end %>
+        <img class={@class} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
+      </picture>
+    <% else %>
+      <img class={@class} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
+    <% end %>
     """
+  end
+
+  # Replace the file extension in the srcset attribute
+  defp srcset(src, ext) do
+    String.replace(src, ~r/\.(jpg|jpeg|png|gif)$/, ".#{ext}")
   end
 
   ## JS Commands

@@ -1,29 +1,29 @@
 @layer base {
   .profile-picture {
     position: relative;
-    max-width: 200px;
+    max-width: 232px;
 
-    @variant lg {
+    @variant md {
       max-width: 280px;
     }
 
     &::before {
       content: '';
       position: absolute;
-      inset: -0.5rem;
-      border: 0.1rem solid var(--color-gray);
+      inset: -0.325rem;
+      border: 0.1rem solid var(--color-content-40);
       border-radius: 100%;
       background: repeating-linear-gradient(
         45deg,
-        var(--color-gray),
-        var(--color-gray) 0.1rem,
+        var(--color-content-40),
+        var(--color-content-40) 0.1rem,
         transparent 0,
         transparent 0.725rem
       );
       z-index: -1;
     }
 
-    & > img {
+    & img {
       border-radius: 100%;
       box-shadow: var(--shadow-lg);
     }

@@ -39,7 +39,7 @@ defmodule Site.Flights do
 
   @decorate cacheable(cache: Site.Cache, key: {:flights})
   defp flights do
-    flights_file()
+    flights_path()
     |> File.read!()
     |> JSON.decode!()
     |> Stream.map(fn item ->
@@ -73,5 +73,5 @@ defmodule Site.Flights do
   #   [dest_city_name, dest_country_name] = String.split(destination, ", ")
   # end
 
-  defp flights_file, do: Path.join([:code.priv_dir(:site), "content/flights.json"])
+  defp flights_path, do: Path.join([:code.priv_dir(:site), "content/flights.json"])
 end
