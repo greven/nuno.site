@@ -88,7 +88,7 @@ defmodule SiteWeb.Theme do
 
   def badge_color_class("dot", color) do
     base_class =
-      "text-content-10 ring-1 ring-inset ring-gray-300 dark:ring-gray-800 before:content=[''] before:size-1.5 before:rounded-full"
+      "text-gray-700 ring-1 ring-inset ring-gray-300 dark:text-gray-400 dark:ring-gray-800 before:content=[''] before:size-1.5 before:rounded-full"
 
     color_class =
       case color do
@@ -159,7 +159,7 @@ defmodule SiteWeb.Theme do
           "before:bg-stone-500 before:dark:bg-stone-400"
 
         _ ->
-          "before:bg-gray-500 before:dark:bg-gray-400"
+          "before:bg-(--badge-color)"
       end
 
     [color_class, base_class]

@@ -1,7 +1,8 @@
 %{
-  title: "Another Post!",
+  title: "Just a note!",
   tags: ~w(offtopic),
   excerpt: "Some other post",
+  type: :note,
   status: :published
 }
 ---

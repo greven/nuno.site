@@ -13,6 +13,25 @@ defmodule SiteWeb.BlogLive.Show do
         <:subtitle>{@post.excerpt}</:subtitle>
       </.header>
 
+      <%!-- Tags --%>
+      <%!-- <div class="flex items-center gap-3 text-sm">
+        <div class="flex gap-1.5">
+          <.badge
+            variant="dot"
+            color={Site.Blog.Post.type_color(post.type)}
+            text_class="text-xs capitalize tracking-wider"
+          >
+            {post.type}
+          </.badge>
+
+          <%= for tag <- post.tags do %>
+            <.badge text_class="text-xs capitalize tracking-wider">
+              <span class="font-headings text-content-40/80 -mr-1">#</span>{tag}
+            </.badge>
+          <% end %>
+        </div>
+      </div> --%>
+
       <div class="mb-4 text-lg text-primary">
         {@page_views} / {@today_views}
       </div>

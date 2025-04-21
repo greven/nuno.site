@@ -13,7 +13,7 @@ defmodule SiteWeb.Plugs.ActiveLinks do
     case conn do
       %Plug.Conn{path_info: []} -> assign(conn, :active_link, :home)
       %Plug.Conn{path_info: ["about"]} -> assign(conn, :active_link, :about)
-      %Plug.Conn{path_info: ["blog"]} -> assign(conn, :active_link, :blog)
+      %Plug.Conn{path_info: ["articles"]} -> assign(conn, :active_link, :articles)
       _ -> assign(conn, :active_link, nil)
     end
   end

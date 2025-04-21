@@ -62,7 +62,8 @@ defmodule SiteWeb.CoreComponents do
   """
   attr :rest, :global, include: ~w(href navigate patch method)
   attr :class, :string, default: nil
-  attr :color, :string, values: Theme.colors(:tailwind), default: "gray"
+  attr :text_class, :string, default: "text-sm"
+  attr :color, :string, values: Theme.colors(:tailwind)
   attr :variant, :string, values: ~w(default dot), default: "default"
   slot :inner_block, required: true
 
@@ -71,13 +72,13 @@ defmodule SiteWeb.CoreComponents do
       assigns
       |> assign(
         :base_class,
-        "inline-flex items-center ring-1 ring-inset whitespace-nowrap gap-x-1.5 px-2.5 py-0.5 text-sm [&>.icon]:size-[0.9375rem] rounded-[var(--badge-radius)]"
+        "flex items-center ring-1 ring-inset whitespace-nowrap gap-x-1.5 px-2.5 py-0.5 [&>.icon]:size-[0.9375rem] rounded-[var(--badge-radius)]"
       )
       |> assign(:variant_class, Theme.badge_color_class(assigns[:variant], assigns[:color]))
 
     ~H"""
-    <span class={@class}>
-      <span class={[@base_class, @variant_class]}>
+    <span class={@class} {@rest} style="--badge-color: var(--color-gray-400);">
+      <span class={[@base_class, @text_class, @variant_class]}>
         {render_slot(@inner_block)}
       </span>
     </span>
@@ -281,6 +282,7 @@ defmodule SiteWeb.CoreComponents do
   Renders a header with title.
   """
   attr :class, :string, default: nil
+  attr :header_class, :string, default: nil
   attr :tag, :string, default: "h1"
 
   slot :inner_block, required: true
@@ -288,16 +290,23 @@ defmodule SiteWeb.CoreComponents do
   slot :actions
 
   def header(assigns) do
+    assigns =
+      assigns
+      |> assign(:default_header_class, ["font-medium", header_font_size(assigns.tag)])
+
     ~H"""
     <header class={[@actions != [] && "flex items-center justify-between gap-6", "pb-4", @class]}>
       <div>
         <.dynamic_tag
           tag_name={@tag}
-          class={["flex items-center gap-2.5 font-medium leading-9", header_font_size(@tag)]}
+          class={[
+            "flex items-center gap-2.5 text-content-10 leading-9",
+            if(@header_class, do: @header_class, else: @default_header_class)
+          ]}
         >
           {render_slot(@inner_block)}
         </.dynamic_tag>
-        <p :if={@subtitle != []} class={["text-content-10/70", header_subtitle_font_size(@tag)]}>
+        <p :if={@subtitle != []} class={["text-content-40", header_subtitle_font_size(@tag)]}>
           {render_slot(@subtitle)}
         </p>
       </div>
@@ -411,6 +420,39 @@ defmodule SiteWeb.CoreComponents do
         </div>
       </li>
     </ul>
+    """
+  end
+
+  @doc false
+
+  attr :position, :string, values: ~w(left center right), default: "center"
+  attr :bg_color, :string, default: "bg-surface-10"
+  attr :border_class, :string, default: "w-full border-t border-surface-30"
+  attr :class, :string, default: nil
+  slot :inner_block
+
+  def divider(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :content_position,
+        case assigns.position do
+          "left" -> "justify-start"
+          "center" -> "justify-center"
+          "right" -> "justify-end"
+        end
+      )
+
+    ~H"""
+    <div class={["relative", @class]}>
+      <div class="absolute inset-0 flex items-center" aria-hidden="true">
+        <div class={@border_class}></div>
+      </div>
+
+      <div :if={@inner_block != []} class={["relative flex", @content_position]}>
+        <span class={@bg_color}>{render_slot(@inner_block)}</span>
+      </div>
+    </div>
     """
   end
 

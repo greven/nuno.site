@@ -1,6 +1,6 @@
 %{
   title: "Phoenix Icons",
-  tags: ~w(development elixir phoenix),
+  tags: ~w(elixir phoenix),
   excerpt: "Phoenix CSS icons",
   status: :published
 }

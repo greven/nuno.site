@@ -31,8 +31,8 @@ defmodule SiteWeb.Router do
 
     live_session :default,
       on_mount: [Hooks.ActiveLinks, Hooks.Metrics] do
-      live "/blog", BlogLive.Index, :index
-      live "/blog/:year/:slug", BlogLive.Show, :show
+      live "/articles", BlogLive.Index, :index
+      live "/articles/:year/:slug", BlogLive.Show, :show
     end
   end
 

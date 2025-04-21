@@ -20,7 +20,7 @@ defmodule SiteWeb.Layouts do
     <div class="min-h-screen flex flex-col">
       <.site_header active_link={@active_link} />
 
-      <main id="main" class="relative wrapper flex-auto sm:px-8 mt-16 lg:mt-32">
+      <main id="main" class="relative wrapper flex-auto mt-16 lg:mt-32">
         {render_slot(@inner_block)}
       </main>
 
@@ -66,9 +66,9 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <.link href={~p"/"} class="flex items-center">
       <span class="font-headings flex items-baseline gap-0.5">
-        <span class="text-2xl text-content-10">nuno</span>
+        <span class="text-2xl text-content-20">nuno</span>
         <span class="font-semibold text-xl text-primary">.</span>
-        <span class="text-xl text-content-20">site</span>
+        <span class="text-xl text-content-30">site</span>
       </span>
     </.link>
     """
@@ -80,16 +80,21 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <footer class="wrapper">
       <div class="flex flex-col items-center gap-4 pt-6 pb-3 md:pt-12 md:pb-6">
-        <div class="my-1 flex items-center gap-1 justify-center text-sm font-headings text-content-30">
+        <div class="my-1 flex items-center gap-1 justify-center text-sm font-headings text-content-40">
           <span class="flex items-center gap-1">
             &copy; {Date.utc_today().year} nuno.site
-            <span class="font-sans text-xs text-gray-400">&bull;</span>
-            Mixed with
-            <.icon name="si-elixir" class="size-3.5 bg-purple-500 dark:bg-purple-700" title="Elixir" />
-            by
-            <span class="link-ghost">
-              <a href={~p"/about"}>Nuno Moço</a>
-            </span>
+            <div class="hidden md:inline-block">
+              <span class="font-sans text-xs text-gray-400">&bull;</span>
+              Mixed with
+              <.icon
+                name="si-elixir"
+                class="size-3.5 bg-purple-500 dark:bg-purple-700"
+                title="Elixir"
+              /> by
+              <span class="link-ghost">
+                <a href={~p"/about"}>Nuno Moço</a>
+              </span>
+            </div>
           </span>
           <span class="hidden md:inline-block font-sans text-xs text-gray-400">&bull;</span>
           <span class="hidden md:inline-block link-ghost">
@@ -121,8 +126,8 @@ defmodule SiteWeb.Layouts do
             {gettext("about")}
           </.navbar_item>
 
-          <.navbar_item item={:blog} navigate={~p"/blog"} active_link={@active_link}>
-            {gettext("blog")}
+          <.navbar_item item={:articles} navigate={~p"/articles"} active_link={@active_link}>
+            {gettext("articles")}
           </.navbar_item>
         </div>
       </div>

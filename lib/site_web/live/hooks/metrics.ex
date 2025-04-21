@@ -48,7 +48,7 @@ defmodule SiteWeb.Hooks.Metrics do
     today_views = Site.Analytics.get_page_view_count_by_date(path, Date.utc_today())
 
     socket
-    |> assign(:today_views, today_views)
-    |> assign(:page_views, total_views)
+    |> assign(:today_views, today_views || 1)
+    |> assign(:page_views, total_views || 1)
   end
 end

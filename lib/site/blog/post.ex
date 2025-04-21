@@ -17,9 +17,17 @@ defmodule Site.Blog.Post do
             reading_time: 0,
             year: nil,
             date: nil,
+            type: :blog,
             tags: []
 
   def status, do: ~w(draft review published)a
+
+  def type, do: ~w(blog social note)a
+
+  def type_color(:blog), do: "cyan"
+  def type_color(:note), do: "amber"
+  def type_color(:social), do: "purple"
+  def type_color(_), do: "gray"
 
   def build(filename, attrs, {:ok, body}) do
     [year: year, month: month, day: day, id: id] = split_post_attrs(filename)
@@ -54,6 +62,5 @@ defmodule Site.Blog.Post do
     |> String.split(~r/\s+/)
     |> Enum.count()
     |> then(&(&1 / @avg_wpm))
-    |> then(&round(&1))
   end
 end

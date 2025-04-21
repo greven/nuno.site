@@ -11,12 +11,12 @@
       content: '';
       position: absolute;
       inset: -0.325rem;
-      border: 0.1rem solid var(--color-content-40);
+      border: 0.1rem solid --alpha(var(--color-content-40) / 0.5);
       border-radius: 100%;
       background: repeating-linear-gradient(
         45deg,
-        var(--color-content-40),
-        var(--color-content-40) 0.1rem,
+        --alpha(var(--color-content-40) / 0.5),
+        --alpha(var(--color-content-40) / 0.5) 0.1rem,
         transparent 0,
         transparent 0.725rem
       );

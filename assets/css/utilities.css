@@ -2,12 +2,25 @@
   @apply animate-spin;
 }
 
-@layer utilities {
-  .wrapper {
-    @apply w-screen mx-auto max-w-5xl px-4 sm:px-16 lg:px-20;
-  }
+@utility wrapper {
+  @apply w-screen mx-auto max-w-5xl px-4 sm:px-16 lg:px-20;
+}
 
-  .link {
-    @apply underline underline-offset-2 decoration-2 decoration-content-20 hover:decoration-primary transition-colors;
-  }
+@utility rounded-box {
+  @apply rounded-(--radius-box);
+}
+
+@utility link {
+  @apply relative text-content-10 decoration-1 decoration-primary underline underline-offset-3 transition-colors
+  hover:text-content-20 hover:decoration-primary-light;
+}
+
+@utility link-subtle {
+  @apply relative text-content-10 decoration-1 decoration-content-40/40 underline underline-offset-3 transition-colors
+    hover:decoration-primary;
+}
+
+@utility link-ghost {
+  @apply text-content-20 decoration-1 decoration-transparent underline underline-offset-3 transition-colors
+    hover:text-content-10 hover:decoration-primary;
 }

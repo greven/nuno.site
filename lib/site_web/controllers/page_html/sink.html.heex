@@ -171,7 +171,7 @@
       </div>
 
       <div>
-        <h3 class="text-lg mb-2 text-content-20">Outlined</h3>
+        <h3 class="text-lg mb-2 text-content-20">Dot</h3>
         <div class="max-w-[564px] flex flex-wrap gap-2">
           <.badge variant="dot">Badge</.badge>
           <.badge variant="dot" color="red">Red</.badge>
@@ -260,6 +260,36 @@
           <.button variant="ghost" color="danger">Error</.button>
         </div>
       </div>
+    </div>
+
+    <div class="flex flex-col gap-6">
+      <h2 class="flex items-center gap-1 text-2xl font-medium ">
+        <a name="dividers" href="#dividers" class="text-content-40 scroll-my-24">#</a>Dividers
+      </h2>
+
+      <.divider border_class="w-full border-t border-dashed border-surface-40" />
+
+      <.divider>
+        <span class="px-2 text-sm text-content-40">With Label</span>
+      </.divider>
+
+      <.divider>
+        <.button size="sm">
+          <.icon name="hero-plus" class="-ml-0.5 mr-1.5 size-4.5 text-gray-500" />
+          <span class="text-gray-900 font-semibold">Button Text</span>
+        </.button>
+      </.divider>
+
+      <.divider>
+        <button
+          type="button"
+          class="inline-flex items-center gap-x-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+        >
+          <.icon name="hero-plus" class="-mr-0.5 -ml-1 size-4.5 text-gray-500" /> Button text
+        </button>
+      </.divider>
+
+      <.divider />
     </div>
   </div>
 </Layouts.app>

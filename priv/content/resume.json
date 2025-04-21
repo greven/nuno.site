@@ -6,7 +6,7 @@
     "email": "mail@nuno.site",
     "phone": "964 895 114",
     "url": "https://nuno.site",
-    "summary": "I’m a software engineer with more than 15 years experience, mostly focused on Web Development and User Experience (UX). I have a master’s degree in Electronic and Computer Engineering but my passion has always been with software development. My current technology focus is on Elixir and Phoenix LiveView.",
+    "summary": "I’m a seasoned software engineer with over 15 years of experience, primarily in Web Development and User Experience (UX). I hold a master’s degree in Electronic and Computer Engineering, but my true passion lies in software development. Right now, I’m particularly interested in working with Elixir and Phoenix LiveView.",
     "location": {
       "address": null,
       "postalCode": null,
@@ -133,6 +133,12 @@
       "level": 5,
       "category": "Frontend",
       "favourite": true
+    },
+    {
+      "name": "TypeScript",
+      "level": 3,
+      "category": "Frontend",
+      "favourite": false
     },
     {
       "name": "ReactJS",

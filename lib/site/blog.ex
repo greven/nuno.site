@@ -130,9 +130,7 @@ defmodule Site.Blog do
   #  Tags
   # ------------------------------------------
 
-  def list_tags do
-    all_tags()
-  end
+  def list_tags, do: all_tags()
 
   def list_top_tags(limit \\ 10) do
     all_posts()

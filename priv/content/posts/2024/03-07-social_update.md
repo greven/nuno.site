@@ -1,8 +1,9 @@
 %{
-  title: "Hello world!",
+  title: "Some social update!",
   tags: ~w(elixir),
   excerpt: "Let's learn how to say hello world",
   status: :published,
+  type: :social,
   featured: true
 }
 ---

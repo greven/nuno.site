@@ -1,7 +1,7 @@
 .btn {
   /* TODO: Convert the apply to CSS styles? */
   @apply relative inline-flex flex-nowrap flex-shrink-0 items-center justify-center overflow-hidden whitespace-nowrap
-    text-sm transition-all cursor-pointer align-middle text-center no-underline;
+    text-sm transition cursor-pointer align-middle text-center no-underline;
 
   min-width: 64px;
   border-radius: var(--btn-radius);
