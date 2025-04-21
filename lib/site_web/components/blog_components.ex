@@ -43,6 +43,10 @@ defmodule SiteWeb.BlogComponents do
   attr :rest, :global
 
   def featured_post_item(assigns) do
+    assigns =
+      assigns
+      |> assign(:excerpt, Support.truncate_text(assigns.post.excerpt, length: 100))
+
     ~H"""
     <article
       class="relative group bg-surface-20/20 p-4 border-1 border-surface-30 shadow-xs rounded-box hover:border-primary transition-colors"
@@ -61,7 +65,7 @@ defmodule SiteWeb.BlogComponents do
       </.header>
 
       <div class="-mt-2 mb-1.5 text-content-40">
-        {@post.excerpt}
+        {@excerpt}
       </div>
 
       <div class="mt-3 flex items-center text-primary">

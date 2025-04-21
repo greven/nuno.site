@@ -2,11 +2,10 @@ defmodule SiteWeb.BlogLive.Index do
   use SiteWeb, :live_view
 
   alias Site.Blog
-  alias Site.Support
 
   alias SiteWeb.BlogComponents
 
-  @valid_params ~w(page tag)
+  # @valid_params ~w(page tag)
 
   @impl true
   def render(assigns) do

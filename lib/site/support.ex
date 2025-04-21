@@ -3,6 +3,19 @@ defmodule Site.Support do
   General utilities and helper functions.
   """
 
+  ## Strings
+
+  def truncate_text(text, opts \\ []) when is_binary(text) do
+    length = Keyword.get(opts, :length, 100)
+    terminator = Keyword.get(opts, :terminator, "...")
+
+    if String.length(text) > length do
+      String.slice(text, 0, length) <> terminator
+    else
+      text
+    end
+  end
+
   ## Numbers
 
   @doc """
