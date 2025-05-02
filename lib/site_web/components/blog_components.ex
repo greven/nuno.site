@@ -208,18 +208,45 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
+  attr :value, :string, default: nil
+  attr :icon, :string, default: nil
+  attr :class, :string, default: nil
+  attr :tag, :string, default: "div"
+  attr :rest, :global
+
+  slot :inner_block, required: true
+
+  def post_meta_item(assigns) do
+    ~H"""
+    <.dynamic_tag tag_name={@tag} class={@class}>
+      <div class="flex items-center gap-2 text-sm">
+        <.icon :if={@icon} name={@icon} class="size-4.5 text-content-40" />
+        <div class="flex items-center gap-1.5">
+          <span :if={@value} class="font-mono text-content-20" {@rest}>{@value}</span>{render_slot(
+            @inner_block
+          )}
+        </div>
+      </div>
+    </.dynamic_tag>
+    """
+  end
+
+  @doc false
+
   attr :count, :integer, required: true
   attr :show_icon, :boolean, default: true
   attr :class, :string, default: nil
 
   def post_readers(assigns) do
     ~H"""
-    <div class={@class}>
-      <div class="flex items-center gap-2">
-        <.icon :if={@show_icon} name="lucide-users" class="size-4.5 text-content-40" />
-        <span class="font-mono text-content-20 text-sm" data-readers-count>{@count}</span>reading
-      </div>
-    </div>
+    <.post_meta_item
+      icon={@show_icon && "lucide-users"}
+      value={@count}
+      class={@class}
+      data-readers-count
+    >
+      reading
+    </.post_meta_item>
     """
   end
 
@@ -231,12 +258,14 @@ defmodule SiteWeb.BlogComponents do
 
   def post_views(assigns) do
     ~H"""
-    <div class={@class}>
-      <div class="flex items-center gap-2">
-        <.icon :if={@show_icon} name="lucide-printer" class="size-4.5 text-content-40" />
-        <span class="font-mono text-content-20 text-sm">{@count}</span> views
-      </div>
-    </div>
+    <.post_meta_item
+      icon={@show_icon && "lucide-printer"}
+      value={@count}
+      class={@class}
+      data-views-count
+    >
+      views
+    </.post_meta_item>
     """
   end
 
@@ -248,7 +277,6 @@ defmodule SiteWeb.BlogComponents do
   attr :label, :string, default: nil
   attr :show_icon, :boolean, default: true
   attr :class, :string, default: nil
-  attr :text_class, :string, default: "text-content-40"
 
   def post_reading_time(%{post: %{reading_time: reading_time}} = assigns) do
     {duration, unit} =
@@ -263,31 +291,9 @@ defmodule SiteWeb.BlogComponents do
       |> assign(:unit, unit)
 
     ~H"""
-    <span class={@class}>
-      <div class="flex items-center gap-2">
-        <.icon :if={@show_icon} name="lucide-clock" class={"size-4.5 #{@text_class}"} />
-        <div>
-          <span class="font-mono text-content-20 text-sm">{@duration}{@unit}</span>
-          <span :if={@label} class={@text_class}>{@label}</span>
-        </div>
-      </div>
-    </span>
-    """
-  end
-
-  @doc false
-
-  attr :author, :string, default: "Nuno Moço"
-  attr :prefix, :string, default: nil
-  attr :class, :string, default: nil
-
-  def post_author(assigns) do
-    ~H"""
-    <div class={@class}>
-      <div class="flex items-center gap-2">
-        {if @prefix, do: "#{@prefix} ", else: ""} {@author}
-      </div>
-    </div>
+    <.post_meta_item icon={@show_icon && "lucide-clock"} value={"#{@duration}#{@unit}"} class={@class}>
+      {@label}
+    </.post_meta_item>
     """
   end
 
@@ -302,12 +308,9 @@ defmodule SiteWeb.BlogComponents do
     assigns = assign(assigns, :date, post_date(assigns.post.date, assigns.format))
 
     ~H"""
-    <time class={@class}>
-      <div class="flex items-center gap-2">
-        <.icon :if={@show_icon} name="lucide-calendar-fold" class="size-4.5 text-content-40" />
-        <span class="font-mono text-sm">{@date}</span>
-      </div>
-    </time>
+    <.post_meta_item tag="time" icon={@show_icon && "lucide-calendar-fold"} class={@class}>
+      {@date}
+    </.post_meta_item>
     """
   end
 

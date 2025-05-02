@@ -36,9 +36,11 @@ defmodule SiteWeb.Hooks.Metrics do
          %{event: "metrics_update", payload: %{metric: %{path: path}}},
          socket
        ) do
+    current_page_views = Map.get(socket.assigns, :page_views, 0)
     socket = assign_page_views(socket, path)
+    diff = socket.assigns.page_views - current_page_views
 
-    {:halt, socket}
+    {:halt, push_event(socket, "page-views:#{path}", %{diff: diff})}
   end
 
   defp handle_page_views_update(_, socket), do: {:cont, socket}
