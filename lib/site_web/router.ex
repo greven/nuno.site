@@ -22,7 +22,6 @@ defmodule SiteWeb.Router do
   scope "/", SiteWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
     get "/about", PageController, :about
     get "/stack", PageController, :stack
     get "/resume", PageController, :resume
@@ -31,8 +30,13 @@ defmodule SiteWeb.Router do
 
     live_session :default,
       on_mount: [Hooks.ActiveLinks, Hooks.Metrics] do
+      live "/", HomeLive.Index, :index
       live "/articles", BlogLive.Index, :index
       live "/articles/:year/:slug", BlogLive.Show, :show
+      live "/categories", CategoriesLive.Index, :index
+      live "/category/:category", CategoriesLive.Show, :show
+      live "/tags", TagsLive.Index, :index
+      live "/tag/:tag", TagsLive.Show, :show
     end
   end
 

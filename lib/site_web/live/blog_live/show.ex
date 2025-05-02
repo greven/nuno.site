@@ -2,84 +2,75 @@ defmodule SiteWeb.BlogLive.Show do
   use SiteWeb, :live_view
 
   alias Site.Blog
-  alias SiteWeb.MarkdownHelpers
+  alias SiteWeb.BlogComponents
 
   @impl true
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} active_link={@active_link}>
-      <.header>
-        {@post.title}
-        <:subtitle>{@post.excerpt}</:subtitle>
-      </.header>
-
-      <%!-- Tags --%>
-      <%!-- <div class="flex items-center gap-3 text-sm">
-        <div class="flex gap-1.5">
-          <.badge
-            variant="dot"
-            color={Site.Blog.Post.type_color(post.type)}
-            text_class="text-xs capitalize tracking-wider"
-          >
-            {post.type}
-          </.badge>
-
-          <%= for tag <- post.tags do %>
-            <.badge text_class="text-xs capitalize tracking-wider">
-              <span class="font-headings text-content-40/80 -mr-1">#</span>{tag}
-            </.badge>
-          <% end %>
+      <Layouts.page_content class="post">
+        <div class="flex flex-wrap items-center justify-center gap-1.5">
+          <BlogComponents.post_category post={@post} />
+          <BlogComponents.post_tags post={@post} />
         </div>
-      </div> --%>
 
-      <div class="mb-4 text-lg text-primary">
-        {@page_views} / {@today_views}
-      </div>
+        <BlogComponents.post_title class="mt-4" post={@post} />
+        <BlogComponents.post_meta
+          post={@post}
+          readers={@readers}
+          views={@page_views}
+          class="mt-3 text-center"
+        />
 
-      <div class="mb-4 text-lg text-secondary">
-        {@readers}
-      </div>
-
-      <article>
-        {MarkdownHelpers.as_html(@post.body)}
-      </article>
+        <article class="mt-10 md:mt-16 prose">
+          {raw(@post.body)}
+        </article>
+      </Layouts.page_content>
     </Layouts.app>
     """
   end
 
   @impl true
   # TODO: Raise not found Exception if post status is not published and current_user is not admin
-  def mount(%{"slug" => slug}, _session, socket) do
+  def mount(%{"slug" => slug} = params, _session, socket) do
     post = Blog.get_post_by_slug!(slug)
+
+    if connected?(socket) do
+      SiteWeb.Presence.track_post_readers(post, socket.id, params)
+      SiteWeb.Presence.subscribe(post)
+    end
 
     {
       :ok,
       socket
       |> assign(:page_title, "Show Post")
-      |> track_readers(post)
+      |> assign(:readers, 1)
       |> assign(:post, post)
     }
   end
 
   @impl true
-  def handle_info(
-        %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
-        %{assigns: %{readers: count}} = socket
-      ) do
-    readers = Site.Analytics.current_readers(count, joins, leaves)
-    {:noreply, assign(socket, :readers, readers)}
+  def handle_info({SiteWeb.Presence, {:join, _presence}}, socket) do
+    readers = SiteWeb.Presence.count_post_readers(socket.assigns.post)
+    diff = readers - socket.assigns.readers
+
+    socket =
+      socket
+      |> push_event("presence", %{op: "join", diff: diff})
+      |> assign(:readers, readers)
+
+    {:noreply, socket}
   end
 
-  # Track current page viewers
-  defp track_readers(socket, post) do
-    topic = Site.Analytics.readers_presence_topic(post)
-    readers = SiteWeb.Presence.list(topic) |> map_size()
+  def handle_info({SiteWeb.Presence, {:leave, _presence}}, socket) do
+    readers = SiteWeb.Presence.count_post_readers(socket.assigns.post)
+    diff = readers - socket.assigns.readers
 
-    if connected?(socket) do
-      SiteWeb.Endpoint.subscribe(topic)
-      SiteWeb.Presence.track(self(), topic, socket.id, %{id: socket.id})
-    end
+    socket =
+      socket
+      |> push_event("presence", %{op: "leave", diff: diff})
+      |> assign(:readers, readers)
 
-    assign(socket, :readers, readers)
+    {:noreply, socket}
   end
 end

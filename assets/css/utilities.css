@@ -1,26 +1,37 @@
-@utility animate-spin-slow {
-  @apply animate-spin;
+@utility rounded-box {
+  @apply rounded-(--radius-box);
 }
+
+/* Layout */
 
 @utility wrapper {
   @apply w-screen mx-auto max-w-5xl px-4 sm:px-16 lg:px-20;
 }
 
-@utility rounded-box {
-  @apply rounded-(--radius-box);
+/* Animations */
+
+@utility animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
 }
 
-@utility link {
-  @apply relative text-content-10 decoration-1 decoration-primary underline underline-offset-3 transition-colors
-  hover:text-content-20 hover:decoration-primary-light;
+@utility animate-fade-out {
+  animation: fade-out 0.5s ease-out forwards;
 }
 
-@utility link-subtle {
-  @apply relative text-content-10 decoration-1 decoration-content-40/40 underline underline-offset-3 transition-colors
-    hover:decoration-primary;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-@utility link-ghost {
-  @apply text-content-20 decoration-1 decoration-transparent underline underline-offset-3 transition-colors
-    hover:text-content-10 hover:decoration-primary;
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }

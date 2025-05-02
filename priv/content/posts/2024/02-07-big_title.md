@@ -1,8 +1,9 @@
 %{
-  title: "Hello world!",
+  title: "Hello World: This is a big title that won't fit on one line!",
   tags: ~w(elixir),
   excerpt: "Let's learn how to say hello world",
   status: :published,
+  type: :note,
   featured: true
 }
 

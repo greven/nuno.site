@@ -4,6 +4,7 @@
   excerpt: "Some draft post",
   status: :draft
 }
+
 ---
 
 This is a draft post!

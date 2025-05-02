@@ -2,10 +2,11 @@
   title: "Some social update!",
   tags: ~w(elixir),
   excerpt: "Let's learn how to say hello world",
-  status: :published,
+  status: :draft,
   type: :social,
   featured: true
 }
+
 ---
 
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio laboriosam fugit eligendi nihil illo aut. Sint fuga dolorem, nobis nesciunt quidem repellat ratione asperiores illo. Accusamus voluptatem provident neque exercitationem?

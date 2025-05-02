@@ -1,10 +1,6 @@
 defmodule SiteWeb.PageController do
   use SiteWeb, :controller
 
-  def home(conn, _params) do
-    render(conn, :home)
-  end
-
   def about(conn, _params) do
     experience = Enum.take(Site.Resume.get_experience(), 3)
 
@@ -20,6 +16,15 @@ defmodule SiteWeb.PageController do
       page_title: "Resume",
       resume: Site.Resume.data(),
       skills: Site.Resume.list_skills()
+    )
+  end
+
+  def sitemap(conn, _params) do
+    render(conn, :sitemap,
+      page_title: "Sitemap",
+      pages: Site.Sitemap.pages(),
+      other_pages: Site.Sitemap.other_pages(),
+      posts: Site.Sitemap.posts()
     )
   end
 

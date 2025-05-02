@@ -3,8 +3,6 @@ defmodule Site.Blog do
   The Blog context.
   """
 
-  alias Site.Blog.Post
-
   defmodule NotFoundError do
     defexception [:message, plug_status: 404]
   end
@@ -13,9 +11,11 @@ defmodule Site.Blog do
 
   use NimblePublisher,
     from: Application.app_dir(:site, @posts_dir <> "/**/*.md"),
-    build: Post,
-    as: :posts,
-    html_converter: Site.Markdown
+    build: Site.Blog.Post,
+    html_converter: Site.Blog.HTMLConverter,
+    parser: Site.Blog.Parser,
+    highlighters: [],
+    as: :posts
 
   @posts Enum.sort_by(@posts, & &1.date, {:desc, Date})
   @tags @posts |> Enum.flat_map(& &1.tags) |> Enum.uniq() |> Enum.sort()
@@ -46,7 +46,7 @@ defmodule Site.Blog do
   """
   def list_posts(opts \\ []) do
     status =
-      Keyword.get(opts, :status, Post.status())
+      Keyword.get(opts, :status, Site.Blog.Post.status())
       |> List.wrap()
 
     fields = Keyword.get(opts, :fields)
@@ -73,6 +73,22 @@ defmodule Site.Blog do
   """
   def list_recent_posts(count \\ 3) do
     list_published_posts(status: :published, limit: count)
+  end
+
+  @doc """
+  List posts by type.
+  """
+  def list_posts_by_type(type) do
+    all_posts()
+    |> Enum.filter(&(&1.type == type))
+  end
+
+  @doc """
+  List posts that have been published by type.
+  """
+  def list_published_posts_by_type(type) do
+    list_published_posts()
+    |> Enum.filter(&(&1.type == type))
   end
 
   @doc """
@@ -116,6 +132,18 @@ defmodule Site.Blog do
   def get_post_by_slug!(slug) do
     Enum.find(all_posts(), &(&1.slug == slug)) ||
       raise NotFoundError, "post with slug=#{slug} not found"
+  end
+
+  @doc """
+  Get the count of published posts for each post type.
+  """
+
+  def count_posts_by_type do
+    posts = list_published_posts()
+
+    posts
+    |> Enum.frequencies_by(&Atom.to_string(&1.type))
+    |> Map.put("all", length(posts))
   end
 
   defp maybe_select_fields(posts, fields) do

@@ -20,7 +20,7 @@ defmodule SiteWeb.Layouts do
     <div class="min-h-screen flex flex-col">
       <.site_header active_link={@active_link} />
 
-      <main id="main" class="relative wrapper flex-auto mt-16 lg:mt-32">
+      <main id="main" class="relative wrapper flex-auto">
         {render_slot(@inner_block)}
       </main>
 
@@ -80,11 +80,11 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <footer class="wrapper">
       <div class="flex flex-col items-center gap-4 pt-6 pb-3 md:pt-12 md:pb-6">
-        <div class="my-1 flex items-center gap-1 justify-center text-sm font-headings text-content-40">
+        <div class="my-1 flex items-center gap-1 justify-center text-xs font-headings text-content-40/90">
           <span class="flex items-center gap-1">
             &copy; {Date.utc_today().year} nuno.site
             <div class="hidden md:inline-block">
-              <span class="font-sans text-xs text-gray-400">&bull;</span>
+              <span class="font-sans text-xs text-content-40">&bull;</span>
               Mixed with
               <.icon
                 name="si-elixir"
@@ -96,7 +96,7 @@ defmodule SiteWeb.Layouts do
               </span>
             </div>
           </span>
-          <span class="hidden md:inline-block font-sans text-xs text-gray-400">&bull;</span>
+          <span class="hidden md:inline-block font-sans text-xs text-content-40">&bull;</span>
           <span class="hidden md:inline-block link-ghost">
             <a href={~p"/sitemap"}>Sitemap</a>
           </span>
@@ -165,7 +165,7 @@ defmodule SiteWeb.Layouts do
 
   def page_content(assigns) do
     ~H"""
-    <div class={["relative", @class]} {@rest}>
+    <div class={["relative mt-16 lg:mt-32", @class]} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """

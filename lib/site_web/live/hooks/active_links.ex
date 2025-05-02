@@ -16,9 +16,10 @@ defmodule SiteWeb.Hooks.ActiveLinks do
   defp handle_active_link_params(_params, _url, socket) do
     active_link =
       case {socket.view, socket.assigns.live_action} do
-        # {SiteWeb.AdminLive.Index, _} -> :admin
+        {SiteWeb.HomeLive.Index, _} -> :home
         {SiteWeb.BlogLive.Index, _} -> :articles
         {SiteWeb.BlogLive.Show, _} -> :articles
+        # {SiteWeb.AdminLive.Index, _} -> :admin
         {_, _} -> nil
       end
 

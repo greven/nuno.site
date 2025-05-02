@@ -5,75 +5,32 @@ defmodule SiteWeb.BlogComponents do
 
   use SiteWeb, :html
 
+  alias Site.Blog
   alias Site.Support
 
   @doc false
 
-  attr :post, :any, required: true
-  attr :class, :string, default: nil
-  attr :rest, :global
-
-  def post_item(assigns) do
-    ~H"""
-    <div class={["relative group flex items-center justify-between", @class]} {@rest}>
-      <div class="flex md:grid md:grid-cols-[84px_auto_1fr] items-center gap-1">
-        <.post_category post={@post} class="hidden md:flex col-span-1" />
-        <h2 class="link-subtle font-normal text-base md:text-lg col-start-3 col-span-1">
-          <.link href={~p"/articles/#{@post.year}/#{@post}"}>
-            <span class="absolute inset-0"></span>
-            {@post.title}
-          </.link>
-        </h2>
-      </div>
-
-      <.publication_date
-        class="flex items-center text-content-40/80 text-sm md:text-base transition-colors group-hover:text-content-30"
-        post={@post}
-        format="%b %-d, %Y"
-        show_icon={false}
-      />
-    </div>
-    """
-  end
-
-  @doc false
-
-  attr :post, :any, required: true
+  attr :post, Blog.Post, required: true
   attr :class, :string, default: nil
   attr :rest, :global
 
   def featured_post_item(assigns) do
-    assigns =
-      assigns
-      |> assign(:excerpt, Support.truncate_text(assigns.post.excerpt, length: 100))
-
     ~H"""
-    <article
-      class="relative group bg-surface-20/20 p-4 border-1 border-surface-30 shadow-xs rounded-box hover:border-primary transition-colors"
-      {@rest}
-    >
-      <div class="mb-1 flex items-center justify-between">
-        <.publication_date class="flex items-center text-content-40" post={@post} />
-        <.post_category post={@post} />
-      </div>
-
-      <.header tag="h2">
-        <.link href={~p"/articles/#{@post.year}/#{@post}"} class="text-2xl font-normal">
-          <span class="absolute inset-0"></span>
-          {@post.title}
+    <article class="featured-article group" {@rest}>
+      <.header tag="h2" class="mt-2">
+        <.link href={~p"/articles/#{@post.year}/#{@post}"} class="text-lg line-clamp-2">
+          <span class="absolute inset-0 z-10"></span>
+          <span class="group-hover:text-shadow-xs/15 text-shadow-primary">{@post.title}</span>
         </.link>
       </.header>
 
-      <div class="-mt-2 mb-1.5 text-content-40">
-        {@excerpt}
+      <div class="h-5 flex items-center justify-between order-first">
+        <.post_card_meta post={@post} format="%b %-d, %Y" class="text-content-40 text-sm" />
+        <.post_category post={@post} />
       </div>
 
-      <div class="mt-3 flex items-center text-primary">
-        Read article
-        <.icon
-          name="hero-chevron-right-mini"
-          class="size-3.5 mt-1 ml-1 motion-safe:group-hover:translate-x-1 transition-transform"
-        />
+      <div class="-mt-1 text-sm text-content-40 text-pretty line-clamp-2 group-hover:text-content-30">
+        {@post.excerpt}
       </div>
     </article>
     """
@@ -81,7 +38,58 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
-  attr :post, :any, required: true
+  attr :post, Blog.Post, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def post_item(assigns) do
+    ~H"""
+    <div
+      class={[
+        "relative group flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-8",
+        @class
+      ]}
+      {@rest}
+    >
+      <div class="flex md:grid md:grid-cols-[82px_auto_1fr] items-center gap-1">
+        <h2 class="link-subtle text-base md:text-lg col-start-3 col-span-1 text-pretty line-clamp-2">
+          <.link href={~p"/articles/#{@post.year}/#{@post}"}>
+            <span class="absolute inset-0"></span>
+            {@post.title}
+          </.link>
+        </h2>
+        <.post_category post={@post} class="hidden md:flex col-span-1 order-first" />
+      </div>
+
+      <.post_publication_date
+        class="shrink-0 flex items-center font-headings text-content-40/80 transition-colors group-hover:text-content-30"
+        format="%b %d, %Y"
+        post={@post}
+      />
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def post_title(assigns) do
+    ~H"""
+    <h1
+      class={["font-medium text-center text-balance text-3xl sm:text-4xl lg:text-5xl", @class]}
+      {@rest}
+    >
+      {@post.title}
+    </h1>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
   attr :class, :string, default: nil
 
   def post_category(assigns) do
@@ -90,9 +98,13 @@ defmodule SiteWeb.BlogComponents do
       <.badge
         variant="dot"
         color={Site.Blog.Post.type_color(@post.type)}
-        text_class="text-xs capitalize tracking-wider"
+        badge_class="group text-xs capitalize tracking-wider"
       >
-        {@post.type}
+        <.link navigate={~p"/category/#{@post.type}"}>
+          <span class="text-content-30 tracking-wider group-hover:text-content-10 transition-colors">
+            {@post.type}
+          </span>
+        </.link>
       </.badge>
     </div>
     """
@@ -100,18 +112,129 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
-  attr :post, :any, required: true
+  attr :post, Blog.Post, required: true
   attr :class, :string, default: nil
 
   def post_tags(assigns) do
     ~H"""
     <div class={@class}>
-      <div class="flex items-center gap-1.5">
-        <%= for tag <- @post.tags do %>
-          <.badge text_class="text-xs capitalize tracking-wider">
-            <span class="font-headings text-content-40/80 -mr-1">#</span>{tag}
-          </.badge>
+      <div class="flex items-center flex-wrap gap-1.5">
+        <.post_tag :for={tag <- @post.tags} tag={tag} />
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :tag, :string, required: true
+  attr :class, :string, default: nil
+
+  def post_tag(assigns) do
+    ~H"""
+    <div class={@class}>
+      <.badge badge_class="group text-xs capitalize">
+        <.link navigate={~p"/tag/#{@tag}"}>
+          <span class="font-headings text-primary/90 group-hover:text-primary">#</span>
+          <span class="text-content-30 tracking-wider group-hover:text-content-10 transition-colors">
+            {@tag}
+          </span>
+        </.link>
+      </.badge>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders the post meta information, including the publication date and tags.
+  """
+
+  attr :post, Blog.Post, required: true
+  attr :readers, :integer, default: nil
+  attr :views, :integer, default: nil
+  attr :class, :string, default: nil
+
+  def post_meta(assigns) do
+    ~H"""
+    <div id="post-meta" class={@class} phx-hook="PostMeta">
+      <div class="flex flex-wrap items-center justify-center gap-3 text-content-40">
+        <.post_publication_date post={@post} show_icon={true} />
+        <span class="font-sans text-xs text-primary">&bull;</span>
+        <.post_reading_time post={@post} label="read" show_icon={true} />
+
+        <%= if @views do %>
+          <span class="hidden lg:inline font-sans text-xs text-primary">&bull;</span>
+          <.post_views count={@views} class="hidden lg:inline-block" />
         <% end %>
+
+        <%= if @readers do %>
+          <span class="hidden md:inline font-sans text-xs text-primary">&bull;</span>
+          <.post_readers count={@readers} class="hidden md:inline-block" />
+        <% end %>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  Publication date / reading time display. It shows the date by default but toggled
+  to show the reading time and animate the transition between the two.
+  """
+
+  attr :post, Blog.Post, required: true
+  attr :show_icon, :boolean, default: true
+  attr :format, :string, default: "%B %-d, %Y"
+  attr :label, :string, default: nil
+  attr :class, :string, default: nil
+
+  def post_card_meta(assigns) do
+    ~H"""
+    <div class={["relative w-full h-full", @class]}>
+      <.post_publication_date
+        post={@post}
+        show_icon={@show_icon}
+        format={@format}
+        class="absolute bottom-0 transitions duration-150 delay-150 group-hover:-translate-y-4 group-hover:opacity-0"
+      />
+      <.post_reading_time
+        post={@post}
+        label="read"
+        show_icon={@show_icon}
+        class="opacity-0 absolute inset-0 translate-y-4 transition delay-150 group-hover:opacity-100 group-hover:flex group-hover:translate-y-0"
+      />
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :count, :integer, required: true
+  attr :show_icon, :boolean, default: true
+  attr :class, :string, default: nil
+
+  def post_readers(assigns) do
+    ~H"""
+    <div class={@class}>
+      <div class="flex items-center gap-2">
+        <.icon :if={@show_icon} name="lucide-users" class="size-4.5 text-content-40" />
+        <span class="font-mono text-content-20 text-sm" data-readers-count>{@count}</span>reading
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :count, :integer, required: true
+  attr :show_icon, :boolean, default: true
+  attr :class, :string, default: nil
+
+  def post_views(assigns) do
+    ~H"""
+    <div class={@class}>
+      <div class="flex items-center gap-2">
+        <.icon :if={@show_icon} name="lucide-printer" class="size-4.5 text-content-40" />
+        <span class="font-mono text-content-20 text-sm">{@count}</span> views
       </div>
     </div>
     """
@@ -121,12 +244,13 @@ defmodule SiteWeb.BlogComponents do
   Renders the reading time of a post in minutes (or seconds if less than 1 minute).
   """
 
-  attr :post, :any, required: true
+  attr :post, Blog.Post, required: true
   attr :label, :string, default: nil
+  attr :show_icon, :boolean, default: true
   attr :class, :string, default: nil
-  attr :rest, :global
+  attr :text_class, :string, default: "text-content-40"
 
-  def reading_time(%{post: %{reading_time: reading_time}} = assigns) do
+  def post_reading_time(%{post: %{reading_time: reading_time}} = assigns) do
     {duration, unit} =
       cond do
         reading_time < 1.0 -> {round(reading_time * 60), "s"}
@@ -139,27 +263,50 @@ defmodule SiteWeb.BlogComponents do
       |> assign(:unit, unit)
 
     ~H"""
-    <span class={@class} {@rest}>
-      <span class="font-normal text-content-20">{@duration}</span><span class="font-light text-content-30"><%= @unit %></span>
-      <span :if={@label} class="font-light text-content-40">{@label}</span>
+    <span class={@class}>
+      <div class="flex items-center gap-2">
+        <.icon :if={@show_icon} name="lucide-clock" class={"size-4.5 #{@text_class}"} />
+        <div>
+          <span class="font-mono text-content-20 text-sm">{@duration}{@unit}</span>
+          <span :if={@label} class={@text_class}>{@label}</span>
+        </div>
+      </div>
     </span>
     """
   end
 
   @doc false
 
-  attr :post, :any, required: true
+  attr :author, :string, default: "Nuno Moço"
+  attr :prefix, :string, default: nil
+  attr :class, :string, default: nil
+
+  def post_author(assigns) do
+    ~H"""
+    <div class={@class}>
+      <div class="flex items-center gap-2">
+        {if @prefix, do: "#{@prefix} ", else: ""} {@author}
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
   attr :show_icon, :boolean, default: true
   attr :format, :string, default: "%B %-d, %Y"
   attr :class, :string, default: nil
 
-  def publication_date(assigns) do
+  def post_publication_date(assigns) do
     assigns = assign(assigns, :date, post_date(assigns.post.date, assigns.format))
 
     ~H"""
     <time class={@class}>
-      <.icon :if={@show_icon} name="hero-calendar" class="size-5 mr-2 text-content-40/80" />
-      {@date}
+      <div class="flex items-center gap-2">
+        <.icon :if={@show_icon} name="lucide-calendar-fold" class="size-4.5 text-content-40" />
+        <span class="font-mono text-sm">{@date}</span>
+      </div>
     </time>
     """
   end
@@ -170,70 +317,4 @@ defmodule SiteWeb.BlogComponents do
       relative_date -> relative_date
     end
   end
-
-  # @doc false
-
-  # attr :class, :string, default: nil
-  # attr :post, :any, required: true
-
-  # def post_header(assigns) do
-  #   ~H"""
-  #   <div class={@class}>
-  #     <.header>
-  #       {@post.title}
-
-  #       <:subtitle class="flex gap-2">
-  #         <.publication_date post={@post} />
-  #         <span class="text-secondary-400" aria-hidden="true">•</span>
-  #         <span>
-  #           <.reading_time time={@post.reading_time} />
-  #           {gettext("read")}
-  #         </span>
-  #       </:subtitle>
-  #     </.header>
-  #   </div>
-  #   """
-  # end
-
-  # attr :class, :string, default: nil
-  # attr :readers, :integer, required: true
-  # attr :today_views, :integer, required: true
-  # attr :page_views, :integer, required: true
-
-  # def post_sidebar(assigns) do
-  #   ~H"""
-  #   <div class={@class}>
-  #     <.back navigate={~p"/writing/"} />
-  #     <%!-- Stats --%>
-  #     <div class="hidden lg:mt-6 lg:flex flex-col gap-2 text-xs font-medium text-secondary-500 uppercase">
-  #       <div class="flex items-center gap-1.5 mb-2">
-  #         <h3 class="font-headings text-sm font-semibold text-secondary-800">Statistics</h3>
-  #       </div>
-
-  #       <div class="pl-1">
-  #         <span class="mr-1 text-secondary-700">
-  #           {if @today_views, do: App.Helpers.format_number(@today_views), else: "-"}
-  #         </span>
-  #         {gettext("views today")}
-  #       </div>
-
-  #       <div class="pl-1">
-  #         <span class="mr-1 text-secondary-700">
-  #           {if @page_views, do: App.Helpers.format_number(@page_views), else: "-"}
-  #         </span>
-  #         {gettext("page views")}
-  #       </div>
-
-  #       <div class="pl-1">
-  #         <span class="mr-1 text-secondary-700">{@readers}</span>
-  #         {ngettext(
-  #           "reader",
-  #           "readers",
-  #           @readers
-  #         )}
-  #       </div>
-  #     </div>
-  #   </div>
-  #   """
-  # end
 end

@@ -1,16 +1,21 @@
 <Layouts.app flash={@flash} active_link={@active_link}>
   <Layouts.page_content>
-    <div class="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
+    <div class="grid grid-cols-1 gap-y-12 lg:grid-cols-2 lg:grid-rows-[auto_1fr]">
       <div class="row-span-2 w-full flex flex-col items-center justify-center lg:flex-row">
-        <div class="profile-picture">
+        <div class="profile-picture group lg:mt-24">
           <.image src="/images/profile.png" alt="Nuno's profile picture" width={280} height={280} />
+          <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 translate-y-12 opacity-0 transition ease-in-out group-hover:opacity-100 group-hover:translate-y-0">
+            <span class="bg-white/20 dark:bg-white/10 text-neutral-100 text-sm py-1.5 px-2.5 rounded-full backdrop-blur-md">
+              It's a me!
+            </span>
+          </div>
         </div>
       </div>
 
       <%!-- Intro --%>
       <div class="w-full text-center lg:text-left lg:order-first lg:row-span-2">
         <h1 class="text-3xl md:text-4xl font-headings font-light tracking-tight">
-          HEY! My name is <em class="not-italic font-medium underline decoration-4 decoration-primary underline-offset-4">Nuno</em>.
+          HEY! My name is <em class="font-medium underline not-italic decoration-4 decoration-primary underline-offset-4 text-content-10">Nuno</em>.
         </h1>
 
         <p class="mt-2 text-lg md:text-xl font-light">
@@ -24,7 +29,7 @@
 
         <div class="mt-8 space-y-4 text-base text-content-20">
           <p class="text-pretty md:text-balance">
-            Hello fellow visitor! I'm Nuno Freire, a seasoned software developer focused on web technologies.
+            Hello fellow visitor! I'm Nuno Moço, a seasoned software developer focused on web technologies.
             I love crafting web applications with a focus on <span class="font-medium">User Experience</span>.
           </p>
 
@@ -32,48 +37,64 @@
             As a full-stack developer I enjoy working with various technologies. My main toolkit includes <span class="font-medium">Elixir</span>, <span class="font-medium">Phoenix</span>, <span class="font-medium">CSS</span>, <span class="font-medium">SQL</span>, <span class="font-medium">JavaScript</span>, and <span class="font-medium">React</span>.
           </p>
 
-          <ul role="list" class="mt-6 flex flex-wrap justify-center lg:justify-start gap-2.5">
-            <li class="hidden md:block">
-              <.button href="mailto:hello@nuno.site" size="sm" class="group">
-                <.icon name="hero-envelope" class="size-5 mr-2" />
-                <span class="">Email</span>
+          <div class="mt-6">
+            <div class="mb-4 ml-1">
+              <div class="relative inline-block">
+                <em class="py-0.5 px-1 not-italic bg-secondary-light/10 text-secondary-darker/85 dark:bg-secondary-light/10 dark:text-secondary">
+                  Stay in contact
+                </em>
                 <.icon
-                  name="lucide-arrow-up-right"
-                  class="ml-1.5 size-5 text-content-40 group-hover:text-primary transition-colors"
+                  name="lucide-corner-right-down"
+                  class="absolute top-2 -right-6 size-5 text-secondary/90"
                 />
-              </.button>
-            </li>
+              </div>
+            </div>
 
-            <li>
-              <.button href="https://github.com/greven" size="sm" class="group">
-                <.icon name="si-github" class="size-5 mr-2" />
-                <span class="">GitHub</span>
-                <.icon
-                  name="lucide-arrow-up-right"
-                  class="ml-1.5 size-5 text-content-40 group-hover:text-primary transition-colors"
-                />
-              </.button>
-            </li>
+            <ul role="list" class="flex flex-wrap justify-center lg:justify-start gap-2.5">
+              <li class="hidden md:block">
+                <.button href="mailto:hello@nuno.site" size="sm" class="group">
+                  <.icon name="hero-envelope" class="size-5 mr-2" />
+                  <span class="">Email</span>
+                  <.icon
+                    name="lucide-arrow-up-right"
+                    class="ml-1.5 size-5 text-content-40 group-hover:text-primary transition-colors"
+                  />
+                </.button>
+              </li>
 
-            <li>
-              <.button href="https://bsky.app/profile/nuno.site" size="sm" class="group">
-                <.icon name="si-bluesky" class="size-5 mr-2" />
-                <span class="">Bluesky</span>
-                <.icon
-                  name="lucide-arrow-up-right"
-                  class="ml-1.5 size-5 text-content-40 group-hover:text-primary transition-colors"
-                />
-              </.button>
-            </li>
-          </ul>
+              <li>
+                <.button href="https://github.com/greven" size="sm" class="group">
+                  <.icon name="si-github" class="size-5 mr-2" />
+                  <span class="">GitHub</span>
+                  <.icon
+                    name="lucide-arrow-up-right"
+                    class="ml-1.5 size-5 text-content-40 group-hover:text-primary transition-colors"
+                  />
+                </.button>
+              </li>
+
+              <li>
+                <.button href="https://bsky.app/profile/nuno.site" size="sm" class="group">
+                  <.icon name="si-bluesky" class="size-5 mr-2" />
+                  <span class="">Bluesky</span>
+                  <.icon
+                    name="lucide-arrow-up-right"
+                    class="ml-1.5 size-5 text-content-40 group-hover:text-primary transition-colors"
+                  />
+                </.button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
 
     <%!-- Skills --%>
     <.header tag="h2" class="mt-16">
-      <.icon name="hero-rectangle-stack" class="size-6" />
-      <span>Skills</span>
+      <div class="flex items-center gap-2">
+        <.icon name="hero-rectangle-stack" class="size-6.5 text-content-30" />
+        <span>Skills</span>
+      </div>
       <:subtitle>Some of the technologies I work with</:subtitle>
     </.header>
 
@@ -88,8 +109,10 @@
 
     <%!-- Experience --%>
     <.header tag="h2" class="mt-16">
-      <.icon name="hero-briefcase" class="size-6" />
-      <span>My Career</span>
+      <div class="flex items-center gap-2">
+        <.icon name="hero-briefcase" class="size-6.5 text-content-30" />
+        <span>My Career</span>
+      </div>
       <:subtitle>Most recent work experience</:subtitle>
     </.header>
 

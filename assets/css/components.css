@@ -1,2 +1,17 @@
 @import './components/button.css';
 @import './components/navbar.css';
+
+@utility link {
+  @apply text-content-10 decoration-1 decoration-primary underline underline-offset-3 transition-colors
+  hover:text-content-20 hover:decoration-primary-light;
+}
+
+@utility link-subtle {
+  @apply text-content-10 decoration-1 decoration-content-40/40 underline underline-offset-3 transition-colors
+    hover:decoration-primary;
+}
+
+@utility link-ghost {
+  @apply text-content-30 decoration-1 decoration-transparent underline underline-offset-3 transition-colors
+    hover:text-content-10 hover:decoration-primary;
+}

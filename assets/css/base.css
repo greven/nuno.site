@@ -13,7 +13,7 @@
   }
 
   ::selection {
-    background-color: --alpha(var(--color-secondary) / 0.3);
+    background-color: --alpha(var(--color-secondary) / 0.2);
   }
 
   * {
@@ -23,7 +23,8 @@
   body {
     width: 100%;
     background-color: var(--color-surface-10);
-    color: var(--color-content-10);
+    color: var(--color-content-20);
+    line-height: 1.5;
   }
 
   h1,
@@ -33,5 +34,10 @@
   h5,
   h6 {
     font-family: var(--font-headings);
+  }
+
+  s {
+    text-decoration-color: var(--color-primary);
+    text-decoration-thickness: 2px;
   }
 }

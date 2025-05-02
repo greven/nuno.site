@@ -1,5 +1,6 @@
 /* Theming */
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark-hover (&:where([data-theme=dark], [data-theme=dark] *):hover:not(:disabled));
 
 /* Typography */
 @theme {
@@ -56,7 +57,7 @@
   --color-secondary-contrast: oklch(from var(--color-secondary) 99% 1% h);
 
   /* Info Intent */
-  --color-info: oklch(0.74 0.16 232.661);
+  --color-info: oklch(0.72 0.143 215.221);
   --color-info-light: oklch(from var(--color-info) calc(l * 1.15) calc(c * 0.9) h);
   --color-info-lighter: oklch(from var(--color-info) calc(l * 1.35) calc(c * 0.5) h);
   --color-info-dark: oklch(from var(--color-info) calc(l * 0.85) calc(c * 0.9) h);
@@ -64,7 +65,7 @@
   --color-info-contrast: oklch(from var(--color-info) 99% 1% h);
 
   /* Success Intent */
-  --color-success: oklch(0.76 0.177 163.223);
+  --color-success: oklch(0.7 0.14 182.503);
   --color-success-light: oklch(from var(--color-success) calc(l * 1.15) calc(c * 0.9) h);
   --color-success-lighter: oklch(from var(--color-success) calc(l * 1.35) calc(c * 0.5) h);
   --color-success-dark: oklch(from var(--color-success) calc(l * 0.85) calc(c * 0.9) h);
@@ -72,7 +73,7 @@
   --color-success-contrast: oklch(from var(--color-success) 99% 1% h);
 
   /* Warning Intent */
-  --color-warning: oklch(0.82 0.189 84.429);
+  --color-warning: oklch(0.77 0.188 70.08);
   --color-warning-light: oklch(from var(--color-warning) calc(l * 1.15) calc(c * 0.9) h);
   --color-warning-lighter: oklch(from var(--color-warning) calc(l * 1.35) calc(c * 0.5) h);
   --color-warning-dark: oklch(from var(--color-warning) calc(l * 0.85) calc(c * 0.9) h);
@@ -80,7 +81,7 @@
   --color-warning-contrast: oklch(from var(--color-warning) 99% 1% h);
 
   /* Danger Intent */
-  --color-danger: oklch(0.7 0.191 22.216);
+  --color-danger: oklch(0.55 0.253 17.585);
   --color-danger-light: oklch(from var(--color-danger) calc(l * 1.15) calc(c * 0.9) h);
   --color-danger-lighter: oklch(from var(--color-danger) calc(l * 1.35) calc(c * 0.5) h);
   --color-danger-dark: oklch(from var(--color-danger) calc(l * 0.85) calc(c * 0.9) h);

@@ -1,0 +1,32 @@
+<Layouts.app flash={@flash}>
+  <Layouts.page_content class="prose">
+    <.header anchor="sitemap">Sitemap</.header>
+
+    <.header tag="h2" anchor="main">Main Pages</.header>
+    <ul>
+      <li :for={{title, route} <- @pages}>
+        <.link href={route}>
+          {title}
+        </.link>
+      </li>
+    </ul>
+
+    <.header tag="h2" anchor="secondary">Secondary Pages</.header>
+    <ul>
+      <li :for={{title, route} <- @other_pages}>
+        <.link href={route}>
+          {title}
+        </.link>
+      </li>
+    </ul>
+
+    <.header tag="h2" anchor="posts">Posts</.header>
+    <ul>
+      <li :for={post <- @posts}>
+        <.link href={~p"/articles/#{post.year}/#{post}"}>
+          {post.title}
+        </.link>
+      </li>
+    </ul>
+  </Layouts.page_content>
+</Layouts.app>

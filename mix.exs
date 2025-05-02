@@ -34,11 +34,11 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.0-rc.0", override: true},
+      {:phoenix, "~> 1.8.0-rc.1", override: true},
       {:phoenix_live_view, "~> 1.0"},
       {:phoenix_ecto, "~> 4.6"},
       {:phoenix_html, "~> 4.2"},
-      {:phoenix_live_reload, "~> 1.5", only: :dev},
+      {:phoenix_live_reload, "~> 1.6", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
 
       # HTTP server
@@ -75,6 +75,12 @@ defmodule Site.MixProject do
       # {:earmark, "~> 1.4"},
       # {:image, "~> 0.56"},
 
+      # Content
+      {:mdex, "~> 0.6"},
+      {:nimble_publisher, "~> 1.1"},
+      # {:phoenix_seo, "~> 0.1"},
+      # {:atomex, "~> 0.5"},
+
       # Assets
       {:esbuild, "~> 0.9", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.3", runtime: Mix.env() == :dev},
@@ -101,12 +107,6 @@ defmodule Site.MixProject do
        app: false,
        compile: false,
        depth: 1},
-
-      # Content
-      {:mdex, "~> 0.3"},
-      {:nimble_publisher, "~> 1.1"},
-      # {:phoenix_seo, "~> 0.1"},
-      # {:atomex, "~> 0.5"},
 
       # Development
       {:credo, "~> 1.7", only: :dev, runtime: false}

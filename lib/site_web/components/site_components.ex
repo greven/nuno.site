@@ -104,8 +104,8 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <li class="space-y-1 pb-8">
       <div class="flex items-center gap-1.5">
-        <.icon name="hero-calendar-mini" class="size-4.5 text-content-40" />
-        <span :if={@start_date} class="text-content-30 uppercase text-sm">
+        <.icon name="hero-calendar-mini" class="size-4.5 text-content-40/90" />
+        <span :if={@start_date} class="text-content-30/90 uppercase text-sm">
           <%= if @start_date && @end_date do %>
             {parse_date(@start_date)} - {parse_date(@end_date)}
           <% else %>
@@ -113,7 +113,9 @@ defmodule SiteWeb.SiteComponents do
           <% end %>
         </span>
       </div>
-      <div class="font-headings text-xl">{@role}</div>
+      <div class="font-headings font-medium text-xl">
+        {@role}<span class="ml-px text-primary text-xl">.</span>
+      </div>
       <div class="text-content-20">
         <%= if @link do %>
           <.link href={@link} target="_blank" rel="noopener noreferrer" class="link-ghost">
@@ -122,7 +124,9 @@ defmodule SiteWeb.SiteComponents do
         <% else %>
           {@company}
         <% end %>
-        <span :if={@location} class="text-content-30">- {@location}</span>
+        <span :if={@location} class="text-content-30">
+          <span class="text-content-40/90">—</span> {@location}
+        </span>
       </div>
     </li>
     """

@@ -94,24 +94,6 @@ defmodule Site.Analytics do
   defp after_metric_update(metric, path), do: Site.Analytics.broadcast(path, metric)
 
   # ------------------------------------------
-  #  Current Readers (Presence)
-  # ------------------------------------------
-
-  def readers_presence_topic(%Site.Blog.Post{} = post) do
-    "blog:#{post.year}:#{post.id}"
-  end
-
-  @doc """
-  Count the current readers of a page given the total count and
-  the presence diff of joins and leaves.
-  """
-  def current_readers(count, %{} = joins, %{} = leaves) do
-    count + map_size(joins) - map_size(leaves)
-  end
-
-  def current_readers(_, _, _), do: nil
-
-  # ------------------------------------------
   #  PubSub
   # ------------------------------------------
 
