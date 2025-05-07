@@ -15,15 +15,15 @@
 
   /* Surface */
   --color-surface-10: oklch(0.985 0 0);
-  --color-surface-20: oklch(0.94 0 0);
-  --color-surface-30: oklch(0.88 0 0);
-  --color-surface-40: oklch(0.82 0 0);
+  --color-surface-20: oklch(0.96 0 0);
+  --color-surface-30: oklch(0.93 0 0);
+  --color-surface-40: oklch(0.88 0 0);
 
   /* Content */
   --color-content-10: oklch(from var(--neutral-base) 0.28 0 h);
   --color-content-20: oklch(from var(--neutral-base) 0.38 0 h);
   --color-content-30: oklch(from var(--neutral-base) 0.44 0 h);
-  --color-content-40: oklch(from var(--neutral-base) 0.55 0 h);
+  --color-content-40: oklch(from var(--neutral-base) 0.54 0 h);
 
   /* Gray (Neutral) */
   --color-gray-*: initial;
@@ -92,7 +92,8 @@
 /* Elements */
 @theme inline {
   --border: 1px;
-  --shadow-field: var(--shadow-sm);
+  --shadow-box: var(--shadow-sm);
+  --shadow-field: var(--shadow-xs);
   --radius-field: 0.5rem;
   --radius-selector: 0.25rem;
   --radius-box: 0.5rem;
@@ -100,7 +101,7 @@
   /* --size-selector: 0.21875rem; */
 
   /* Button */
-  --btn-shadow: var(--shadow-field);
+  --btn-shadow: var(--shadow-box);
   --btn-radius: var(--radius-field);
   --btn-border: var(--border);
 
@@ -118,7 +119,7 @@
 
     --color-content-10: oklch(from var(--neutral-base) 0.86 0.001 h);
     --color-content-20: oklch(from var(--neutral-base) 0.76 0 h);
-    --color-content-30: oklch(from var(--neutral-base) 0.68 0 h);
-    --color-content-40: oklch(from var(--neutral-base) 0.59 0 h);
+    --color-content-30: oklch(from var(--neutral-base) 0.69 0 h);
+    --color-content-40: oklch(from var(--neutral-base) 0.62 0 h);
   }
 }

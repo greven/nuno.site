@@ -399,14 +399,9 @@ defmodule SiteWeb.CoreComponents do
           ]}
         >
           <%= if @anchor do %>
-            <div class="relative hidden sm:block">
-              <a
-                id={@anchor}
-                class="absolute -left-[0.85em] top-[50%] -ml-5 text-[0.55em]/0 md:text-[0.65em]/0 text-content-40 opacity-30 capitalize
-                  scroll-my-24 transition-opacity no-underline hover:opacity-65"
-                href={"##{@anchor}"}
-              >
-                {@tag}
+            <div class="relative group hidden sm:block">
+              <a id={@anchor} class="header-link" href={"##{@anchor}"}>
+                <%!-- {@tag} --%>
               </a>
               {render_slot(@inner_block)}
             </div>
@@ -557,7 +552,7 @@ defmodule SiteWeb.CoreComponents do
 
     ~H"""
     <div class={["relative", @class]}>
-      <div class="absolute inset-0 flex items-center" aria-hidden="true">
+      <div class="absolute inset-0 flex items-center">
         <div class={@border_class}></div>
       </div>
 

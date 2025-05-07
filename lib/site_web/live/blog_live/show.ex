@@ -22,9 +22,13 @@ defmodule SiteWeb.BlogLive.Show do
           class="mt-3 text-center"
         />
 
+        <BlogComponents.table_of_contents :if={@post.show_toc} headers={@post.headers} />
+
         <article class="mt-10 md:mt-16 prose">
           {raw(@post.body)}
         </article>
+
+        <%!-- <BlogComponents.article_pagination next={@next_post} prev={@prev_post} /> --%>
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -34,6 +38,8 @@ defmodule SiteWeb.BlogLive.Show do
   # TODO: Raise not found Exception if post status is not published and current_user is not admin
   def mount(%{"slug" => slug} = params, _session, socket) do
     post = Blog.get_post_by_slug!(slug)
+    # {next_post, prev_post} = Blog.get_next_and_prev_posts(post)
+    # Blog.get_next_and_prev_posts(post)
 
     if connected?(socket) do
       SiteWeb.Presence.track_post_readers(post, socket.id, params)

@@ -16,10 +16,6 @@
     background-color: --alpha(var(--color-secondary) / 0.2);
   }
 
-  * {
-    outline-color: var(--color-primary);
-  }
-
   body {
     width: 100%;
     background-color: var(--color-surface-10);

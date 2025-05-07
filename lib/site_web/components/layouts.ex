@@ -20,7 +20,11 @@ defmodule SiteWeb.Layouts do
     <div class="min-h-screen flex flex-col">
       <.site_header active_link={@active_link} />
 
-      <main id="main" class="relative wrapper flex-auto">
+      <main
+        id="main"
+        class="relative wrapper flex-auto transition-opacity duration-400 opacity-0 phx-page-loading:opacity-0"
+        phx-mounted={JS.remove_class("opacity-0")}
+      >
         {render_slot(@inner_block)}
       </main>
 
@@ -45,7 +49,7 @@ defmodule SiteWeb.Layouts do
       class="top-0 z-50 flex flex-none flex-wrap items-center justify-between
         bg-surface-10/80 shadow-gray-900/5 transition duration-500 backdrop-blur-sm
         supports-backdrop-filter:blur(0) supports-backdrop-filter:bg-surface-10/75
-        border-b border-dashed border-transparent data-scrolled:border-surface-30
+        border-b border-dashed border-transparent data-scrolled:border-surface-40
         data-scrolled:shadow-sm pointer-events-none"
       style="position:var(--header-position);height:var(--header-height);margin-bottom:var(--header-mb)"
       {@rest}
@@ -145,9 +149,9 @@ defmodule SiteWeb.Layouts do
   defp navbar_item(assigns) do
     ~H"""
     <.link
-      role="navigation"
       href={@href}
       navigate={@navigate}
+      role="navigation"
       aria-current={if @item == @active_link, do: "true", else: "false"}
       class="navbar-link"
     >

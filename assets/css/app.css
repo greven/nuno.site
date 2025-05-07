@@ -12,6 +12,7 @@
 @import './variants.css';
 @import './utilities.css';
 @import './components.css';
+@import './prose.css';
 @import './pages.css';
 
 /* Plugins */

@@ -1,9 +1,9 @@
 <Layouts.app flash={@flash}>
   <Layouts.page_content class="prose">
-    <.header anchor="sitemap">Sitemap</.header>
+    <h1>Sitemap</h1>
 
-    <.header tag="h2" anchor="main">Main Pages</.header>
-    <ul>
+    <h2>Main Pages</h2>
+    <ul class="font-normal">
       <li :for={{title, route} <- @pages}>
         <.link href={route}>
           {title}
@@ -11,8 +11,8 @@
       </li>
     </ul>
 
-    <.header tag="h2" anchor="secondary">Secondary Pages</.header>
-    <ul>
+    <h2>Secondary Pages</h2>
+    <ul class="font-normal">
       <li :for={{title, route} <- @other_pages}>
         <.link href={route}>
           {title}
@@ -20,8 +20,8 @@
       </li>
     </ul>
 
-    <.header tag="h2" anchor="posts">Posts</.header>
-    <ul>
+    <h2>Posts</h2>
+    <ul class="font-normal">
       <li :for={post <- @posts}>
         <.link href={~p"/articles/#{post.year}/#{post}"}>
           {post.title}

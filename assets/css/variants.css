@@ -2,6 +2,7 @@
 @custom-variant phx-click-loading ([".phx-click-loading&", ".phx-click-loading &"]);
 @custom-variant phx-submit-loading ([".phx-submit-loading&", ".phx-submit-loading &"]);
 @custom-variant phx-change-loading ([".phx-change-loading&", ".phx-change-loading &"]);
+@custom-variant phx-page-loading ([".phx-page-loading&", ".phx-page-loading &"]);
 
 /* Aria variants */
 @custom-variant aria-current (&[aria-current="true"]);

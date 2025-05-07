@@ -1,0 +1,375 @@
+@layer base {
+  /* Page Typography */
+
+  .prose {
+    --prose-border-color: --alpha(var(--color-surface-40) / 0.5);
+
+    color: var(--color-content-20);
+    font-size: clamp(1rem, 1rem + 0.25vw, 1.125rem);
+    font-weight: var(--font-weight-light);
+    line-height: 1.6;
+
+    p,
+    li,
+    h1,
+    .h1,
+    h2,
+    .h2,
+    h3,
+    .h3,
+    h4,
+    .h4 {
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    h1,
+    .h1,
+    h2,
+    .h2,
+    h3,
+    .h3,
+    h4,
+    .h4 {
+      color: var(--color-content-10);
+      font-weight: var(--font-weight-medium);
+      scroll-margin-block: 84px;
+    }
+
+    h1,
+    .h1 {
+      margin-top: 0;
+      font-size: clamp(2rem, 1rem + 2vw, 2.5rem);
+      line-height: 1.15;
+    }
+
+    h2,
+    .h2 {
+      margin-top: 1.75em;
+      margin-bottom: 1em;
+      font-size: clamp(1.5rem, 1rem + 2vw, 2rem);
+      line-height: 1.3;
+    }
+
+    h3,
+    .h3 {
+      font-size: clamp(1.25rem, 1rem + 2vw, 1.5rem);
+      margin-top: 1.5em;
+      margin-bottom: 0.75em;
+      line-height: 1.4;
+    }
+
+    h4,
+    .h4 {
+      font-size: clamp(1.125rem, 1rem + 2vw, 1.25rem);
+      margin-top: 1.25em;
+      margin-bottom: 0.5em;
+      line-height: 1.5;
+    }
+
+    h2 + *,
+    .h2 + *,
+    h3 + *,
+    .h3 + *,
+    h4 + *,
+    .h4 + * {
+      margin-top: 0;
+    }
+
+    a {
+      @apply link;
+    }
+
+    p {
+      margin-top: 1.15em;
+      margin-bottom: 1.15em;
+
+      @variant md {
+        margin-top: 1.25em;
+        margin-bottom: 1.25em;
+      }
+
+      @variant lg {
+        margin-top: 1.35em;
+        margin-bottom: 1.35em;
+      }
+
+      &.lead {
+        margin-bottom: 1.75rem;
+        color: var(--color-content-10);
+        font-weight: var(--font-weight-normal);
+        font-size: clamp(1.25rem, 1rem + 0.5vw, 1.275rem);
+        letter-spacing: -0.025em;
+      }
+    }
+
+    li {
+      margin-top: 0.65em;
+      margin-bottom: 0.65em;
+    }
+
+    ol,
+    ul {
+      margin-top: 1.35em;
+      margin-bottom: 1.35em;
+      padding-inline-start: 1.5em;
+
+      & > li {
+        padding-inline-start: 0.45em;
+      }
+
+      & > li::marker {
+        font-weight: 400;
+        color: var(--color-primary);
+      }
+    }
+
+    ol {
+      list-style-type: decimal;
+    }
+
+    ul {
+      list-style-type: disc;
+    }
+
+    ul > li p {
+      margin-top: 0.75em;
+      margin-bottom: 0.75em;
+    }
+
+    ul > li p:first-child,
+    ol > li p:first-child,
+    ul > li p:last-child,
+    ol > li p:last-child {
+      margin-top: 1.25em;
+    }
+
+    ul ul,
+    ul ol,
+    ol ul,
+    ol ol {
+      margin-top: 0.75em;
+      margin-bottom: 0.75em;
+    }
+
+    ul ul {
+      list-style-type: circle;
+    }
+
+    dl {
+      margin-top: 1.25em;
+      margin-bottom: 1.25em;
+    }
+
+    dt {
+      margin-top: 1.25em;
+      font-weight: var(--font-weight-medium);
+    }
+
+    dd {
+      margin-top: 0.5em;
+      padding-inline-start: 1.625em;
+    }
+
+    blockquote {
+      position: relative;
+      margin-block: 1.75em;
+      padding-inline-start: 1.75em;
+      font-weight: var(--font-weight-normal);
+      font-size: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
+      quotes: '\201C''\201D''\2018''\2019';
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 100%;
+        width: 3px;
+        height: 100%;
+        background: var(--color-primary);
+        border-radius: 0.5rem;
+      }
+
+      :where(p:first-of-type)::before {
+        content: open-quote;
+        position: absolute;
+        color: --alpha(var(--color-content-40) / 0.8);
+        margin-left: -1rem;
+      }
+
+      :where(p:first-of-type)::after {
+        content: close-quote;
+        position: absolute;
+        color: --alpha(var(--color-content-40) / 0.8);
+        margin-left: 0.5rem;
+      }
+    }
+
+    strong {
+      font-weight: var(--font-weight-semibold);
+    }
+
+    mark {
+      color: var(--color-content-10);
+      background-color: --alpha(var(--color-secondary) / 0.15);
+      padding: 0.15rem 0.125rem;
+    }
+
+    code,
+    kbd,
+    pre,
+    samp {
+      font-family: var(--font-mono);
+      font-weight: 400;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    pre {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      padding-inline-end: 1.5em;
+      padding-inline-start: 1.5em;
+      margin-top: 2em;
+      margin-bottom: 2em;
+      overflow-x: auto;
+      border-radius: var(--radius-box);
+      line-height: 1.75;
+    }
+
+    :not(pre) > code {
+      font-weight: var(--font-weight-bold);
+      padding-top: 0.125rem;
+      padding-bottom: 0.125rem;
+      background-color: --alpha(var(--color-surface-20) / 0.75);
+      color: var(--color-content-20);
+      white-space: pre-wrap;
+
+      &::before,
+      &::after {
+        content: '`';
+        color: --alpha(var(--color-content-40) / 0.8);
+      }
+    }
+
+    pre code {
+      background-color: transparent;
+      border-width: 0;
+      border-radius: 0;
+      padding: 0;
+
+      &::before {
+        content: none;
+      }
+
+      &::after {
+        content: none;
+      }
+    }
+
+    h2 code,
+    h3 code,
+    h4 code {
+      font-size: 0.9em;
+      background: none;
+    }
+
+    hr {
+      margin-top: 3em;
+      margin-bottom: 3em;
+      border-top-width: 1px;
+      border-color: var(--prose-border-color);
+    }
+
+    hr + * {
+      margin-top: 0;
+    }
+
+    figure {
+      margin-top: 1.75em;
+      margin-bottom: 1.75em;
+
+      & > * {
+        margin: 0;
+      }
+
+      & > img {
+        max-width: 100%;
+        border-radius: var(--radius-box);
+      }
+
+      & > figcaption {
+        margin-top: 1em;
+        padding-inline-start: 1em;
+        color: var(--color-content-40);
+        font-size: 0.85em;
+        line-height: 1.5;
+      }
+    }
+
+    table {
+      width: 100%;
+      table-layout: 'auto';
+      margin-top: 2em;
+      margin-bottom: 2em;
+      line-height: 1.75;
+      font-size: 0.9em;
+    }
+
+    thead {
+      border-bottom: 1px solid var(--prose-border-color);
+    }
+
+    thead th {
+      padding-bottom: 0.75em;
+      padding-inline-end: 0.75em;
+      padding-inline-start: 0.75em;
+      vertical-align: bottom;
+      font-weight: var(--font-weight-medium);
+      color: var(--color-content-10);
+    }
+
+    thead th:first-child {
+      padding-inline-start: 0;
+    }
+
+    thead th:last-child {
+      padding-inline-end: 0;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--prose-border-color);
+    }
+
+    tbody tr:last-child {
+      border-bottom-width: 0;
+    }
+
+    tbody td,
+    tfoot td {
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+      padding-inline-start: 0.5em;
+      padding-inline-end: 0.5em;
+    }
+
+    tbody td {
+      vertical-align: baseline;
+    }
+
+    tbody td:first-child,
+    tfoot td:first-child {
+      padding-inline-start: 0;
+    }
+
+    tbody td:last-child,
+    tfoot td:last-child {
+      padding-inline-end: 0;
+    }
+
+    th,
+    td {
+      text-align: start;
+    }
+  }
+}

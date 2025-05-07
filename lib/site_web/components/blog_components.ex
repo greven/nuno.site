@@ -16,7 +16,7 @@ defmodule SiteWeb.BlogComponents do
 
   def featured_post_item(assigns) do
     ~H"""
-    <article class="featured-article group" {@rest}>
+    <article class="group featured-article" {@rest}>
       <.header tag="h2" class="mt-2">
         <.link href={~p"/articles/#{@post.year}/#{@post}"} class="text-lg line-clamp-2">
           <span class="absolute inset-0 z-10"></span>
@@ -160,7 +160,7 @@ defmodule SiteWeb.BlogComponents do
       <div class="flex flex-wrap items-center justify-center gap-3 text-content-40">
         <.post_publication_date post={@post} show_icon={true} />
         <span class="font-sans text-xs text-primary">&bull;</span>
-        <.post_reading_time post={@post} label="read" show_icon={true} />
+        <.post_read_time post={@post} label="read" show_icon={true} />
 
         <%= if @views do %>
           <span class="hidden lg:inline font-sans text-xs text-primary">&bull;</span>
@@ -196,7 +196,7 @@ defmodule SiteWeb.BlogComponents do
         format={@format}
         class="absolute bottom-0 transitions duration-150 delay-150 group-hover:-translate-y-4 group-hover:opacity-0"
       />
-      <.post_reading_time
+      <.post_read_time
         post={@post}
         label="read"
         show_icon={@show_icon}
@@ -278,7 +278,7 @@ defmodule SiteWeb.BlogComponents do
   attr :show_icon, :boolean, default: true
   attr :class, :string, default: nil
 
-  def post_reading_time(%{post: %{reading_time: reading_time}} = assigns) do
+  def post_read_time(%{post: %{reading_time: reading_time}} = assigns) do
     {duration, unit} =
       cond do
         reading_time < 1.0 -> {round(reading_time * 60), "s"}
@@ -320,4 +320,151 @@ defmodule SiteWeb.BlogComponents do
       relative_date -> relative_date
     end
   end
+
+  @doc false
+
+  attr :headers, :list, required: true
+  attr :class, :string, default: nil
+  attr :depth, :integer, default: 1
+  attr :rest, :global
+
+  def table_of_contents(%{headers: headers} = assigns) do
+    assigns =
+      assigns
+      |> assign(:has_links?, Enum.any?(headers, &(!!&1.id)))
+
+    ~H"""
+    <div
+      :if={@headers != [] and @has_links?}
+      id="toc"
+      class={["hidden sm:block fixed right-6 top-[32%] z-10", @class]}
+      phx-hook="TableOfContents"
+      {@rest}
+    >
+      <div class="relative isolate">
+        <%!-- Navigator --%>
+        <div
+          id="toc-navigator"
+          class="absolute top-0 right-0 w-fit px-2.5 py-2.5 bg-surface-10/95
+            border border-surface-40/80 rounded-full backdrop-blur-sm transition duration-500"
+          style="opacity: 1"
+        >
+          <.toc_navigator headers={@headers} depth={@depth} />
+        </div>
+
+        <%!-- Expanded --%>
+        <div
+          id="toc-list"
+          class="invisible relative p-5 min-w-[264px] bg-surface-10/95 border border-surface-30 rounded-box
+            shadow-box backdrop-blur-sm z-10 transition-transform"
+          style="transform: translateX(100vw)"
+        >
+          <div class="absolute -inset-4"></div>
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+              <.icon name="hero-list-bullet-mini" class="text-content-20/50 size-4.5" />
+              <div class="font-headings text-content-30">Contents</div>
+            </div>
+
+            <div class="relative group flex items-center gap-1 text-sm text-content-40/75 isolate
+              transition hover:text-content-10 hover:cursor-pointer">
+              <a href="#" class="absolute inset-0 z-10"></a>
+              <.icon
+                name="hero-arrow-up"
+                class="text-content-40/50 size-4 z-1 transition group-hover:text-secondary"
+              /> Top
+            </div>
+          </div>
+
+          <.toc_list headers={@headers} depth={@depth} class="mt-4" />
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  attr :headers, :list, required: true
+  attr :depth, :integer, required: true
+  attr :rest, :global
+
+  defp toc_list(assigns) do
+    ~H"""
+    <div {@rest}>
+      <ol class="space-y-2.5">
+        <li
+          :for={header <- @headers}
+          :if={header.depth <= @depth}
+          class="group relative flex items-center text-sm text-content-40
+            before:content-[''] before:absolute before:-left-[calc(--spacing(5)+1px)] before:w-px before:h-5
+            before:border-l-2 before:border-l-transparent data-[active]:text-content-10 data-[active]:before:border-l-primary
+            hover:text-content-20 transition-all"
+        >
+          <a href={"##{header.id}"} class="line-clamp-1">
+            {header.text}
+          </a>
+
+          <.toc_list
+            :if={header.subsections != []}
+            class="mt-2 has-[ol]:pl-2.5"
+            headers={header.subsections}
+            depth={@depth}
+          />
+        </li>
+      </ol>
+    </div>
+    """
+  end
+
+  attr :headers, :list, required: true
+  attr :depth, :integer, required: true
+  attr :rest, :global
+
+  defp toc_navigator(assigns) do
+    ~H"""
+    <div {@rest}>
+      <ol class="space-y-1">
+        <li
+          :for={header <- @headers}
+          :if={header.depth <= @depth}
+          class="m-0 p-0 leading-5 text-content-10/20 data-[active]:text-primary hover:text-content-40"
+        >
+          <a href={"##{header.id}"} class="">
+            &ndash;
+          </a>
+          <span class="sr-only">{header.text}</span>
+        </li>
+      </ol>
+    </div>
+    """
+  end
+
+  @doc """
+  Show links to the previous (if available) and next articles.
+  This is for navigation inside an article / post.
+  """
+
+  attr :rest, :global
+  attr :next, Blog.Post, default: nil
+  attr :prev, Blog.Post, default: nil
+
+  def article_pagination(assigns) do
+    assigns =
+      assigns
+      |> assign(next_link: post_url(assigns.next))
+      |> assign(prev_link: post_url(assigns.prev))
+
+    ~H"""
+    <div {@rest}>
+      <div class="flex">
+        {@prev_link}
+        {@next_link}
+      </div>
+    </div>
+    """
+  end
+
+  defp post_url(%Blog.Post{} = post),
+    do: ~p"/articles/#{post.year}/#{post}"
+
+  defp post_url(_), do: nil
 end

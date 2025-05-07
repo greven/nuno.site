@@ -56,7 +56,8 @@ config :site, SiteWeb.Endpoint,
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/site_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/site_web/(controllers|live|components)/.*(ex|heex)$",
+      ~r"priv/content/posts/*/.*(md)$"
     ]
   ]
 

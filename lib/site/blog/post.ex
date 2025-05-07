@@ -15,21 +15,41 @@ defmodule Site.Blog.Post do
             status: :draft,
             featured: false,
             reading_time: 0,
+            show_toc: true,
+            headers: [],
             year: nil,
             date: nil,
             type: :blog,
             tags: []
 
+  @doc """
+  The status of the post:
+  - `:draft` - The post is a draft and not published (default)
+  - `:review` - The post is under review
+  - `:published` - The post is published and visible to readers
+  """
   def status, do: ~w(draft review published)a
 
+  @doc """
+  The type of post/article:
+  - `:blog` - A blog post
+  - `:social` - A social post from a social network (e.g. BlueSky, Mastodon, etc.)
+  - `:note` - A note (e.g. a short post, a thought, etc.).
+  """
   def type, do: ~w(blog social note)a
 
+  @doc """
+  The color given to each post type.
+  """
   def type_color(:blog), do: "cyan"
   def type_color(:note), do: "amber"
   def type_color(:social), do: "purple"
   def type_color(_), do: "gray"
 
-  def build(filename, attrs, {:ok, body}) do
+  @doc """
+  The NimblePublisher build callback function.
+  """
+  def build(filename, attrs, body) do
     [year: year, month: month, day: day, id: id] = split_post_attrs(filename)
 
     fields =
