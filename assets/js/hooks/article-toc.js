@@ -1,14 +1,12 @@
 export const TableOfContents = {
-  // TODO: It breaks when using HOME or END
-  // TODO: It doesn't work very well for multi level as it never triggers headings close to the end of the document!
-
   mounted() {
-    this.toc = document.getElementById('toc-list');
-    this.navigator = document.getElementById('toc-navigator');
-
     // TOC list items
     this.tocItems = Array.from(this.el.querySelectorAll('ol li a'));
     if (this.tocItems.length === 0) return;
+
+    // TOC List and Navigator
+    this.toc = document.getElementById('toc-list');
+    this.navigator = document.getElementById('toc-navigator');
 
     // Document Header links
     this.headings = this.tocItems
@@ -20,8 +18,7 @@ export const TableOfContents = {
 
     this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
       root: null,
-      rootMargin: '-10% 0px -70% 0px', // Adjust this to create a detection zone near the top
-      threshold: [0, 0.1, 0.5, 1], // Multiple thresholds to detect partial visibility
+      threshold: [0, 0.5, 1],
     });
 
     // Observe all headings
@@ -32,18 +29,18 @@ export const TableOfContents = {
     this.currentActive = null;
     this.lastScrollTop = window.scrollY;
 
-    this.checkInitialPosition();
+    this.checkPosition();
 
     // Store the timeout id so we can clear it if needed
     this.hideTimeout = null;
+
+    // Add scroll event listener to detect direction
+    window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
 
     // When hovering on the navigator, show the TOC list
     this.navigator.addEventListener('mouseenter', this.handleNavigatorMouseEnter.bind(this));
     this.toc.addEventListener('mouseenter', this.handleTocMouseEnter.bind(this));
     this.toc.addEventListener('mouseleave', this.handleTocMouseLeave.bind(this));
-
-    // Add scroll event listener to detect direction
-    window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
   },
 
   destroyed() {
@@ -61,70 +58,8 @@ export const TableOfContents = {
     this.toc.removeEventListener('mouseleave', this.handleMouseLeave);
   },
 
-  handleScroll() {
-    const scrollTop = window.scrollY;
-    this.isScrollingDown = scrollTop > this.lastScrollTop;
-    this.lastScrollTop = scrollTop;
-  },
-
-  handleIntersection(entries) {
-    // Filter for entries that are at least partially visible
-    const intersectingEntries = entries.filter((entry) => entry.isIntersecting);
-
-    if (intersectingEntries.length === 0) return;
-
-    let targetHeading;
-
-    if (this.isScrollingDown) {
-      // When scrolling down, prioritize the first heading entering the viewport from below
-      targetHeading = intersectingEntries
-        .filter((entry) => entry.boundingClientRect.top > 0)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-    } else {
-      // When scrolling up, prioritize the last heading that's at/near the detection zone
-      targetHeading = intersectingEntries.sort(
-        (a, b) => a.boundingClientRect.top - b.boundingClientRect.top
-      )[0];
-    }
-
-    // If we couldn't determine by scroll direction, use the most visible heading
-    if (!targetHeading) {
-      targetHeading = intersectingEntries.sort(
-        (a, b) => b.intersectionRatio - a.intersectionRatio
-      )[0];
-    }
-
-    if (targetHeading) {
-      this.activateHeading(targetHeading.target.id);
-    }
-  },
-
-  handleNavigatorMouseEnter() {
-    this.navigator.style.opacity = '0';
-    this.toc.style.transform = 'translateX(0px)';
-    this.toc.classList.remove('invisible');
-  },
-
-  handleTocMouseEnter() {
-    if (this.hideTimeout) {
-      clearTimeout(this.hideTimeout);
-      this.hideTimeout = null;
-    }
-  },
-
-  handleTocMouseLeave() {
-    // Clear any existing timeout to prevent multiple triggers
-    if (this.hideTimeout) clearTimeout(this.hideTimeout);
-
-    this.hideTimeout = setTimeout(() => {
-      this.navigator.style.opacity = '100%';
-      this.toc.style.transform = 'translateX(100vw)';
-      this.toc.classList.add('invisible');
-    }, 750);
-  },
-
-  checkInitialPosition() {
-    // Find the topmost visible heading on initial load
+  checkPosition() {
+    // Find the topmost visible heading
     const visibleHeadings = this.headings.filter((heading) => {
       const rect = heading.getBoundingClientRect();
       return rect.top >= 0 && rect.top <= window.innerHeight / 2;
@@ -166,5 +101,39 @@ export const TableOfContents = {
         li.removeAttribute('data-active');
       }
     });
+  },
+
+  handleIntersection(entries) {
+    this.checkPosition();
+  },
+
+  handleScroll() {
+    const scrollTop = window.scrollY;
+    this.isScrollingDown = scrollTop > this.lastScrollTop;
+    this.lastScrollTop = scrollTop;
+  },
+
+  handleNavigatorMouseEnter() {
+    this.navigator.style.opacity = '0';
+    this.toc.style.transform = 'translateX(0px)';
+    this.toc.classList.remove('invisible');
+  },
+
+  handleTocMouseEnter() {
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+      this.hideTimeout = null;
+    }
+  },
+
+  handleTocMouseLeave() {
+    // Clear any existing timeout to prevent multiple triggers
+    if (this.hideTimeout) clearTimeout(this.hideTimeout);
+
+    this.hideTimeout = setTimeout(() => {
+      this.navigator.style.opacity = '100%';
+      this.toc.style.transform = 'translateX(100vw)';
+      this.toc.classList.add('invisible');
+    }, 750);
   },
 };
