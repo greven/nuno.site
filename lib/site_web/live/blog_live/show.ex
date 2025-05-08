@@ -7,7 +7,7 @@ defmodule SiteWeb.BlogLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} active_link={@active_link}>
+    <Layouts.app flash={@flash} active_link={@active_link} page_transition>
       <Layouts.page_content class="post">
         <div class="flex flex-wrap items-center justify-center gap-1.5">
           <BlogComponents.post_category post={@post} />
@@ -22,13 +22,14 @@ defmodule SiteWeb.BlogLive.Show do
           class="mt-3 text-center"
         />
 
+        <BlogComponents.post_updated_disclaimer post={@post} class="mt-8 text-center" />
         <BlogComponents.table_of_contents :if={@post.show_toc} headers={@post.headers} />
 
         <article class="mt-10 md:mt-16 prose">
           {raw(@post.body)}
         </article>
 
-        <%!-- <BlogComponents.article_pagination next={@next_post} prev={@prev_post} /> --%>
+        <BlogComponents.post_footer class="my-10" next_post={@next_post} prev_post={@prev_post} />
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -38,8 +39,7 @@ defmodule SiteWeb.BlogLive.Show do
   # TODO: Raise not found Exception if post status is not published and current_user is not admin
   def mount(%{"slug" => slug} = params, _session, socket) do
     post = Blog.get_post_by_slug!(slug)
-    # {next_post, prev_post} = Blog.get_next_and_prev_posts(post)
-    # Blog.get_next_and_prev_posts(post)
+    {next_post, prev_post} = Blog.get_post_pagination(post)
 
     if connected?(socket) do
       SiteWeb.Presence.track_post_readers(post, socket.id, params)
@@ -50,6 +50,8 @@ defmodule SiteWeb.BlogLive.Show do
       :ok,
       socket
       |> assign(:page_title, "Show Post")
+      |> assign(:next_post, next_post)
+      |> assign(:prev_post, prev_post)
       |> assign(:readers, 1)
       |> assign(:post, post)
     }

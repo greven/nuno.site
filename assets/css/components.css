@@ -2,21 +2,21 @@
 @import './components/navbar.css';
 
 @utility link {
-  @apply text-content-10 decoration-1 decoration-primary underline underline-offset-3 transition-colors
-  hover:decoration-2 hover:bg-primary/15;
+  @apply text-content-10 decoration-[1.5px] decoration-primary underline underline-offset-4
+    transition-colors hover:decoration-secondary;
 }
 
 @utility link-subtle {
-  @apply text-content-10 decoration-1 decoration-content-40/40 underline underline-offset-3 transition-colors
-    hover:decoration-primary;
+  @apply text-content-10 decoration-1 decoration-content-40/20 underline underline-offset-4
+    transition-colors hover:decoration-primary;
 }
 
 @utility link-ghost {
-  @apply text-content-30 decoration-1 decoration-transparent underline underline-offset-3 transition-colors
-    hover:text-content-10 hover:decoration-primary;
+  @apply text-content-30 decoration-1 decoration-transparent underline underline-offset-4
+    transition-colors hover:text-content-10 hover:decoration-primary;
 }
 
 @utility header-link {
-  @apply hidden sm:inline-block absolute -left-[1.85em] top-0 text-[0.825em]/[1.725em]
+  @apply hidden sm:inline-block absolute -left-[1.85em] top-0 text-[0.825em]/[1.725em] shadow-none
   text-content-40/30 cursor-pointer no-underline bg-transparent capitalize group-hover:text-content-40/60;
 }

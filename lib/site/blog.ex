@@ -155,17 +155,31 @@ defmodule Site.Blog do
   end
 
   @doc """
-  Given a post and post type, get the next and previous posts,
-  useful to be used for pagination inside a post.
+  Given a post, get the next and previous posts.
+  Useful to be used for pagination inside a post.
+  Returns a tuple {previous_post, next_post} where either value can be nil.
   """
-  def get_next_and_prev_posts(%__MODULE__.Post{} = post) do
+  def get_post_pagination(%__MODULE__.Post{} = post) do
     posts = list_published_posts()
     post_index = Enum.find_index(posts, &(&1.id == post.id))
     total = length(posts)
 
     cond do
-      post_index >= 1 && total > 1 ->
-        {Enum.at(posts, +1), Enum.at(posts, post_index - 1)}
+      # Post not found in the published list
+      is_nil(post_index) ->
+        {nil, nil}
+      # First post (has next but no previous)
+      post_index == 0 && total > 1 ->
+        {nil, Enum.at(posts, 1)}
+      # Last post (has previous but no next)
+      post_index == total - 1 && total > 1 ->
+        {Enum.at(posts, post_index - 1), nil}
+      # Middle post (has both previous and next)
+      post_index > 0 && post_index < total - 1 ->
+        {Enum.at(posts, post_index - 1), Enum.at(posts, post_index + 1)}
+      # Only one post or some other unexpected case
+      true ->
+        {nil, nil}
     end
   end
 

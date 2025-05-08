@@ -19,6 +19,7 @@ defmodule Site.Blog.Post do
             headers: [],
             year: nil,
             date: nil,
+            updated: nil,
             type: :blog,
             tags: []
 

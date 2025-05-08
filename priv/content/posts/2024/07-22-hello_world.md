@@ -3,6 +3,7 @@
   tags: ~w(elixir),
   excerpt: "Let's learn how to say hello world",
   status: :published,
+  updated: ~D[2025-05-07],
   featured: true
 }
 

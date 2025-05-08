@@ -20,7 +20,7 @@ defmodule SiteWeb.BlogComponents do
       <.header tag="h2" class="mt-2">
         <.link href={~p"/articles/#{@post.year}/#{@post}"} class="text-lg line-clamp-2">
           <span class="absolute inset-0 z-10"></span>
-          <span class="group-hover:text-shadow-xs/15 text-shadow-primary">{@post.title}</span>
+          <span class="group-hover:text-shadow-xs/10 text-shadow-primary-dark">{@post.title}</span>
         </.link>
       </.header>
 
@@ -29,7 +29,7 @@ defmodule SiteWeb.BlogComponents do
         <.post_category post={@post} />
       </div>
 
-      <div class="-mt-1 text-sm text-content-40 text-pretty line-clamp-2 group-hover:text-content-30">
+      <div class="-mt-2 text-sm text-content-40 text-pretty line-clamp-2 group-hover:text-content-30">
         {@post.excerpt}
       </div>
     </article>
@@ -173,6 +173,107 @@ defmodule SiteWeb.BlogComponents do
         <% end %>
       </div>
     </div>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
+  attr :date_format, :string, default: "%B %-d, %Y"
+  attr :rest, :global
+
+  def post_updated_disclaimer(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :post_updated?,
+        assigns.post.updated != nil && assigns.post.updated != assigns.post.date
+      )
+
+    ~H"""
+    <div :if={@post_updated?} {@rest}>
+      <div class="flex justify-center">
+        <.badge badge_class="text-xs">
+          Last updated on <span class="font-medium">{post_updated_date(@post, @date_format)}</span>
+        </.badge>
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :next_post, Blog.Post, default: nil
+  attr :prev_post, Blog.Post, default: nil
+  attr :rest, :global
+
+  def post_footer(assigns) do
+    ~H"""
+    <div {@rest}>
+      <.post_pagination
+        :if={@next_post || @prev_post}
+        next_post={@next_post}
+        prev_post={@prev_post}
+        class="mt-8"
+      />
+    </div>
+    """
+  end
+
+  @doc """
+  Show links to the previous (if available) and next articles.
+  This is for navigation inside an article / post.
+  """
+
+  attr :next_post, Blog.Post, default: nil
+  attr :prev_post, Blog.Post, default: nil
+  attr :rest, :global
+
+  def post_pagination(assigns) do
+    assigns =
+      assigns
+      |> assign(next_link: post_url(assigns.next_post))
+      |> assign(prev_link: post_url(assigns.prev_post))
+
+    ~H"""
+    <div {@rest}>
+      <div class="grid grid-cols-2 space-between gap-4">
+        <.post_pager dir={:prev} link={@prev_link} title={@prev_post && @prev_post.title} />
+        <.post_pager dir={:next} link={@next_link} title={@next_post && @next_post.title} />
+      </div>
+    </div>
+    """
+  end
+
+  attr :link, :string, required: true
+  attr :title, :string, required: true
+  attr :dir, :atom, values: ~w(prev next)a, required: true
+  attr :rest, :global
+
+  defp post_pager(assigns) do
+    ~H"""
+    <%= if @link do %>
+      <.link navigate={@link} {@rest}>
+        <div class="group border border-surface-30 rounded-box p-4 transition hover:border-primary">
+          <div class={["flex flex-col", if(@dir == :next, do: "items-end")]}>
+            <div :if={@dir == :prev} class="text-content-40 text-xs tracking-wider font-headings">
+              <.icon
+                name="lucide-arrow-left"
+                class="text-content-40/50 size-4 group-hover:-translate-x-0.5 transition-transform"
+              /> Previous Article
+            </div>
+            <div :if={@dir == :next} class="text-content-40 text-xs tracking-wider font-headings">
+              Next Article
+              <.icon
+                name="lucide-arrow-right"
+                class="text-content-40/50 size-4 group-hover:translate-x-0.5 transition-transform"
+              />
+            </div>
+            <div class="font-normal line-clamp-1">{@title}</div>
+          </div>
+        </div>
+      </.link>
+    <% end %>
     """
   end
 
@@ -321,10 +422,21 @@ defmodule SiteWeb.BlogComponents do
     end
   end
 
+  defp post_updated_date(%Blog.Post{updated: %Date{} = date}, format) do
+    Calendar.strftime(date, format)
+  end
+
+  defp post_updated_date(%Blog.Post{date: %Date{} = date}, format) do
+    Calendar.strftime(date, format)
+  end
+
+  defp post_updated_date(_, _), do: nil
+
   @doc false
 
-  attr :headers, :list, required: true
+  attr :headers, :list, default: []
   attr :class, :string, default: nil
+  attr :min_count, :integer, default: 1
   attr :depth, :integer, default: 1
   attr :rest, :global
 
@@ -335,29 +447,26 @@ defmodule SiteWeb.BlogComponents do
 
     ~H"""
     <div
-      :if={@headers != [] and @has_links?}
+      :if={@headers != [] and @has_links? and length(@headers) > @min_count}
       id="toc"
-      class={["hidden sm:block fixed right-6 top-[32%] z-10", @class]}
+      class={["hidden sm:block fixed right-6 top-[364px] z-10", @class]}
       phx-hook="TableOfContents"
       {@rest}
     >
       <div class="relative isolate">
         <%!-- Navigator --%>
-        <div
-          id="toc-navigator"
-          class="absolute top-0 right-0 w-fit px-2.5 py-2.5 bg-surface-10/95
-            border border-surface-40/80 rounded-full backdrop-blur-sm transition duration-500"
-          style="opacity: 1"
-        >
-          <.toc_navigator headers={@headers} depth={@depth} />
+        <div id="toc-navigator" class="absolute top-0 right-0 p-4 translate-x-4" style="opacity: 1">
+          <div class="w-fit px-2.5 py-2.5 bg-surface-10/90 border border-surface-40/80 rounded-full backdrop-blur-sm transition duration-500">
+            <.toc_navigator headers={@headers} depth={@depth} />
+          </div>
         </div>
 
         <%!-- Expanded --%>
         <div
           id="toc-list"
-          class="invisible relative p-5 min-w-[264px] bg-surface-10/95 border border-surface-30 rounded-box
+          class="invisible relative mb-20 p-5 min-w-[264px] max-w-[448px] bg-surface-10/95 border border-surface-30 rounded-box
             shadow-box backdrop-blur-sm z-10 transition-transform"
-          style="transform: translateX(100vw)"
+          style="translate: 500px"
         >
           <div class="absolute -inset-4"></div>
           <div class="flex items-center justify-between gap-4">
@@ -426,39 +535,12 @@ defmodule SiteWeb.BlogComponents do
         <li
           :for={header <- @headers}
           :if={header.depth <= @depth}
-          class="m-0 p-0 leading-5 text-content-10/20 data-[active]:text-primary hover:text-content-40"
+          class="m-0 p-0 leading-5 text-content-10/20 transition ease-in-out duration-500 data-[active]:text-primary hover:text-content-40"
         >
-          <a href={"##{header.id}"} class="">
-            &ndash;
-          </a>
+          <a href={"##{header.id}"}>&ndash;</a>
           <span class="sr-only">{header.text}</span>
         </li>
       </ol>
-    </div>
-    """
-  end
-
-  @doc """
-  Show links to the previous (if available) and next articles.
-  This is for navigation inside an article / post.
-  """
-
-  attr :rest, :global
-  attr :next, Blog.Post, default: nil
-  attr :prev, Blog.Post, default: nil
-
-  def article_pagination(assigns) do
-    assigns =
-      assigns
-      |> assign(next_link: post_url(assigns.next))
-      |> assign(prev_link: post_url(assigns.prev))
-
-    ~H"""
-    <div {@rest}>
-      <div class="flex">
-        {@prev_link}
-        {@next_link}
-      </div>
     </div>
     """
   end

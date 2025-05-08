@@ -238,17 +238,17 @@
     }
 
     :not(pre) > code {
-      font-weight: var(--font-weight-bold);
       padding-top: 0.125rem;
       padding-bottom: 0.125rem;
-      background-color: --alpha(var(--color-surface-20) / 0.75);
+      background-color: --alpha(var(--color-surface-20) / 0.8);
+      font-weight: var(--font-weight-medium);
       color: var(--color-content-20);
       white-space: pre-wrap;
 
       &::before,
       &::after {
         content: '`';
-        color: --alpha(var(--color-content-40) / 0.8);
+        color: --alpha(var(--color-content-40) / 0.9);
       }
     }
 

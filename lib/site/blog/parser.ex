@@ -52,21 +52,16 @@ defmodule Site.Blog.Parser do
   def linkify_headers(markdown_body) do
     markdown_body
     |> MDEx.traverse_and_update(fn
-      %MDEx.Heading{level: level} = heading_node ->
-        heading_html =
-          heading_node
-          |> to_string()
+      %MDEx.Heading{level: level, nodes: children} = heading_node ->
+        id =
+          to_string(heading_node)
           |> MDEx.to_html!()
-
-        text =
-          heading_html
           |> LazyHTML.from_fragment()
           |> LazyHTML.text()
-
-        id = Site.Support.slugify(text)
+          |> Site.Support.slugify()
 
         ~m(<header class="group relative h#{level}">
-            <h#{level} id="#{id}">#{text}</h#{level}>
+            <h#{level} id="#{id}">#{MDEx.to_html!(children)}</h#{level}>
             <a href="##{id}" class="header-link" aria-labelledby="#{id}">H#{level}</a>
           </header>)
 

@@ -115,7 +115,7 @@ export const TableOfContents = {
 
   handleNavigatorMouseEnter() {
     this.navigator.style.opacity = '0';
-    this.toc.style.transform = 'translateX(0px)';
+    this.toc.style.translate = '0';
     this.toc.classList.remove('invisible');
   },
 
@@ -132,7 +132,7 @@ export const TableOfContents = {
 
     this.hideTimeout = setTimeout(() => {
       this.navigator.style.opacity = '100%';
-      this.toc.style.transform = 'translateX(100vw)';
+      this.toc.style.translate = '500px';
       this.toc.classList.add('invisible');
     }, 750);
   },

@@ -9,14 +9,15 @@ defmodule SiteWeb.TagsLive.Show do
     ~H"""
     <Layouts.app flash={@flash} active_link={@active_link}>
       <Layouts.page_content class="post">
-        <.header class="mt-4">
-          <.link navigate={~p"/tags"} class="text-primary">
-            #<span class="sr-only">Explore all tags</span>
-          </.link>
-          <span class="capitalize">{@tag}</span>
-          <span class="text-content-40/70">({@count})</span>
-          <:subtitle></:subtitle>
-        </.header>
+        <div class="flex items-center justify-between">
+          <.header class="mt-4">
+            <.link navigate={~p"/tags"} class="text-content-40/40">
+              #<span class="sr-only">Explore all tags</span>
+            </.link>
+            <span class="capitalize">{@tag}</span>
+          </.header>
+          <div class="text-xl text-content-40/70">{@count} Articles</div>
+        </div>
 
         <div :if={@count} class="mt-8 w-full flex justify-between items-center">
           <div id="articles" class="mt-4 w-full flex flex-col gap-4" phx-update="stream">

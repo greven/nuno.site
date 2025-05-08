@@ -15,6 +15,7 @@ defmodule SiteWeb.Layouts do
     assigns =
       assigns
       |> assign_new(:active_link, fn -> nil end)
+      |> assign_new(:page_transition, fn -> false end)
 
     ~H"""
     <div class="min-h-screen flex flex-col">
@@ -22,7 +23,11 @@ defmodule SiteWeb.Layouts do
 
       <main
         id="main"
-        class="relative wrapper flex-auto transition-opacity duration-400 opacity-0 phx-page-loading:opacity-0"
+        class={[
+          "relative wrapper flex-auto",
+          @page_transition &&
+            "transition-opacity duration-300 opacity-0 phx-page-loading:opacity-0"
+        ]}
         phx-mounted={JS.remove_class("opacity-0")}
       >
         {render_slot(@inner_block)}
