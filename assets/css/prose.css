@@ -226,22 +226,21 @@
     }
 
     pre {
+      margin-top: 2em;
+      margin-bottom: 2em;
       padding-top: 1rem;
       padding-bottom: 1rem;
       padding-inline-end: 1.5em;
       padding-inline-start: 1.5em;
-      margin-top: 2em;
-      margin-bottom: 2em;
-      overflow-x: auto;
       border-radius: var(--radius-box);
       line-height: 1.75;
+      overflow-x: auto;
     }
 
     :not(pre) > code {
       padding-top: 0.125rem;
       padding-bottom: 0.125rem;
-      background-color: --alpha(var(--color-surface-20) / 0.8);
-      font-weight: var(--font-weight-medium);
+      background-color: --alpha(var(--color-surface-30) / 0.75);
       color: var(--color-content-20);
       white-space: pre-wrap;
 
@@ -370,6 +369,69 @@
     th,
     td {
       text-align: start;
+    }
+
+    aside {
+      position: relative;
+      margin-block: 1.75em;
+      padding: 1.5em;
+      font-size: 0.92em;
+      background: var(--color-surface-20);
+      border-radius: var(--radius-box);
+      border: 1px solid --alpha(var(--color-content-40) / 0.9);
+      box-shadow: var(--shadow-box);
+
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0.3rem;
+        height: 100%;
+        border-radius: 2rem 0 0 2rem;
+        background-color: var(--aside-color, var(--color-content-40));
+        opacity: 0.25;
+      }
+
+      &.info {
+        --aside-color: var(--color-info);
+
+        background-color: --alpha(var(--color-info) / 0.1);
+        border-color: --alpha(var(--color-info) / 0.9);
+      }
+
+      &.success {
+        --aside-color: var(--color-success);
+
+        background-color: --alpha(var(--color-success) / 0.1);
+        border-color: --alpha(var(--color-success) / 0.9);
+      }
+
+      &.warning {
+        --aside-color: var(--color-warning);
+
+        background-color: --alpha(var(--color-warning) / 0.1);
+        border-color: --alpha(var(--color-warning) / 0.9);
+      }
+
+      &.danger {
+        --aside-color: var(--color-danger);
+
+        background-color: --alpha(var(--color-danger) / 0.1);
+        border-color: --alpha(var(--color-danger) / 0.9);
+      }
+
+      & > h5 {
+        font-size: clamp(1rem, 1rem + 0.25vw, 1.125rem);
+        font-weight: var(--font-weight-medium);
+        text-wrap: balance;
+        color: oklch(from var(--aside-color) 0.125 c h);
+      }
+
+      & > *:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 }

@@ -32,8 +32,6 @@
   }
 
   .featured-article {
-    --bg-opacity: 5%;
-
     position: relative;
     display: flex;
     flex-direction: column;
@@ -42,7 +40,7 @@
     border: 1px solid var(--color-surface-30);
     border-radius: var(--radius-box);
     box-shadow: var(--shadow-xs);
-    background-color: --alpha(var(--color-surface-20) / 0.3);
+    background-color: --alpha(var(--color-surface-20) / 0.25);
     transition: background-color 150ms ease-in-out, border-color 150ms ease-in-out,
       box-shadow 150ms ease-in-out;
 
@@ -50,7 +48,7 @@
       border-color: var(--color-primary);
       background-image: linear-gradient(
         30deg,
-        --alpha(var(--color-primary) / var(--bg-opacity)),
+        --alpha(var(--color-primary) / var(--bg-opacity, 5%)),
         transparent
       );
       box-shadow: var(--shadow-sm);
@@ -68,8 +66,8 @@
         transparent 1px,
         transparent 6px
       );
-      mask-image: linear-gradient(to left top, black, transparent 70%),
-        linear-gradient(45deg, black, transparent 85%);
+      mask-image: linear-gradient(to left top, black, transparent 90%),
+        linear-gradient(45deg, black, transparent 65%);
       mask-composite: intersect;
       filter: grayscale(100%);
       transition: filter opacity 150ms ease-in-out;
@@ -79,13 +77,7 @@
 
     &:hover::before {
       filter: none;
-      opacity: 0.35;
-    }
-
-    @variant dark {
-      &:hover::before {
-        opacity: 0.7;
-      }
+      opacity: 0.5;
     }
   }
 }

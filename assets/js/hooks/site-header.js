@@ -1,7 +1,7 @@
 export const SiteHeader = {
   mounted() {
     this.lastScrollY = window.scrollY;
-    this.scrollThreshold = 800;
+    this.scrollThreshold = 1200;
 
     // Events Handlers
     this.handleScroll = () => this.onScroll();
@@ -33,8 +33,8 @@ export const SiteHeader = {
       this.el.classList.add('pointer-events-none');
     }
 
-    // Show header when scrolling up above threshold
-    else if (!scrollingDown && currentScrollY < this.scrollThreshold) {
+    // Show header when scrolling up above a threshold
+    else if (!scrollingDown && currentScrollY < this.scrollThreshold * 2.5) {
       this.el.classList.remove('pointer-events-none');
       this.el.classList.remove('opacity-0');
     }

@@ -29,7 +29,7 @@ defmodule SiteWeb.BlogComponents do
         <.post_category post={@post} />
       </div>
 
-      <div class="-mt-2 text-sm text-content-40 text-pretty line-clamp-2 group-hover:text-content-30">
+      <div class="-mt-2 text-sm text-content-40 line-clamp-2 group-hover:text-content-30">
         {@post.excerpt}
       </div>
     </article>
@@ -269,7 +269,7 @@ defmodule SiteWeb.BlogComponents do
                 class="text-content-40/50 size-4 group-hover:translate-x-0.5 transition-transform"
               />
             </div>
-            <div class="font-normal line-clamp-1">{@title}</div>
+            <div class="ml-5 font-normal line-clamp-1">{@title}</div>
           </div>
         </div>
       </.link>
@@ -323,9 +323,8 @@ defmodule SiteWeb.BlogComponents do
       <div class="flex items-center gap-2 text-sm">
         <.icon :if={@icon} name={@icon} class="size-4.5 text-content-40" />
         <div class="flex items-center gap-1.5">
-          <span :if={@value} class="font-mono text-content-20" {@rest}>{@value}</span>{render_slot(
-            @inner_block
-          )}
+          <span :if={@value} class="font-mono text-content-20" {@rest}>{@value}</span>
+          {render_slot(@inner_block)}
         </div>
       </div>
     </.dynamic_tag>

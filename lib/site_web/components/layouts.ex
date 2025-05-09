@@ -128,15 +128,15 @@ defmodule SiteWeb.Layouts do
       <div id="menu" class="hidden min-[540px]:ml-6 min-[540px]:flex items-center">
         <div class="flex space-x-5 mr-5">
           <.navbar_item item={:home} href={~p"/"} active_link={@active_link}>
-            {gettext("home")}
+            {gettext("Home")}
           </.navbar_item>
 
           <.navbar_item item={:about} href={~p"/about"} active_link={@active_link}>
-            {gettext("about")}
+            {gettext("About")}
           </.navbar_item>
 
           <.navbar_item item={:articles} navigate={~p"/articles"} active_link={@active_link}>
-            {gettext("articles")}
+            {gettext("Articles")}
           </.navbar_item>
         </div>
       </div>
@@ -158,7 +158,7 @@ defmodule SiteWeb.Layouts do
       navigate={@navigate}
       role="navigation"
       aria-current={if @item == @active_link, do: "true", else: "false"}
-      class="navbar-link"
+      class="navbar-link lowercase"
     >
       {render_slot(@inner_block)}
     </.link>

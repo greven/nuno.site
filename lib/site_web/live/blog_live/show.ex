@@ -14,12 +14,12 @@ defmodule SiteWeb.BlogLive.Show do
           <BlogComponents.post_tags post={@post} />
         </div>
 
-        <BlogComponents.post_title class="mt-4" post={@post} />
+        <BlogComponents.post_title class="mt-6" post={@post} />
         <BlogComponents.post_meta
           post={@post}
           readers={@readers}
           views={@page_views}
-          class="mt-3 text-center"
+          class="mt-4 text-center"
         />
 
         <BlogComponents.post_updated_disclaimer post={@post} class="mt-8 text-center" />

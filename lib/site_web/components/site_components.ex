@@ -73,7 +73,7 @@ defmodule SiteWeb.SiteComponents do
   def experience_shortlist(assigns) do
     ~H"""
     <div class={@class}>
-      <ul class="flex flex-col gap-8 divide-y divide-content-40/40 divide-dashed">
+      <ul class="flex flex-col gap-8 divide-y divide-content-40/20 divide-dashed">
         <%= for item <- @items do %>
           <.experience_shortlist_item
             role={item["role"]}
