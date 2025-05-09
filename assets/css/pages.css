@@ -71,7 +71,7 @@
       mask-composite: intersect;
       filter: grayscale(100%);
       transition: filter opacity 150ms ease-in-out;
-      opacity: 0.2;
+      opacity: 0.1;
       z-index: -1;
     }
 

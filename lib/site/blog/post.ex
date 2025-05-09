@@ -20,7 +20,7 @@ defmodule Site.Blog.Post do
             year: nil,
             date: nil,
             updated: nil,
-            type: :blog,
+            category: :blog,
             tags: []
 
   @doc """
@@ -32,20 +32,20 @@ defmodule Site.Blog.Post do
   def status, do: ~w(draft review published)a
 
   @doc """
-  The type of post/article:
+  The categories of a post/article:
   - `:blog` - A blog post
   - `:social` - A social post from a social network (e.g. BlueSky, Mastodon, etc.)
   - `:note` - A note (e.g. a short post, a thought, etc.).
   """
-  def type, do: ~w(blog social note)a
+  def categories, do: ~w(blog social note)a
 
   @doc """
-  The color given to each post type.
+  The color given to each post category.
   """
-  def type_color(:blog), do: "cyan"
-  def type_color(:note), do: "amber"
-  def type_color(:social), do: "purple"
-  def type_color(_), do: "gray"
+  def category_color(:blog), do: "cyan"
+  def category_color(:note), do: "amber"
+  def category_color(:social), do: "purple"
+  def category_color(_), do: "gray"
 
   @doc """
   The NimblePublisher build callback function.

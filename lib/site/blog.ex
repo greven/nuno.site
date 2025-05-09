@@ -76,19 +76,19 @@ defmodule Site.Blog do
   end
 
   @doc """
-  List posts by type.
+  List posts by category.
   """
-  def list_posts_by_type(type) do
+  def list_posts_by_category(category) do
     all_posts()
-    |> Enum.filter(&(&1.type == type))
+    |> Enum.filter(&(&1.category == category))
   end
 
   @doc """
-  List posts that have been published by type.
+  List posts that have been published by category.
   """
-  def list_published_posts_by_type(type) do
+  def list_published_posts_by_category(category) do
     list_published_posts()
-    |> Enum.filter(&(&1.type == type))
+    |> Enum.filter(&(&1.category == category))
   end
 
   @doc """
@@ -135,14 +135,14 @@ defmodule Site.Blog do
   end
 
   @doc """
-  Get the count of published posts for each post type.
+  Get the count of published posts for each post category.
   """
 
-  def count_posts_by_type do
+  def count_posts_by_category do
     posts = list_published_posts()
 
     posts
-    |> Enum.frequencies_by(&Atom.to_string(&1.type))
+    |> Enum.frequencies_by(&Atom.to_string(&1.category))
     |> Map.put("all", length(posts))
   end
 
@@ -168,15 +168,19 @@ defmodule Site.Blog do
       # Post not found in the published list
       is_nil(post_index) ->
         {nil, nil}
+
       # First post (has next but no previous)
       post_index == 0 && total > 1 ->
         {nil, Enum.at(posts, 1)}
+
       # Last post (has previous but no next)
       post_index == total - 1 && total > 1 ->
         {Enum.at(posts, post_index - 1), nil}
+
       # Middle post (has both previous and next)
       post_index > 0 && post_index < total - 1 ->
         {Enum.at(posts, post_index - 1), Enum.at(posts, post_index + 1)}
+
       # Only one post or some other unexpected case
       true ->
         {nil, nil}

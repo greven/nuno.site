@@ -97,12 +97,12 @@ defmodule SiteWeb.BlogComponents do
     <div class={["flex items-center", @class]}>
       <.badge
         variant="dot"
-        color={Site.Blog.Post.type_color(@post.type)}
+        color={Site.Blog.Post.category_color(@post.category)}
         badge_class="group text-xs capitalize tracking-wider"
       >
-        <.link navigate={~p"/category/#{@post.type}"}>
+        <.link navigate={~p"/category/#{@post.category}"}>
           <span class="text-content-30 tracking-wider group-hover:text-content-10 transition-colors">
-            {@post.type}
+            {@post.category}
           </span>
         </.link>
       </.badge>
@@ -185,10 +185,7 @@ defmodule SiteWeb.BlogComponents do
   def post_updated_disclaimer(assigns) do
     assigns =
       assigns
-      |> assign(
-        :post_updated?,
-        assigns.post.updated != nil && assigns.post.updated != assigns.post.date
-      )
+      |> assign(:post_updated?, post_updated?(assigns.post))
 
     ~H"""
     <div :if={@post_updated?} {@rest}>
@@ -288,15 +285,31 @@ defmodule SiteWeb.BlogComponents do
   attr :label, :string, default: nil
   attr :class, :string, default: nil
 
-  def post_card_meta(assigns) do
+  def post_card_meta(%{post: post} = assigns) do
+    post_updated? = post_updated?(post)
+    updated_after_a_month? = post_updated? && Date.diff(post.updated, post.date) > 30
+    updated_within_last_year? = post_updated? && Date.diff(Date.utc_today(), post.updated) < 365
+
+    update_fresh? =
+      if updated_within_last_year? && updated_after_a_month?,
+        do: true,
+        else: false
+
+    assigns =
+      assigns
+      |> assign(:post_updated?, post_updated?)
+      |> assign(:update_fresh?, update_fresh?)
+
     ~H"""
     <div class={["relative w-full h-full", @class]}>
-      <.post_publication_date
-        post={@post}
-        show_icon={@show_icon}
-        format={@format}
-        class="absolute bottom-0 transitions duration-150 delay-150 group-hover:-translate-y-4 group-hover:opacity-0"
-      />
+      <div class="absolute flex items-center bottom-0 transitions duration-150 delay-150 group-hover:-translate-y-4 group-hover:opacity-0">
+        <.post_publication_date post={@post} show_icon={@show_icon} format={@format} />
+
+        <.badge :if={@post_updated? && @update_fresh?} badge_class="ml-2 text-xs" color="red">
+          Updated
+        </.badge>
+      </div>
+
       <.post_read_time
         post={@post}
         label="read"
@@ -405,7 +418,9 @@ defmodule SiteWeb.BlogComponents do
   attr :class, :string, default: nil
 
   def post_publication_date(assigns) do
-    assigns = assign(assigns, :date, post_date(assigns.post.date, assigns.format))
+    assigns =
+      assigns
+      |> assign(:date, post_date(assigns.post.date, assigns.format))
 
     ~H"""
     <.post_meta_item tag="time" icon={@show_icon && "lucide-calendar-fold"} class={@class}>
@@ -548,4 +563,9 @@ defmodule SiteWeb.BlogComponents do
     do: ~p"/articles/#{post.year}/#{post}"
 
   defp post_url(_), do: nil
+
+  # Check if the post has been updated
+  defp post_updated?(%Blog.Post{updated: nil}), do: false
+  defp post_updated?(%Blog.Post{date: date, updated: date}), do: false
+  defp post_updated?(%Blog.Post{updated: _}), do: true
 end

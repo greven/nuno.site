@@ -16,7 +16,7 @@ Lorem ipsum dolor sit amet [consectetur](#) adipisicing elit. Optio laboriosam f
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem, accusantium, quis ipsa maiores ea quo laborum praesentium ducimus sint porro ex? Numquam ipsa vitae totam voluptate! In fuga totam eos!
 
 <aside>
-<h5>Let’s talk about how to maximize our chances for success in the current job market!</h5>
+<h5>Some fake title that is not that long</h5>
 
 The first thing to realize is that AI has made the hiring process miserable for companies. Job postings will sometimes get thousands of AI-generated slop applications, and it’s hard for them to sift through all of the junk. If you apply for an open role, it’s very possible that it’ll get buried under a mountain of garbage.
 

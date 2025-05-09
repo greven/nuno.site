@@ -62,9 +62,8 @@ defmodule SiteWeb.CoreComponents do
   """
   attr :variant, :string, values: ~w(default dot), default: "default"
   attr :color, :string, values: Theme.colors(:tailwind)
-  attr :class, :string, default: nil
   attr :badge_class, :string, default: "text-sm"
-  attr :rest, :global, include: ~w(href navigate patch method)
+  attr :rest, :global
   slot :inner_block, required: true
 
   def badge(assigns) do
@@ -77,9 +76,28 @@ defmodule SiteWeb.CoreComponents do
       |> assign(:variant_class, badge_color_class(assigns[:variant], assigns[:color]))
 
     ~H"""
-    <span class={@class} {@rest} style="--badge-dot-color: var(--color-gray-400);">
+    <span {@rest} style="--badge-dot-color: var(--color-gray-400);">
       <span class={[@base_class, @variant_class, @badge_class]}>
         {render_slot(@inner_block)}
+      </span>
+    </span>
+    """
+  end
+
+  @doc false
+
+  attr :color, :string, values: Theme.colors(:tailwind)
+  attr :class, :string, default: nil
+
+  def dot(assigns) do
+    assigns = assign(assigns, :dot_class, badge_dot_color(assigns[:color]))
+
+    ~H"""
+    <span class={["relative flex items-center size-1.5", @class]}>
+      <span class={[
+        "before:content=[''] before:size-1.5 before:inline-flex before:rounded-full",
+        @dot_class
+      ]}>
       </span>
     </span>
     """
@@ -768,79 +786,80 @@ defmodule SiteWeb.CoreComponents do
     base_class =
       "bg-surface-10 text-gray-700 ring-1 ring-inset ring-gray-300 dark:text-gray-400 dark:ring-gray-800 before:content=[''] before:size-1.5 before:rounded-full"
 
-    color_class =
-      case color do
-        "red" ->
-          "before:bg-red-500 before:dark:bg-red-400"
+    [badge_dot_color(color), base_class]
+  end
 
-        "orange" ->
-          "before:bg-orange-500 before:dark:bg-orange-400"
+  defp badge_dot_color(color) do
+    case color do
+      "red" ->
+        "before:bg-red-500 before:dark:bg-red-400"
 
-        "amber" ->
-          "before:bg-amber-500 before:dark:bg-amber-400"
+      "orange" ->
+        "before:bg-orange-500 before:dark:bg-orange-400"
 
-        "yellow" ->
-          "before:bg-yellow-500 before:dark:bg-yellow-400"
+      "amber" ->
+        "before:bg-amber-500 before:dark:bg-amber-400"
 
-        "lime" ->
-          "before:bg-lime-500 before:dark:bg-lime-400"
+      "yellow" ->
+        "before:bg-yellow-500 before:dark:bg-yellow-400"
 
-        "green" ->
-          "before:bg-green-500 before:dark:bg-green-400"
+      "lime" ->
+        "before:bg-lime-500 before:dark:bg-lime-400"
 
-        "emerald" ->
-          "before:bg-emerald-500 before:dark:bg-emerald-400"
+      "green" ->
+        "before:bg-green-500 before:dark:bg-green-400"
 
-        "teal" ->
-          "before:bg-teal-500 before:dark:bg-teal-400"
+      "emerald" ->
+        "before:bg-emerald-500 before:dark:bg-emerald-400"
 
-        "cyan" ->
-          "before:bg-cyan-500 before:dark:bg-cyan-400"
+      "teal" ->
+        "before:bg-teal-500 before:dark:bg-teal-400"
 
-        "sky" ->
-          "before:bg-sky-500 before:dark:bg-sky-400"
+      "cyan" ->
+        "before:bg-cyan-500 before:dark:bg-cyan-400"
 
-        "blue" ->
-          "before:bg-blue-500 before:dark:bg-blue-400"
+      "sky" ->
+        "before:bg-sky-500 before:dark:bg-sky-400"
 
-        "indigo" ->
-          "before:bg-indigo-500 before:dark:bg-indigo-400"
+      "blue" ->
+        "before:bg-blue-500 before:dark:bg-blue-400"
 
-        "violet" ->
-          "before:bg-violet-500 before:dark:bg-violet-400"
+      "indigo" ->
+        "before:bg-indigo-500 before:dark:bg-indigo-400"
 
-        "purple" ->
-          "before:bg-purple-500 before:dark:bg-purple-400"
+      "violet" ->
+        "before:bg-violet-500 before:dark:bg-violet-400"
 
-        "fuchsia" ->
-          "before:bg-fuchsia-500 before:dark:bg-fuchsia-400"
+      "purple" ->
+        "before:bg-purple-500 before:dark:bg-purple-400"
 
-        "pink" ->
-          "before:bg-pink-500 before:dark:bg-pink-400"
+      "fuchsia" ->
+        "before:bg-fuchsia-500 before:dark:bg-fuchsia-400"
 
-        "rose" ->
-          "before:bg-rose-500 before:dark:bg-rose-400"
+      "pink" ->
+        "before:bg-pink-500 before:dark:bg-pink-400"
 
-        "slate" ->
-          "before:bg-slate-500 before:dark:bg-slate-400"
+      "rose" ->
+        "before:bg-rose-500 before:dark:bg-rose-400"
 
-        "gray" ->
-          "before:bg-gray-500 before:dark:bg-gray-400"
+      "slate" ->
+        "before:bg-slate-500 before:dark:bg-slate-400"
 
-        "zinc" ->
-          "before:bg-zinc-500 before:dark:bg-zinc-400"
+      "gray" ->
+        "before:bg-gray-500 before:dark:bg-gray-400"
 
-        "neutral" ->
-          "before:bg-neutral-500 before:dark:bg-neutral-400"
+      "zinc" ->
+        "before:bg-zinc-500 before:dark:bg-zinc-400"
 
-        "stone" ->
-          "before:bg-stone-500 before:dark:bg-stone-400"
+      "neutral" ->
+        "before:bg-neutral-500 before:dark:bg-neutral-400"
 
-        _ ->
-          "before:bg-(--badge-dot-color)"
-      end
+      "stone" ->
+        "before:bg-stone-500 before:dark:bg-stone-400"
 
-    [color_class, base_class]
+      _ ->
+        "before:bg-(--badge-dot-color)"
+    end
   end
 
   def button_variant_class(variant) do

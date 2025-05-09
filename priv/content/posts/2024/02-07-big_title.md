@@ -3,7 +3,7 @@
   tags: ~w(elixir),
   excerpt: "Let's learn how to say hello world",
   status: :published,
-  type: :note,
+  category: :note,
   featured: true
 }
 

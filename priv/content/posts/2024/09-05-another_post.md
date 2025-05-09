@@ -2,7 +2,7 @@
   title: "Just a note!",
   tags: ~w(offtopic),
   excerpt: "Some other post",
-  type: :note,
+  category: :note,
   status: :published
 }
 
