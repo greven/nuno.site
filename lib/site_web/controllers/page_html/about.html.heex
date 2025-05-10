@@ -3,8 +3,14 @@
     <div class="grid grid-cols-1 gap-y-12 lg:grid-cols-2 lg:grid-rows-[auto_1fr]">
       <div class="row-span-2 w-full flex flex-col items-center justify-center lg:flex-row">
         <div class="profile-picture group lg:mt-24">
-          <.image src="/images/profile.png" alt="Nuno's profile picture" width={280} height={280} />
-          <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 translate-y-12 opacity-0 transition ease-in-out group-hover:opacity-100 group-hover:translate-y-0">
+          <.image
+            src="/images/profile_1.png"
+            alt="Nuno's profile picture"
+            width={280}
+            height={280}
+          />
+          <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 translate-y-12 invisible opacity-0 transition ease-in-out
+            group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible">
             <span class="bg-white/20 dark:bg-white/10 text-neutral-100 text-sm py-1.5 px-2.5 rounded-full backdrop-blur-md">
               It's a me!
             </span>
