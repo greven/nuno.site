@@ -185,7 +185,7 @@ defmodule SiteWeb.BlogComponents do
   def post_updated_disclaimer(assigns) do
     assigns =
       assigns
-      |> assign(:post_updated?, post_updated?(assigns.post))
+      |> assign(:post_updated?, Blog.post_updated?(assigns.post))
 
     ~H"""
     <div :if={@post_updated?} {@rest}>
@@ -286,19 +286,10 @@ defmodule SiteWeb.BlogComponents do
   attr :class, :string, default: nil
 
   def post_card_meta(%{post: post} = assigns) do
-    post_updated? = post_updated?(post)
-    updated_after_a_month? = post_updated? && Date.diff(post.updated, post.date) > 30
-    updated_within_last_year? = post_updated? && Date.diff(Date.utc_today(), post.updated) < 365
-
-    update_fresh? =
-      if updated_within_last_year? && updated_after_a_month?,
-        do: true,
-        else: false
-
     assigns =
       assigns
-      |> assign(:post_updated?, post_updated?)
-      |> assign(:update_fresh?, update_fresh?)
+      |> assign(:post_updated?, Blog.post_updated?(post))
+      |> assign(:update_fresh?, post_is_fresh?(post))
 
     ~H"""
     <div class={["relative w-full h-full", @class]}>
@@ -564,8 +555,19 @@ defmodule SiteWeb.BlogComponents do
 
   defp post_url(_), do: nil
 
-  # Check if the post has been updated
-  defp post_updated?(%Blog.Post{updated: nil}), do: false
-  defp post_updated?(%Blog.Post{date: date, updated: date}), do: false
-  defp post_updated?(%Blog.Post{updated: _}), do: true
+  # Check if post has been recently posted or updated
+  defp post_is_fresh?(%Blog.Post{} = post) do
+    freshness_in_days =
+      case post.category do
+        :blog -> 30
+        :note -> 7
+        :social -> 1
+        _ -> 0
+      end
+
+    posted_recently? = Date.diff(Date.utc_today(), post.date) < freshness_in_days
+    updated_recently? = Blog.post_updated_within?(post, freshness_in_days)
+
+    posted_recently? || updated_recently?
+  end
 end

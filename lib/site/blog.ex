@@ -3,6 +3,8 @@ defmodule Site.Blog do
   The Blog context.
   """
 
+  alias __MODULE__
+
   defmodule NotFoundError do
     defexception [:message, plug_status: 404]
   end
@@ -185,6 +187,30 @@ defmodule Site.Blog do
       true ->
         {nil, nil}
     end
+  end
+
+  @doc """
+  Check if the post has been updated.
+  By updated we mean posts where something was added after some delta (cooldown) after
+  the initial publish date to emphasizing the fact that the post has been updated.
+  """
+  def post_updated?(post, cooldown_days \\ 30)
+
+  def post_updated?(%Blog.Post{updated: nil}, _), do: false
+  def post_updated?(%Blog.Post{date: date, updated: date}, _), do: false
+
+  def post_updated?(%Blog.Post{date: published_date, updated: updated_date}, cooldown_days) do
+    Date.diff(updated_date, published_date) > cooldown_days
+  end
+
+  @doc """
+  Check if the post has been updated within the timeframe (in days).
+  """
+
+  def post_updated_within?(%Blog.Post{updated: nil}, _days), do: false
+
+  def post_updated_within?(%Blog.Post{updated: updated_date}, days) do
+    Date.diff(Date.utc_today(), updated_date) < days
   end
 
   # ------------------------------------------
