@@ -3,7 +3,6 @@ defmodule SiteWeb.SiteComponents do
   Custom components for the site.
   """
 
-  alias DialyxirVendored.Formatter.Github
   use SiteWeb, :html
 
   @doc false
