@@ -3,6 +3,7 @@ defmodule SiteWeb.SiteComponents do
   Custom components for the site.
   """
 
+  alias DialyxirVendored.Formatter.Github
   use SiteWeb, :html
 
   @doc false
@@ -39,6 +40,72 @@ defmodule SiteWeb.SiteComponents do
         "group-focus:ring-2 group-focus:ring-primary group-focus:ring-offset-2 group-focus:ring-offset-surface-10 transition-all"
       ]}
     />
+    """
+  end
+
+  @doc false
+
+  attr :rest, :global
+
+  def profile_picture(assigns) do
+    ~H"""
+    <div {@rest}>
+      <div class="profile-picture group lg:mt-24">
+        <.image src="/images/profile_1.png" alt="Nuno's profile picture" width={280} height={280} />
+        <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 translate-y-12 invisible opacity-0 transition ease-in-out
+            group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible">
+          <span class="bg-white/20 dark:bg-white/10 text-neutral-100 text-sm py-1.5 px-2.5 rounded-full backdrop-blur-md">
+            It's a me!
+          </span>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :rest, :global
+
+  def contact_links(assigns) do
+    ~H"""
+    <div {@rest}>
+      <ul role="list" class="flex flex-wrap justify-center lg:justify-start gap-2.5">
+        <.contact_link_item href="mailto:hello@nuno.site" icon="hero-envelope" class="hidden md:block">
+          Email
+        </.contact_link_item>
+
+        <.contact_link_item href="https://github.com/greven" icon="si-github">
+          Github
+        </.contact_link_item>
+
+        <.contact_link_item href="https://bsky.app/profile/nuno.site" icon="si-bluesky">
+          Bluesky
+        </.contact_link_item>
+      </ul>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :rest, :global
+  attr :href, :string, required: true
+  attr :icon, :string, required: true
+  slot :inner_block, required: true
+
+  def contact_link_item(assigns) do
+    ~H"""
+    <li {@rest}>
+      <.button href={@href} size="sm" class="group">
+        <.icon name={@icon} class="size-5 mr-2" />
+        {render_slot(@inner_block)}
+        <.icon
+          name="lucide-arrow-up-right"
+          class="ml-1.5 size-5 text-content-40 group-hover:text-primary transition-colors"
+        />
+      </.button>
+    </li>
     """
   end
 
