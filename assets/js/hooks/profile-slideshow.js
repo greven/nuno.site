@@ -95,7 +95,7 @@ export const ProfileSlideshow = {
 
   resumeSlideshow() {
     // If we have remaining time, use that instead of full duration
-    if (this.remainingTime) {
+    if (this.remainingTime && this.remainingTime > 0) {
       // Start progress from where we left off
       const progress = 100 - (this.remainingTime / this.duration) * 100;
       this.el.style.setProperty('--progress', `${progress}%`);
@@ -103,20 +103,20 @@ export const ProfileSlideshow = {
       this.progressStartTime = Date.now() - (this.duration - this.remainingTime);
       this.progressInterval = setInterval(() => {
         const elapsed = Date.now() - this.progressStartTime;
-        const progress = Math.min(100, (elapsed / this.duration) * 100);
-        this.el.style.setProperty('--progress', `${progress}%`);
+        const currentProgress = Math.min(100, (elapsed / this.duration) * 100);
+        this.el.style.setProperty('--progress', `${currentProgress}%`);
       }, 16);
 
       // Set up the next slide after remaining time
       this.slideshowTimer = setTimeout(() => {
         this.nextSlide();
-        // Resume normal interval after this
+        this.slideshowTimer = null;
         this.startSlideshow();
       }, this.remainingTime);
 
       this.remainingTime = null;
     } else {
-      // Just restart normally
+      this.resetProgress();
       this.startProgress();
       this.startSlideshow();
     }
