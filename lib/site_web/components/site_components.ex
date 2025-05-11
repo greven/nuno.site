@@ -44,17 +44,92 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
-  attr :rest, :global
+  attr :size, :integer, default: 200
+  attr :duration, :integer, default: 5000
 
   def profile_picture(assigns) do
     ~H"""
-    <div {@rest}>
-      <div class="profile-picture group lg:mt-24">
-        <.image src="/images/profile_1.png" alt="Nuno's profile picture" width={280} height={280} />
-        <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 translate-y-12 invisible opacity-0 transition ease-in-out
-            group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible">
-          <span class="bg-white/20 dark:bg-white/10 text-neutral-100 text-sm py-1.5 px-2.5 rounded-full backdrop-blur-md">
-            It's a me!
+    <div
+      id="profile-picture"
+      class="profile-picture lg:mt-24"
+      phx-hook="ProfileSlideshow"
+      data-duration={@duration}
+    >
+      <div class="slideshow-container" style={"width:#{@size}px;"}>
+        <.slide
+          src="/images/profile.png"
+          size={@size}
+          alt="Nuno's portrait"
+          title="It's a me!"
+          contrast
+          active
+        />
+        <.slide
+          src="/images/tram.png"
+          size={@size}
+          alt="A picture of a Lisbon's yellow tram"
+          title="Lisbon"
+        />
+        <.slide
+          src="/images/british.png"
+          size={@size}
+          alt="Picture of the London's British Museum"
+          title="London!"
+        />
+        <.slide
+          src="/images/beach.png"
+          size={@size}
+          alt="Picture of Nuno"
+          title="It's a me again!"
+          contrast
+        />
+        <.slide
+          src="/images/leeds.png"
+          size={@size}
+          alt="Photo of Leeds, UK at night"
+          title="Leeds <3"
+        />
+        <.slide
+          src="/images/corn.png"
+          size={@size}
+          alt="Photo of Leeds' Corn Exchange"
+          title="Leeds <3"
+        />
+        <.slide
+          src="/images/lisbon.png"
+          size={@size}
+          alt="Photo of traditional Lisbon buildings"
+          title="Lisbon"
+        />
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :src, :string, required: true
+  attr :alt, :string, required: true
+  attr :title, :string, required: true
+  attr :size, :integer, default: 200
+  attr :contrast, :boolean, default: false
+  attr :active, :boolean, default: false
+
+  def slide(assigns) do
+    ~H"""
+    <div class="slide" data-active={@active}>
+      <div class="relative">
+        <.image src={@src} alt={@alt} width={@size} height={@size} data-title={@title} />
+
+        <div :if={@title} class="absolute bottom-4 w-full flex items-center justify-center">
+          <span class={[
+            "py-1 px-2 text-xs rounded-full backdrop-blur-sm",
+            if(@contrast,
+              do: "bg-white/15 text-white",
+              else: "bg-black/30 text-white"
+            )
+          ]}>
+            {@title}
           </span>
         </div>
       </div>
