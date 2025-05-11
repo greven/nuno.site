@@ -27,18 +27,18 @@
       position: absolute;
       inset: -0.325rem;
       border-radius: 100%;
+      box-shadow: var(--shadow-lg);
       background: conic-gradient(
         var(--color-primary) var(--progress, 0%),
         transparent var(--progress, 0%)
       );
       mask: radial-gradient(
         farthest-side,
-        transparent calc(100% - 0.2rem),
+        transparent calc(100% - 0.15rem),
         #000 calc(100% - 0.2rem)
       );
+      opacity: 1;
       z-index: -1;
-      opacity: 0.8;
-      transition: --progress 1000ms linear;
     }
 
     & .slideshow-container {

@@ -11,20 +11,46 @@ export const ProfileSlideshow = {
     this.startProgress();
     this.startSlideshow();
 
+    // Add hover events to pause/resume slideshow
+    this.el.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
+    this.el.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
+
     // Pause slideshow when tab is not visible
     document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+
+    // Clean up on destroy
+    this.onDestroy = () => {
+      this.stopSlideshow();
+      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+      this.el.removeEventListener('mouseenter', this.handleMouseEnter);
+      this.el.removeEventListener('mouseleave', this.handleMouseLeave);
+    };
   },
 
   destroyed() {
-    this.stopSlideshow();
-    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    if (this.onDestroy) {
+      this.onDestroy();
+    }
+  },
+
+  handleMouseEnter() {
+    // Pause the slideshow when mouse enters
+    this.pauseSlideshow();
+  },
+
+  handleMouseLeave() {
+    // Resume the slideshow when mouse leaves
+    this.resumeSlideshow();
   },
 
   handleVisibilityChange() {
     if (document.hidden) {
       this.pauseSlideshow();
     } else {
-      this.resumeSlideshow();
+      // Only resume if not currently being hovered
+      if (!this.el.matches(':hover')) {
+        this.resumeSlideshow();
+      }
     }
   },
 
