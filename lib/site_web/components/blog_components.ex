@@ -252,21 +252,26 @@ defmodule SiteWeb.BlogComponents do
     <%= if @link do %>
       <.link navigate={@link} {@rest}>
         <div class="group border border-surface-30 rounded-box p-4 transition hover:border-primary">
-          <div class={["flex flex-col", if(@dir == :next, do: "items-end")]}>
-            <div :if={@dir == :prev} class="text-content-40 text-xs tracking-wider font-headings">
-              <.icon
-                name="lucide-arrow-left"
-                class="text-content-40/50 size-4 group-hover:-translate-x-0.5 transition-transform"
-              /> Previous Article
+          <div :if={@dir == :prev} class="flex gap-1">
+            <.icon
+              name="lucide-arrow-left"
+              class="shrink-0 mt-px size-4 text-content-40/80 group-hover:-translate-x-0.5 transition-transform"
+            />
+            <div class="flex flex-col">
+              <div class="text-content-40 text-sm tracking-wider font-sans">Previous Article</div>
+              <div class="text-lg font-headings line-clamp-1">{@title}</div>
             </div>
-            <div :if={@dir == :next} class="text-content-40 text-xs tracking-wider font-headings">
-              Next Article
-              <.icon
-                name="lucide-arrow-right"
-                class="text-content-40/50 size-4 group-hover:translate-x-0.5 transition-transform"
-              />
+          </div>
+
+          <div :if={@dir == :next} class="flex gap-1">
+            <div class="flex flex-col items-end text-right">
+              <div class="text-content-40 text-sm tracking-wider font-sans">Previous Article</div>
+              <div class="text-lg font-headings line-clamp-1">{@title}</div>
             </div>
-            <div class="ml-5 font-normal line-clamp-1">{@title}</div>
+            <.icon
+              name="lucide-arrow-right"
+              class="shrink-0 mt-px size-4 text-content-40/80 group-hover:translate-x-0.5 transition-transform"
+            />
           </div>
         </div>
       </.link>
