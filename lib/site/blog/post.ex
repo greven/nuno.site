@@ -57,7 +57,7 @@ defmodule Site.Blog.Post do
       [
         id: id,
         body: body,
-        year: year,
+        year: String.to_integer(year),
         slug: Support.slugify(attrs.title),
         date: post_date(year, month, day),
         reading_time: reading_time_in_minutes(body)

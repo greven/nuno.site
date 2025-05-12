@@ -47,21 +47,11 @@ defmodule Site.Blog do
   - `fields` - A list of the Post fields to return.
   """
   def list_posts(opts \\ []) do
-    status =
-      Keyword.get(opts, :status, Site.Blog.Post.status())
-      |> List.wrap()
-
-    fields = Keyword.get(opts, :fields)
-
-    all_posts()
-    |> paginate(opts)
-    |> Enum.filter(&(&1.status in status))
-    |> maybe_select_fields(fields)
+    all_posts() |> apply_options(opts)
   end
 
   def list_published_posts(opts \\ []) do
     opts = Keyword.merge(opts, status: :published)
-
     list_posts(opts)
   end
 
@@ -73,46 +63,63 @@ defmodule Site.Blog do
   @doc """
   Returns the most recent published posts.
   """
-  def list_recent_posts(count \\ 3) do
-    list_published_posts(status: :published, limit: count)
+  def list_recent_posts(opts \\ []) do
+    limit = Keyword.get(opts, :limit, 3)
+
+    opts
+    |> Keyword.merge(status: :published, limit: limit)
+    |> list_published_posts()
   end
 
   @doc """
   List posts by category.
   """
-  def list_posts_by_category(category) do
+  def list_posts_by_category(category, opts \\ []) do
     all_posts()
     |> Enum.filter(&(&1.category == category))
+    |> apply_options(opts)
   end
 
   @doc """
   List posts that have been published by category.
   """
-  def list_published_posts_by_category(category) do
+  def list_published_posts_by_category(category, opts \\ []) do
     list_published_posts()
     |> Enum.filter(&(&1.category == category))
+    |> apply_options(opts)
   end
 
   @doc """
   List posts by tag name.
+  It supports the same options as `list_posts/1`.
 
   Examples:
 
       iex> list_posts_by_tag!("elixir")
       [%Post{}, ...]
-
-      iex> list_posts_by_tag!("i-do-not-exist")
-      ** (Site.Blog.NotFoundError) posts with tag=i-do-not-exist not found
   """
-  def list_posts_by_tag!(tag) do
-    all_posts()
-    |> Enum.filter(fn post ->
-      Enum.any?(post.tags, fn t -> String.downcase(t) == String.downcase(tag) end)
-    end)
-    |> case do
-      [] -> raise NotFoundError, "posts with tag=#{tag} not found"
-      posts -> posts
-    end
+  def list_posts_by_tag(tag, opts \\ []) do
+    list_published_posts()
+    |> Enum.filter(fn post -> post_has_tag?(post, tag) end)
+    |> apply_options(opts)
+  end
+
+  @doc """
+  List posts by tag and grouped by year.
+
+  Examples:
+
+      iex> list_posts_yearly_by_tag!("elixir")
+      %{"2025" => [%Post{}, ...], "2024" => ...}
+  """
+  def list_posts_yearly_by_tag(tag) do
+    list_published_posts()
+    |> Enum.filter(fn post -> post_has_tag?(post, tag) end)
+    |> Enum.group_by(& &1.year)
+  end
+
+  defp post_has_tag?(%Blog.Post{tags: tags}, tag) do
+    Enum.any?(tags, fn t -> String.downcase(t) == String.downcase(tag) end)
   end
 
   @doc """
@@ -144,16 +151,23 @@ defmodule Site.Blog do
     posts = list_published_posts()
 
     posts
-    |> Enum.frequencies_by(&Atom.to_string(&1.category))
+    |> Enum.frequencies_by(fn %{category: cat} ->
+      Atom.to_string(cat) |> String.downcase()
+    end)
     |> Map.put("all", length(posts))
   end
 
-  defp maybe_select_fields(posts, fields) do
-    if fields do
-      Enum.map(posts, &Map.take(&1, fields))
-    else
-      posts
-    end
+  @doc """
+  Get the count of published posts for each post tag.
+  Returns a map where the keys are the tag names and the
+  values are the counts.
+  """
+  def count_posts_by_tag do
+    list_published_posts()
+    |> Enum.reduce(%{}, fn %{tags: tags}, tag_counts ->
+      post_tags = Map.new(tags, fn tag -> {String.downcase(tag), 1} end)
+      Map.merge(tag_counts, post_tags, fn _key, v1, v2 -> v1 + v2 end)
+    end)
   end
 
   @doc """
@@ -220,7 +234,7 @@ defmodule Site.Blog do
   def list_tags, do: all_tags()
 
   def list_top_tags(limit \\ 10) do
-    all_posts()
+    list_published_posts()
     |> Enum.flat_map(& &1.tags)
     |> Enum.frequencies()
     |> Enum.to_list()
@@ -233,19 +247,42 @@ defmodule Site.Blog do
   #  Helpers
   # ------------------------------------------
 
-  @doc """
-  Paginate list items (posts, tags...)
-  """
-  def paginate(items, opts \\ []) do
+  defp apply_options(posts, []), do: posts
+
+  defp apply_options(posts, opts) do
+    status =
+      Keyword.get(opts, :status, Site.Blog.Post.status())
+      |> List.wrap()
+
+    fields = Keyword.get(opts, :fields)
+
+    posts
+    |> Stream.filter(&(&1.status in status))
+    |> stream_paginate(opts)
+    |> maybe_select_fields(fields)
+    |> Enum.to_list()
+  end
+
+  # Select only the fields we want to return.
+  defp maybe_select_fields(posts_stream, fields) do
+    if fields do
+      Stream.map(posts_stream, &Map.take(&1, fields))
+    else
+      posts_stream
+    end
+  end
+
+  # Paginate list items (posts, tags...).
+  defp stream_paginate(posts, opts) do
     offset = Keyword.get(opts, :offset, 0)
     limit = Keyword.get(opts, :limit)
 
     if limit do
-      items
-      |> Enum.drop(offset)
-      |> Enum.take(limit)
+      posts
+      |> Stream.drop(offset)
+      |> Stream.take(limit)
     else
-      Enum.drop(items, offset)
+      Stream.drop(posts, offset)
     end
   end
 end

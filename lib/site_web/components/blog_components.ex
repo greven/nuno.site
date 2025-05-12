@@ -251,30 +251,34 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <%= if @link do %>
       <.link navigate={@link} {@rest}>
-        <div class="group border border-surface-30 rounded-box p-4 transition hover:border-primary">
-          <div :if={@dir == :prev} class="flex gap-1">
-            <.icon
-              name="lucide-arrow-left"
-              class="shrink-0 mt-px size-4 text-content-40/80 group-hover:-translate-x-0.5 transition-transform"
-            />
-            <div class="flex flex-col">
-              <div class="text-content-40 text-sm tracking-wider font-sans">Previous Article</div>
-              <div class="text-lg font-headings line-clamp-1">{@title}</div>
+        <div class="group flex items-center border border-surface-30 rounded-box p-4 transition hover:border-primary">
+          <div :if={@dir == :prev} class="w-full">
+            <div class="flex items-center gap-2">
+              <.icon
+                name="lucide-arrow-left"
+                class="shrink-0 mt-px size-4 text-content-40/80 group-hover:-translate-x-0.5 transition-transform"
+              />
+              <div class="text-content-40 text-xs tracking-wider font-sans">Previous</div>
             </div>
+
+            <div class="font-headings line-clamp-1">{@title}</div>
           </div>
 
-          <div :if={@dir == :next} class="flex gap-1">
-            <div class="flex flex-col items-end text-right">
-              <div class="text-content-40 text-sm tracking-wider font-sans">Previous Article</div>
-              <div class="text-lg font-headings line-clamp-1">{@title}</div>
+          <div :if={@dir == :next} class="w-full text-right">
+            <div class="w-full flex items-center justify-end gap-2">
+              <div class="text-content-40 text-xs tracking-wider font-sans">Next</div>
+              <.icon
+                name="lucide-arrow-right"
+                class="shrink-0 mt-px size-4 text-content-40/80 group-hover:translate-x-0.5 transition-transform"
+              />
             </div>
-            <.icon
-              name="lucide-arrow-right"
-              class="shrink-0 mt-px size-4 text-content-40/80 group-hover:translate-x-0.5 transition-transform"
-            />
+
+            <div class="font-headings line-clamp-1">{@title}</div>
           </div>
         </div>
       </.link>
+    <% else %>
+      <div class="invisible"></div>
     <% end %>
     """
   end

@@ -23,7 +23,7 @@
   --color-content-10: oklch(from var(--neutral-base) 0.28 0 h);
   --color-content-20: oklch(from var(--neutral-base) 0.38 0 h);
   --color-content-30: oklch(from var(--neutral-base) 0.44 0 h);
-  --color-content-40: oklch(from var(--neutral-base) 0.54 0 h);
+  --color-content-40: oklch(from var(--neutral-base) 0.55 0 h);
 
   /* Gray (Neutral) */
   --color-gray-*: initial;

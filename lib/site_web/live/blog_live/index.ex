@@ -49,7 +49,7 @@ defmodule SiteWeb.BlogLive.Index do
         </.button> --%>
         </div>
 
-        <%!-- Last posts --%>
+        <%!-- Featured / Latest posts --%>
         <div id="articles" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4" phx-update="stream">
           <BlogComponents.featured_post_item
             :for={{dom_id, post} <- @streams.latest_posts}

@@ -34,7 +34,7 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.0-rc.1", override: true},
+      {:phoenix, "~> 1.8.0-rc.3", override: true},
       {:phoenix_live_view, "~> 1.0"},
       {:phoenix_ecto, "~> 4.6"},
       {:phoenix_html, "~> 4.2"},
@@ -50,7 +50,7 @@ defmodule Site.MixProject do
       # {:litestream, "~> 0.3.0"},
 
       # Mail
-      {:swoosh, "~> 1.18"},
+      {:swoosh, "~> 1.19"},
 
       # Telemetry
       {:telemetry_metrics, "~> 1.1"},
@@ -109,7 +109,8 @@ defmodule Site.MixProject do
        depth: 1},
 
       # Development
-      {:credo, "~> 1.7", only: :dev, runtime: false}
+      {:credo, "~> 1.7", only: :dev, runtime: false},
+      {:benchee, "~> 1.4", only: :dev}
     ]
   end
 
