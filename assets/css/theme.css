@@ -118,7 +118,7 @@
     --color-surface-40: oklch(from var(--neutral-base) 0.36 0.004 h);
 
     --color-content-10: oklch(from var(--neutral-base) 0.86 0.001 h);
-    --color-content-20: oklch(from var(--neutral-base) 0.76 0 h);
+    --color-content-20: oklch(from var(--neutral-base) 0.77 0 h);
     --color-content-30: oklch(from var(--neutral-base) 0.69 0 h);
     --color-content-40: oklch(from var(--neutral-base) 0.62 0 h);
   }

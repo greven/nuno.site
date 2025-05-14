@@ -109,13 +109,29 @@ defmodule Site.Blog do
 
   Examples:
 
-      iex> list_posts_yearly_by_tag!("elixir")
+      iex> list_posts_by_tag_grouped_by_year!("elixir")
       %{"2025" => [%Post{}, ...], "2024" => ...}
   """
-  def list_posts_yearly_by_tag(tag) do
+  def list_posts_by_tag_grouped_by_year(tag) do
     list_published_posts()
     |> Enum.filter(fn post -> post_has_tag?(post, tag) end)
     |> Enum.group_by(& &1.year)
+  end
+
+  @doc """
+  List posts grouped by tag.
+  It returns a map where the keys are the tag names and the values are
+  lists of posts of the corresponding tag.
+  The posts are sorted by date in descending order.
+  """
+  def list_posts_grouped_by_tag do
+    posts = list_published_posts()
+
+    list_tags()
+    |> Map.new(fn tag ->
+      matching_posts = Enum.filter(posts, fn post -> post_has_tag?(post, tag) end)
+      {tag, matching_posts}
+    end)
   end
 
   defp post_has_tag?(%Blog.Post{tags: tags}, tag) do
@@ -239,7 +255,6 @@ defmodule Site.Blog do
     |> Enum.frequencies()
     |> Enum.to_list()
     |> List.keysort(1, :desc)
-    |> Enum.map(&elem(&1, 0))
     |> Enum.take(limit)
   end
 

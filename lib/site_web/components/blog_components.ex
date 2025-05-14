@@ -53,7 +53,7 @@ defmodule SiteWeb.BlogComponents do
     >
       <div class="flex md:grid md:grid-cols-[82px_auto_1fr] items-center gap-1">
         <h2 class="link-subtle text-base md:text-lg col-start-3 col-span-1 text-pretty line-clamp-2">
-          <.link href={~p"/articles/#{@post.year}/#{@post}"}>
+          <.link href={~p"/articles/#{@post.year}/#{@post}"} class="line-clamp-1">
             <span class="absolute inset-0"></span>
             {@post.title}
           </.link>
@@ -62,7 +62,8 @@ defmodule SiteWeb.BlogComponents do
       </div>
 
       <.post_publication_date
-        class="shrink-0 flex items-center font-headings text-content-40/80 transition-colors group-hover:text-content-30"
+        class="shrink-0 flex items-center font-headings text-content-40
+          transition-colors group-hover:text-content-30"
         format="%b %d, %Y"
         post={@post}
       />
@@ -74,12 +75,20 @@ defmodule SiteWeb.BlogComponents do
 
   attr :post, Blog.Post, required: true
   attr :class, :string, default: nil
+  attr :underline, :boolean, default: false
   attr :rest, :global
 
   def post_title(assigns) do
     ~H"""
     <h1
-      class={["font-medium text-center text-balance text-3xl sm:text-4xl lg:text-5xl", @class]}
+      class={[
+        "font-medium text-3xl/10 sm:text-4xl/12 lg:text-5xl/14 text-center text-balance
+          text-content-10",
+        @underline &&
+          "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6
+            decoration-[2px] md:decoration-[3px] decoration-primary",
+        @class
+      ]}
       {@rest}
     >
       {@post.title}
@@ -158,7 +167,7 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <div id="post-meta" class={@class} phx-hook="PostMeta">
       <div class="flex flex-wrap items-center justify-center gap-3 text-content-40">
-        <.post_publication_date post={@post} show_icon={true} />
+        <.post_publication_date post={@post} show_icon={true} class="text-content-20" />
         <span class="font-sans text-xs text-primary">&bull;</span>
         <.post_read_time post={@post} label="read" show_icon={true} />
 
@@ -234,7 +243,7 @@ defmodule SiteWeb.BlogComponents do
 
     ~H"""
     <div {@rest}>
-      <div class="grid grid-cols-2 space-between gap-4">
+      <div class="flex flex-col gap-2 md:grid md:grid-cols-2 md:space-between md:gap-4">
         <.post_pager dir={:prev} link={@prev_link} title={@prev_post && @prev_post.title} />
         <.post_pager dir={:next} link={@next_link} title={@next_post && @next_post.title} />
       </div>
@@ -247,39 +256,56 @@ defmodule SiteWeb.BlogComponents do
   attr :dir, :atom, values: ~w(prev next)a, required: true
   attr :rest, :global
 
+  defp post_pager(%{link: link} = assigns) when not is_nil(link) do
+    ~H"""
+    <.link navigate={@link} {@rest}>
+      <div class="group border border-surface-30 rounded-box p-4 transition hover:border-primary">
+        <div class={["w-full", @dir == :next && "text-right"]}>
+          <div class={["flex items-center gap-1", @dir == :next && "justify-end"]}>
+            <.icon
+              name={if @dir == :prev, do: "lucide-arrow-left", else: "lucide-arrow-right"}
+              class="size-4 shrink-0 text-content-40/80 group-hover:-translate-x-0.5 transition-transform"
+            />
+            <div :if={@dir == :prev} class="text-content-40 text-xs tracking-wider font-sans">
+              Previous
+            </div>
+            <div
+              :if={@dir == :next}
+              class={[
+                "text-content-40 text-xs tracking-wider font-sans",
+                @dir == :next && "order-first"
+              ]}
+            >
+              Next
+            </div>
+          </div>
+
+          <div class="font-headings font-medium text-sm md:text-base line-clamp-1">{@title}</div>
+        </div>
+      </div>
+    </.link>
+    """
+  end
+
   defp post_pager(assigns) do
     ~H"""
-    <%= if @link do %>
-      <.link navigate={@link} {@rest}>
-        <div class="group flex items-center border border-surface-30 rounded-box p-4 transition hover:border-primary">
-          <div :if={@dir == :prev} class="w-full">
-            <div class="flex items-center gap-2">
-              <.icon
-                name="lucide-arrow-left"
-                class="shrink-0 mt-px size-4 text-content-40/80 group-hover:-translate-x-0.5 transition-transform"
-              />
-              <div class="text-content-40 text-xs tracking-wider font-sans">Previous</div>
-            </div>
-
-            <div class="font-headings line-clamp-1">{@title}</div>
-          </div>
-
-          <div :if={@dir == :next} class="w-full text-right">
-            <div class="w-full flex items-center justify-end gap-2">
-              <div class="text-content-40 text-xs tracking-wider font-sans">Next</div>
-              <.icon
-                name="lucide-arrow-right"
-                class="shrink-0 mt-px size-4 text-content-40/80 group-hover:translate-x-0.5 transition-transform"
-              />
-            </div>
-
-            <div class="font-headings line-clamp-1">{@title}</div>
-          </div>
+    <div class="relative border border-surface-30 rounded-box p-4 flex items-center
+        justify-center text-content-30 opacity-40 select-none">
+      <div
+        class="absolute inset-0 opacity-20 -z-10"
+        style="background-image: repeating-linear-gradient(135deg, var(--color-content-40), var(--color-content-40) 1px, transparent 1px, transparent 6px);"
+      >
+      </div>
+      <%= if @dir == :prev do %>
+        <div class="font-headings font-medium text-sm md:text-base line-clamp-1">
+          End of Time!
         </div>
-      </.link>
-    <% else %>
-      <div class="invisible"></div>
-    <% end %>
+      <% else %>
+        <div class="font-headings font-medium text-sm md:text-base line-clamp-1">
+          Start of Time!
+        </div>
+      <% end %>
+    </div>
     """
   end
 
@@ -559,6 +585,50 @@ defmodule SiteWeb.BlogComponents do
     """
   end
 
+  @doc false
+
+  attr :articles, :map,
+    required: true,
+    doc: "Map of articles to display, where each key is
+      the group key and the values the list of articles"
+
+  attr :icon, :string, default: "hero-calendar-days"
+  attr :show_icon, :boolean, default: true
+  attr :icon_class, :string, default: "flex items-center size-8 text-content-40"
+  attr :header_container_class, :string, default: "flex items-center gap-4"
+  attr :rest, :global
+
+  slot :header do
+    attr :class, :string
+  end
+
+  slot :items do
+    attr :class, :string
+  end
+
+  def grouped_articles_list(assigns) do
+    ~H"""
+    <div {@rest}>
+      <section :for={{key, articles} <- @articles}>
+        <.header tag="h2" header_class="text-content-20 text-3xl">
+          <div class={@header_container_class}>
+            <.icon :if={@show_icon} name={@icon} class={@icon_class} />
+            <%= for header <- @header do %>
+              <div class={header[:class]}>
+                {render_slot(header, key)}
+              </div>
+            <% end %>
+          </div>
+        </.header>
+
+        <%= for items <- @items do %>
+          <div class={items[:class]}>{render_slot(items, articles)}</div>
+        <% end %>
+      </section>
+    </div>
+    """
+  end
+
   defp post_url(%Blog.Post{} = post),
     do: ~p"/articles/#{post.year}/#{post}"
 
@@ -570,7 +640,6 @@ defmodule SiteWeb.BlogComponents do
       case post.category do
         :blog -> 30
         :note -> 7
-        :social -> 1
         _ -> 0
       end
 

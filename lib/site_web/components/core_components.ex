@@ -171,9 +171,9 @@ defmodule SiteWeb.CoreComponents do
       assigns
       |> assign(
         :container_class,
-        if(assigns[:equal_width],
+        if(assigns.balanced,
           do: "inline-grid grid-cols-#{length(assigns.item)}",
-          else: "inline-flex"
+          else: "w-full inline-flex"
         )
       )
 
@@ -490,7 +490,7 @@ defmodule SiteWeb.CoreComponents do
       end
 
     ~H"""
-    <table class="table table-zebra">
+    <table class="table">
       <thead>
         <tr>
           <th :for={col <- @col}>{col[:label]}</th>

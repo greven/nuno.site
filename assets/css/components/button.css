@@ -97,15 +97,15 @@
   }
 
   @variant dark {
-    --btn-inset: color-mix(in oklch, var(--color-surface-20), #000 5%);
+    --btn-inset: color-mix(in oklch, var(--color-surface-20), #000 40%);
 
     color: var(--color-neutral-300);
-    background-color: var(--color-neutral-800);
-    border-color: var(--color-neutral-700);
+    background-color: --alpha(var(--color-neutral-800) / 0.8);
+    border-color: --alpha(var(--color-neutral-700) / 0.5);
   }
 
   @variant dark-hover {
-    background-color: --alpha(var(--color-neutral-700) / 0.9);
+    background-color: --alpha(var(--color-neutral-700) / 0.75);
   }
 
   &::after {

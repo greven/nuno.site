@@ -1,7 +1,7 @@
 %{
   title: "Custom Phoenix SVG Icons at compile time the easy way~!!!",
-  tags: ~w(elixir phoenix),
-  excerpt: "Phoenix CSS icons",
+  tags: ~w(elixir phoenix CSS),
+  excerpt: "Phoenix css icons",
   status: :published
 }
 

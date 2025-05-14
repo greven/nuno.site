@@ -8,7 +8,7 @@ defmodule SiteWeb.TagsLive.Show do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} active_link={@active_link}>
-      <Layouts.page_content class="post">
+      <Layouts.page_content class="tag">
         <div class="flex items-center justify-between">
           <.header class="mt-4">
             <.link navigate={~p"/tags"} class="text-content-40/40">
@@ -20,24 +20,22 @@ defmodule SiteWeb.TagsLive.Show do
               Articles tagged with <span class="font-medium">{@tag}</span>
             </:subtitle>
           </.header>
-          <div class="text-xl text-content-40/70">{@count} Articles</div>
+          <div class="text-xl text-content-40/70">
+            {@count} {ngettext("Article", "Articles", @count)}
+          </div>
         </div>
 
-        <div class="mt-8 flex flex-col gap-20">
-          <%= for {year, posts} <- @posts do %>
-            <section>
-              <.header tag="h2" header_class="text-content-20 text-3xl">
-                {year}
-              </.header>
+        <BlogComponents.grouped_articles_list class="mt-8 flex flex-col gap-16" articles={@posts}>
+          <:header :let={year}>
+            <.link navigate={~p"/updates/year/#{year}"} class="link-subtle">
+              {year}
+            </.link>
+          </:header>
 
-              <div :if={@count} class="w-full flex justify-between items-center">
-                <div class="mt-4 w-full flex flex-col gap-4">
-                  <BlogComponents.post_item :for={post <- posts} post={post} />
-                </div>
-              </div>
-            </section>
-          <% end %>
-        </div>
+          <:items :let={articles} class="mt-4 flex flex-col gap-4 md:gap-3">
+            <BlogComponents.post_item :for={article <- articles} post={article} />
+          </:items>
+        </BlogComponents.grouped_articles_list>
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -45,7 +43,7 @@ defmodule SiteWeb.TagsLive.Show do
 
   @impl true
   def mount(%{"tag" => tag}, _session, socket) do
-    posts = Blog.list_posts_yearly_by_tag(tag)
+    posts = Blog.list_posts_by_tag_grouped_by_year(tag)
     count = Blog.list_posts_by_tag(tag) |> length()
 
     {

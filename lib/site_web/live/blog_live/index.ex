@@ -21,32 +21,34 @@ defmodule SiteWeb.BlogLive.Index do
 
         <div :if={@has_posts?} class="mt-8 flex justify-between items-center">
           <.segmented_control
-            class="hidden md:inline-flex md:min-w-[422px]"
+            class="w-full sm:w-auto md:min-w-[422px]"
             aria_label="Filter articles by category"
             on_change="article_filter_changed"
             value={@filter_category}
-            size="sm"
-            balanced
           >
             <:item
               :for={{category, icon, enabled?} <- @filter_categories}
               value={category}
               disabled={!enabled?}
-              icon_color_class="text-content-10/45 group-aria-[current]:text-primary group-hover:group-[:not(:disabled)]:group-[:not([aria-current])]:text-content-30  dark:group-aria-[current]:text-primary/85"
+              icon_color_class="text-content-10/45 group-hover:group-[:not(:disabled)]:group-[:not([aria-current])]:text-content-30
+                group-aria-[current]:text-primary
+                dark:group-aria-[current]:text-white"
               icon={icon}
             >
               <div class="flex items-center gap-2">
                 <div class="capitalize">{category}</div>
-                <.badge badge_class="text-xs dark:bg-neutral-900/25">
+                <.badge badge_class="hidden sm:inline-block text-xs dark:bg-neutral-900/25">
                   {Map.get(@categories_count, category, 0)}
                 </.badge>
               </div>
             </:item>
           </.segmented_control>
 
-          <%!-- <.button variant="light" navigate={~p"/articles/tags"}>
-          <.icon name="hero-hashtag-mini" class="size-4 text-content-30 mr-1.5" /> Tags
-        </.button> --%>
+          <div class="hidden sm:block">
+            <.button variant="link" navigate={~p"/tags"}>
+              <.icon name="hero-hashtag" class="size-4 text-primary mr-1.5" /> Tags
+            </.button>
+          </div>
         </div>
 
         <%!-- Featured / Latest posts --%>
@@ -92,7 +94,7 @@ defmodule SiteWeb.BlogLive.Index do
 
   @impl true
   def handle_params(params, _uri, socket) do
-    filter_category = Map.get(params, "category", "all")
+    filter_category = get_params_category(params)
 
     published_posts =
       Blog.list_published_posts()
@@ -120,18 +122,25 @@ defmodule SiteWeb.BlogLive.Index do
     {:noreply, push_patch(socket, to: ~p"/articles?category=#{value}")}
   end
 
+  defp get_params_category(params) do
+    category = Map.get(params, "category", "all")
+
+    cond do
+      category in ~w(all blog note) -> category
+      true -> "all"
+    end
+  end
+
   defp filter_posts_by_category("all"), do: fn _post -> true end
   defp filter_posts_by_category("blog"), do: &(&1.category == :blog)
   defp filter_posts_by_category("note"), do: &(&1.category == :note)
-  defp filter_posts_by_category("social"), do: &(&1.category == :social)
   defp filter_posts_by_category(_), do: fn _post -> true end
 
   defp filter_categories(categories_count) do
     [
       {"all", "hero-rectangle-stack", true},
       {"blog", "hero-newspaper", Map.get(categories_count, "blog", 0) > 0},
-      {"note", "hero-chat-bubble-bottom-center-text", Map.get(categories_count, "note", 0) > 0},
-      {"social", "hero-bell", Map.get(categories_count, "social", 0) > 0}
+      {"note", "hero-chat-bubble-bottom-center-text", Map.get(categories_count, "note", 0) > 0}
     ]
   end
 end

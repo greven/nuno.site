@@ -19,7 +19,7 @@ defmodule SiteWeb.BlogLive.Show do
           post={@post}
           readers={@readers}
           views={@page_views}
-          class="mt-4 text-center"
+          class="mt-4 md:mt-5 text-center"
         />
 
         <BlogComponents.post_updated_disclaimer post={@post} class="mt-8 text-center" />

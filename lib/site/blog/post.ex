@@ -34,17 +34,15 @@ defmodule Site.Blog.Post do
   @doc """
   The categories of a post/article:
   - `:blog` - A blog post
-  - `:social` - A social post from a social network (e.g. BlueSky, Mastodon, etc.)
   - `:note` - A note (e.g. a short post, a thought, etc.).
   """
-  def categories, do: ~w(blog social note)a
+  def categories, do: ~w(blog note)a
 
   @doc """
   The color given to each post category.
   """
   def category_color(:blog), do: "cyan"
   def category_color(:note), do: "amber"
-  def category_color(:social), do: "purple"
   def category_color(_), do: "gray"
 
   @doc """
