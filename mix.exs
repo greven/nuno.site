@@ -110,6 +110,7 @@ defmodule Site.MixProject do
 
       # Development
       {:credo, "~> 1.7", only: :dev, runtime: false},
+      {:live_debugger, "~> 0.2.2", only: :dev},
       {:benchee, "~> 1.4", only: :dev}
     ]
   end

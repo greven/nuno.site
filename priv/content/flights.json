@@ -2,24 +2,24 @@
   {
     "date": "2008-10-18",
     "origin": "Lisbon, Portugal",
-    "destination": "Geneva, Switzerland",
+    "destination": "Genève, Switzerland",
     "airline": "EasyJet"
   },
   {
     "date": "2008-10-20",
-    "origin": "Geneva, Switzerland",
+    "origin": "Genève, Switzerland",
     "destination": "Lisbon, Portugal",
     "airline": "EasyJet"
   },
   {
     "date": "2013-08-26",
     "origin": "Lisbon, Portugal",
-    "destination": "Cancun, Mexico",
+    "destination": "Cancún, Mexico",
     "airline": "Orbest"
   },
   {
     "date": "2013-09-04",
-    "origin": "Cancun, Mexico",
+    "origin": "Cancún, Mexico",
     "destination": "Lisbon, Portugal",
     "airline": "Orbest"
   },
@@ -122,12 +122,12 @@
   {
     "date": "2015-02-03",
     "origin": "Lisbon, Portugal",
-    "destination": "Frankfurt, Germany",
+    "destination": "Frankfurt am Main, Germany",
     "airline": "TAP"
   },
   {
     "date": "2015-02-13",
-    "origin": "Frankfurt, Germany",
+    "origin": "Frankfurt am Main, Germany",
     "destination": "Lisbon, Portugal",
     "airline": "TAP"
   },
@@ -314,12 +314,12 @@
   {
     "date": "2016-02-18",
     "origin": "London, United Kingdom",
-    "destination": "Dusseldorf, Germany",
+    "destination": "Düsseldorf, Germany",
     "airline": "EuroWings"
   },
   {
     "date": "2016-02-20",
-    "origin": "Dusseldorf, Germany",
+    "origin": "Düsseldorf, Germany",
     "destination": "London, United Kingdom",
     "airline": "EuroWings"
   },
@@ -932,12 +932,12 @@
   {
     "date": "2022-08-18",
     "origin": "Madrid, Spain",
-    "destination": "Lanzerote, Spain",
+    "destination": "Arrecife, Spain",
     "airline": "Iberia"
   },
   {
     "date": "2022-08-28",
-    "origin": "Lanzerote, Spain",
+    "origin": "Arrecife, Spain",
     "destination": "Madrid, Spain",
     "airline": "Iberia"
   },
@@ -962,24 +962,24 @@
   {
     "date": "2024-08-19",
     "origin": "Lisbon, Portugal",
-    "destination": "Zurich, Switzerland",
+    "destination": "Zürich, Switzerland",
     "airline": "Swiss"
   },
   {
     "date": "2024-08-19",
-    "origin": "Zurich, Switzerland",
+    "origin": "Zürich, Switzerland",
     "destination": "Athens, Greece",
     "airline": "Aegean Airlines"
   },
   {
     "date": "2024-08-29",
-    "origin": "Santorini, Greece",
-    "destination": "Frankfurt, Germany",
+    "origin": "Firá, Greece",
+    "destination": "Frankfurt am Main, Germany",
     "airline": "Discover Airlines"
   },
   {
     "date": "2024-08-29",
-    "origin": "Frankfurt, Germany",
+    "origin": "Frankfurt am Main, Germany",
     "destination": "Lisbon, Portugal",
     "airline": "Lufthansa"
   }
