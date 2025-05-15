@@ -77,13 +77,6 @@ defmodule SiteWeb.SiteComponents do
           title="London!"
         />
         <.slide
-          src="/images/beach.png"
-          size={@size}
-          alt="Picture of Nuno"
-          title="It's a me again!"
-          contrast
-        />
-        <.slide
           src="/images/leeds.png"
           size={@size}
           alt="Photo of Leeds, UK at night"
@@ -94,6 +87,13 @@ defmodule SiteWeb.SiteComponents do
           size={@size}
           alt="Photo of Leeds' Corn Exchange"
           title="Leeds <3"
+        />
+        <.slide
+          src="/images/beach.png"
+          size={@size}
+          alt="Picture of Nuno"
+          title="It's a me again!"
+          contrast
         />
         <.slide
           src="/images/lisbon.png"
