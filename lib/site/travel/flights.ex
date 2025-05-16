@@ -53,6 +53,20 @@ defmodule Site.Travel.Flights do
     |> Enum.sort_by(fn %{date: date} -> date end, {:asc, Date})
   end
 
+  @doc """
+  Update the flights file by recalculating the travel
+  distance of each flight. This is to be used in development so
+  the updated file can be committed.
+  """
+  def recalculate_flights do
+    flights()
+    |> Enum.map(fn flight ->
+      distance = travel_distance(flight.origin, flight.destination) |> round()
+      %{flight | distance: distance}
+    end)
+    |> then(fn updated_data -> File.write!(flights_path(), JSON.encode!(updated_data)) end)
+  end
+
   defp maybe_put_distance(%Trip{distance: nil} = trip) do
     %{origin: origin, destination: destination} = trip
 
