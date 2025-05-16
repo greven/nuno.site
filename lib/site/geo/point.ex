@@ -6,6 +6,8 @@ defmodule Site.Geo.Point do
   @enforce_keys [:lat, :long]
   defstruct [:lat, :long]
 
+  def new(lat, long), do: %Point{lat: lat, long: long}
+
   def to_list(%Point{} = point) do
     Map.from_struct(point)
     |> Map.values()

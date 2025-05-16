@@ -9,9 +9,6 @@ defmodule Site.Travel do
   alias Site.Travel.Flights
   alias Site.Travel.RoadTrips
 
-  # @earth_perimeter_km 40_075
-  # @moon_distance_km 384_399
-
   @decorate cacheable(cache: Site.Cache, key: {:trips})
   def list_trips do
     flights = Flights.all()
@@ -56,9 +53,9 @@ defmodule Site.Travel do
       |> Enum.uniq()
       |> length()
 
-    number_of_flights =
-      list_trips()
-      |> length()
+    # number_of_flights =
+    #   list_trips()
+    #   |> length()
 
     # number_airlines_flown =
     #   list_trips()
@@ -74,14 +71,6 @@ defmodule Site.Travel do
       # airlines_flown: number_airlines_flown,
     }
   end
-
-  # def distance_traveled_around_earth do
-  #   travel_stats()[:km_flown] / @earth_perimeter_km
-  # end
-
-  # def distance_traveled_to_moon do
-  #   travel_stats()[:km_flown] / @moon_distance_km
-  # end
 
   # Extract all cities from trips / flight data
   defp extract_cities(trip_data) do

@@ -3,35 +3,10 @@ defmodule Site.Travel.Flights do
   Tracking of my flights (source data in `priv/flights.json`).
   """
 
-  alias Site.Geo
   alias Site.Travel.Trip
+  alias Site.Travel.Measures
 
   def all, do: flights()
-
-  @doc """
-  Calculate distance between two cities in `km` given a origin and destination, either
-  as a tuple of `{city, country}` or as a string in the format `"city, country"`.
-  """
-  def travel_distance({origin_city, origin_country}, {dest_city, dest_country}) do
-    %{alpha2: origin_country_code} = Geo.get_country_by_name(origin_country)
-    %{alpha2: dest_country_code} = Geo.get_country_by_name(dest_country)
-
-    origin_city = Geo.find_place(origin_city, origin_country_code)
-    dest_city = Geo.find_place(dest_city, dest_country_code)
-
-    Geo.Point.distance_between(
-      %Geo.Point{lat: origin_city.latitude, long: origin_city.longitude},
-      %Geo.Point{lat: dest_city.latitude, long: dest_city.longitude},
-      :kilometer
-    )
-  end
-
-  def travel_distance(origin, destination) do
-    [origin_city, origin_country] = String.split(origin, ", ")
-    [dest_city, dest_country] = String.split(destination, ", ")
-
-    travel_distance({origin_city, origin_country}, {dest_city, dest_country})
-  end
 
   defp flights do
     flights_path()
@@ -46,10 +21,11 @@ defmodule Site.Travel.Flights do
         date: item["date"],
         origin: item["origin"],
         destination: item["destination"],
+        distance: item["distance"],
         company: item["company"]
       }
     end)
-    |> Stream.map(fn flight -> maybe_put_distance(flight) end)
+    |> Stream.map(fn flight -> put_computed(flight) end)
     |> Enum.sort_by(fn %{date: date} -> date end, {:asc, Date})
   end
 
@@ -61,20 +37,24 @@ defmodule Site.Travel.Flights do
   def recalculate_flights do
     flights()
     |> Enum.map(fn %{origin: origin, destination: destination} = flight ->
-      distance = travel_distance(origin, destination) |> round()
+      distance = Measures.travel_distance(origin, destination) |> round()
       %{flight | distance: distance}
     end)
     |> then(fn updated_data -> File.write!(flights_path(), JSON.encode!(updated_data)) end)
   end
 
-  defp maybe_put_distance(%Trip{distance: nil} = trip) do
+  defp put_computed(%Trip{} = trip) do
     %{origin: origin, destination: destination} = trip
 
-    distance = travel_distance(origin, destination)
-    Map.put(trip, :distance, round(distance))
-  end
+    {from_point, to_point} = Measures.trip_coordinates(origin, destination)
+    distance = Measures.travel_distance(from_point, to_point)
 
-  defp maybe_put_distance(trip), do: trip
+    Map.merge(trip, %{
+      distance: round(distance),
+      from: from_point,
+      to: to_point
+    })
+  end
 
   defp flights_path, do: Path.join([:code.priv_dir(:site), "content/flights.json"])
 end
