@@ -204,6 +204,20 @@ defmodule SiteWeb.SiteComponents do
     """
   end
 
+  @doc false
+
+  attr :trips, :list, default: []
+  attr :rest, :global
+
+  def travel_map(assigns) do
+    ~H"""
+    <div {@rest}>
+      <div id="travel-map" class="travel-map" phx-hook="TravelMap" data-trips={JSON.encode!(@trips)}>
+      </div>
+    </div>
+    """
+  end
+
   @doc """
   Render my experience shortlist for the about page.
   """
