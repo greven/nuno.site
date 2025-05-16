@@ -46,7 +46,7 @@ defmodule Site.Travel.Flights do
         date: item["date"],
         origin: item["origin"],
         destination: item["destination"],
-        company: item["airline"]
+        company: item["company"]
       }
     end)
     |> Stream.map(fn flight -> maybe_put_distance(flight) end)
@@ -60,8 +60,8 @@ defmodule Site.Travel.Flights do
   """
   def recalculate_flights do
     flights()
-    |> Enum.map(fn flight ->
-      distance = travel_distance(flight.origin, flight.destination) |> round()
+    |> Enum.map(fn %{origin: origin, destination: destination} = flight ->
+      distance = travel_distance(origin, destination) |> round()
       %{flight | distance: distance}
     end)
     |> then(fn updated_data -> File.write!(flights_path(), JSON.encode!(updated_data)) end)
