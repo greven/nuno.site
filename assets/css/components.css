@@ -1,5 +1,6 @@
 @import './components/button.css';
 @import './components/navbar.css';
+@import './components/map.css';
 
 @utility link {
   @apply text-content-10 decoration-[1.5px] decoration-primary underline underline-offset-4

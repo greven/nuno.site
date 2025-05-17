@@ -12,8 +12,8 @@ defmodule SiteWeb.TravelLive.Index do
         <.header>Travel</.header>
         <%!-- <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-1">
-            <h2 class="mb-3">Flight Stats</h2>
-            <ul>
+            <h2 class="mb-3 font-headings">Flight Stats</h2>
+            <ul class="space-y-2 text-content-20">
               <li>Number of flights: <strong>{@stats.flights}</strong></li>
               <li>Number of countries visited: <strong>{@stats.countries_visited}</strong></li>
               <li>Number of cities visited: <strong>{@stats.cities_visited}</strong></li>
@@ -31,10 +31,11 @@ defmodule SiteWeb.TravelLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    # socket =
-    # socket
-    # |> assign(stats: Travel.flight_stats())
+    socket =
+      socket
+      # |> assign(stats: Travel.travel_stats())
+      |> assign(trips: Travel.list_trips())
 
-    {:ok, socket, temporary_assigns: [trips: Travel.list_trips()]}
+    {:ok, socket}
   end
 end

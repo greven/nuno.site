@@ -212,8 +212,13 @@ defmodule SiteWeb.SiteComponents do
   def travel_map(assigns) do
     ~H"""
     <div {@rest}>
-      <.header tag="h3">Travel Map</.header>
-      <div id="travel-map" class="travel-map" phx-hook="TravelMap" data-trips={JSON.encode!(@trips)}>
+      <div
+        id="travel-map"
+        class="travel-map"
+        phx-hook="TravelMap"
+        phx-update="ignore"
+        data-trips={JSON.encode!(@trips)}
+      >
       </div>
     </div>
     """
