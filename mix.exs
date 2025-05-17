@@ -133,10 +133,6 @@ defmodule Site.MixProject do
         "tailwind site --minify",
         "esbuild site --minify",
         "phx.digest"
-      ],
-      "vendor.update": [
-        "cmd cd ./assets/vendor && curl -sLO https://raw.githubusercontent.com/buunguyen/topbar/refs/heads/master/topbar.js",
-        "cmd cd ./assets/vendor && curl -sLO https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js && mv d3.min.js d3.js"
       ]
     ]
   end
