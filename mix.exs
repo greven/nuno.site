@@ -109,9 +109,9 @@ defmodule Site.MixProject do
        depth: 1},
 
       # Development
-      {:credo, "~> 1.7", only: :dev, runtime: false},
-      {:live_debugger, "~> 0.2.2", only: :dev},
-      {:benchee, "~> 1.4", only: :dev}
+      {:credo, "~> 1.7", only: :dev, runtime: false}
+      # {:live_debugger, "~> 0.2.2", only: :dev},
+      # {:benchee, "~> 1.4", only: :dev}
     ]
   end
 
@@ -135,7 +135,8 @@ defmodule Site.MixProject do
         "phx.digest"
       ],
       "vendor.update": [
-        "cmd cd ./assets/vendor && curl -sLO https://raw.githubusercontent.com/buunguyen/topbar/refs/heads/master/topbar.js"
+        "cmd cd ./assets/vendor && curl -sLO https://raw.githubusercontent.com/buunguyen/topbar/refs/heads/master/topbar.js",
+        "cmd cd ./assets/vendor && curl -sLO https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js && mv d3.min.js d3.js"
       ]
     ]
   end

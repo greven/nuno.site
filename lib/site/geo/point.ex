@@ -3,6 +3,8 @@ defmodule Site.Geo.Point do
 
   @type t :: %Point{lat: float(), long: float()}
 
+  @derive JSON.Encoder
+
   @enforce_keys [:lat, :long]
   defstruct [:lat, :long]
 

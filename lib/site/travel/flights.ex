@@ -38,7 +38,10 @@ defmodule Site.Travel.Flights do
     flights()
     |> Enum.map(fn %{origin: origin, destination: destination} = flight ->
       distance = Measures.travel_distance(origin, destination) |> round()
-      %{flight | distance: distance}
+
+      Map.from_struct(flight)
+      |> Map.drop([:from, :to])
+      |> Map.put(:distance, distance)
     end)
     |> then(fn updated_data -> File.write!(flights_path(), JSON.encode!(updated_data)) end)
   end

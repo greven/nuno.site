@@ -8,7 +8,7 @@
       {assigns[:page_title]}
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
-    <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
+    <script defer phx-track-static type="module" src={~p"/assets/js/app.js"}>
     </script>
     <script type="text/javascript">
           (() => {
@@ -38,7 +38,7 @@
       })();
     </script>
 
-    {Application.get_env(:live_debugger, :live_debugger_tags)}
+    <%!-- {Application.get_env(:live_debugger, :live_debugger_tags)} --%>
   </head>
   <body>
     {@inner_content}

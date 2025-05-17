@@ -29,7 +29,7 @@
       border-radius: 100%;
       box-shadow: var(--shadow-lg);
       background: conic-gradient(
-        --alpha(var(--color-content-40) / 0.9) var(--progress, 0%),
+        --alpha(var(--color-content-10) / 0.9) var(--progress, 0%),
         transparent var(--progress, 0%)
       );
       mask: radial-gradient(
