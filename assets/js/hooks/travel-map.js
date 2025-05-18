@@ -21,6 +21,10 @@ export const TravelMap = {
     const width = this.el.offsetWidth;
     const height = 500;
 
+    // Store base radius for city points and default transform
+    this.baseRadius = 4;
+    this.currentTransform = { k: 1 }; // Default zoom level
+
     // Create SVG map
     const svg = d3
       .select(this.el)
@@ -37,7 +41,7 @@ export const TravelMap = {
       .attr('fill', 'none')
       .attr('pointer-events', 'all');
 
-    // Create a container for zoomable content
+    // Create zoomable container
     const g = svg.append('g');
 
     // Define projection
@@ -55,7 +59,15 @@ export const TravelMap = {
       .zoom()
       .scaleExtent([1, 8])
       .on('zoom', (event) => {
+        // Update transform and container
+        this.currentTransform = event.transform;
         g.attr('transform', event.transform);
+
+        // Adjust city point sizes based on zoom level
+        this.updateCityPointSizes();
+
+        // Adjust any visible arcs
+        this.updateArcThickness();
       });
 
     svg.call(zoom);
@@ -75,17 +87,24 @@ export const TravelMap = {
           .append('path')
           .attr('d', path)
           .attr('class', 'country')
-          .attr('fill', 'var(--surface-70, #e1e3e6)')
-          .attr('stroke', 'var(--surface-20, #fbfcfd)')
-          .attr('stroke-width', 0.5);
+          .attr('fill', 'var(--color-surface-30, #e1e3e6)')
+          .attr('stroke', 'var(--color-surface-40, #fbfcfd)')
+          .attr('stroke-width', 0.5)
+          .attr('cursor', 'pointer')
+          // .on('mouseover', (event, d) => {
+          // this.showCountryTooltip(d);
+          // })
+          .on('mouseout', () => {
+            this.hideTooltip();
+          });
 
-        // Add ocean fill
+        // Add country boundaries
         g.append('path')
           .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
           .attr('d', path)
           .attr('class', 'country-boundary')
           .attr('fill', 'none')
-          .attr('stroke', 'var(--surface-60, #e1e3e6)')
+          .attr('stroke', 'var(--color-surface-40, #e1e3e6)')
           .attr('stroke-width', 0.5);
 
         // Process trip data
@@ -118,24 +137,18 @@ export const TravelMap = {
         const toCoords = this.getPointCoordinates(trip.to);
 
         if (fromCoords && toCoords) {
-          // Add origin city to unique cities map
+          // Add origin city to unique cities map (without incrementing visit count)
           const fromKey = `${trip.origin}`;
           if (!cities.has(fromKey)) {
             cities.set(fromKey, {
               name: this.extractCityName(trip.origin),
               country: this.extractCountryName(trip.origin),
               coordinates: fromCoords,
-              visits: 1,
-            });
-          } else {
-            const city = cities.get(fromKey);
-            cities.set(fromKey, {
-              ...city,
-              visits: city.visits + 1,
+              visits: 0, // Don't count as a visit (it's an origin)
             });
           }
 
-          // Add destination city to unique cities map
+          // Add destination city to unique cities map and increment visit count
           const toKey = `${trip.destination}`;
           if (!cities.has(toKey)) {
             cities.set(toKey, {
@@ -156,7 +169,8 @@ export const TravelMap = {
     });
 
     // Draw arcs for trips
-    g.selectAll('.trip-arc')
+    this.tripArcs = g
+      .selectAll('.trip-arc')
       .data(this.data.filter((trip) => trip.from && trip.to))
       .enter()
       .append('path')
@@ -181,13 +195,16 @@ export const TravelMap = {
         return `M${source[0]},${source[1]}A${dr},${dr} 0 0,1 ${target[0]},${target[1]}`;
       })
       .attr('fill', 'none')
-      .attr('stroke', 'var(--primary, #3b82f6)')
+      .attr('stroke', 'var(--color-content-40, #3b82f6)')
       .attr('stroke-width', 1.5)
       .attr('stroke-opacity', 0.6)
-      .attr('stroke-linecap', 'round');
+      .attr('stroke-linecap', 'round')
+      .style('opacity', 0) // Initially hide all arcs
+      .style('pointer-events', 'none'); // Prevent hidden arcs from capturing mouse events
 
     // Draw city points
-    g.selectAll('.city')
+    this.cityPoints = g
+      .selectAll('.city')
       .data(Array.from(cities.values()))
       .enter()
       .append('circle')
@@ -200,13 +217,35 @@ export const TravelMap = {
         const point = projection([d.coordinates[1], d.coordinates[0]]);
         return point ? point[1] : null;
       })
-      .attr('r', (d) => Math.min(3 + Math.sqrt(d.visits), 7)) // Size based on visits
-      .attr('fill', 'var(--primary, #3b82f6)')
-      .attr('stroke', 'var(--surface-20, #fbfcfd)')
+      .attr('r', this.baseRadius)
+      .attr('fill', 'var(--color-primary, #3b82f6)')
+      .attr('stroke', 'var(--color-surface-20, #fbfcfd)')
       .attr('stroke-width', 1)
       .attr('cursor', 'pointer')
-      .on('mouseover', (event, d) => this.showTooltip(event, d))
-      .on('mouseout', () => this.hideTooltip());
+      .on('mouseover', (event, d) => {
+        this.showTooltip(event, d);
+
+        // Highlight the city point on hover
+        d3.select(event.target)
+          .attr('fill', 'var(--primary-focus, #2563eb)')
+          .attr('r', (this.baseRadius * 2 * 1.25) / (this.currentTransform.k || 1))
+          .attr('stroke-width', 1.5 / (this.currentTransform.k || 1));
+
+        // Show arcs connected to this city
+        this.showConnectedArcs(d);
+      })
+      .on('mouseout', (event) => {
+        this.hideTooltip();
+
+        // Restore normal appearance
+        d3.select(event.target)
+          .attr('fill', 'var(--color-primary, #3b82f6)')
+          .attr('r', (this.baseRadius * 1.25) / (this.currentTransform.k || 1))
+          .attr('stroke-width', 1 / (this.currentTransform.k || 1));
+
+        // Hide all arcs
+        this.hideAllArcs();
+      });
 
     // Add tooltip container
     this.tooltip = d3
@@ -214,14 +253,9 @@ export const TravelMap = {
       .append('div')
       .attr('class', 'tooltip')
       .style('position', 'absolute')
-      .style('background', 'var(--surface-10, #ffffff)')
-      .style('border', '1px solid var(--surface-90, #d1d5db)')
-      .style('border-radius', '4px')
-      .style('padding', '8px')
-      .style('box-shadow', '0 2px 8px rgba(0, 0, 0, 0.1)')
-      .style('pointer-events', 'none')
-      .style('opacity', 0)
-      .style('transition', 'opacity 0.2s');
+      .style('bottom', '20px')
+      .style('right', '20px')
+      .style('opacity', 0);
   },
 
   // Helper method to extract city name from location string (e.g., "Lisbon, Portugal" -> "Lisbon")
@@ -248,19 +282,100 @@ export const TravelMap = {
   },
 
   showTooltip(event, d) {
-    const { d3 } = this;
+    // Create visit text based on visit count
+    let visitText = '';
+    if (d.visits > 0) {
+      visitText = `<div class="text-content-40 text-sm mt-1">${d.visits} visit${
+        d.visits > 1 ? 's' : ''
+      }</div>`;
+    } else {
+      visitText = `<div class="text-content-40 text-sm mt-1">Departure city</div>`;
+    }
 
-    this.tooltip
-      .style('opacity', 1)
-      .style('left', `${event.pageX + 10}px`)
-      .style('top', `${event.pageY + 10}px`).html(`
+    this.tooltip.style('opacity', 1).html(`
         <div class="font-medium">${d.name}</div>
         <div class="text-content-40 text-sm">${d.country}</div>
-        <div class="text-content-40 text-sm mt-1">${d.visits} visit${d.visits > 1 ? 's' : ''}</div>
+        ${visitText}
       `);
   },
 
   hideTooltip() {
     this.tooltip.style('opacity', 0);
+  },
+
+  // Show trip arcs that are connected to a specific city
+  showConnectedArcs(city) {
+    if (!this.tripArcs) return;
+
+    const cityName = city.name;
+    const countryName = city.country;
+    const locationString = `${cityName}, ${countryName}`;
+
+    // Calculate the adjusted stroke width based on zoom level
+    const adjustedStrokeWidth = 1.5 / (this.currentTransform.k || 1);
+
+    // Calculate adjusted dash pattern
+    const dashLength = 1 / (this.currentTransform.k || 1);
+    const gapLength = 2 / (this.currentTransform.k || 1);
+    const adjustedDashPattern = `${dashLength},${gapLength}`;
+
+    this.tripArcs
+      .style('pointer-events', (trip) => {
+        // Enable pointer events only for visible arcs
+        if (trip.origin === locationString || trip.destination === locationString) {
+          return 'auto';
+        }
+        return 'none';
+      })
+      .style('opacity', (trip) => {
+        // Show arcs where this city is either origin or destination
+        if (trip.origin === locationString || trip.destination === locationString) {
+          return 1;
+        }
+        return 0;
+      })
+      .attr('stroke-width', adjustedStrokeWidth) // Adjust stroke width based on zoom
+      .attr('stroke-dasharray', adjustedDashPattern); // Adjust dash pattern based on zoom
+  },
+
+  // Dynamically adjust city point sizes based on zoom level
+  updateCityPointSizes() {
+    if (!this.cityPoints) return;
+
+    // Calculate the adjusted radius based on zoom level
+    const adjustedRadius = (this.baseRadius * 1.25) / (this.currentTransform.k || 1);
+
+    // Update all city points with the new radius
+    this.cityPoints.attr('r', adjustedRadius);
+
+    // Also adjust the stroke-width based on zoom to keep proportions
+    const adjustedStrokeWidth = 1 / (this.currentTransform.k || 1);
+    this.cityPoints.attr('stroke-width', adjustedStrokeWidth);
+  },
+
+  // Update arc thickness based on zoom level
+  updateArcThickness() {
+    const { d3 } = this;
+
+    if (!this.tripArcs) return;
+
+    // Only update arcs that are currently visible (opacity > 0)
+    this.tripArcs
+      .filter(function () {
+        return d3.select(this).style('opacity') > 0;
+      })
+      .attr('stroke-width', 1.5 / (this.currentTransform.k || 1))
+      .attr('stroke-dasharray', () => {
+        // Adjust dash pattern based on zoom level
+        const dashLength = 1 / (this.currentTransform.k || 1);
+        const gapLength = 2 / (this.currentTransform.k || 1);
+        return `${dashLength},${gapLength}`;
+      });
+  },
+
+  // Hide all trip arcs
+  hideAllArcs() {
+    if (!this.tripArcs) return;
+    this.tripArcs.style('opacity', 0).style('pointer-events', 'none');
   },
 };

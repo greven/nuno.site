@@ -1,4 +1,4 @@
-/* Travel map styles */
+/* Travel Map styles */
 .travel-map {
   position: relative;
   width: 100%;
@@ -25,8 +25,8 @@
 
 .travel-map .trip-arc {
   transition: stroke 0.3s, stroke-opacity 0.3s, stroke-width 0.3s;
-  stroke-dasharray: 3, 3;
-  animation: dash 30s linear infinite;
+  stroke-dasharray: 1, 2;
+  animation: dash 60s linear infinite;
 }
 
 @keyframes dash {
@@ -36,24 +36,27 @@
 }
 
 .travel-map .trip-arc:hover {
-  stroke-opacity: 0.9;
-  stroke-width: 2;
+  stroke-opacity: 1;
+  stroke-width: 1;
 }
 
 .travel-map .city {
-  transition: fill 0.3s, r 0.3s, stroke-width 0.3s;
-}
-
-.travel-map .city:hover {
-  fill: var(--primary-focus, #2563eb);
-  stroke-width: 1.5;
-  r: 8;
+  transition: fill 0.3s;
 }
 
 .travel-map .tooltip {
   z-index: 10;
+  position: absolute;
   font-size: 0.875rem;
   min-width: 120px;
+  background-color: var(--surface-10, #ffffff);
+  border: 1px solid var(--color-surface-40, #d1d5db);
+  border-radius: 6px;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
 /* Dark mode adjustments */
