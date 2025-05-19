@@ -58,6 +58,10 @@ export const TravelMap = {
     const zoom = d3
       .zoom()
       .scaleExtent([1, 4])
+      .translateExtent([
+        [0, 0],
+        [width, height],
+      ])
       .on('zoom', (event) => {
         this.currentTransform = event.transform;
         g.attr('transform', event.transform);
@@ -83,31 +87,30 @@ export const TravelMap = {
         .attr('stroke', 'var(--color-surface-40)')
         .attr('stroke-width', 0.5)
         .attr('cursor', 'pointer');
+
+      // Process trip data
+      const locations = this.processData();
+
+      this.pins = g
+        .selectAll('.city')
+        .data(Array.from(locations.values()))
+        .enter()
+        .append('circle')
+        .attr('class', 'map-pin')
+        .attr('cx', (d) => {
+          const pin = projection([d.coordinates[1], d.coordinates[0]]);
+          return pin ? pin[0] : null;
+        })
+        .attr('cy', (d) => {
+          const pin = projection([d.coordinates[1], d.coordinates[0]]);
+          return pin ? pin[1] : null;
+        })
+        .attr('r', this.baseRadius)
+        .attr('fill', 'var(--color-primary)')
+        .attr('stroke', 'var(--color-surface-20)')
+        .attr('stroke-width', 1)
+        .attr('cursor', 'pointer');
     });
-
-    // Process trip data
-    const locations = this.processData();
-
-    // Draw pins
-    this.pins = g
-      .selectAll('.city')
-      .data(Array.from(locations.values()))
-      .enter()
-      .append('circle')
-      .attr('class', 'map-pin')
-      .attr('cx', (d) => {
-        const pin = projection([d.coordinates[1], d.coordinates[0]]);
-        return pin ? pin[0] : null;
-      })
-      .attr('cy', (d) => {
-        const pin = projection([d.coordinates[1], d.coordinates[0]]);
-        return pin ? pin[1] : null;
-      })
-      .attr('r', this.baseRadius)
-      .attr('fill', 'var(--color-primary)')
-      .attr('stroke', 'var(--color-surface-20)')
-      .attr('stroke-width', 1)
-      .attr('cursor', 'pointer');
   },
 
   processData() {
