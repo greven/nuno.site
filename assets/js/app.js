@@ -37,7 +37,7 @@ const liveSocket = new LiveSocket('/live', Socket, {
 
 // Show progress bar on live navigation and form submits
 topbar.config({
-  barColors: { 0: '#00a1b3' },
+  barColors: { 0: '#D95254' },
   barThickness: 3,
   shadowColor: 'rgba(0, 0, 0, .3)',
   shadowBlur: 4,

@@ -16,3 +16,16 @@
   transition: fill 0.3s, r 0.3s;
   cursor: pointer;
 }
+
+.travel-map .country {
+  fill: var(--color-surface-30);
+  transition: fill 0.2s ease;
+
+  &.visited {
+    fill: --alpha(var(--color-amber-100) / 90%);
+
+    @variant dark {
+      fill: --alpha(var(--color-emerald-300) / 90%);
+    }
+  }
+}

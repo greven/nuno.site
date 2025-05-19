@@ -27,7 +27,7 @@ defmodule SiteWeb.TravelLive.Index do
           </div>
         </div> --%>
 
-        <SiteComponents.travel_map trips={@trips} class="mt-8" />
+        <SiteComponents.travel_map trips={@trips} trips_timeline={@grouped_trips} class="mt-8" />
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -36,14 +36,19 @@ defmodule SiteWeb.TravelLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     trips = Travel.list_trips()
+    grouped_trips = Travel.list_trips_timeline()
 
-    dbg(trips)
+    # socket =
+    # socket
+    # |> assign(stats: Travel.travel_stats())
 
-    socket =
-      socket
-      # |> assign(stats: Travel.travel_stats())
-      |> assign(trips: trips)
+    {:ok, socket, temporary_assigns: [trips: trips, grouped_trips: grouped_trips]}
+  end
 
-    {:ok, socket}
+  @impl true
+  def handle_event("map-point-click", %{"country" => country, "name" => name}, socket) do
+    dbg({country, name})
+
+    {:noreply, socket}
   end
 end

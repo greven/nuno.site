@@ -12,6 +12,7 @@ defmodule Site.Travel.Trip do
 
   @enforce_keys [:type, :date, :origin, :destination]
   defstruct [
+    :id,
     :type,
     :date,
     :origin,

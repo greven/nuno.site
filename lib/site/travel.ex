@@ -14,8 +14,15 @@ defmodule Site.Travel do
     flights = Flights.all()
     road_trips = RoadTrips.all()
 
-    Enum.concat(flights, road_trips)
+    Stream.concat(flights, road_trips)
+    |> Stream.map(&put_trip_id/1)
     |> Enum.sort_by(fn %Trip{date: date} -> date end, {:desc, Date})
+  end
+
+  def list_trips_timeline do
+    list_trips()
+    |> Enum.group_by(fn %Trip{date: date} -> date.year end)
+    |> Enum.sort_by(fn {year, _} -> year end, :desc)
   end
 
   @decorate cacheable(cache: Site.Cache, key: {:visited_countries})
@@ -104,4 +111,8 @@ defmodule Site.Travel do
   # defp extract_airlines(trip_data) do
   #   Enum.map(trip_data, fn %Trip{airline: airline} -> airline end)
   # end
+
+  defp put_trip_id(%Trip{} = trip) do
+    Map.put(trip, :id, Uniq.UUID.uuid4())
+  end
 end

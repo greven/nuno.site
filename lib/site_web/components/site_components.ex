@@ -208,6 +208,7 @@ defmodule SiteWeb.SiteComponents do
   @doc false
 
   attr :trips, :list, default: []
+  attr :trips_timeline, :list, default: []
   attr :height, :integer, default: 500
   attr :rest, :global
 
@@ -226,25 +227,35 @@ defmodule SiteWeb.SiteComponents do
         </div>
 
         <div id="travel-list" class="flex-1 overflow-hidden">
-          <ul class="flex flex-col gap-2 h-full overflow-y-auto">
-            <li
-              :for={trip <- @trips}
-              class="flex gap-1 items-center justify-between text-sm px-3 py-2.5 bg-surface-20/50
-                rounded-box border border-surface-30 shadow-xs"
-            >
-              <div class="flex items-center">
-                <.icon name="lucide-plane" class="size-4.5 text-content-40/80 mr-2" />
-                <div class="">{trip.origin}</div>
-                <.icon name="hero-arrow-right-mini" class="size-4 text-content-40/60 mx-2" />
-                <div class="">{trip.destination}</div>
+          <ol class="h-full flex flex-col gap-8">
+            <li :for={{year, trips} <- @trips_timeline}>
+              <div class="flex items-center gap-2">
+                <.icon name="hero-calendar-date-range" class="size-5 text-content-40" />
+                <h2 class="font-medium text-xl">{year}</h2>
               </div>
 
-              <date class="flex items-center">
-                <.icon name="hero-calendar" class="size-4.5 text-content-40/80 mr-2" />
-                <div class="text-content-30">{format_date(trip.date)}</div>
-              </date>
+              <ol class="mt-4 flex flex-col gap-2">
+                <li
+                  :for={trip <- trips}
+                  id={"trip-#{trip.id}"}
+                  class="flex gap-1 items-center justify-between text-sm px-3 py-2.5 bg-surface-20/50
+                rounded-box border border-surface-30 shadow-xs"
+                >
+                  <div class="flex items-center">
+                    <.icon name="lucide-plane" class="size-4.5 text-content-40/80 mr-2" />
+                    <div class="">{trip.origin}</div>
+                    <.icon name="hero-arrow-right-mini" class="size-4 text-content-40/60 mx-2" />
+                    <div class="">{trip.destination}</div>
+                  </div>
+
+                  <date class="flex items-center">
+                    <.icon name="hero-calendar" class="size-4.5 text-content-40/80 mr-2" />
+                    <div class="text-content-30">{format_date(trip.date)}</div>
+                  </date>
+                </li>
+              </ol>
             </li>
-          </ul>
+          </ol>
         </div>
       </div>
     </div>

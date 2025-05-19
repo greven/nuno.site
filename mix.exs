@@ -71,8 +71,7 @@ defmodule Site.MixProject do
       {:recase, "~> 0.8"},
       {:dotenvy, "~> 1.1"},
       {:geocalc, "~> 0.8"},
-      # {:uniq, "~> 0.6"},
-      # {:earmark, "~> 1.4"},
+      {:uniq, "~> 0.6"},
       # {:image, "~> 0.56"},
 
       # Content
