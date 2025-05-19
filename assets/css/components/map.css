@@ -1,74 +1,18 @@
-/* Travel Map styles */
 .travel-map {
   position: relative;
   width: 100%;
-  min-height: 500px;
-  margin-top: 1.5rem;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: var(--surface-50, #f5f6f7);
+  height: clamp(300px, 70vh, 500px);
+  border-radius: var(--radius-box);
+  background-color: --alpha(var(--color-surface-20) / 0.4);
 }
 
 .travel-map svg {
   width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  height: 100%;
+  border-radius: var(--radius-box);
 }
 
-.travel-map .country {
-  transition: fill 0.2s ease;
-}
-
-.travel-map .country:hover {
-  fill: var(--surface-60, #f0f2f4);
-}
-
-.travel-map .trip-arc {
-  transition: stroke 0.3s, stroke-opacity 0.3s, stroke-width 0.3s;
-  stroke-dasharray: 1, 2;
-  animation: dash 60s linear infinite;
-}
-
-@keyframes dash {
-  to {
-    stroke-dashoffset: 500;
-  }
-}
-
-.travel-map .trip-arc:hover {
-  stroke-opacity: 1;
-  stroke-width: 1;
-}
-
-.travel-map .city {
-  transition: fill 0.3s;
-}
-
-.travel-map .tooltip {
-  z-index: 10;
-  position: absolute;
-  font-size: 0.875rem;
-  min-width: 120px;
-  background-color: var(--surface-10, #ffffff);
-  border: 1px solid var(--color-surface-40, #d1d5db);
-  border-radius: 6px;
-  padding: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-/* Dark mode adjustments */
-:root[data-theme='dark'] .travel-map {
-  background-color: var(--surface-90, #1f2937);
-}
-
-:root[data-theme='dark'] .travel-map .country {
-  fill: var(--surface-80, #374151);
-  stroke: var(--surface-90, #1f2937);
-}
-
-:root[data-theme='dark'] .travel-map .country:hover {
-  fill: var(--surface-70, #4b5563);
+.travel-map .map-pin {
+  transition: fill 0.3s, r 0.3s;
+  cursor: pointer;
 }

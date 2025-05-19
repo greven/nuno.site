@@ -8,6 +8,10 @@
   @apply w-screen mx-auto max-w-5xl px-4 sm:px-16 lg:px-20;
 }
 
+@utility wide-wrapper {
+  @apply container mx-auto px-4 sm:px-16 lg:px-20;
+}
+
 /* Animations */
 
 @utility animate-fade-in {

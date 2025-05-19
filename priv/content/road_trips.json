@@ -1,0 +1,14 @@
+[
+  {
+    "type": "car",
+    "date": "2022-10-29",
+    "origin": "Madrid, Spain",
+    "destination": "Lisbon, Portugal"
+  },
+  {
+    "type": "car",
+    "date": "2022-11-01",
+    "origin": "Lisbon, Portugal",
+    "destination": "Madrid, Spain"
+  }
+]

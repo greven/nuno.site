@@ -36,7 +36,8 @@ defmodule SiteWeb.SiteComponents do
       class={[
         @class,
         "rounded-full object-cover",
-        "group-focus:ring-2 group-focus:ring-primary group-focus:ring-offset-2 group-focus:ring-offset-surface-10 transition-all"
+        "group-focus:ring-2 group-focus:ring-primary group-focus:ring-offset-2
+          group-focus:ring-offset-surface-10 transition-all"
       ]}
     />
     """
@@ -207,18 +208,44 @@ defmodule SiteWeb.SiteComponents do
   @doc false
 
   attr :trips, :list, default: []
+  attr :height, :integer, default: 500
   attr :rest, :global
 
   def travel_map(assigns) do
     ~H"""
     <div {@rest}>
-      <div
-        id="travel-map"
-        class="travel-map"
-        phx-hook="TravelMap"
-        phx-update="ignore"
-        data-trips={JSON.encode!(@trips)}
-      >
+      <div class="flex flex-col gap-8 h-full">
+        <div
+          id="travel-map"
+          class="travel-map"
+          phx-hook="TravelMap"
+          phx-update="ignore"
+          data-height={@height}
+          data-trips={JSON.encode!(@trips)}
+        >
+        </div>
+
+        <div id="travel-list" class="flex-1 overflow-hidden">
+          <ul class="flex flex-col gap-2 h-full overflow-y-auto">
+            <li
+              :for={trip <- @trips}
+              class="flex gap-1 items-center justify-between text-sm px-3 py-2.5 bg-surface-20/50
+                rounded-box border border-surface-30 shadow-xs"
+            >
+              <div class="flex items-center">
+                <.icon name="lucide-plane" class="size-4.5 text-content-40/80 mr-2" />
+                <div class="">{trip.origin}</div>
+                <.icon name="hero-arrow-right-mini" class="size-4 text-content-40/60 mx-2" />
+                <div class="">{trip.destination}</div>
+              </div>
+
+              <date class="flex items-center">
+                <.icon name="hero-calendar" class="size-4.5 text-content-40/80 mr-2" />
+                <div class="text-content-30">{format_date(trip.date)}</div>
+              </date>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     """
@@ -301,5 +328,9 @@ defmodule SiteWeb.SiteComponents do
       {:ok, date} -> Calendar.strftime(date, "%b %Y")
       {:error, _} -> nil
     end
+  end
+
+  defp format_date(%Date{} = date, format \\ "%d %b, %Y") do
+    Calendar.strftime(date, format)
   end
 end

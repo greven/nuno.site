@@ -14,13 +14,13 @@ defmodule SiteWeb.Layouts do
   def app(assigns) do
     assigns =
       assigns
+      |> assign_new(:wide, fn -> false end)
       |> assign_new(:active_link, fn -> nil end)
 
     ~H"""
     <div class="min-h-screen flex flex-col">
       <.site_header active_link={@active_link} />
-
-      <main id="main" class="relative wrapper flex-auto">
+      <main id="main" class={["relative flex-auto", if(@wide, do: "wide-wrapper", else: "wrapper")]}>
         {render_slot(@inner_block)}
       </main>
 

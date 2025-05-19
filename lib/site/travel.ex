@@ -15,7 +15,7 @@ defmodule Site.Travel do
     road_trips = RoadTrips.all()
 
     Enum.concat(flights, road_trips)
-    |> Enum.sort_by(fn %Trip{date: date} -> date end)
+    |> Enum.sort_by(fn %Trip{date: date} -> date end, {:desc, Date})
   end
 
   @decorate cacheable(cache: Site.Cache, key: {:visited_countries})
