@@ -5,6 +5,8 @@ defmodule SiteWeb.SiteComponents do
 
   use SiteWeb, :html
 
+  alias Site.Travel.Trip
+
   @doc false
 
   attr :class, :string, default: nil
@@ -215,18 +217,24 @@ defmodule SiteWeb.SiteComponents do
   def travel_map(assigns) do
     ~H"""
     <div {@rest}>
-      <div class="flex flex-col gap-8 h-full">
-        <div
-          id="travel-map"
-          class="travel-map"
-          phx-hook="TravelMap"
-          phx-update="ignore"
-          data-height={@height}
-          data-trips={JSON.encode!(@trips)}
-        >
+      <div class="relative h-full flex flex-col isolate">
+        <div class="sticky top-0 z-10">
+          <div class="breakout py-4 md:py-12 bg-surface-10"></div>
+          <div
+            id="travel-map"
+            class="travel-map"
+            phx-hook="TravelMap"
+            phx-update="ignore"
+            data-height={@height}
+            data-trips={JSON.encode!(@trips)}
+          >
+          </div>
+          <div class="breakout py-4 md:py-8 h-full bg-linear-to-b
+            from-surface-10 from-60% to-transparent">
+          </div>
         </div>
 
-        <div id="travel-list" class="flex-1 overflow-hidden">
+        <div id="travel-list" class="relative mx-0.5">
           <ol class="h-full flex flex-col gap-8">
             <li :for={{year, trips} <- @trips_timeline}>
               <div class="flex items-center gap-2">
@@ -235,30 +243,41 @@ defmodule SiteWeb.SiteComponents do
               </div>
 
               <ol class="mt-4 flex flex-col gap-2">
-                <li
-                  :for={trip <- trips}
-                  id={"trip-#{trip.id}"}
-                  class="flex gap-1 items-center justify-between text-sm px-3 py-2.5 bg-surface-20/50
-                rounded-box border border-surface-30 shadow-xs"
-                >
-                  <div class="flex items-center">
-                    <.icon name="lucide-plane" class="size-4.5 text-content-40/80 mr-2" />
-                    <div class="">{trip.origin}</div>
-                    <.icon name="hero-arrow-right-mini" class="size-4 text-content-40/60 mx-2" />
-                    <div class="">{trip.destination}</div>
-                  </div>
-
-                  <date class="flex items-center">
-                    <.icon name="hero-calendar" class="size-4.5 text-content-40/80 mr-2" />
-                    <div class="text-content-30">{format_date(trip.date)}</div>
-                  </date>
-                </li>
+                <.travel_item :for={trip <- trips} id={"trip-#{trip.id}"} trip={trip} />
               </ol>
             </li>
           </ol>
         </div>
       </div>
     </div>
+    """
+  end
+
+  attr :trip, Trip, required: true
+  attr :rest, :global
+
+  defp travel_item(%{trip: trip} = assigns) do
+    assigns =
+      assigns
+      |> assign(:icon, trip_icon(trip))
+
+    ~H"""
+    <li data-item="trip" {@rest}>
+      <div class="flex gap-1 items-center justify-between text-sm px-3 py-2.5 bg-surface-20/50
+          rounded-box border border-surface-30 shadow-xs">
+        <div class="flex items-center">
+          <.icon name={@icon} class="size-4.5 text-content-40/80 mr-3" />
+          <div class="">{@trip.origin}</div>
+          <.icon name="hero-arrow-right-mini" class="size-4 text-content-40/60 mx-2" />
+          <div class="">{@trip.destination}</div>
+        </div>
+
+        <date class="flex items-center">
+          <.icon name="hero-calendar" class="size-4.5 text-content-40/80 mr-2" />
+          <div class="text-content-30">{format_date(@trip.date)}</div>
+        </date>
+      </div>
+    </li>
     """
   end
 
@@ -330,6 +349,12 @@ defmodule SiteWeb.SiteComponents do
     </li>
     """
   end
+
+  defp trip_icon(%Trip{type: "flight"}), do: "lucide-plane"
+  defp trip_icon(%Trip{type: "train"}), do: "lucide-rail-symbol"
+  defp trip_icon(%Trip{type: "boat"}), do: "lucide-sailboat"
+  defp trip_icon(%Trip{type: "car"}), do: "lucide-bus"
+  defp trip_icon(%Trip{type: _}), do: "lucide-map-pin"
 
   # Shortened date string, e.g. "2023-10-01" -> "Oct 2023"
   defp parse_date(nil), do: "Present"

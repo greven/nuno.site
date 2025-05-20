@@ -1,9 +1,21 @@
 .travel-map {
-  position: relative;
+  --color-map-water: --alpha(var(--color-surface-20) / 0.5);
+
   width: 100%;
+  position: relative;
   height: clamp(300px, 70vh, 500px);
   border-radius: var(--radius-box);
-  background-color: --alpha(var(--color-surface-20) / 0.4);
+  background-color: var(--color-surface-10);
+  box-shadow: var(--shadow-xs);
+  z-index: 1;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-surface-10);
+    z-index: -1;
+  }
 }
 
 .travel-map svg {

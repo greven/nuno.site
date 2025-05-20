@@ -6,15 +6,12 @@ defmodule Site.Travel do
   use Nebulex.Caching
 
   alias Site.Travel.Trip
-  alias Site.Travel.Flights
-  alias Site.Travel.RoadTrips
+  # alias Site.Travel.Visit
+  alias Site.Travel.Measures
 
   @decorate cacheable(cache: Site.Cache, key: {:trips})
   def list_trips do
-    flights = Flights.all()
-    road_trips = RoadTrips.all()
-
-    Stream.concat(flights, road_trips)
+    trips()
     |> Stream.map(&put_trip_id/1)
     |> Enum.sort_by(fn %Trip{date: date} -> date end, {:desc, Date})
   end
@@ -79,6 +76,39 @@ defmodule Site.Travel do
     }
   end
 
+  @doc """
+  Update the trips file by recalculating the travel distance of each trip.
+  This is to be used in development so the updated file can be committed.
+  """
+  def recalculate_trips do
+    trips()
+    |> Enum.map(fn %{origin: origin, destination: destination} = trip ->
+      distance = Measures.travel_distance(origin, destination) |> round()
+
+      Map.from_struct(trip)
+      |> Map.drop([:from, :to])
+      |> Map.put(:distance, distance)
+    end)
+    |> then(fn updated_data -> File.write!(trips_path(), JSON.encode!(updated_data)) end)
+  end
+
+  defp put_computed(%Trip{} = trip) do
+    %{origin: origin, destination: destination} = trip
+
+    {from_point, to_point} = Measures.trip_coordinates(origin, destination)
+    distance = Measures.travel_distance(from_point, to_point)
+
+    Map.merge(trip, %{
+      distance: round(distance),
+      from: from_point,
+      to: to_point
+    })
+  end
+
+  defp put_trip_id(%Trip{} = trip) do
+    Map.put(trip, :id, Uniq.UUID.uuid4())
+  end
+
   # Extract all cities from trips / flight data
   defp extract_cities(trip_data) do
     origin_cities = Enum.map(trip_data, fn %Trip{origin: ori} -> ori end)
@@ -112,7 +142,26 @@ defmodule Site.Travel do
   #   Enum.map(trip_data, fn %Trip{airline: airline} -> airline end)
   # end
 
-  defp put_trip_id(%Trip{} = trip) do
-    Map.put(trip, :id, Uniq.UUID.uuid4())
+  defp trips do
+    trips_path()
+    |> File.read!()
+    |> JSON.decode!()
+    |> Stream.map(fn item ->
+      Map.put(item, "date", Date.from_iso8601!(item["date"]))
+    end)
+    |> Stream.map(fn item ->
+      %Trip{
+        type: item["type"],
+        date: item["date"],
+        origin: item["origin"],
+        destination: item["destination"],
+        distance: item["distance"],
+        company: item["company"]
+      }
+    end)
+    |> Stream.map(fn trip -> put_computed(trip) end)
+    |> Enum.sort_by(fn %{date: date} -> date end, {:asc, Date})
   end
+
+  defp trips_path, do: Path.join([:code.priv_dir(:site), "content/trips.json"])
 end

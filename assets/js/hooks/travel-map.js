@@ -10,12 +10,27 @@ export const TravelMap = {
         this.topojson = topojsonModule.default;
 
         this.data = JSON.parse(this.el.getAttribute('data-trips'));
+        this.listItems = document.querySelectorAll('[data-item="trip"]');
+
+        // Add event listeners for hovering list items
+        this.listItems.forEach((item) => {
+          item.addEventListener('mouseover', this.onListItemHover.bind(this));
+          item.addEventListener('mouseout', this.onListItemLeave.bind(this));
+        });
 
         this.initMap();
       })
       .catch((error) => {
         console.error('Error loading modules:', error);
       });
+  },
+
+  destroyed() {
+    // Remove event listeners
+    this.listItems.forEach((item) => {
+      item.removeEventListener('mouseover', this.onListItemHover.bind(this));
+      item.removeEventListener('mouseout', this.onListItemLeave.bind(this));
+    });
   },
 
   initMap() {
@@ -58,7 +73,7 @@ export const TravelMap = {
     // Setup zoom behavior
     const zoom = d3
       .zoom()
-      .scaleExtent([1, 8]) // Zoom range relative to base projection
+      .scaleExtent([1, 4]) // Zoom range relative to base projection
       .on('zoom', (event) => {
         this.currentTransform = event.transform;
         g.attr('transform', event.transform);
@@ -66,7 +81,7 @@ export const TravelMap = {
         // Adjust pin size and stroke width based on zoom level
         if (this.pins) {
           const scaledRadius = this.baseRadius / this.currentTransform.k;
-          const newRadius = Math.max(scaledRadius, this.baseRadius / 2);
+          const newRadius = Math.max(scaledRadius, this.baseRadius / 3);
           this.pins.attr('r', newRadius);
 
           const scaledStrokeWidth = this.baseStrokeWidth / this.currentTransform.k;
@@ -95,7 +110,14 @@ export const TravelMap = {
 
       const worldFeature = topojson.feature(worldData, worldData.objects.countries);
       const worldBounds = path.bounds(worldFeature);
-      zoom.translateExtent(worldBounds); // Set translateExtent based on actual world projection
+      zoom.translateExtent(worldBounds);
+
+      // Draw water (sphere)
+      g.append('path')
+        .datum({ type: 'Sphere' })
+        .attr('class', 'water')
+        .attr('d', path)
+        .attr('fill', 'var(--color-map-water)');
 
       // Draw world map
       g.append('g')
@@ -136,9 +158,9 @@ export const TravelMap = {
           this.pushEvent('map-point-click', { country, name });
         });
 
-      // Set initial map position and zoom to focus on Europe/US
-      const targetLonLat = [-25, 45]; // Approx center for Europe/East US
-      const initialScaleK = 2.0; // Zoom level
+      // Set initial map position and zoom
+      const targetLonLat = [0, 20];
+      const initialScaleK = 1; // Zoom level
 
       const [mapX, mapY] = projection(targetLonLat); // Projected center of target
 
@@ -206,6 +228,14 @@ export const TravelMap = {
     });
 
     return locations;
+  },
+
+  onListItemHover(event) {
+    console.log('mouseover', event);
+  },
+
+  onListItemLeave(event) {
+    console.log('mouseout', event);
   },
 };
 

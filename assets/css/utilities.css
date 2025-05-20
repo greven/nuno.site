@@ -12,6 +12,10 @@
   @apply container mx-auto px-4 sm:px-16 lg:px-20;
 }
 
+@utility breakout {
+  @apply relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw];
+}
+
 /* Animations */
 
 @utility animate-fade-in {
