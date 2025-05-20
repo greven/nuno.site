@@ -195,3 +195,16 @@
     color: color-mix(in oklch, var(--btn-bg), #fff 8%);
   }
 }
+
+/* Icon Button */
+
+.btn-icon {
+  min-width: auto;
+  aspect-ratio: 1 / 1;
+
+  & > span {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+}

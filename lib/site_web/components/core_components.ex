@@ -141,6 +141,21 @@ defmodule SiteWeb.CoreComponents do
     end
   end
 
+  @doc false
+
+  attr :class, :any, default: nil
+  attr :color, :string, values: Theme.colors(:theme)
+  attr :size, :string, values: ~w(sm md), default: "md"
+  attr :variant, :string, values: ~w(default solid light ghost link), default: "default"
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
+  slot :inner_block, required: true
+
+  def icon_button(assigns) do
+    assigns = assign(assigns, :class, ["btn-icon", assigns.class])
+
+    button(assigns)
+  end
+
   @doc """
   Renders a segmented control component with a list of options.
   The segmented control is equivalent to a radio button group where

@@ -1,8 +1,11 @@
 export const TravelMap = {
   mounted() {
+    this.initialScaleK = 1; // Zoom level
+    this.initialLonLat = [0, 20]; // Initial longitude and latitude
+
     this.baseRadius = 4; // Base map pin point radius
     this.baseStrokeWidth = 1; // Base stroke width for pins
-    this.currentTransform = { k: 1 }; // Default zoom level
+    this.currentTransform = { k: this.initialScaleK }; // Default zoom level
 
     Promise.all([import('../../vendor/d3'), import('../../vendor/topojson')])
       .then(([d3Module, topojsonModule]) => {
@@ -10,14 +13,18 @@ export const TravelMap = {
         this.topojson = topojsonModule.default;
 
         this.data = JSON.parse(this.el.getAttribute('data-trips'));
-        this.listItems = document.querySelectorAll('[data-item="trip"]');
+        this.listItems = this.el.querySelectorAll('[data-item="trip"]');
 
-        // Add event listeners for hovering list items
+        // List items hover events
         this.listItems.forEach((item) => {
           item.addEventListener('mouseover', this.onListItemHover.bind(this));
           item.addEventListener('mouseout', this.onListItemLeave.bind(this));
         });
 
+        // Map reset click event
+        window.addEventListener('phx:map-reset', this.onReset.bind(this));
+
+        // Let the party begin!
         this.initMap();
       })
       .catch((error) => {
@@ -31,6 +38,8 @@ export const TravelMap = {
       item.removeEventListener('mouseover', this.onListItemHover.bind(this));
       item.removeEventListener('mouseout', this.onListItemLeave.bind(this));
     });
+
+    this.el.removeEventListener('phx:map-reset', this.onReset.bind(this));
   },
 
   initMap() {
@@ -57,6 +66,8 @@ export const TravelMap = {
       .attr('fill', 'none')
       .attr('pointer-events', 'all');
 
+    this.svg = svg; // Store SVG reference
+
     // Create zoomable group element / container for map features
     const g = svg.append('g');
 
@@ -71,7 +82,7 @@ export const TravelMap = {
     const path = d3.geoPath().projection(projection);
 
     // Setup zoom behavior
-    const zoom = d3
+    this.zoom = d3
       .zoom()
       .scaleExtent([1, 4]) // Zoom range relative to base projection
       .on('zoom', (event) => {
@@ -90,7 +101,7 @@ export const TravelMap = {
         }
       });
 
-    svg.call(zoom); // Attach zoom listener
+    svg.call(this.zoom); // Attach zoom listener
 
     // Process trip data to determine visited countries
     const locations = this.processData();
@@ -110,14 +121,7 @@ export const TravelMap = {
 
       const worldFeature = topojson.feature(worldData, worldData.objects.countries);
       const worldBounds = path.bounds(worldFeature);
-      zoom.translateExtent(worldBounds);
-
-      // Draw water (sphere)
-      g.append('path')
-        .datum({ type: 'Sphere' })
-        .attr('class', 'water')
-        .attr('d', path)
-        .attr('fill', 'var(--color-map-water)');
+      this.zoom.translateExtent(worldBounds);
 
       // Draw world map
       g.append('g')
@@ -159,19 +163,7 @@ export const TravelMap = {
         });
 
       // Set initial map position and zoom
-      const targetLonLat = [0, 20];
-      const initialScaleK = 1; // Zoom level
-
-      const [mapX, mapY] = projection(targetLonLat); // Projected center of target
-
-      // Calculate translation to center targetLonLat
-      const tx = width / 2 - mapX * initialScaleK;
-      const ty = height / 2 - mapY * initialScaleK;
-
-      const initialTransform = d3.zoomIdentity.translate(tx, ty).scale(initialScaleK);
-
-      svg.call(zoom.transform, initialTransform); // Apply initial transform
-      this.currentTransform = initialTransform; // Update internal transform state
+      this.setMapPositionAndZoom(svg, projection, width, height);
 
       // Apply pin scaling
       if (this.pins) {
@@ -184,6 +176,28 @@ export const TravelMap = {
         this.pins.attr('stroke-width', newStrokeWidth);
       }
     });
+  },
+
+  resetMap() {
+    this.currentTransform = this.initialTransform;
+    this.svg.call(this.zoom.transform, this.currentTransform);
+  },
+
+  setMapPositionAndZoom(svg, projection, width, height) {
+    const { d3 } = this;
+
+    const [mapX, mapY] = projection(this.initialLonLat);
+
+    // Calculate translation to center targetLonLat
+    const tx = width / 2 - mapX * this.initialScaleK;
+    const ty = height / 2 - mapY * this.initialScaleK;
+
+    const initialTransform = d3.zoomIdentity.translate(tx, ty).scale(this.initialScaleK);
+
+    this.initialTransform = initialTransform; // Store initial transform
+    this.currentTransform = initialTransform; // Update internal transform state
+
+    svg.call(this.zoom.transform, this.currentTransform); // Apply initial transform
   },
 
   processData() {
@@ -236,6 +250,10 @@ export const TravelMap = {
 
   onListItemLeave(event) {
     console.log('mouseout', event);
+  },
+
+  onReset(event) {
+    this.resetMap();
   },
 };
 

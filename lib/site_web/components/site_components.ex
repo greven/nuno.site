@@ -228,6 +228,16 @@ defmodule SiteWeb.SiteComponents do
             data-height={@height}
             data-trips={JSON.encode!(@trips)}
           >
+            <div class="absolute left-2 bottom-2">
+              <.icon_button
+                variant="light"
+                title="Reset map"
+                phx-click={JS.dispatch("phx:map-reset", to: "#travel-map")}
+              >
+                <.icon name="lucide-rotate-ccw" class="size-6" />
+                <span class="sr-only">Reset map</span>
+              </.icon_button>
+            </div>
           </div>
           <div class="breakout py-4 md:py-8 h-full bg-linear-to-b
             from-surface-10 from-60% to-transparent">

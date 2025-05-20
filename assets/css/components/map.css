@@ -1,6 +1,4 @@
 .travel-map {
-  --color-map-water: --alpha(var(--color-surface-20) / 0.5);
-
   width: 100%;
   position: relative;
   height: clamp(300px, 70vh, 500px);
@@ -13,7 +11,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-color: var(--color-surface-10);
+    background-color: --alpha(var(--color-surface-20) / 0.5);
     z-index: -1;
   }
 }
