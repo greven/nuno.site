@@ -12,6 +12,14 @@ export const TravelMap = {
         this.d3 = d3Module.default;
         this.topojson = topojsonModule.default;
 
+        this.tooltip = this.d3
+          .select(this.el)
+          .append('div')
+          .attr('class', 'map-tooltip')
+          .style('opacity', 0)
+          .style('position', 'absolute')
+          .style('pointer-events', 'none'); // So it doesn't interfere with mouse events on the map
+
         this.data = JSON.parse(this.el.getAttribute('data-trips'));
         this.listItems = this.el.querySelectorAll('[data-item="trip"]');
 
@@ -82,7 +90,20 @@ export const TravelMap = {
     // Setup zoom behavior
     this.zoom = d3
       .zoom()
-      .scaleExtent([1, 4]) // Zoom range relative to base projection
+      .scaleExtent([1, 12]) // Zoom range relative to base projection
+      .filter((event) => {
+        // Allows wheel events (even with Ctrl) and mouse drag without Ctrl (typically left button).
+        // Disallows zoom start with other mouse buttons (e.g., right/middle click).
+        const allowEvent = (!event.ctrlKey || event.type === 'wheel') && !event.button;
+
+        // If the event is a wheel event and it's allowed by the filter,
+        // prevent the default browser scroll action.
+        if (event.type === 'wheel' && allowEvent) {
+          event.preventDefault();
+        }
+
+        return allowEvent;
+      })
       .on('zoom', (event) => {
         this.currentTransform = event.transform;
         g.attr('transform', event.transform);
@@ -90,11 +111,11 @@ export const TravelMap = {
         // Adjust pin size and stroke width based on zoom level
         if (this.pins) {
           const scaledRadius = this.baseRadius / this.currentTransform.k;
-          const newRadius = Math.max(scaledRadius, this.baseRadius / 3);
+          const newRadius = Math.max(scaledRadius, this.baseRadius / 7);
           this.pins.attr('r', newRadius);
 
           const scaledStrokeWidth = this.baseStrokeWidth / this.currentTransform.k;
-          const newStrokeWidth = Math.max(scaledStrokeWidth, 0.5);
+          const newStrokeWidth = Math.max(scaledStrokeWidth, 0.25);
           this.pins.attr('stroke-width', newStrokeWidth);
         }
       });
@@ -158,6 +179,29 @@ export const TravelMap = {
         .attr('cursor', 'pointer')
         .on('click', (event, { country, name }) => {
           this.pushEvent('map-point-click', { country, name });
+        })
+        .on('mouseover', (event, d_pin) => {
+          const [mouseX, mouseY] = this.d3.pointer(event, this.el);
+          this.tooltip.transition().duration(200).style('opacity', 0.9);
+          this.tooltip
+            .html(
+              `<span class="tooltip-title">${d_pin.name}</span><br/>` +
+                `<span class="tooltip-subtitle">${d_pin.country}</span><br/>` +
+                `<span class="tooltip-info">${d_pin.visits} ${pluralize(
+                  'visit',
+                  'visits',
+                  d_pin.visits
+                )}</span>`
+            )
+            .style('left', `${mouseX + 15}px`)
+            .style('top', `${mouseY - 28}px`);
+        })
+        .on('mousemove', (event) => {
+          const [mouseX, mouseY] = this.d3.pointer(event, this.el);
+          this.tooltip.style('left', `${mouseX + 15}px`).style('top', `${mouseY - 28}px`);
+        })
+        .on('mouseout', () => {
+          this.tooltip.transition().duration(500).style('opacity', 0);
         });
 
       // Set initial map position and zoom using viewBox dimensions
@@ -244,10 +288,12 @@ export const TravelMap = {
   },
 
   onListItemHover(event) {
+    // TODO: !
     console.log('mouseover', event);
   },
 
   onListItemLeave(event) {
+    // TODO: !
     console.log('mouseout', event);
   },
 
@@ -260,16 +306,20 @@ export const TravelMap = {
 
 // Helper method to extract location name from string
 function extractCityName(str) {
-  if (!str) return '';
+  if (!str || typeof str !== 'string') {
+    return '';
+  }
   const parts = str.split(', ');
   return parts[0] || '';
 }
 
 // Helper method to extract country name from string
 function extractCountryName(str) {
-  if (!str) return '';
+  if (!str || typeof str !== 'string') {
+    return '';
+  }
   const parts = str.split(', ');
-  return parts.length > 1 ? parts[parts.length - 1] : '';
+  return parts.length > 1 ? parts[parts.length - 1] : parts[0];
 }
 
 // Helper method to get coordinates from point object
@@ -279,4 +329,8 @@ function getPointCoordinates(point) {
     return [point.lat, point.long];
   }
   return null;
+}
+
+function pluralize(singular, plural, count) {
+  return count === 1 ? singular : plural;
 }

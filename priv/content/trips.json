@@ -72,6 +72,102 @@
     "company": "EasyJet"
   },
   {
+    "type": "car",
+    "date": "2009-08-03",
+    "origin": "Lisbon, Portugal",
+    "destination": "Cabanas de Tavira, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2009-08-10",
+    "origin": "Cabanas de Tavira, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2010-08-16",
+    "origin": "Lisbon, Portugal",
+    "destination": "Cabanas de Tavira, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2010-08-23",
+    "origin": "Cabanas de Tavira, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2011-04-10",
+    "origin": "Lisbon, Portugal",
+    "destination": "Reguengos de Monsaraz, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2011-04-10",
+    "origin": "Reguengos de Monsaraz, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2011-07-29",
+    "origin": "Lisbon, Portugal",
+    "destination": "Grândola, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2011-07-31",
+    "origin": "Grândola, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2012-07-17",
+    "origin": "Lisbon, Portugal",
+    "destination": "Cabanas de Tavira, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2012-07-23",
+    "origin": "Cabanas de Tavira, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2013-07-13",
+    "origin": "Lisbon, Portugal",
+    "destination": "Aveiro, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2013-07-14",
+    "origin": "Aveiro, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
     "type": "flight",
     "date": "2013-08-26",
     "origin": "Lisbon, Portugal",
@@ -184,6 +280,22 @@
     "company": "KLM"
   },
   {
+    "type": "car",
+    "date": "2014-06-20",
+    "origin": "Lisbon, Portugal",
+    "destination": "Óbidos, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2014-06-21",
+    "origin": "Óbidos, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
     "type": "flight",
     "date": "2014-10-19",
     "origin": "Lisbon, Portugal",
@@ -294,6 +406,22 @@
     "destination": "Lisbon, Portugal",
     "distance": 1735,
     "company": "British Airways"
+  },
+  {
+    "type": "car",
+    "date": "2015-08-23",
+    "origin": "Lisbon, Portugal",
+    "destination": "Altura, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2015-08-28",
+    "origin": "Altura, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
   },
   {
     "type": "flight",
@@ -528,6 +656,22 @@
     "company": "British Airways"
   },
   {
+    "type": "car",
+    "date": "2015-03-23",
+    "origin": "Lisbon, Portugal",
+    "destination": "Porto, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2015-03-25",
+    "origin": "Porto, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
     "type": "flight",
     "date": "2016-03-27",
     "origin": "Lisbon, Portugal",
@@ -584,12 +728,44 @@
     "company": "Monarch"
   },
   {
+    "type": "car",
+    "date": "2016-08-15",
+    "origin": "Woking, United Kingdom",
+    "destination": "Bath, United Kingdom",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2016-08-15",
+    "origin": "Bath, United Kingdom",
+    "destination": "Woking, United Kingdom",
+    "distance": null,
+    "company": null
+  },
+  {
     "type": "flight",
     "date": "2016-08-16",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
     "distance": 1735,
     "company": "TAP"
+  },
+  {
+    "type": "car",
+    "date": "2016-08-23",
+    "origin": "Lisbon, Portugal",
+    "destination": "Tavira, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2016-09-01",
+    "origin": "Tavira, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
   },
   {
     "type": "flight",
@@ -792,6 +968,22 @@
     "company": "TAP"
   },
   {
+    "type": "car",
+    "date": "2017-04-13",
+    "origin": "Lisbon, Portugal",
+    "destination": "Porto, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2017-04-17",
+    "origin": "Porto, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
     "type": "flight",
     "date": "2017-04-22",
     "origin": "Lisbon, Portugal",
@@ -814,6 +1006,62 @@
     "destination": "London, United Kingdom",
     "distance": 1735,
     "company": "TAP"
+  },
+  {
+    "type": "train",
+    "date": "2017-06-01",
+    "origin": "London, United Kingdom",
+    "destination": "Leeds, United Kingdom",
+    "distance": null,
+    "company": "Virgin Trains East Coast"
+  },
+  {
+    "type": "car",
+    "date": "2017-07-29",
+    "origin": "Leeds, United Kingdom",
+    "destination": "Ripley, United Kingdom",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2017-07-30",
+    "origin": "Ripley, United Kingdom",
+    "destination": "Leeds, United Kingdom",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "train",
+    "date": "2017-08-17",
+    "origin": "Leeds, United Kingdom",
+    "destination": "London, United Kingdom",
+    "distance": null,
+    "company": "Virgin Trains East Coast"
+  },
+  {
+    "type": "train",
+    "date": "2017-08-19",
+    "origin": "London, United Kingdom",
+    "destination": "Leeds, United Kingdom",
+    "distance": null,
+    "company": "Virgin Trains East Coast"
+  },
+  {
+    "type": "car",
+    "date": "2017-08-23",
+    "origin": "Leeds, United Kingdom",
+    "destination": "Buxton, United Kingdom",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2017-08-28",
+    "origin": "Buxton, United Kingdom",
+    "destination": "Leeds, United Kingdom",
+    "distance": null,
+    "company": null
   },
   {
     "type": "flight",
@@ -912,6 +1160,22 @@
     "company": "EasyJet"
   },
   {
+    "type": "train",
+    "date": "2018-03-02",
+    "origin": "Leeds, United Kingdom",
+    "destination": "London, United Kingdom",
+    "distance": null,
+    "company": "Virgin Trains East Coast"
+  },
+  {
+    "type": "train",
+    "date": "2018-03-04",
+    "origin": "London, United Kingdom",
+    "destination": "Leeds, United Kingdom",
+    "distance": null,
+    "company": "Virgin Trains East Coast"
+  },
+  {
     "type": "flight",
     "date": "2018-04-15",
     "origin": "Manchester, United Kingdom",
@@ -944,12 +1208,68 @@
     "company": "KLM"
   },
   {
+    "type": "car",
+    "date": "2018-06-25",
+    "origin": "Leeds, United Kingdom",
+    "destination": "Windermere, United Kingdom",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2018-06-29",
+    "origin": "Windermere, United Kingdom",
+    "destination": "Skipton, United Kingdom",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2018-06-30",
+    "origin": "Skipton, United Kingdom",
+    "destination": "Leeds, United Kingdom",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2018-07-20",
+    "origin": "Leeds, United Kingdom",
+    "destination": "Barmouth, United Kingdom",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2018-07-22",
+    "origin": "Barmouth, United Kingdom",
+    "destination": "Leeds, United Kingdom",
+    "distance": null,
+    "company": null
+  },
+  {
     "type": "flight",
     "date": "2018-08-22",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
     "distance": 1804,
     "company": "Ryanair"
+  },
+  {
+    "type": "car",
+    "date": "2018-08-25",
+    "origin": "Lisbon, Portugal",
+    "destination": "Cabanas de Tavira, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2018-09-02",
+    "origin": "Cabanas de Tavira, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
   },
   {
     "type": "flight",

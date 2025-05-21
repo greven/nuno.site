@@ -40,7 +40,34 @@
     fill: --alpha(var(--color-amber-100) / 90%);
 
     @variant dark {
-      fill: --alpha(var(--color-emerald-300) / 90%);
+      fill: --alpha(var(--color-amber-200) / 90%);
     }
   }
+}
+
+/* Pin Tooltip */
+.travel-map .map-tooltip {
+  padding: 0.5rem 0.75rem;
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
+  background-color: --alpha(var(--color-slate-900) / 0.92);
+  color: var(--color-slate-50);
+  border-radius: var(--radius-box);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.travel-map .map-tooltip .tooltip-title {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+}
+
+.travel-map .map-tooltip .tooltip-subtitle {
+  color: var(--color-slate-100);
+}
+
+.travel-map .map-tooltip .tooltip-info {
+  color: var(--color-slate-300);
 }

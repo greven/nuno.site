@@ -5,13 +5,64 @@
     "note": "Day visit to Chichén-Itzá part of our Riviera Maya trip."
   },
   {
+    "date": "2015-02-04",
+    "location": "Walldorf, Germany",
+    "note": "Work trip."
+  },
+  {
     "date": "2015-04-02",
     "location": "Lyon, France",
     "note": "Day visit to Lyon when staying at Dijon."
   },
   {
+    "date": "2015-08-27",
+    "location": "Castro Marim, Portugal",
+    "note": "Medieval market visit while at Altura."
+  },
+  {
+    "date": "2016-08-13",
+    "location": "Guilford, United Kingdom",
+    "note": "Day visit to Guilford while living at Woking."
+  },
+  {
     "date": "2018-02-25",
     "location": "York, United Kingdom",
     "note": "Day visit to York when I lived in Leeds."
+  },
+  {
+    "date": "2004-09-23",
+    "location": "Sesimbra, Portugal",
+    "note": "Weekend trip."
+  },
+  {
+    "date": "1997-08-01",
+    "location": "Grândola, Portugal",
+    "alias": "Tróia",
+    "note": "Summer vacation with friends in Tróia."
+  },
+  {
+    "date": "1996-08-01",
+    "location": "Lagos, Portugal",
+    "note": "Friends' Summer vacation."
+  },
+  {
+    "date": "1996-08-15",
+    "location": "Tavira, Portugal",
+    "note": "Family Summer vacation."
+  },
+  {
+    "date": "1994-08-15",
+    "location": "Cabanas de Tavira, Portugal",
+    "note": "Family Summer vacation."
+  },
+  {
+    "date": "1988-08-15",
+    "location": "Vilamoura, Portugal",
+    "note": "Family Summer vacation."
+  },
+  {
+    "date": "1982-04-01",
+    "location": "Torres Novas, Portugal",
+    "note": "My parents hometown."
   }
 ]
