@@ -27,7 +27,7 @@ defmodule SiteWeb.TravelLive.Index do
           </div>
         </div> --%>
 
-        <SiteComponents.travel_map trips={@trips} trips_timeline={@grouped_trips} class="mt-8" />
+        <SiteComponents.travel_map trips={@trips} trips_timeline={@grouped_trips} />
       </Layouts.page_content>
     </Layouts.app>
     """

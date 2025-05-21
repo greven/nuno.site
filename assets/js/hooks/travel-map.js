@@ -45,24 +45,22 @@ export const TravelMap = {
   initMap() {
     const { d3, topojson } = this;
 
-    // Dimensions
-    const width = this.el.offsetWidth;
-    const height = parseInt(this.el.getAttribute('data-height')) || 500;
+    // ViewBox Dimensions
+    const viewBoxWidth = this.el.offsetWidth;
+    const viewBoxHeight = this.el.offsetHeight;
 
     // SVG map
     const svg = d3
       .select(this.el)
       .append('svg')
-      .attr('width', width)
-      .attr('height', height)
-      .attr('viewBox', [0, 0, width, height])
-      .attr('style', 'max-width: 100%; height: auto;');
+      .attr('viewBox', [0, 0, viewBoxWidth, viewBoxHeight])
+      .attr('preserveAspectRatio', 'xMidYMid meet'); // Ensures aspect ratio is maintained
 
-    // Background rectangle for pointer events
+    // Background rectangle for pointer events, sized to the viewBox
     svg
       .append('rect')
-      .attr('width', width)
-      .attr('height', height)
+      .attr('width', viewBoxWidth)
+      .attr('height', viewBoxHeight)
       .attr('fill', 'none')
       .attr('pointer-events', 'all');
 
@@ -74,9 +72,9 @@ export const TravelMap = {
     // Define base projection (fits most of the world)
     const projection = d3
       .geoMercator()
-      .scale(width / (2 * Math.PI)) // Base scale to fit world width
-      .center([0, 28]) // Initial center (can be adjusted by zoom transform)
-      .translate([width / 2, height / 2]);
+      .scale(viewBoxWidth / (2 * Math.PI)) // Scale based on viewBox width
+      .center([0, 28]) // Initial center
+      .translate([viewBoxWidth / 2, viewBoxHeight / 2]); // Translate to center of viewBox
 
     // Path generator
     const path = d3.geoPath().projection(projection);
@@ -162,8 +160,8 @@ export const TravelMap = {
           this.pushEvent('map-point-click', { country, name });
         });
 
-      // Set initial map position and zoom
-      this.setMapPositionAndZoom(svg, projection, width, height);
+      // Set initial map position and zoom using viewBox dimensions
+      this.setMapPositionAndZoom(svg, projection, viewBoxWidth, viewBoxHeight);
 
       // Apply pin scaling
       if (this.pins) {
@@ -186,7 +184,8 @@ export const TravelMap = {
   setMapPositionAndZoom(svg, projection, width, height) {
     const { d3 } = this;
 
-    const [mapX, mapY] = projection(this.initialLonLat);
+    const targetLonLat = this.initialLonLat || [0, 20];
+    const [mapX, mapY] = projection(targetLonLat);
 
     // Calculate translation to center targetLonLat
     const tx = width / 2 - mapX * this.initialScaleK;
@@ -259,17 +258,17 @@ export const TravelMap = {
 
 // ------------------- Helper Functions -------------------
 
-// Helper method to extract location name from string (e.g., "Lisbon, Portugal" -> "Lisbon")
+// Helper method to extract location name from string
 function extractCityName(str) {
   if (!str) return '';
   const parts = str.split(', ');
   return parts[0] || '';
 }
 
-// Helper method to extract country name from string (e.g., "Lisbon, Portugal" -> "Portugal")
+// Helper method to extract country name from string
 function extractCountryName(str) {
   if (!str) return '';
-  const parts = str.split(', '); // Corrected typo: removed "are"
+  const parts = str.split(', ');
   return parts.length > 1 ? parts[parts.length - 1] : '';
 }
 

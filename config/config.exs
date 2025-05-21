@@ -33,7 +33,7 @@ config :site, Site.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.25.2",
+  version: "0.25.4",
   site: [
     args:
       ~w(js/app.js --bundle --target=es2022 --splitting --format=esm --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/*),
@@ -43,7 +43,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "4.1.2",
+  version: "4.1.7",
   site: [
     args: ~w(
       --input=assets/css/app.css

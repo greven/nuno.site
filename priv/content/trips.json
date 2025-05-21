@@ -3,31 +3,41 @@
     "type": "car",
     "date": "1998-08-18",
     "origin": "Lisbon, Portugal",
-    "destination": "Dijon, France"
+    "destination": "Dijon, France",
+    "distance": 1840,
+    "company": null
   },
   {
     "type": "car",
     "date": "1998-08-23",
     "origin": "Dijon, France",
-    "destination": "Paris, France"
+    "destination": "Paris, France",
+    "distance": 342,
+    "company": null
   },
   {
     "type": "car",
     "date": "1998-08-25",
     "origin": "Paris, France",
-    "destination": "Lisbon, Portugal"
-  },
-  {
-    "type": "car",
-    "date": "2000-04-23",
-    "origin": "Lisbon, Portugal",
-    "destination": "Lloret de Mar, Spain"
+    "destination": "Lisbon, Portugal",
+    "distance": 1701,
+    "company": null
   },
   {
     "type": "car",
     "date": "2000-04-21",
     "origin": "Lloret de Mar, Spain",
-    "destination": "Lisbon, Portugal"
+    "destination": "Lisbon, Portugal",
+    "distance": 1372,
+    "company": null
+  },
+  {
+    "type": "car",
+    "date": "2000-04-23",
+    "origin": "Lisbon, Portugal",
+    "destination": "Lloret de Mar, Spain",
+    "distance": 1372,
+    "company": null
   },
   {
     "type": "flight",
@@ -41,13 +51,17 @@
     "type": "car",
     "date": "2008-10-18",
     "origin": "Genève, Switzerland",
-    "destination": "Dijon, France"
+    "destination": "Dijon, France",
+    "distance": 176,
+    "company": null
   },
   {
     "type": "car",
     "date": "2008-10-20",
     "origin": "Dijon, France",
-    "destination": "Genève, Switzerland"
+    "destination": "Genève, Switzerland",
+    "distance": 176,
+    "company": null
   },
   {
     "type": "flight",
@@ -246,6 +260,7 @@
     "date": "2015-03-31",
     "origin": "Dijon, France",
     "destination": "Paris, France",
+    "distance": 342,
     "company": "SNCF"
   },
   {
@@ -253,6 +268,7 @@
     "date": "2015-04-01",
     "origin": "Paris, France",
     "destination": "Dijon, France",
+    "distance": 342,
     "company": "SNCF"
   },
   {
@@ -1323,13 +1339,17 @@
     "type": "car",
     "date": "2022-10-29",
     "origin": "Lisbon, Portugal",
-    "destination": "Madrid, Spain"
+    "destination": "Madrid, Spain",
+    "distance": 632,
+    "company": null
   },
   {
     "type": "car",
     "date": "2022-11-01",
     "origin": "Madrid, Spain",
-    "destination": "Lisbon, Portugal"
+    "destination": "Lisbon, Portugal",
+    "distance": 632,
+    "company": null
   },
   {
     "type": "flight",

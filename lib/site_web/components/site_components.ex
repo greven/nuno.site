@@ -219,7 +219,7 @@ defmodule SiteWeb.SiteComponents do
     <div {@rest}>
       <div class="relative h-full flex flex-col isolate">
         <div class="sticky top-0 z-10">
-          <div class="breakout py-4 md:py-12 bg-surface-10"></div>
+          <div class="breakout py-12 bg-surface-10"></div>
           <div
             id="travel-map"
             class="travel-map"
@@ -228,7 +228,8 @@ defmodule SiteWeb.SiteComponents do
             data-height={@height}
             data-trips={JSON.encode!(@trips)}
           >
-            <div class="absolute left-2 bottom-2">
+            <%!-- Map Controls --%>
+            <div class="hidden md:block absolute left-2 bottom-2">
               <.icon_button
                 variant="light"
                 title="Reset map"
@@ -273,18 +274,29 @@ defmodule SiteWeb.SiteComponents do
 
     ~H"""
     <li data-item="trip" {@rest}>
-      <div class="flex gap-1 items-center justify-between text-sm px-3 py-2.5 bg-surface-20/50
+      <div class="flex gap-1 items-center justify-between text-xs md:text-sm px-3 py-2.5 bg-surface-20/50
           rounded-box border border-surface-30 shadow-xs">
         <div class="flex items-center">
-          <.icon name={@icon} class="size-4.5 text-content-40/80 mr-3" />
-          <div class="">{@trip.origin}</div>
-          <.icon name="hero-arrow-right-mini" class="size-4 text-content-40/60 mx-2" />
-          <div class="">{@trip.destination}</div>
+          <div class="flex flex-col justify-center items-start gap-0.5 lg:flex-row lg:items-center">
+            <.icon name={@icon} class="hidden md:block size-4.5 text-content-40/80 mr-2.5 md:mr-3" />
+            <div>{@trip.origin}</div>
+            <.icon
+              name="hero-arrow-right-mini"
+              class="hidden lg:block size-4 text-content-40/60 mx-2"
+            />
+            <div>{@trip.destination}</div>
+          </div>
+          <div class="hidden md:block">
+            <span class="mx-3 text-content-40/40">&mdash;</span>
+            <span class="font-mono text-content-40">{@trip.distance}</span>
+            <span class="font-mono text-content-40/80">km</span>
+          </div>
         </div>
 
         <date class="flex items-center">
-          <.icon name="hero-calendar" class="size-4.5 text-content-40/80 mr-2" />
-          <div class="text-content-30">{format_date(@trip.date)}</div>
+          <.icon name="hero-calendar" class="size-4 md:size-4.5 text-content-40/80 mr-2" />
+          <div class="hidden lg:block text-content-30">{format_date(@trip.date)}</div>
+          <div class="lg:hidden text-content-30">{format_date(@trip.date, "%d-%m-%y")}</div>
         </date>
       </div>
     </li>

@@ -5,6 +5,7 @@ defmodule Site.Travel do
 
   use Nebulex.Caching
 
+  alias Site.Geo
   alias Site.Travel.Trip
   # alias Site.Travel.Visit
   alias Site.Travel.Measures
@@ -82,31 +83,14 @@ defmodule Site.Travel do
   """
   def recalculate_trips do
     trips()
-    |> Enum.map(fn %{origin: origin, destination: destination} = trip ->
-      distance = Measures.travel_distance(origin, destination) |> round()
+    |> Enum.map(fn %Trip{} = trip ->
+      distance = travel_distance_in_km(trip)
 
       Map.from_struct(trip)
-      |> Map.drop([:from, :to])
+      |> Map.drop([:id, :from, :to])
       |> Map.put(:distance, distance)
     end)
     |> then(fn updated_data -> File.write!(trips_path(), JSON.encode!(updated_data)) end)
-  end
-
-  defp put_computed(%Trip{} = trip) do
-    %{origin: origin, destination: destination} = trip
-
-    {from_point, to_point} = Measures.trip_coordinates(origin, destination)
-    distance = Measures.travel_distance(from_point, to_point)
-
-    Map.merge(trip, %{
-      distance: round(distance),
-      from: from_point,
-      to: to_point
-    })
-  end
-
-  defp put_trip_id(%Trip{} = trip) do
-    Map.put(trip, :id, Uniq.UUID.uuid4())
   end
 
   # Extract all cities from trips / flight data
@@ -141,6 +125,37 @@ defmodule Site.Travel do
   # defp extract_airlines(trip_data) do
   #   Enum.map(trip_data, fn %Trip{airline: airline} -> airline end)
   # end
+
+  defp travel_distance_in_km(%Trip{origin: origin, destination: destination}) do
+    Measures.travel_distance(origin, destination)
+    |> round()
+  end
+
+  defp travel_distance_in_km(%Geo.Point{} = point_a, %Geo.Point{} = point_b) do
+    Measures.travel_distance(point_a, point_b)
+    |> round()
+  end
+
+  defp put_computed(%Trip{} = trip) do
+    %{origin: origin, destination: destination} = trip
+
+    {from_point, to_point} = Measures.trip_coordinates(origin, destination)
+
+    distance =
+      if trip.distance,
+        do: trip.distance,
+        else: travel_distance_in_km(from_point, to_point)
+
+    Map.merge(trip, %{
+      distance: distance,
+      from: from_point,
+      to: to_point
+    })
+  end
+
+  defp put_trip_id(%Trip{} = trip) do
+    Map.put(trip, :id, Uniq.UUID.uuid4())
+  end
 
   defp trips do
     trips_path()
