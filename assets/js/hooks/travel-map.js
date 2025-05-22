@@ -1,11 +1,16 @@
 export const TravelMap = {
   mounted() {
-    this.initialScaleK = 1; // Zoom level
+    this.initialScaleK = 1; // Default zoom level for the whole map
+    this.hoverZoomScaleK = 4; // Zoom level when hovering a list item
     this.initialLonLat = [0, 20]; // Initial longitude and latitude
 
     this.baseRadius = 4; // Base map pin point radius
     this.baseStrokeWidth = 1; // Base stroke width for pins
     this.currentTransform = { k: this.initialScaleK }; // Default zoom level
+
+    this.locationsMap = new Map(); // Processed location data
+    this.projection = null; // Map projection
+    this.highlightedPin = { key: null, selection: null }; // { key, selection } of highlighted pin
 
     Promise.all([import('../../vendor/d3'), import('../../vendor/topojson')])
       .then(([d3Module, topojsonModule]) => {
@@ -18,13 +23,12 @@ export const TravelMap = {
           .attr('class', 'map-tooltip')
           .style('opacity', 0)
           .style('position', 'absolute')
-          .style('pointer-events', 'none'); // So it doesn't interfere with mouse events on the map
+          .style('pointer-events', 'none');
 
         this.data = JSON.parse(this.el.getAttribute('data-trips'));
         this.listItems = document.querySelectorAll('[data-item="trip"]');
 
         // List items hover events
-        console.log(this.el);
         this.listItems.forEach((item) => {
           item.addEventListener('mouseover', this.onListItemHover.bind(this));
           item.addEventListener('mouseout', this.onListItemLeave.bind(this));
@@ -84,6 +88,7 @@ export const TravelMap = {
       .scale(viewBoxWidth / (2 * Math.PI)) // Scale based on viewBox width
       .center([0, 28]) // Initial center
       .translate([viewBoxWidth / 2, viewBoxHeight / 2]); // Translate to center of viewBox
+    this.projection = projection; // Store projection
 
     // Path generator
     const path = d3.geoPath().projection(projection);
@@ -91,7 +96,7 @@ export const TravelMap = {
     // Setup zoom behavior
     this.zoom = d3
       .zoom()
-      .scaleExtent([1, 12]) // Zoom range relative to base projection
+      .scaleExtent([1, 16]) // Zoom range relative to base projection
       .filter((event) => {
         // Allows wheel events (even with Ctrl) and mouse drag without Ctrl (typically left button).
         // Disallows zoom start with other mouse buttons (e.g., right/middle click).
@@ -123,11 +128,13 @@ export const TravelMap = {
 
     svg.call(this.zoom); // Attach zoom listener
 
-    // Process trip data to determine visited countries
-    const locations = this.processData();
+    // Process trip data
+    const processedLocations = this.processData();
+    this.locationsMap = processedLocations;
+
     const visitedCountries = new Set();
 
-    for (const loc of locations.values()) {
+    for (const loc of processedLocations.values()) {
       if (loc.visits > 0 && loc.country) {
         visitedCountries.add(loc.country);
       }
@@ -161,7 +168,7 @@ export const TravelMap = {
       // Draw map pins
       this.pins = g
         .selectAll('.city')
-        .data(Array.from(locations.values()))
+        .data(Array.from(this.locationsMap.values()))
         .enter()
         .append('circle')
         .attr('class', 'map-pin')
@@ -219,8 +226,9 @@ export const TravelMap = {
   },
 
   resetMap() {
-    this.currentTransform = this.initialTransform;
-    this.svg.call(this.zoom.transform, this.currentTransform);
+    if (this.svg && this.zoom && this.initialTransform) {
+      this.svg.transition().duration(750).call(this.zoom.transform, this.initialTransform);
+    }
   },
 
   setMapPositionAndZoom(svg, projection, width, height) {
@@ -282,17 +290,99 @@ export const TravelMap = {
       }
     });
 
-    return locations;
+    return locations; // This is the local variable in processData, not this.locationsMap
+  },
+
+  // Helper to parse "City, Country" string into {name, country} object
+  parseLocationKey(locationKey) {
+    if (!locationKey || typeof locationKey !== 'string') return { name: null, country: null };
+    const name = extractCityName(locationKey); // Uses existing global helper
+    const country = extractCountryName(locationKey); // Uses existing global helper
+    return { name, country: country || null }; // Ensure country is null if not present
+  },
+
+  // Helper to highlight or de-highlight a pin
+  highlightPin(locationKeyToActOn, doHighlight) {
+    if (!this.pins) return;
+
+    // De-highlight current pin if necessary
+    if (this.highlightedPin.selection) {
+      const mustDehighlightCurrent =
+        (doHighlight && this.highlightedPin.key !== locationKeyToActOn) ||
+        (!doHighlight && this.highlightedPin.key === locationKeyToActOn);
+
+      if (mustDehighlightCurrent) {
+        const currentPinRadius = this.baseRadius / this.currentTransform.k;
+        this.highlightedPin.selection
+          .transition()
+          .duration(150)
+          .attr('r', Math.max(currentPinRadius, this.baseRadius / 8)) // Apply min radius rule
+          .style('fill', 'var(--color-primary)');
+        this.highlightedPin = { key: null, selection: null };
+      }
+    }
+
+    // Highlight new pin if requested and not already de-highlighted
+    if (doHighlight && !this.highlightedPin.selection) {
+      // Ensure we only highlight if nothing is highlighted or it's a new pin
+      const { name: targetName, country: targetCountry } =
+        this.parseLocationKey(locationKeyToActOn);
+      if (!targetName) return;
+
+      const targetPinSelection = this.pins.filter(
+        (d_pin) =>
+          d_pin.name === targetName && (targetCountry ? d_pin.country === targetCountry : true)
+      );
+
+      if (!targetPinSelection.empty()) {
+        const highlightedPinRadius = (this.baseRadius * 1.5) / this.currentTransform.k;
+        targetPinSelection
+          .raise()
+          .transition()
+          .duration(150)
+          .attr('r', Math.max(highlightedPinRadius, this.baseRadius / 6))
+          .style('fill', 'var(--color-info)');
+        this.highlightedPin = { key: locationKeyToActOn, selection: targetPinSelection };
+      }
+    }
   },
 
   onListItemHover(event) {
-    // TODO: !
-    console.log('mouseover', event);
+    const locationKey = event.currentTarget.dataset.destination;
+    if (!locationKey || !this.locationsMap || !this.projection || !this.svg || !this.zoom) return;
+
+    const locationData = this.locationsMap.get(locationKey);
+
+    if (locationData && locationData.coordinates) {
+      const [geoLat, geoLon] = locationData.coordinates;
+      const [mapX, mapY] = this.projection([geoLon, geoLat]);
+
+      const viewBoxWidth = this.el.offsetWidth;
+      const viewBoxHeight = this.el.offsetHeight;
+
+      const tx = viewBoxWidth / 2 - mapX * this.hoverZoomScaleK;
+      const ty = viewBoxHeight / 2 - mapY * this.hoverZoomScaleK;
+      const hoverTransform = this.d3.zoomIdentity.translate(tx, ty).scale(this.hoverZoomScaleK);
+
+      this.svg
+        .transition()
+        .duration(750)
+        .call(this.zoom.transform, hoverTransform)
+        .on('end.highlight', () => {
+          this.highlightPin(locationKey, true);
+        });
+    } else {
+      console.warn('Location data or coordinates not found for:', locationKey);
+    }
   },
 
   onListItemLeave(event) {
-    // TODO: !
-    console.log('mouseout', event);
+    const locationKey = event.currentTarget.dataset.destination;
+    if (!locationKey) return;
+
+    // De-highlight before resetting the map
+    this.highlightPin(locationKey, false);
+    this.resetMap();
   },
 
   onReset(event) {

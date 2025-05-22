@@ -279,7 +279,7 @@ defmodule SiteWeb.SiteComponents do
       |> assign(:icon, trip_icon(trip))
 
     ~H"""
-    <li data-item="trip" {@rest}>
+    <li data-item="trip" data-origin={@trip.origin} data-destination={@trip.destination} {@rest}>
       <div class="flex gap-1 items-center justify-between text-xs md:text-sm px-3 py-2.5 bg-surface-20/50
           rounded-box border border-surface-30 shadow-xs">
         <div class="flex items-center">
