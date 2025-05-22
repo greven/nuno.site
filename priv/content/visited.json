@@ -1,5 +1,41 @@
 [
   {
+    "date": "1982-04-01",
+    "location": "Torres Novas, Portugal",
+    "note": "My parents hometown."
+  },
+  {
+    "date": "1988-08-15",
+    "location": "Vilamoura, Portugal",
+    "note": "Family Summer vacation."
+  },
+  {
+    "date": "1994-08-15",
+    "location": "Cabanas de Tavira, Portugal",
+    "note": "Family Summer vacation."
+  },
+  {
+    "date": "1996-08-01",
+    "location": "Lagos, Portugal",
+    "note": "Friends' Summer vacation."
+  },
+  {
+    "date": "1996-08-15",
+    "location": "Tavira, Portugal",
+    "note": "Family Summer vacation."
+  },
+  {
+    "date": "1997-08-01",
+    "location": "Grândola, Portugal",
+    "alias": "Tróia",
+    "note": "Summer vacation with friends in Tróia."
+  },
+  {
+    "date": "2004-09-23",
+    "location": "Sesimbra, Portugal",
+    "note": "Weekend trip."
+  },
+  {
     "date": "2013-08-26",
     "location": "Chichén-Itzá, Mexico",
     "note": "Day visit to Chichén-Itzá part of our Riviera Maya trip."
@@ -20,6 +56,21 @@
     "note": "Medieval market visit while at Altura."
   },
   {
+    "date": "2016-02-02",
+    "location": "Corby, United Kingdom",
+    "note": "Work trip while at Itelligence UK."
+  },
+  {
+    "date": "2016-02-19",
+    "location": "Bielefeld, Germany",
+    "note": "Work trip while at Itelligence UK."
+  },
+  {
+    "date": "2016-05-03",
+    "location": "Birmingham, United Kingdom",
+    "note": "Work trip while at Itelligence UK."
+  },
+  {
     "date": "2016-08-13",
     "location": "Guilford, United Kingdom",
     "note": "Day visit to Guilford while living at Woking."
@@ -30,39 +81,13 @@
     "note": "Day visit to York when I lived in Leeds."
   },
   {
-    "date": "2004-09-23",
-    "location": "Sesimbra, Portugal",
-    "note": "Weekend trip."
+    "date": "2022-06-11",
+    "location": "Braga, Portugal",
+    "note": "Visit to Braga while staying in Porto."
   },
   {
-    "date": "1997-08-01",
-    "location": "Grândola, Portugal",
-    "alias": "Tróia",
-    "note": "Summer vacation with friends in Tróia."
-  },
-  {
-    "date": "1996-08-01",
-    "location": "Lagos, Portugal",
-    "note": "Friends' Summer vacation."
-  },
-  {
-    "date": "1996-08-15",
-    "location": "Tavira, Portugal",
-    "note": "Family Summer vacation."
-  },
-  {
-    "date": "1994-08-15",
-    "location": "Cabanas de Tavira, Portugal",
-    "note": "Family Summer vacation."
-  },
-  {
-    "date": "1988-08-15",
-    "location": "Vilamoura, Portugal",
-    "note": "Family Summer vacation."
-  },
-  {
-    "date": "1982-04-01",
-    "location": "Torres Novas, Portugal",
-    "note": "My parents hometown."
+    "date": "2023-12-15",
+    "location": "Coimbra, Portugal",
+    "note": "Work visit to Coimbra."
   }
 ]

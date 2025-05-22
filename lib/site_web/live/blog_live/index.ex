@@ -5,8 +5,6 @@ defmodule SiteWeb.BlogLive.Index do
 
   alias SiteWeb.BlogComponents
 
-  @featured_posts 4
-
   @impl true
   def render(assigns) do
     ~H"""
@@ -51,31 +49,13 @@ defmodule SiteWeb.BlogLive.Index do
           </div>
         </div>
 
-        <%!-- Featured / Latest posts --%>
+        <%!-- Posts --%>
         <div id="articles" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4" phx-update="stream">
-          <BlogComponents.featured_post_item
-            :for={{dom_id, post} <- @streams.latest_posts}
+          <BlogComponents.article_item
+            :for={{dom_id, post} <- @streams.posts}
             id={dom_id}
             post={post}
           />
-        </div>
-
-        <%!-- Rest of posts --%>
-        <div :if={@has_more_posts?} class="mt-10">
-          <.divider position="left" border_class="w-full border-t border-surface-30">
-            <div class="flex items-center gap-2">
-              <.icon name="hero-newspaper" class="size-5 text-content-30" />
-              <h3 class="pr-4 font-headings font-normal text-xl text-content-20">More articles</h3>
-            </div>
-          </.divider>
-
-          <div id="more-articles" class="mt-4 flex flex-col gap-4 md:gap-3" phx-update="stream">
-            <BlogComponents.post_item
-              :for={{dom_id, post} <- @streams.more_posts}
-              id={dom_id}
-              post={post}
-            />
-          </div>
         </div>
       </Layouts.page_content>
     </Layouts.app>
@@ -100,18 +80,14 @@ defmodule SiteWeb.BlogLive.Index do
       Blog.list_published_posts()
       |> Enum.filter(filter_posts_by_category(filter_category))
 
-    latest_posts = Enum.take(published_posts, @featured_posts)
-    more_posts = Enum.drop(published_posts, @featured_posts)
     categories_count = Blog.count_posts_by_category()
 
     socket =
       socket
       |> assign(:filter_category, filter_category)
       |> assign(:has_posts?, published_posts != [])
-      |> assign(:has_more_posts?, more_posts != [])
       |> assign(:filter_categories, filter_categories(categories_count))
-      |> stream(:latest_posts, latest_posts, reset: true)
-      |> stream(:more_posts, more_posts, reset: true)
+      |> stream(:posts, published_posts, reset: true)
       |> assign(:categories_count, categories_count)
 
     {:noreply, socket}

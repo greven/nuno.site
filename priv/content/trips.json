@@ -1792,6 +1792,24 @@
   },
   {
     "alias": null,
+    "type": "car",
+    "date": "2019-11-01",
+    "origin": "Lisbon, Portugal",
+    "destination": "Mourão, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2019-11-03",
+    "origin": "Mourão, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "alias": null,
     "type": "flight",
     "date": "2019-11-12",
     "origin": "Lisbon, Portugal",
@@ -1825,6 +1843,132 @@
     "destination": "Lisbon, Portugal",
     "distance": 1821358,
     "company": "TAP"
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2019-12-31",
+    "origin": "Lisbon, Portugal",
+    "destination": "Grândola, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2020-01-02",
+    "origin": "Grândola, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2020-08-22",
+    "origin": "Lisbon, Portugal",
+    "destination": "Tavira, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2020-08-30",
+    "origin": "Tavira, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "train",
+    "date": "2020-09-16",
+    "origin": "Lisbon, Portugal",
+    "destination": "Porto, Portugal",
+    "distance": null,
+    "company": "CP - Comboios de Portugal"
+  },
+  {
+    "alias": null,
+    "type": "train",
+    "date": "2020-09-17",
+    "origin": "Porto, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": "CP - Comboios de Portugal"
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2021-04-30",
+    "origin": "Lisbon, Portugal",
+    "destination": "Porto, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2021-05-02",
+    "origin": "Porto, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": null,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2021-06-10",
+    "origin": "Lisbon, Portugal",
+    "destination": "Óbidos, Portugal",
+    "distance": 84881,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2021-06-12",
+    "origin": "Óbidos, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": 84881,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2021-08-17",
+    "origin": "Lisbon, Portugal",
+    "destination": "Lagos, Portugal",
+    "distance": 84881,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2021-08-22",
+    "origin": "Lagos, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": 84881,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2022-06-10",
+    "origin": "Lisbon, Portugal",
+    "destination": "Porto, Portugal",
+    "distance": 328236,
+    "company": null
+  },
+  {
+    "alias": null,
+    "type": "car",
+    "date": "2022-06-14",
+    "origin": "Porto, Portugal",
+    "destination": "Lisbon, Portugal",
+    "distance": 328236,
+    "company": null
   },
   {
     "alias": null,

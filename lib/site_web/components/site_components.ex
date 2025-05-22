@@ -285,12 +285,12 @@ defmodule SiteWeb.SiteComponents do
         <div class="flex items-center">
           <div class="flex flex-col justify-center items-start gap-0.5 lg:flex-row lg:items-center">
             <.icon name={@icon} class="hidden lg:block size-4.5 text-content-40/80 mr-2.5 md:mr-3" />
-            <div>{@trip.origin}</div>
+            <div class="text-content-30">{@trip.origin}</div>
             <.icon
               name="hero-arrow-right-mini"
               class="hidden lg:block size-4 text-content-40/60 mx-2"
             />
-            <div>{@trip.destination}</div>
+            <div class="text-content-10">{@trip.destination}</div>
           </div>
           <div class="hidden lg:block">
             <span class="mx-3 text-content-40/40">&mdash;</span>

@@ -14,7 +14,7 @@ defmodule SiteWeb.BlogComponents do
   attr :class, :string, default: nil
   attr :rest, :global
 
-  def featured_post_item(assigns) do
+  def article_item(assigns) do
     ~H"""
     <article class="group featured-article" {@rest}>
       <.header tag="h2" class="mt-2">

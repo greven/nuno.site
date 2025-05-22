@@ -347,6 +347,40 @@ export const TravelMap = {
     }
   },
 
+  showTooltipForLocation(locationKey) {
+    if (!this.tooltip || !this.locationsMap || !this.projection || !this.currentTransform) return;
+
+    const locationData = this.locationsMap.get(locationKey);
+    if (!locationData || !locationData.coordinates) {
+      console.warn('Tooltip: Location data or coordinates not found for:', locationKey);
+      return;
+    }
+
+    const [geoLat, geoLon] = locationData.coordinates;
+    const [projectedX, projectedY] = this.projection([geoLon, geoLat]);
+    const [screenX, screenY] = this.currentTransform.apply([projectedX, projectedY]);
+
+    this.tooltip.transition().duration(200).style('opacity', 0.9);
+    this.tooltip
+      .html(
+        `<span class="tooltip-title">${locationData.name}</span><br/>` +
+          `<span class="tooltip-subtitle">${locationData.country}</span><br/>` +
+          `<span class="tooltip-info">${locationData.visits} ${pluralize(
+            'visit',
+            'visits',
+            locationData.visits
+          )}</span>`
+      )
+      .style('left', `${screenX + 15}px`)
+      .style('top', `${screenY - 28}px`);
+  },
+
+  hideTooltip() {
+    if (this.tooltip) {
+      this.tooltip.transition().duration(200).style('opacity', 0);
+    }
+  },
+
   onListItemHover(event) {
     const locationKey = event.currentTarget.dataset.destination;
     if (!locationKey || !this.locationsMap || !this.projection || !this.svg || !this.zoom) return;
@@ -370,6 +404,7 @@ export const TravelMap = {
         .call(this.zoom.transform, hoverTransform)
         .on('end.highlight', () => {
           this.highlightPin(locationKey, true);
+          this.showTooltipForLocation(locationKey); // Show tooltip for the highlighted pin
         });
     } else {
       console.warn('Location data or coordinates not found for:', locationKey);
@@ -380,12 +415,16 @@ export const TravelMap = {
     const locationKey = event.currentTarget.dataset.destination;
     if (!locationKey) return;
 
-    // De-highlight before resetting the map
+    this.hideTooltip();
     this.highlightPin(locationKey, false);
     this.resetMap();
   },
 
   onReset(event) {
+    this.hideTooltip();
+    if (this.highlightedPin && this.highlightedPin.key) {
+      this.highlightPin(this.highlightedPin.key, false);
+    }
     this.resetMap();
   },
 };
