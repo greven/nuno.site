@@ -19,16 +19,45 @@ defmodule Site.Support do
   ## Numbers
 
   @doc """
-  Format number shortening big numbers into shorter versions
+  Format number in a more human-readable way.
   """
-  def format_number(number) when is_integer(number) or is_float(number) do
+  def format_number(number, precision \\ 2)
+
+  def format_number(number, precision) when is_float(number) do
+    integer_part = trunc(number)
+    decimal_part = (number - integer_part) |> Float.round(precision)
+
     cond do
-      number >= 10_000 -> "#{Float.ceil(number / 1000, 1)}k"
-      true -> number
+      decimal_part == 0 ->
+        format_number(integer_part)
+
+      decimal_part < 1 ->
+        "#{format_number(integer_part)}.#{String.slice(Float.to_string(decimal_part), 2..-1//1)}"
+
+      decimal_part >= 1 ->
+        decimal_integer_part = trunc(decimal_part)
+        decimal_decimal_part = decimal_part - decimal_integer_part
+        integer_part = (integer_part + decimal_integer_part) |> format_number()
+
+        if decimal_decimal_part == 0.0,
+          do: integer_part,
+          else: "#{integer_part}.#{String.slice(Float.to_string(decimal_decimal_part), 2..-1//1)}"
     end
   end
 
-  def format_number(number), do: number
+  def format_number(number, _) when is_integer(number) do
+    cond do
+      number >= 1_000 ->
+        number
+        |> to_string()
+        |> String.replace(~r/(?<=\d)(?=(\d{3})+(?!\d))/, ",")
+
+      true ->
+        to_string(number)
+    end
+  end
+
+  def format_number(number, _), do: number
 
   @doc """
   Create URL-friendly slugs.

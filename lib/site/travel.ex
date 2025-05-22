@@ -44,7 +44,10 @@ defmodule Site.Travel do
     km_traveled =
       list_trips()
       |> Enum.sum_by(& &1.distance)
+      |> div(1000)
       |> round()
+
+    to_the_moon = Measures.distance_traveled_to_moon(km_traveled)
 
     number_countries_visited =
       list_trips()
@@ -71,7 +74,8 @@ defmodule Site.Travel do
     %{
       distance: km_traveled,
       countries_visited: number_countries_visited,
-      cities_visited: number_cities_visited
+      cities_visited: number_cities_visited,
+      to_the_moon: to_the_moon
       # flights: number_of_flights,
       # airlines_flown: number_airlines_flown,
     }
@@ -84,7 +88,7 @@ defmodule Site.Travel do
   def recalculate_trips do
     trips()
     |> Enum.map(fn %Trip{} = trip ->
-      distance = travel_distance_in_km(trip)
+      distance = travel_distance(trip)
 
       Map.from_struct(trip)
       |> Map.drop([:id, :from, :to])
@@ -126,14 +130,27 @@ defmodule Site.Travel do
   #   Enum.map(trip_data, fn %Trip{airline: airline} -> airline end)
   # end
 
-  defp travel_distance_in_km(%Trip{origin: origin, destination: destination}) do
-    Measures.travel_distance(origin, destination)
+  defp travel_distance(%Trip{origin: origin, destination: destination, type: type}) do
+    transport_type = transport_type(type)
+
+    Measures.travel_distance(origin, destination, transport_type)
     |> round()
   end
 
-  defp travel_distance_in_km(%Geo.Point{} = point_a, %Geo.Point{} = point_b) do
-    Measures.travel_distance(point_a, point_b)
+  defp travel_distance(%Geo.Point{} = point_a, %Geo.Point{} = point_b, type) do
+    transport_type = transport_type(type)
+
+    Measures.travel_distance(point_a, point_b, transport_type)
     |> round()
+  end
+
+  defp transport_type(type) do
+    case type do
+      "flight" -> :air
+      "train" -> :direct
+      "car" -> :car
+      _ -> :direct
+    end
   end
 
   defp put_computed(%Trip{} = trip) do
@@ -144,7 +161,7 @@ defmodule Site.Travel do
     distance =
       if trip.distance,
         do: trip.distance,
-        else: travel_distance_in_km(from_point, to_point)
+        else: travel_distance(from_point, to_point, trip.type)
 
     Map.merge(trip, %{
       distance: distance,
@@ -166,6 +183,7 @@ defmodule Site.Travel do
     end)
     |> Stream.map(fn item ->
       %Trip{
+        alias: item["alias"],
         type: item["type"],
         date: item["date"],
         origin: item["origin"],

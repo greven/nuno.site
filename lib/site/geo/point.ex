@@ -2,6 +2,7 @@ defmodule Site.Geo.Point do
   alias __MODULE__
 
   @type t :: %Point{lat: float(), long: float()}
+  @type transport_type :: :direct | :air | :car
 
   @derive JSON.Encoder
 
@@ -16,15 +17,21 @@ defmodule Site.Geo.Point do
   end
 
   @doc """
-  Returns the distance in meters between two points.
+  Returns the distance in meters between two points,
+  with an optional circuity factor based on transport type.
   """
-  def distance_between(point_a, point_b, unit \\ :meter)
+  def distance_between(point_a, point_b, transport_type \\ :direct)
 
-  def distance_between(%Point{} = point_a, %Point{} = point_b, :meter) do
-    Geocalc.distance_between(Point.to_list(point_a), Point.to_list(point_b))
+  def distance_between(%Point{} = point_a, %Point{} = point_b, transport_type)
+      when transport_type in [:direct, :air, :car] do
+    base_distance =
+      Geocalc.distance_between(Point.to_list(point_a), Point.to_list(point_b))
+
+    base_distance * circuity_factor(transport_type)
   end
 
-  def distance_between(%Point{} = point_a, %Point{} = point_b, :kilometer) do
-    distance_between(%Point{} = point_a, %Point{} = point_b, :meter) / 1000
-  end
+  # Circuity factors for different transport types
+  defp circuity_factor(:direct), do: 1.0
+  defp circuity_factor(:air), do: 1.05
+  defp circuity_factor(:car), do: 1.20
 end

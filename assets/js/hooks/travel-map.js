@@ -21,9 +21,10 @@ export const TravelMap = {
           .style('pointer-events', 'none'); // So it doesn't interfere with mouse events on the map
 
         this.data = JSON.parse(this.el.getAttribute('data-trips'));
-        this.listItems = this.el.querySelectorAll('[data-item="trip"]');
+        this.listItems = document.querySelectorAll('[data-item="trip"]');
 
         // List items hover events
+        console.log(this.el);
         this.listItems.forEach((item) => {
           item.addEventListener('mouseover', this.onListItemHover.bind(this));
           item.addEventListener('mouseout', this.onListItemLeave.bind(this));
@@ -177,9 +178,6 @@ export const TravelMap = {
         .attr('stroke', 'var(--color-surface-20)')
         .attr('stroke-width', this.baseStrokeWidth)
         .attr('cursor', 'pointer')
-        .on('click', (event, { country, name }) => {
-          this.pushEvent('map-point-click', { country, name });
-        })
         .on('mouseover', (event, d_pin) => {
           const [mouseX, mouseY] = this.d3.pointer(event, this.el);
           this.tooltip.transition().duration(200).style('opacity', 0.9);

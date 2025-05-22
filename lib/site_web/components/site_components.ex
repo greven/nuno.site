@@ -5,6 +5,7 @@ defmodule SiteWeb.SiteComponents do
 
   use SiteWeb, :html
 
+  alias Site.Support
   alias Site.Travel.Trip
 
   @doc false
@@ -248,9 +249,14 @@ defmodule SiteWeb.SiteComponents do
         <div id="travel-list" class="relative mx-0.5">
           <ol class="h-full flex flex-col gap-8">
             <li :for={{year, trips} <- @trips_timeline}>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 px-1">
                 <.icon name="hero-calendar-date-range" class="size-5 text-content-40" />
-                <h2 class="font-medium text-xl">{year}</h2>
+                <div class="w-full flex items-center justify-between">
+                  <h2 class="sticky font-medium text-xl">{year}</h2>
+                  <div class="flex items-center gap-2 text-content-40">
+                    {length(trips)} {ngettext("trip", "trips", length(trips))}
+                  </div>
+                </div>
               </div>
 
               <ol class="mt-4 flex flex-col gap-2">
@@ -278,7 +284,7 @@ defmodule SiteWeb.SiteComponents do
           rounded-box border border-surface-30 shadow-xs">
         <div class="flex items-center">
           <div class="flex flex-col justify-center items-start gap-0.5 lg:flex-row lg:items-center">
-            <.icon name={@icon} class="hidden md:block size-4.5 text-content-40/80 mr-2.5 md:mr-3" />
+            <.icon name={@icon} class="hidden lg:block size-4.5 text-content-40/80 mr-2.5 md:mr-3" />
             <div>{@trip.origin}</div>
             <.icon
               name="hero-arrow-right-mini"
@@ -286,18 +292,25 @@ defmodule SiteWeb.SiteComponents do
             />
             <div>{@trip.destination}</div>
           </div>
-          <div class="hidden md:block">
+          <div class="hidden lg:block">
             <span class="mx-3 text-content-40/40">&mdash;</span>
-            <span class="font-mono text-content-40">{@trip.distance}</span>
+            <span class="font-mono text-content-40">{format_distance(@trip.distance)}</span>
             <span class="font-mono text-content-40/80">km</span>
           </div>
         </div>
 
-        <date class="flex items-center">
-          <.icon name="hero-calendar" class="size-4 md:size-4.5 text-content-40/80 mr-2" />
-          <div class="hidden lg:block text-content-30">{format_date(@trip.date)}</div>
-          <div class="lg:hidden text-content-30">{format_date(@trip.date, "%d-%m-%y")}</div>
-        </date>
+        <div class="flex flex-col justify-center items-end text-right gap-0.5">
+          <date class="flex items-center">
+            <.icon name="hero-calendar" class="size-4 md:size-4.5 text-content-40/80 mr-2" />
+            <div class="hidden lg:block text-content-30">{format_date(@trip.date)}</div>
+            <div class="lg:hidden text-content-30">{format_date(@trip.date, "%d-%m-%y")}</div>
+          </date>
+
+          <div class="lg:hidden">
+            <span class="font-mono text-content-40">{format_distance(@trip.distance)}</span>
+            <span class="font-mono text-content-40/80">km</span>
+          </div>
+        </div>
       </div>
     </li>
     """
@@ -390,5 +403,9 @@ defmodule SiteWeb.SiteComponents do
 
   defp format_date(%Date{} = date, format \\ "%d %b, %Y") do
     Calendar.strftime(date, format)
+  end
+
+  defp format_distance(meters) do
+    Support.format_number(round(meters / 1000), 0)
   end
 end
