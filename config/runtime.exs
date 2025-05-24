@@ -26,6 +26,8 @@ end
 ## External Services
 
 config :site, :steam, api_key: env!("STEAM_API_KEY", :string!)
+config :site, :bluesky, handle: env!("BLUESKY_HANDLE", :string!)
+config :site, :bluesky, app_password: env!("BLUESKY_APP_PASSWORD", :string!)
 
 if config_env() == :prod do
   database_path =

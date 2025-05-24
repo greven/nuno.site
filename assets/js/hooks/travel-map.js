@@ -30,8 +30,8 @@ export const TravelMap = {
 
         // List items hover events
         this.listItems.forEach((item) => {
-          item.addEventListener('mouseover', this.onListItemHover.bind(this));
-          item.addEventListener('mouseout', this.onListItemLeave.bind(this));
+          item.addEventListener('mouseenter', this.onListItemHover.bind(this));
+          item.addEventListener('mouseleave', this.onListItemLeave.bind(this));
         });
 
         // Map reset click event
@@ -48,8 +48,8 @@ export const TravelMap = {
   destroyed() {
     // Remove event listeners
     this.listItems.forEach((item) => {
-      item.removeEventListener('mouseover', this.onListItemHover.bind(this));
-      item.removeEventListener('mouseout', this.onListItemLeave.bind(this));
+      item.removeEventListener('mouseenter', this.onListItemHover.bind(this));
+      item.removeEventListener('mouseleave', this.onListItemLeave.bind(this));
     });
 
     this.el.removeEventListener('phx:map-reset', this.onReset.bind(this));

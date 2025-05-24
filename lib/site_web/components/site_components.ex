@@ -280,15 +280,15 @@ defmodule SiteWeb.SiteComponents do
 
     ~H"""
     <li data-item="trip" data-origin={@trip.origin} data-destination={@trip.destination} {@rest}>
-      <div class="flex gap-1 items-center justify-between text-xs md:text-sm px-3 py-2.5 bg-surface-20/50
-          rounded-box border border-surface-30 shadow-xs">
+      <div class="group flex gap-1 items-center justify-between text-xs md:text-sm px-3 py-2.5 bg-surface-20/50
+          rounded-box border border-surface-30 shadow-xs hover:shadow-sm hover:border-primary transition-shadow">
         <div class="flex items-center">
           <div class="flex flex-col justify-center items-start gap-0.5 lg:flex-row lg:items-center">
-            <.icon name={@icon} class="hidden lg:block size-4.5 text-content-40/80 mr-2.5 md:mr-3" />
+            <.icon name={@icon} class="hidden lg:block size-4.5 text-content-40/90 mr-2.5 md:mr-3" />
             <div class="text-content-30">{@trip.origin}</div>
             <.icon
               name="hero-arrow-right-mini"
-              class="hidden lg:block size-4 text-content-40/60 mx-2"
+              class="hidden lg:block mx-2 size-4 text-content-40/60 group-hover:text-primary/80"
             />
             <div class="text-content-10">{@trip.destination}</div>
           </div>

@@ -37,9 +37,11 @@
   transition: fill 0.2s ease;
 
   &.visited {
+    stroke: var(--color-amber-300);
     fill: --alpha(var(--color-amber-100) / 90%);
 
     @variant dark {
+      stroke: var(--color-amber-400);
       fill: --alpha(var(--color-amber-200) / 90%);
     }
   }
