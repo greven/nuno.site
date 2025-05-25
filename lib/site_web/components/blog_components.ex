@@ -11,28 +11,29 @@ defmodule SiteWeb.BlogComponents do
   @doc false
 
   attr :post, Blog.Post, required: true
-  attr :class, :string, default: nil
   attr :rest, :global
 
   def article_item(assigns) do
     ~H"""
-    <article class="group featured-article" {@rest}>
-      <.header tag="h2" class="mt-2">
-        <.link href={~p"/articles/#{@post.year}/#{@post}"} class="text-lg line-clamp-2">
-          <span class="absolute inset-0 z-10"></span>
-          <span class="group-hover:text-shadow-xs/10 text-shadow-primary-dark">{@post.title}</span>
-        </.link>
-      </.header>
+    <.card tag="article" class="group isolate" {@rest}>
+      <div class="blog-article">
+        <.header tag="h2" class="mt-2">
+          <.link href={~p"/articles/#{@post.year}/#{@post}"} class="text-lg line-clamp-2">
+            <span class="absolute inset-0 z-10"></span>
+            <span class="group-hover:text-shadow-xs/10 text-shadow-primary-dark">{@post.title}</span>
+          </.link>
+        </.header>
 
-      <div class="h-5 flex items-center justify-between order-first">
-        <.post_card_meta post={@post} format="%b %-d, %Y" class="text-content-40 text-sm" />
-        <.post_category post={@post} />
-      </div>
+        <div class="h-5 flex items-center justify-between order-first">
+          <.post_card_meta post={@post} format="%b %-d, %Y" class="text-content-40 text-sm" />
+          <.post_category post={@post} />
+        </div>
 
-      <div class="-mt-2 text-sm text-content-40 line-clamp-2 group-hover:text-content-30">
-        {@post.excerpt}
+        <div class="-mt-2 text-sm text-content-40 line-clamp-2 group-hover:text-content-30">
+          {@post.excerpt}
+        </div>
       </div>
-    </article>
+    </.card>
     """
   end
 
@@ -243,7 +244,7 @@ defmodule SiteWeb.BlogComponents do
 
     ~H"""
     <div {@rest}>
-      <div class="flex flex-col gap-2 md:grid md:grid-cols-2 md:space-between md:gap-4">
+      <div class="flex flex-col-reverse gap-2 md:grid md:grid-cols-2 md:space-between md:gap-4">
         <.post_pager dir={:prev} link={@prev_link} title={@prev_post && @prev_post.title} />
         <.post_pager dir={:next} link={@next_link} title={@next_post && @next_post.title} />
       </div>
@@ -489,45 +490,96 @@ defmodule SiteWeb.BlogComponents do
     <div
       :if={@headers != [] and @has_links? and length(@headers) > @min_count}
       id="toc"
-      class={["hidden sm:block fixed right-6 top-[364px] z-10", @class]}
       phx-hook="TableOfContents"
+      class={["fixed bottom-0 right-1 left-1 sm:bottom-auto sm:right-6 sm:top-[364px] z-10", @class]}
       {@rest}
     >
-      <div class="relative isolate">
-        <%!-- Navigator --%>
-        <div id="toc-navigator" class="absolute top-0 right-0 p-4 translate-x-4" style="opacity: 1">
-          <div class="w-fit px-2.5 py-2.5 bg-surface-10/90 border border-surface-40/80 rounded-full backdrop-blur-sm transition duration-500">
-            <.toc_navigator headers={@headers} depth={@depth} />
-          </div>
+      <div class="relative isolate flex justify-end">
+        <.toc_navigator id="toc-navigator" headers={@headers} depth={@depth} />
+        <.toc_container id="toc-container" headers={@headers} depth={@depth} />
+      </div>
+    </div>
+    """
+  end
+
+  attr :headers, :list, required: true
+  attr :depth, :integer, required: true
+  attr :rest, :global
+
+  defp toc_navigator(assigns) do
+    ~H"""
+    <div
+      class="absolute -bottom-1 -right-1 sm:top-0 sm:right-0 sm:bottom-auto p-4"
+      style="opacity: 1"
+      {@rest}
+    >
+      <%!-- Regular --%>
+      <div class="hidden sm:block w-fit px-2.5 py-2.5 translate-x-4 bg-surface-10/80
+          border border-surface-30 shadow-xs rounded-full backdrop-blur-sm transition duration-500">
+        <ol class="space-y-1">
+          <li
+            :for={header <- @headers}
+            :if={header.depth <= @depth}
+            class="m-0 p-0 leading-5 text-content-10/20 transition ease-in-out duration-500
+            data-[active]:text-primary hover:text-content-40"
+          >
+            <a href={"##{header.id}"}>&ndash;</a>
+            <span class="sr-only">{header.text}</span>
+          </li>
+        </ol>
+      </div>
+
+      <%!-- Mini (mobile) --%>
+      <div class="sm:hidden flex items-center justify-center w-12 h-12 bg-surface-10/80 border border-surface-30
+        shadow-xs rounded-full backdrop-blur-sm transition duration-500">
+        <.icon name="hero-list-bullet-mini" class="text-primary size-6" />
+      </div>
+    </div>
+    """
+  end
+
+  attr :headers, :list, required: true
+  attr :depth, :integer, required: true
+  attr :rest, :global
+
+  defp toc_container(assigns) do
+    ~H"""
+    <div
+      id="toc-container"
+      class="relative w-full mb-1 min-w-[264px] max-w-[448px] sm:mb-20 sm:w-auto p-5 z-10
+            bg-surface-10 border border-surface-30 rounded-box shadow-box backdrop-blur-sm
+            transition-transform ease-in-out duration-300"
+      style="opacity: 0; transform: translateY(400px);"
+      inert
+      {@rest}
+    >
+      <%!-- Container Header --%>
+      <div class="absolute -inset-4"></div>
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-2.5">
+          <.icon name="hero-list-bullet-mini" class="text-content-20/50 size-4.5" />
+          <div class="font-headings text-content-30">Contents</div>
         </div>
 
-        <%!-- Expanded --%>
-        <div
-          id="toc-list"
-          class="invisible relative mb-20 p-5 min-w-[264px] max-w-[448px] bg-surface-10/95 border border-surface-30 rounded-box
-            shadow-box backdrop-blur-sm z-10 transition-transform"
-          style="translate: 500px"
-        >
-          <div class="absolute -inset-4"></div>
-          <div class="flex items-center justify-between gap-4">
-            <div class="flex items-center gap-2.5">
-              <.icon name="hero-list-bullet-mini" class="text-content-20/50 size-4.5" />
-              <div class="font-headings text-content-30">Contents</div>
-            </div>
+        <%!-- Close button for mobile --%>
+        <div class="sm:hidden">
+          <.icon_button type="button" variant="ghost" size="sm" phx-click={JS.dispatch("hide_toc")}>
+            <.icon name="hero-x-mark" class="size-4 text-content-40" />
+          </.icon_button>
+        </div>
 
-            <div class="relative group flex items-center gap-1 text-sm text-content-40/75 isolate
+        <%!-- Go to Top --%>
+        <div class="hidden relative group sm:flex items-center gap-1 text-sm text-content-40/75 isolate
               transition hover:text-content-10 hover:cursor-pointer">
-              <a href="#" class="absolute inset-0 z-10"></a>
-              <.icon
-                name="hero-arrow-up"
-                class="text-content-40/50 size-4 z-1 transition group-hover:text-secondary"
-              /> Top
-            </div>
-          </div>
-
-          <.toc_list headers={@headers} depth={@depth} class="mt-4" />
+          <a href="#" class="absolute inset-0 z-10"></a>
+          <.icon
+            name="hero-arrow-up"
+            class="text-content-40/50 size-4 z-1 transition group-hover:text-secondary"
+          /> Top
         </div>
       </div>
+
+      <.toc_list id="toc-headers" headers={@headers} depth={@depth} class="mt-4" />
     </div>
     """
   end
@@ -558,27 +610,6 @@ defmodule SiteWeb.BlogComponents do
             headers={header.subsections}
             depth={@depth}
           />
-        </li>
-      </ol>
-    </div>
-    """
-  end
-
-  attr :headers, :list, required: true
-  attr :depth, :integer, required: true
-  attr :rest, :global
-
-  defp toc_navigator(assigns) do
-    ~H"""
-    <div {@rest}>
-      <ol class="space-y-1">
-        <li
-          :for={header <- @headers}
-          :if={header.depth <= @depth}
-          class="m-0 p-0 leading-5 text-content-10/20 transition ease-in-out duration-500 data-[active]:text-primary hover:text-content-40"
-        >
-          <a href={"##{header.id}"}>&ndash;</a>
-          <span class="sr-only">{header.text}</span>
         </li>
       </ol>
     </div>

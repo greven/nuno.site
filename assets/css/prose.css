@@ -190,17 +190,19 @@
         border-radius: 0.5rem;
       }
 
+      :where(p:first-of-type)::before,
+      :where(p:first-of-type)::after {
+        color: --alpha(var(--color-primary) / 0.65);
+        position: absolute;
+      }
+
       :where(p:first-of-type)::before {
         content: open-quote;
-        position: absolute;
-        color: --alpha(var(--color-content-40) / 0.8);
         margin-left: -1rem;
       }
 
       :where(p:first-of-type)::after {
         content: close-quote;
-        position: absolute;
-        color: --alpha(var(--color-content-40) / 0.8);
         margin-left: 0.5rem;
       }
     }

@@ -4,7 +4,8 @@
   height: clamp(150px, 70vh, 200px);
   margin: 0 auto;
   border-radius: var(--radius-box);
-  background-color: var(--color-surface-10);
+  border: 1px solid var(--color-surface-20);
+  background-color: var(--color-surface);
   box-shadow: var(--shadow-xs);
   z-index: 1;
 
@@ -42,7 +43,7 @@
 
     @variant dark {
       stroke: var(--color-amber-400);
-      fill: --alpha(var(--color-amber-200) / 90%);
+      fill: var(--color-amber-200);
     }
   }
 }

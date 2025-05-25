@@ -10,6 +10,43 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
+  slot :inner_block, required: true
+
+  def bento_grid(assigns) do
+    ~H"""
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :class, :any, default: nil
+  attr :rest, :global, include: ~w(href navigate patch disabled)
+  slot :inner_block
+
+  def bento_box(%{rest: rest} = assigns) do
+    if rest[:href] || rest[:navigate] || rest[:patch] do
+      ~H"""
+      <.card class={["isolate", @class]}>
+        <.link {@rest}>
+          <span class="absolute inset-0 z-10"></span>
+          {render_slot(@inner_block)}
+        </.link>
+      </.card>
+      """
+    else
+      ~H"""
+      <.card class={["isolate", @class]} {@rest}>
+        {render_slot(@inner_block)}
+      </.card>
+      """
+    end
+  end
+
+  @doc false
+
   attr :class, :string, default: nil
   attr :link, :boolean, default: false
 
@@ -40,7 +77,7 @@ defmodule SiteWeb.SiteComponents do
         @class,
         "rounded-full object-cover",
         "group-focus:ring-2 group-focus:ring-primary group-focus:ring-offset-2
-          group-focus:ring-offset-surface-10 transition-all"
+          group-focus:ring-offset-surface transition-all"
       ]}
     />
     """
@@ -220,7 +257,7 @@ defmodule SiteWeb.SiteComponents do
     <div {@rest}>
       <div class="relative h-full flex flex-col isolate">
         <div class="sticky top-0 z-10">
-          <div class="breakout py-12 bg-surface-10"></div>
+          <div class="breakout py-12 bg-surface"></div>
           <div
             id="travel-map"
             class="travel-map"
@@ -242,7 +279,7 @@ defmodule SiteWeb.SiteComponents do
             </div>
           </div>
           <div class="breakout py-4 md:py-8 h-full bg-linear-to-b
-            from-surface-10 from-60% to-transparent">
+            from-surface from-60% to-transparent">
           </div>
         </div>
 

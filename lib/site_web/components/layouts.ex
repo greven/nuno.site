@@ -43,8 +43,8 @@ defmodule SiteWeb.Layouts do
       id="site-header"
       phx-hook="SiteHeader"
       class="top-0 z-50 flex flex-none flex-wrap items-center justify-between
-        bg-surface-10/80 shadow-gray-900/5 transition duration-500 backdrop-blur-sm
-        supports-backdrop-filter:blur(0) supports-backdrop-filter:bg-surface-10/75
+        bg-surface/80 shadow-gray-900/5 transition duration-500 backdrop-blur-sm
+        supports-backdrop-filter:blur(0) supports-backdrop-filter:bg-surface/75
         border-b border-dashed border-transparent data-scrolled:border-surface-40
         data-scrolled:shadow-sm pointer-events-none"
       style="position:var(--header-position);height:var(--header-height);margin-bottom:var(--header-mb)"
@@ -80,11 +80,11 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <footer class="wrapper">
       <div class="flex flex-col items-center gap-4 pt-6 pb-3 md:pt-12 md:pb-6">
-        <div class="my-1 flex items-center gap-1 justify-center text-xs font-headings text-content-40/90">
+        <div class="my-1 flex items-center gap-1 justify-center text-xs font-headings text-content-40">
           <span class="flex items-center gap-1">
             &copy; {Date.utc_today().year} nuno.site
             <div class="hidden md:inline-block">
-              <span class="font-sans text-xs text-content-40">&bull;</span>
+              <span class="font-sans text-xs text-content-40/90">&bull;</span>
               Mixed with
               <.icon
                 name="si-elixir"
@@ -96,8 +96,8 @@ defmodule SiteWeb.Layouts do
               </span>
             </div>
           </span>
-          <span class="hidden md:inline-block font-sans text-xs text-content-40">&bull;</span>
-          <span class="hidden md:inline-block link-ghost">
+          <span class="font-sans text-xs text-content-40/90">&bull;</span>
+          <span class="link-ghost">
             <a href={~p"/sitemap"}>Sitemap</a>
           </span>
         </div>
@@ -221,7 +221,7 @@ defmodule SiteWeb.Layouts do
   def theme_toggle(assigns) do
     ~H"""
     <div class="relative flex flex-row items-center border-1 border-surface-30 bg-surface-20 rounded-full">
-      <div class="absolute w-[33.33%] h-full rounded-full border-1 border-surface-30 bg-surface-10 brightness-110 left-0
+      <div class="absolute w-[33.33%] h-full rounded-full border-1 border-surface-30 bg-surface brightness-110 left-0
       [[data-theme-mode=user][data-theme=light]_&]:left-[33.33%] [[data-theme-mode=user][data-theme=dark]_&]:left-[66.66%] transition-[left]" />
 
       <button phx-click={JS.dispatch("phx:set-theme", detail: %{theme: "system"})} class="flex p-2">

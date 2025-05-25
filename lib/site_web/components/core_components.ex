@@ -56,191 +56,6 @@ defmodule SiteWeb.CoreComponents do
   end
 
   @doc """
-  Renders a badge.
-  Badges are small, compact labels that can be used to display
-  contextual information, such as status or categories.
-  """
-  attr :variant, :string, values: ~w(default dot), default: "default"
-  attr :color, :string, values: Theme.colors(:tailwind)
-  attr :badge_class, :string, default: "text-sm"
-  attr :rest, :global
-  slot :inner_block, required: true
-
-  def badge(assigns) do
-    assigns =
-      assigns
-      |> assign(
-        :base_class,
-        "flex items-center ring-1 ring-inset whitespace-nowrap gap-x-1.5 px-2.5 py-0.5 [&>.icon]:size-[0.9375rem] rounded-[var(--badge-radius)]"
-      )
-      |> assign(:variant_class, badge_color_class(assigns[:variant], assigns[:color]))
-
-    ~H"""
-    <span {@rest} style="--badge-dot-color: var(--color-gray-400);">
-      <span class={[@base_class, @variant_class, @badge_class]}>
-        {render_slot(@inner_block)}
-      </span>
-    </span>
-    """
-  end
-
-  @doc false
-
-  attr :color, :string, values: Theme.colors(:tailwind)
-  attr :class, :string, default: nil
-
-  def dot(assigns) do
-    assigns = assign(assigns, :dot_class, badge_dot_color(assigns[:color]))
-
-    ~H"""
-    <span class={["relative flex items-center size-1.5", @class]}>
-      <span class={[
-        "before:content=[''] before:size-1.5 before:inline-flex before:rounded-full",
-        @dot_class
-      ]}>
-      </span>
-    </span>
-    """
-  end
-
-  @doc """
-  Renders a button with navigation support.
-
-  ## Examples
-
-      <.button>Send!</.button>
-      <.button phx-click="go" variant="solid">Send!</.button>
-      <.button navigate={~p"/"}>Home</.button>
-  """
-  attr :class, :any, default: nil
-  attr :color, :string, values: Theme.colors(:theme)
-  attr :size, :string, values: ~w(sm md), default: "md"
-  attr :variant, :string, values: ~w(default solid light ghost link), default: "default"
-  attr :rest, :global, include: ~w(href navigate patch method disabled)
-  slot :inner_block, required: true
-
-  def button(%{rest: rest} = assigns) do
-    assigns =
-      assigns
-      |> assign(:size_class, button_size_class(assigns[:size]))
-      |> assign(:variant_class, button_variant_class(assigns[:variant]))
-      |> assign(:color_class, button_color_class(assigns[:color]))
-
-    if rest[:href] || rest[:navigate] || rest[:patch] do
-      ~H"""
-      <.link class={["btn", @size_class, @variant_class, @color_class, @class]} {@rest}>
-        {render_slot(@inner_block)}
-      </.link>
-      """
-    else
-      ~H"""
-      <button class={["btn", @size_class, @variant_class, @color_class, @class]} {@rest}>
-        {render_slot(@inner_block)}
-      </button>
-      """
-    end
-  end
-
-  @doc false
-
-  attr :class, :any, default: nil
-  attr :color, :string, values: Theme.colors(:theme)
-  attr :size, :string, values: ~w(sm md), default: "md"
-  attr :variant, :string, values: ~w(default solid light ghost link), default: "default"
-  attr :rest, :global, include: ~w(href navigate patch method disabled)
-  slot :inner_block, required: true
-
-  def icon_button(assigns) do
-    assigns = assign(assigns, :class, ["btn-icon", assigns.class])
-
-    button(assigns)
-  end
-
-  @doc """
-  Renders a segmented control component with a list of options.
-  The segmented control is equivalent to a radio button group where
-  all options are visible at once and mutually exclusive.
-  """
-
-  # TODO: Replace button with custom selected element (and fix the radius of the element) and the elemnt should "swipe" between changes
-
-  attr :value, :any, required: true, doc: "the current value of the segmented control"
-  attr :on_change, :string, required: true, doc: "the event to trigger on value change"
-  attr :aria_label, :string, required: true, doc: "the aria-label for the segmented control"
-  attr :balanced, :boolean, default: false, doc: "whether to set equal width for all items"
-  attr :size, :string, values: ~w(sm md), default: "md"
-  attr :class, :string, default: nil
-  attr :rest, :global
-
-  slot :item do
-    attr :value, :any, required: true
-    attr :disabled, :boolean
-    attr :class, :any
-    attr :icon, :string
-    attr :icon_base_class, :string
-    attr :icon_color_class, :string
-  end
-
-  def segmented_control(assigns) do
-    assigns =
-      assigns
-      |> assign(
-        :container_class,
-        if(assigns.balanced,
-          do: "inline-grid grid-cols-#{length(assigns.item)}",
-          else: "w-full inline-flex"
-        )
-      )
-
-    ~H"""
-    <div class={@class}>
-      <ul
-        class={[
-          "gap-2 p-1 bg-surface-20/20 rounded-box border border-surface-30",
-          @container_class
-        ]}
-        aria-label={@aria_label}
-        {@rest}
-      >
-        <li :for={item <- @item} class="w-full">
-          <.button
-            type="button"
-            size={@size}
-            class={["group w-full", item[:class]]}
-            disabled={item[:disabled]}
-            aria-current={item[:value] == @value}
-            variant={if(item[:value] == @value, do: "default", else: "ghost")}
-            phx-click={JS.push(@on_change, value: %{value: item[:value]})}
-          >
-            <%!-- "size-5 text-content-10/45 group-aria-[current]:text-primary group-hover:group-[:not(:disabled)]:group-[:not([aria-current])]:text-content-30" --%>
-
-            <%= if item[:icon] do %>
-              <div class="flex items-center gap-2">
-                <.icon
-                  name={item[:icon]}
-                  class={[
-                    Map.get(item, :icon_base_class, "size-5"),
-                    Map.get(
-                      item,
-                      :icon_color_class,
-                      "text-content-10/45 group-aria-[current]:text-primary group-hover:group-[:not(:disabled)]:group-[:not([aria-current])]:text-content-30"
-                    )
-                  ]}
-                />
-
-                {render_slot(item, item[:value] == @value)}
-              </div>
-            <% else %>
-              {render_slot(item, item[:value] == @value)}
-            <% end %>
-          </.button>
-        </li>
-      </ul>
-    </div>
-    """
-  end
-
-  @doc """
   Renders an input with label and error messages.
 
   A `Phoenix.HTML.FormField` may be passed as argument,
@@ -566,7 +381,7 @@ defmodule SiteWeb.CoreComponents do
   @doc false
 
   attr :position, :string, values: ~w(left center right), default: "center"
-  attr :bg_color, :string, default: "bg-surface-10"
+  attr :bg_color, :string, default: "bg-surface"
   attr :border_class, :string, default: "w-full border-t border-surface-30"
   attr :class, :string, default: nil
   slot :inner_block
@@ -593,6 +408,208 @@ defmodule SiteWeb.CoreComponents do
         <span class={@bg_color}>{render_slot(@inner_block)}</span>
       </div>
     </div>
+    """
+  end
+
+  @doc """
+  Renders a badge.
+  Badges are small, compact labels that can be used to display
+  contextual information, such as status or categories.
+  """
+  attr :variant, :string, values: ~w(default dot), default: "default"
+  attr :color, :string, values: Theme.colors(:tailwind)
+  attr :badge_class, :string, default: "text-sm"
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def badge(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :base_class,
+        "flex items-center ring-1 ring-inset whitespace-nowrap gap-x-1.5 px-2.5 py-0.5 [&>.icon]:size-[0.9375rem] rounded-[var(--badge-radius)]"
+      )
+      |> assign(:variant_class, badge_color_class(assigns[:variant], assigns[:color]))
+
+    ~H"""
+    <span {@rest} style="--badge-dot-color: var(--color-gray-400);">
+      <span class={[@base_class, @variant_class, @badge_class]}>
+        {render_slot(@inner_block)}
+      </span>
+    </span>
+    """
+  end
+
+  @doc false
+
+  attr :color, :string, values: Theme.colors(:tailwind)
+  attr :class, :string, default: nil
+
+  def dot(assigns) do
+    assigns = assign(assigns, :dot_class, badge_dot_color(assigns[:color]))
+
+    ~H"""
+    <span class={["relative flex items-center size-1.5", @class]}>
+      <span class={[
+        "before:content=[''] before:size-1.5 before:inline-flex before:rounded-full",
+        @dot_class
+      ]}>
+      </span>
+    </span>
+    """
+  end
+
+  @doc """
+  Renders a button with navigation support.
+
+  ## Examples
+
+      <.button>Send!</.button>
+      <.button phx-click="go" variant="solid">Send!</.button>
+      <.button navigate={~p"/"}>Home</.button>
+  """
+  attr :class, :any, default: nil
+  attr :color, :string, values: Theme.colors(:theme)
+  attr :size, :string, values: ~w(sm md), default: "md"
+  attr :variant, :string, values: ~w(default solid light ghost link), default: "default"
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
+  slot :inner_block, required: true
+
+  def button(%{rest: rest} = assigns) do
+    assigns =
+      assigns
+      |> assign(:size_class, button_size_class(assigns[:size]))
+      |> assign(:variant_class, button_variant_class(assigns[:variant]))
+      |> assign(:color_class, button_color_class(assigns[:color]))
+
+    if rest[:href] || rest[:navigate] || rest[:patch] do
+      ~H"""
+      <.link class={["btn", @size_class, @variant_class, @color_class, @class]} {@rest}>
+        {render_slot(@inner_block)}
+      </.link>
+      """
+    else
+      ~H"""
+      <button class={["btn", @size_class, @variant_class, @color_class, @class]} {@rest}>
+        {render_slot(@inner_block)}
+      </button>
+      """
+    end
+  end
+
+  @doc false
+
+  attr :class, :any, default: nil
+  attr :color, :string, values: Theme.colors(:theme)
+  attr :size, :string, values: ~w(sm md), default: "md"
+  attr :variant, :string, values: ~w(default solid light ghost link), default: "default"
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
+  slot :inner_block, required: true
+
+  def icon_button(assigns) do
+    assigns = assign(assigns, :class, ["btn-icon", assigns.class])
+
+    button(assigns)
+  end
+
+  @doc """
+  Renders a segmented control component with a list of options.
+  The segmented control is equivalent to a radio button group where
+  all options are visible at once and mutually exclusive.
+  """
+
+  # TODO: Replace button with custom selected element (and fix the radius of the element) and the elemnt should "swipe" between changes
+
+  attr :value, :any, required: true, doc: "the current value of the segmented control"
+  attr :on_change, :string, required: true, doc: "the event to trigger on value change"
+  attr :aria_label, :string, required: true, doc: "the aria-label for the segmented control"
+  attr :balanced, :boolean, default: false, doc: "whether to set equal width for all items"
+  attr :size, :string, values: ~w(sm md), default: "md"
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :item do
+    attr :value, :any, required: true
+    attr :disabled, :boolean
+    attr :class, :any
+    attr :icon, :string
+    attr :icon_base_class, :string
+    attr :icon_color_class, :string
+  end
+
+  def segmented_control(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :container_class,
+        if(assigns.balanced,
+          do: "inline-grid grid-cols-#{length(assigns.item)}",
+          else: "w-full inline-flex"
+        )
+      )
+
+    ~H"""
+    <div class={@class}>
+      <ul
+        class={[
+          "gap-2 p-1 bg-surface-20 border border-surface-30 rounded-box",
+          @container_class
+        ]}
+        aria-label={@aria_label}
+        {@rest}
+      >
+        <li :for={item <- @item} class="w-full">
+          <.button
+            type="button"
+            size={@size}
+            class={["group w-full", item[:class]]}
+            disabled={item[:disabled]}
+            aria-current={item[:value] == @value}
+            variant={if(item[:value] == @value, do: "default", else: "ghost")}
+            phx-click={JS.push(@on_change, value: %{value: item[:value]})}
+          >
+            <%!-- "size-5 text-content-10/45 group-aria-[current]:text-primary group-hover:group-[:not(:disabled)]:group-[:not([aria-current])]:text-content-30" --%>
+
+            <%= if item[:icon] do %>
+              <div class="flex items-center gap-2">
+                <.icon
+                  name={item[:icon]}
+                  class={[
+                    Map.get(item, :icon_base_class, "size-5"),
+                    Map.get(
+                      item,
+                      :icon_color_class,
+                      "text-content-10/45 group-aria-[current]:text-primary group-hover:group-[:not(:disabled)]:group-[:not([aria-current])]:text-content-30"
+                    )
+                  ]}
+                />
+
+                {render_slot(item, item[:value] == @value)}
+              </div>
+            <% else %>
+              {render_slot(item, item[:value] == @value)}
+            <% end %>
+          </.button>
+        </li>
+      </ul>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :tag, :string, default: "div"
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def card(assigns) do
+    ~H"""
+    <.dynamic_tag tag_name={@tag} {@rest}>
+      <div class="relative h-full flex flex-col p-4 bg-surface-10 border border-surface-30 rounded-box
+        shadow-xs transition hover:border-primary hover:shadow-sm">
+        {render_slot(@inner_block)}
+      </div>
+    </.dynamic_tag>
     """
   end
 
