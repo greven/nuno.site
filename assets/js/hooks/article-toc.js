@@ -21,7 +21,8 @@ export const TableOfContents = {
 
     this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
       root: null,
-      threshold: [0, 0.5, 1],
+      threshold: [0, 0.1, 0.5, 0.9, 1],
+      rootMargin: '-20px 0px -80% 0px',
     });
 
     // Observe all headings
@@ -33,6 +34,8 @@ export const TableOfContents = {
     this.lastScrollTop = window.scrollY;
     this.hideTimeout = null;
     this.isVisible = false;
+    this.isScrollingProgrammatically = false;
+    this.scrollTimeout = null;
 
     this.checkPosition();
     this.setupEventListeners();
@@ -47,15 +50,24 @@ export const TableOfContents = {
       this.observer.disconnect();
     }
 
+    // Clear timeouts
+    if (this.hideTimeout) clearTimeout(this.hideTimeout);
+    if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+
     // Remove all event listeners
     window.removeEventListener('scroll', this.handleScroll.bind(this));
     window.removeEventListener('resize', this.handleResize.bind(this));
-    this.navigator.removeEventListener('mouseenter', this.handleDesktopMouseEnter.bind(this));
-    this.container.removeEventListener('mouseenter', this.handleDesktopTocMouseEnter.bind(this));
-    this.container.removeEventListener('mouseleave', this.handleDesktopTocMouseLeave.bind(this));
-    this.navigator.removeEventListener('click', this.handleMobileClick.bind(this));
+    this.navigator?.removeEventListener('mouseenter', this.handleDesktopMouseEnter.bind(this));
+    this.container?.removeEventListener('mouseenter', this.handleDesktopTocMouseEnter.bind(this));
+    this.container?.removeEventListener('mouseleave', this.handleDesktopTocMouseLeave.bind(this));
+    this.navigator?.removeEventListener('click', this.handleMobileClick.bind(this));
     document.removeEventListener('click', this.handleOutsideClick.bind(this));
     document.removeEventListener('keydown', this.handleKeydown.bind(this));
+
+    // Remove TOC link event listeners
+    this.tocItems.forEach((item) => {
+      item.removeEventListener('click', this.handleTocLinkClick.bind(this));
+    });
   },
 
   setupEventListeners() {
@@ -81,32 +93,84 @@ export const TableOfContents = {
 
     // Handle escape key to close TOC
     document.addEventListener('keydown', this.handleKeydown.bind(this));
+
+    // Add click listeners to TOC links
+    this.tocItems.forEach((item) => {
+      item.addEventListener('click', this.handleTocLinkClick.bind(this));
+    });
+  },
+
+  handleTocLinkClick(event) {
+    const href = event.currentTarget.getAttribute('href').replace('#', '');
+
+    // Mark that we're scrolling programmatically
+    this.isScrollingProgrammatically = true;
+
+    // Clear any existing timeout
+    if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+
+    // Set a timeout to reset the flag and force position check
+    this.scrollTimeout = setTimeout(() => {
+      this.isScrollingProgrammatically = false;
+      // Force activate the clicked heading
+      this.activateHeading(href);
+      // Double-check position after scroll completes
+      setTimeout(() => this.checkPosition(), 100);
+    }, 300); // Wait for scroll animation to complete
+
+    // Hide TOC on mobile after clicking
+    if (this.isMobile()) {
+      this.hideToc();
+    }
   },
 
   checkPosition() {
-    // Find the topmost visible heading
-    const visibleHeadings = this.headings.filter((heading) => {
+    // If we're programmatically scrolling, don't override
+    if (this.isScrollingProgrammatically) return;
+
+    // Find the topmost visible heading with more precise detection
+    const viewportHeight = window.innerHeight;
+    const scrollTop = window.scrollY;
+
+    // Find the heading that's closest to the top of the viewport
+    let closestHeading = null;
+    let closestDistance = Infinity;
+
+    this.headings.forEach((heading) => {
       const rect = heading.getBoundingClientRect();
-      return rect.top >= 0 && rect.top <= window.innerHeight / 2;
+      const distanceFromTop = Math.abs(rect.top);
+
+      // Consider headings that are visible or just passed
+      if (rect.top <= viewportHeight * 0.3 && distanceFromTop < closestDistance) {
+        closestDistance = distanceFromTop;
+        closestHeading = heading;
+      }
     });
 
-    if (visibleHeadings.length > 0) {
-      // Activate the first visible heading
-      const firstVisible = visibleHeadings[0];
-      this.activateHeading(firstVisible.id);
-    } else if (this.headings.length > 0) {
-      // If no visible headings, check if we're already past some headings
-      const pastHeadings = this.headings.filter((heading) => {
-        return heading.getBoundingClientRect().top < 0;
+    // Fallback to previous logic if no close heading found
+    if (!closestHeading) {
+      const visibleHeadings = this.headings.filter((heading) => {
+        const rect = heading.getBoundingClientRect();
+        return rect.top >= 0 && rect.top <= viewportHeight / 2;
       });
 
-      if (pastHeadings.length > 0) {
-        // Activate the last heading we've scrolled past
-        this.activateHeading(pastHeadings[pastHeadings.length - 1].id);
-      } else {
-        // We're before all headings, activate the first one
-        this.activateHeading(this.headings[0].id);
+      if (visibleHeadings.length > 0) {
+        closestHeading = visibleHeadings[0];
+      } else if (this.headings.length > 0) {
+        const pastHeadings = this.headings.filter((heading) => {
+          return heading.getBoundingClientRect().top < 0;
+        });
+
+        if (pastHeadings.length > 0) {
+          closestHeading = pastHeadings[pastHeadings.length - 1];
+        } else {
+          closestHeading = this.headings[0];
+        }
       }
+    }
+
+    if (closestHeading) {
+      this.activateHeading(closestHeading.id);
     }
   },
 
@@ -129,13 +193,29 @@ export const TableOfContents = {
   },
 
   handleIntersection(entries) {
-    this.checkPosition();
+    // Only use intersection observer if we're not programmatically scrolling
+    if (!this.isScrollingProgrammatically) {
+      // Add a small delay to ensure scroll has settled
+      setTimeout(() => {
+        if (!this.isScrollingProgrammatically) {
+          this.checkPosition();
+        }
+      }, 50);
+    }
   },
 
   handleScroll() {
     const scrollTop = window.scrollY;
     this.isScrollingDown = scrollTop > this.lastScrollTop;
     this.lastScrollTop = scrollTop;
+
+    // If we're not programmatically scrolling, check position with debouncing
+    if (!this.isScrollingProgrammatically) {
+      if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+      this.scrollTimeout = setTimeout(() => {
+        this.checkPosition();
+      }, 100);
+    }
   },
 
   // Check if we're on mobile (smaller than Tailwind's `sm` breakpoint)
