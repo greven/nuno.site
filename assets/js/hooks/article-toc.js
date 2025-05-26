@@ -8,8 +8,12 @@ export const TableOfContents = {
     this.container = document.getElementById('toc-container');
     this.navigator = document.getElementById('toc-navigator');
 
-    // Set initial position based on screen size
-    this.setInitialPosition();
+    this.isVisible = false;
+    this.currentActive = null;
+    this.lastScrollTop = window.scrollY;
+    this.isScrollingProgrammatically = false;
+    this.scrollTimeout = null;
+    this.hideTimeout = null;
 
     // Document Header links
     this.headings = this.tocItems
@@ -19,30 +23,14 @@ export const TableOfContents = {
       })
       .filter(Boolean);
 
-    this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
-      root: null,
-      threshold: [0, 0.1, 0.5, 0.9, 1],
-      rootMargin: '-20px 0px -80% 0px',
-    });
-
-    // Observe all headings
-    this.headings.forEach((heading) => {
-      this.observer.observe(heading);
-    });
-
-    this.currentActive = null;
-    this.lastScrollTop = window.scrollY;
-    this.hideTimeout = null;
-    this.isVisible = false;
-    this.isScrollingProgrammatically = false;
-    this.scrollTimeout = null;
-
+    this.positionNavigator();
     this.checkPosition();
+    this.setupIntersectionObserver();
     this.setupEventListeners();
   },
 
   destroyed() {
-    // Clean up the observer when the hook is destroyed
+    // Clean up the observer
     if (this.observer) {
       this.headings.forEach((heading) => {
         if (heading) this.observer.unobserve(heading);
@@ -55,14 +43,18 @@ export const TableOfContents = {
     if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
 
     // Remove all event listeners
+
     window.removeEventListener('scroll', this.handleScroll.bind(this));
     window.removeEventListener('resize', this.handleResize.bind(this));
-    this.navigator?.removeEventListener('mouseenter', this.handleDesktopMouseEnter.bind(this));
-    this.container?.removeEventListener('mouseenter', this.handleDesktopTocMouseEnter.bind(this));
-    this.container?.removeEventListener('mouseleave', this.handleDesktopTocMouseLeave.bind(this));
-    this.navigator?.removeEventListener('click', this.handleMobileClick.bind(this));
+
     document.removeEventListener('click', this.handleOutsideClick.bind(this));
     document.removeEventListener('keydown', this.handleKeydown.bind(this));
+
+    this.container?.removeEventListener('mouseenter', this.handleDesktopTocMouseEnter.bind(this));
+    this.container?.removeEventListener('mouseleave', this.handleDesktopTocMouseLeave.bind(this));
+
+    this.navigator?.removeEventListener('mouseenter', this.handleDesktopMouseEnter.bind(this));
+    this.navigator?.removeEventListener('click', this.handleMobileClick.bind(this));
 
     // Remove TOC link event listeners
     this.tocItems.forEach((item) => {
@@ -70,58 +62,35 @@ export const TableOfContents = {
     });
   },
 
-  setupEventListeners() {
-    // Add event listener to hide ToC
-    this.el.addEventListener('hide_toc', this.hideToc.bind(this));
+  setupIntersectionObserver() {
+    this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
+      root: null,
+      threshold: [0, 0.1, 0.5, 0.9, 1],
+      rootMargin: '-20px 0px -80% 0px',
+    });
 
-    // Add scroll event listener to detect direction
-    window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
-
-    // Handle window resize to adjust initial position
-    window.addEventListener('resize', this.handleResize.bind(this));
-
-    // Desktop: hover events for larger screens
-    this.navigator.addEventListener('mouseenter', this.handleDesktopMouseEnter.bind(this));
-    this.container.addEventListener('mouseenter', this.handleDesktopTocMouseEnter.bind(this));
-    this.container.addEventListener('mouseleave', this.handleDesktopTocMouseLeave.bind(this));
-
-    // Mobile: click events for smaller screens
-    this.navigator.addEventListener('click', this.handleMobileClick.bind(this));
-
-    // Close TOC when clicking outside on mobile
-    document.addEventListener('click', this.handleOutsideClick.bind(this));
-
-    // Handle escape key to close TOC
-    document.addEventListener('keydown', this.handleKeydown.bind(this));
-
-    // Add click listeners to TOC links
-    this.tocItems.forEach((item) => {
-      item.addEventListener('click', this.handleTocLinkClick.bind(this));
+    // Observe all headings
+    this.headings.forEach((heading) => {
+      this.observer.observe(heading);
     });
   },
 
-  handleTocLinkClick(event) {
-    const href = event.currentTarget.getAttribute('href').replace('#', '');
+  setupEventListeners() {
+    window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
+    window.addEventListener('resize', this.handleResize.bind(this));
 
-    // Mark that we're scrolling programmatically
-    this.isScrollingProgrammatically = true;
+    document.addEventListener('click', this.handleOutsideClick.bind(this));
+    document.addEventListener('keydown', this.handleKeydown.bind(this));
 
-    // Clear any existing timeout
-    if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+    this.container.addEventListener('mouseenter', this.handleDesktopTocMouseEnter.bind(this));
+    this.container.addEventListener('mouseleave', this.handleDesktopTocMouseLeave.bind(this));
 
-    // Set a timeout to reset the flag and force position check
-    this.scrollTimeout = setTimeout(() => {
-      this.isScrollingProgrammatically = false;
-      // Force activate the clicked heading
-      this.activateHeading(href);
-      // Double-check position after scroll completes
-      setTimeout(() => this.checkPosition(), 100);
-    }, 300); // Wait for scroll animation to complete
+    this.navigator.addEventListener('mouseenter', this.handleDesktopMouseEnter.bind(this));
+    this.navigator.addEventListener('click', this.handleMobileClick.bind(this));
 
-    // Hide TOC on mobile after clicking
-    if (this.isMobile()) {
-      this.hideToc();
-    }
+    this.tocItems.forEach((item) => {
+      item.addEventListener('click', this.handleTocLinkClick.bind(this));
+    });
   },
 
   checkPosition() {
@@ -192,6 +161,98 @@ export const TableOfContents = {
     });
   },
 
+  // Check if we're on mobile (smaller than Tailwind's `sm` breakpoint)
+  isMobile() {
+    return window.innerWidth < 640;
+  },
+
+  positionNavigator() {
+    this.container.style.opacity = '0';
+
+    if (this.isMobile()) {
+      // Mobile: initially hidden below viewport
+      this.container.style.transform = 'translateY(400px)';
+    } else {
+      // Desktop: initially hidden to the right
+      this.container.style.transform = 'translateX(500px)';
+    }
+  },
+
+  showToc() {
+    if (this.isVisible) return;
+
+    this.isVisible = true;
+    this.navigator.style.opacity = '0';
+    this.container.style.opacity = '1';
+    this.container.removeAttribute('inert');
+
+    this.checkPosition();
+
+    if (this.isMobile()) {
+      // Mobile: slide up from bottom
+      this.container.style.transform = 'translateY(0)';
+    } else {
+      // Desktop: slide in from right
+      this.container.style.transform = 'translateX(0)';
+    }
+  },
+
+  hideToc() {
+    if (!this.isVisible) return;
+
+    this.isVisible = false;
+    this.navigator.style.opacity = '1';
+    this.container.setAttribute('inert', '');
+
+    if (this.isMobile()) {
+      // Mobile: slide down to bottom
+      this.container.style.transform = 'translateY(400px)';
+    } else {
+      // Desktop: slide out to right
+      this.container.style.transform = 'translateX(500px)';
+    }
+  },
+
+  showNavigator() {
+    if (this.isMobile()) {
+      this.navigator.style.transform = 'translateY(0)';
+    } else {
+      this.navigator.style.transform = 'translateX(0)';
+    }
+  },
+
+  hideNavigator() {
+    if (this.isMobile()) {
+      this.navigator.style.transform = 'translateY(100px)';
+    } else {
+      this.navigator.style.transform = 'translateX(100px)';
+    }
+  },
+
+  handleTocLinkClick(event) {
+    const href = event.currentTarget.getAttribute('href').replace('#', '');
+
+    // Mark that we're scrolling programmatically
+    this.isScrollingProgrammatically = true;
+
+    // Clear any existing timeout
+    if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+
+    // Set a timeout to reset the flag and force position check
+    this.scrollTimeout = setTimeout(() => {
+      this.isScrollingProgrammatically = false;
+      // Force activate the clicked heading
+      this.activateHeading(href);
+      // Double-check position after scroll completes
+      setTimeout(() => this.checkPosition(), 100);
+    }, 300); // Wait for scroll animation to complete
+
+    // Hide TOC on mobile after clicking
+    if (this.isMobile()) {
+      this.hideToc();
+    }
+  },
+
   handleIntersection(entries) {
     // Only use intersection observer if we're not programmatically scrolling
     if (!this.isScrollingProgrammatically) {
@@ -216,62 +277,25 @@ export const TableOfContents = {
         this.checkPosition();
       }, 100);
     }
-  },
 
-  // Check if we're on mobile (smaller than Tailwind's `sm` breakpoint)
-  isMobile() {
-    return window.innerWidth < 640;
-  },
-
-  setInitialPosition() {
-    this.container.style.opacity = '0';
-
-    if (this.isMobile()) {
-      // Mobile: initially hidden below viewport
-      this.container.style.transform = 'translateY(400px)';
+    // On mobile, if we are scrolling down, hide the toc and navigator
+    if (this.isScrollingDown) {
+      if (this.isMobile()) {
+        this.hideToc();
+        this.hideNavigator();
+      }
     } else {
-      // Desktop: initially hidden to the right
-      this.container.style.transform = 'translateX(500px)';
+      // If scrolling up, show the navigator
+      if (this.isMobile()) {
+        this.showNavigator();
+      }
     }
   },
 
   handleResize() {
     // Reset position when switching between mobile/desktop
     if (!this.isVisible) {
-      this.setInitialPosition();
-    }
-  },
-
-  showToc() {
-    if (this.isVisible) return;
-
-    this.isVisible = true;
-    this.navigator.style.opacity = '0';
-    this.container.style.opacity = '1';
-    this.container.removeAttribute('inert');
-
-    if (this.isMobile()) {
-      // Mobile: slide up from bottom
-      this.container.style.transform = 'translateY(0)';
-    } else {
-      // Desktop: slide in from right
-      this.container.style.transform = 'translateX(0)';
-    }
-  },
-
-  hideToc() {
-    if (!this.isVisible) return;
-
-    this.isVisible = false;
-    this.navigator.style.opacity = '1';
-    this.container.setAttribute('inert', '');
-
-    if (this.isMobile()) {
-      // Mobile: slide down to bottom
-      this.container.style.transform = 'translateY(400px)';
-    } else {
-      // Desktop: slide out to right
-      this.container.style.transform = 'translateX(500px)';
+      this.positionNavigator();
     }
   },
 

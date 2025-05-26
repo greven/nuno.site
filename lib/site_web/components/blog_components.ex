@@ -491,7 +491,10 @@ defmodule SiteWeb.BlogComponents do
       :if={@headers != [] and @has_links? and length(@headers) > @min_count}
       id="toc"
       phx-hook="TableOfContents"
-      class={["fixed bottom-0 right-1 left-1 sm:bottom-auto sm:right-6 sm:top-[364px] z-10", @class]}
+      class={[
+        "fixed bottom-0 right-1 left-1 sm:top-[364px] sm:bottom-auto sm:right-6 sm:left-auto z-10",
+        @class
+      ]}
       {@rest}
     >
       <div class="relative isolate flex justify-end">
@@ -509,13 +512,13 @@ defmodule SiteWeb.BlogComponents do
   defp toc_navigator(assigns) do
     ~H"""
     <div
-      class="absolute -bottom-1 -right-1 sm:top-0 sm:right-0 sm:bottom-auto p-4"
+      class="absolute -bottom-1 -right-1 sm:top-0 sm:right-0 sm:bottom-auto p-4 transition ease-in-out duration-300"
       style="opacity: 1"
       {@rest}
     >
       <%!-- Regular --%>
       <div class="hidden sm:block w-fit px-2.5 py-2.5 translate-x-4 bg-surface-10/80
-          border border-surface-30 shadow-xs rounded-full backdrop-blur-sm transition duration-500">
+          border border-surface-30 shadow-xs rounded-full backdrop-blur-sm">
         <ol class="space-y-1">
           <li
             :for={header <- @headers}
@@ -530,9 +533,9 @@ defmodule SiteWeb.BlogComponents do
       </div>
 
       <%!-- Mini (mobile) --%>
-      <div class="sm:hidden flex items-center justify-center w-12 h-12 bg-surface-10/80 border border-surface-30
-        shadow-xs rounded-full backdrop-blur-sm transition duration-500">
-        <.icon name="hero-list-bullet-mini" class="text-primary size-6" />
+      <div class="sm:hidden flex items-center justify-center w-12 h-12 bg-surface-10/90 border
+        border-surface-30 shadow-xs rounded-full backdrop-blur-sm">
+        <.icon name="hero-list-bullet-mini" class="text-content-40 size-6" />
       </div>
     </div>
     """
@@ -547,8 +550,8 @@ defmodule SiteWeb.BlogComponents do
     <div
       id="toc-container"
       class="relative w-full mb-1 min-w-[264px] max-w-[448px] sm:mb-20 sm:w-auto p-5 z-10
-            bg-surface-10 border border-surface-30 rounded-box shadow-box backdrop-blur-sm
-            transition-transform ease-in-out duration-300"
+          bg-surface-10/95 rounded-box border border-surface-30 shadow-xs
+            backdrop-blur-sm transition-transform ease-in-out duration-400"
       style="opacity: 0; transform: translateY(400px);"
       inert
       {@rest}
@@ -561,15 +564,8 @@ defmodule SiteWeb.BlogComponents do
           <div class="font-headings text-content-30">Contents</div>
         </div>
 
-        <%!-- Close button for mobile --%>
-        <div class="sm:hidden">
-          <.icon_button type="button" variant="ghost" size="sm" phx-click={JS.dispatch("hide_toc")}>
-            <.icon name="hero-x-mark" class="size-4 text-content-40" />
-          </.icon_button>
-        </div>
-
         <%!-- Go to Top --%>
-        <div class="hidden relative group sm:flex items-center gap-1 text-sm text-content-40/75 isolate
+        <div class="relative group sm:flex items-center gap-1 text-sm text-content-40/75 isolate
               transition hover:text-content-10 hover:cursor-pointer">
           <a href="#" class="absolute inset-0 z-10"></a>
           <.icon

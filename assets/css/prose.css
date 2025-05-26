@@ -174,7 +174,7 @@
     blockquote {
       position: relative;
       margin-block: 1.75em;
-      padding-inline-start: 1.75em;
+      padding-inline-start: 1.65em;
       font-weight: var(--font-weight-normal);
       font-size: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
       quotes: '\201C''\201D''\2018''\2019';
@@ -198,12 +198,12 @@
 
       :where(p:first-of-type)::before {
         content: open-quote;
-        margin-left: -1rem;
+        margin-left: -0.75rem;
       }
 
       :where(p:first-of-type)::after {
         content: close-quote;
-        margin-left: 0.5rem;
+        margin-left: 0.35rem;
       }
     }
 
