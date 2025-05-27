@@ -186,7 +186,7 @@ defmodule SiteWeb.Layouts do
 
   def page_content(assigns) do
     ~H"""
-    <div class={["relative mt-12 md:mt-16 lg:mt-32", @class]} {@rest}>
+    <div class={["relative mt-8 md:mt-16 lg:mt-32", @class]} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """

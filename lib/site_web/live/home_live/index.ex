@@ -25,6 +25,18 @@ defmodule SiteWeb.HomeLive.Index do
             Travel
           </SiteComponents.bento_box>
         </SiteComponents.bento_grid>
+
+        <div class="mt-32">
+          <%!-- <.modal id="basic-modal">
+            <:header>Basic Modal</:header>
+            This is a simple modal with some content.
+            <:actions>
+              <.button phx-click={hide_modal("basic-modal")}>Close</.button>
+            </:actions>
+          </.modal>
+
+          <.button phx-click={show_modal("basic-modal")}>Open Modal</.button> --%>
+        </div>
       </div>
     </Layouts.app>
     """

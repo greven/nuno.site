@@ -688,6 +688,19 @@ defmodule SiteWeb.CoreComponents do
     String.replace(src, ~r/\.(jpg|jpeg|png|gif)$/, ".#{ext}")
   end
 
+  @doc """
+  Renders a modal dialog using the native HTML <dialog> element.
+  """
+
+  attr :id, :string, required: true
+
+  # TODO: ...!!!
+  def modal(assigns) do
+    ~H"""
+    <dialog id={@id} class="relative z-10"></dialog>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do
