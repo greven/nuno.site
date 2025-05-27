@@ -20,12 +20,33 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <div class="min-h-screen flex flex-col">
       <.site_header active_link={@active_link} />
-      <main id="main" class={["relative flex-auto", if(@wide, do: "wide-wrapper", else: "wrapper")]}>
-        {render_slot(@inner_block)}
+      <main id="main" class="relative flex-auto">
+        <.wrapper wide={@wide}>
+          {render_slot(@inner_block)}
+        </.wrapper>
       </main>
 
       <.site_footer />
       <.flash_group flash={@flash} />
+    </div>
+    """
+  end
+
+  @doc """
+  Layout wrapper component that sets a maximum width for the content based on the
+  utility class `wrapper` or `wide-wrapper` if the `wide` assign is set to `true`.
+  """
+
+  def wrapper(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:wide, fn -> false end)
+      |> assign_new(:class, fn -> nil end)
+      |> assign(:wrapper_class, if(assigns[:wide], do: "wide-wrapper", else: "wrapper"))
+
+    ~H"""
+    <div class={[@class, @wrapper_class]}>
+      {render_slot(@inner_block)}
     </div>
     """
   end

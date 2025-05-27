@@ -4,7 +4,7 @@
   .prose {
     --prose-border-color: --alpha(var(--color-surface-40) / 0.5);
 
-    color: var(--color-content-20);
+    color: var(--color-content-10);
     font-size: clamp(1rem, 1rem + 0.25vw, 1.125rem);
     font-weight: var(--font-weight-light);
     line-height: 1.6;
@@ -31,7 +31,7 @@
     .h3,
     h4,
     .h4 {
-      color: var(--color-content-10);
+      color: var(--color-content);
       font-weight: var(--font-weight-medium);
       scroll-margin-block: 84px;
     }
@@ -96,7 +96,7 @@
 
       &.lead {
         margin-bottom: 1.75rem;
-        color: var(--color-content-10);
+        color: var(--color-content);
         font-weight: var(--font-weight-normal);
         font-size: clamp(1.25rem, 1rem + 0.5vw, 1.275rem);
         letter-spacing: -0.025em;
@@ -249,7 +249,7 @@
       &::before,
       &::after {
         content: '`';
-        color: --alpha(var(--color-content-40) / 0.9);
+        color: var(--color-content-40);
       }
     }
 

@@ -83,8 +83,7 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <h1
       class={[
-        "font-medium text-3xl/10 sm:text-4xl/12 lg:text-5xl/14 text-center text-balance
-          text-content-10",
+        "font-medium text-3xl/10 sm:text-4xl/12 lg:text-5xl/14 text-content text-center text-balance",
         @underline &&
           "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6
             decoration-[2px] md:decoration-[3px] decoration-primary",
@@ -210,6 +209,52 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
+  attr :post, Blog.Post, required: true
+  attr :readers, :integer, default: nil
+  attr :page_views, :integer, default: nil
+  attr :class, :string, default: nil
+
+  def post_header(assigns) do
+    ~H"""
+    <div class={@class}>
+      <div class="flex flex-wrap items-center justify-center gap-1.5">
+        <.post_category post={@post} />
+        <.post_tags post={@post} />
+      </div>
+
+      <.post_title class="mt-6" post={@post} />
+      <.post_meta
+        post={@post}
+        readers={@readers}
+        views={@page_views}
+        class="mt-4 md:mt-5 text-center"
+      />
+
+      <.post_updated_disclaimer post={@post} class="mt-8 text-center" />
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
+  attr :show_toc, :boolean, default: true
+  attr :class, :string, default: nil
+
+  def post_content(assigns) do
+    ~H"""
+    <article class={@class}>
+      <.table_of_contents :if={@post.show_toc} headers={@post.headers} />
+
+      <div class="prose">
+        {raw(@post.body)}
+      </div>
+    </article>
+    """
+  end
+
+  @doc false
+
   attr :next_post, Blog.Post, default: nil
   attr :prev_post, Blog.Post, default: nil
   attr :rest, :global
@@ -261,7 +306,7 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <.link navigate={@link} {@rest}>
       <div class="group border border-surface-30 rounded-box p-4 transition hover:border-primary">
-        <div class={["w-full", @dir == :next && "text-right"]}>
+        <div class={["w-full flex flex-col gap-0.5", @dir == :next && "text-right"]}>
           <div class={["flex items-center gap-1", @dir == :next && "justify-end"]}>
             <.icon
               name={if @dir == :prev, do: "lucide-arrow-left", else: "lucide-arrow-right"}
@@ -499,7 +544,7 @@ defmodule SiteWeb.BlogComponents do
     >
       <div class="relative isolate flex justify-end">
         <.toc_navigator id="toc-navigator" headers={@headers} depth={@depth} />
-        <.toc_container id="toc-container" headers={@headers} depth={@depth} />
+        <.toc_content id="toc-container" headers={@headers} depth={@depth} />
       </div>
     </div>
     """
@@ -512,12 +557,12 @@ defmodule SiteWeb.BlogComponents do
   defp toc_navigator(assigns) do
     ~H"""
     <div
-      class="absolute -bottom-1 -right-1 sm:top-0 sm:right-0 sm:bottom-auto p-4 transition ease-in-out duration-300"
+      class="absolute bottom-0 right-0 sm:top-0 sm:right-0 sm:bottom-auto p-2 transition ease-in-out duration-300"
       style="opacity: 1"
       {@rest}
     >
       <%!-- Regular --%>
-      <div class="hidden sm:block w-fit px-2.5 py-2.5 translate-x-4 bg-surface-10/80
+      <div class="hidden sm:block w-fit px-2.5 py-2.5 bg-surface-10/80
           border border-surface-30 shadow-xs rounded-full backdrop-blur-sm">
         <ol class="space-y-1">
           <li
@@ -545,7 +590,7 @@ defmodule SiteWeb.BlogComponents do
   attr :depth, :integer, required: true
   attr :rest, :global
 
-  defp toc_container(assigns) do
+  defp toc_content(assigns) do
     ~H"""
     <div
       id="toc-container"
@@ -556,8 +601,9 @@ defmodule SiteWeb.BlogComponents do
       inert
       {@rest}
     >
-      <%!-- Container Header --%>
       <div class="absolute -inset-4"></div>
+
+      <%!-- Container Header --%>
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-2.5">
           <.icon name="hero-list-bullet-mini" class="text-content-20/50 size-4.5" />
@@ -592,9 +638,9 @@ defmodule SiteWeb.BlogComponents do
           :for={header <- @headers}
           :if={header.depth <= @depth}
           class="group relative flex items-center text-sm text-content-40
-            before:content-[''] before:absolute before:-left-[calc(--spacing(5)+1px)] before:w-px before:h-5
-            before:border-l-2 before:border-l-transparent data-[active]:text-content-10 data-[active]:before:border-l-primary
-            hover:text-content-20 transition-all"
+            before:content-[''] before:absolute before:-left-[calc(--spacing(5)+1px)] before:w-px
+            before:h-5 before:border-l-2 before:border-l-transparent data-[active]:text-content-10
+            data-[active]:before:border-l-primary hover:text-content-20 transition-all"
         >
           <a href={"##{header.id}"} class="line-clamp-1">
             {header.text}

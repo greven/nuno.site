@@ -9,26 +9,8 @@ defmodule SiteWeb.BlogLive.Show do
     ~H"""
     <Layouts.app flash={@flash} active_link={@active_link} page_transition>
       <Layouts.page_content class="post">
-        <div class="flex flex-wrap items-center justify-center gap-1.5">
-          <BlogComponents.post_category post={@post} />
-          <BlogComponents.post_tags post={@post} />
-        </div>
-
-        <BlogComponents.post_title class="mt-6" post={@post} />
-        <BlogComponents.post_meta
-          post={@post}
-          readers={@readers}
-          views={@page_views}
-          class="mt-4 md:mt-5 text-center"
-        />
-
-        <BlogComponents.post_updated_disclaimer post={@post} class="mt-8 text-center" />
-        <BlogComponents.table_of_contents :if={@post.show_toc} headers={@post.headers} />
-
-        <article class="mt-10 md:mt-16 prose">
-          {raw(@post.body)}
-        </article>
-
+        <BlogComponents.post_header post={@post} readers={@readers} page_views={@page_views} />
+        <BlogComponents.post_content class="relative mt-10 md:mt-16" post={@post} />
         <BlogComponents.post_footer class="my-10" next_post={@next_post} prev_post={@prev_post} />
       </Layouts.page_content>
     </Layouts.app>
