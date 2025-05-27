@@ -97,49 +97,66 @@ export const TableOfContents = {
     // If we're programmatically scrolling, don't override
     if (this.isScrollingProgrammatically) return;
 
-    // Find the topmost visible heading with more precise detection
     const viewportHeight = window.innerHeight;
-    const scrollTop = window.scrollY;
 
-    // Find the heading that's closest to the top of the viewport
-    let closestHeading = null;
-    let closestDistance = Infinity;
+    // Define a stable activation zone (top 30% of viewport)
+    const activationThreshold = viewportHeight * 0.3;
 
-    this.headings.forEach((heading) => {
+    let targetHeading = null;
+
+    // Strategy 1: Find headings currently in the activation zone
+    const headingsInZone = this.headings.filter((heading) => {
       const rect = heading.getBoundingClientRect();
-      const distanceFromTop = Math.abs(rect.top);
-
-      // Consider headings that are visible or just passed
-      if (rect.top <= viewportHeight * 0.3 && distanceFromTop < closestDistance) {
-        closestDistance = distanceFromTop;
-        closestHeading = heading;
-      }
+      return rect.top >= 0 && rect.top <= activationThreshold;
     });
 
-    // Fallback to previous logic if no close heading found
-    if (!closestHeading) {
-      const visibleHeadings = this.headings.filter((heading) => {
+    if (headingsInZone.length > 0) {
+      // Use the first heading in the activation zone
+      targetHeading = headingsInZone[0];
+    } else {
+      // Strategy 2: Find the last heading that has passed the activation threshold
+      const passedHeadings = this.headings.filter((heading) => {
         const rect = heading.getBoundingClientRect();
-        return rect.top >= 0 && rect.top <= viewportHeight / 2;
+        return rect.top < activationThreshold;
       });
 
-      if (visibleHeadings.length > 0) {
-        closestHeading = visibleHeadings[0];
-      } else if (this.headings.length > 0) {
-        const pastHeadings = this.headings.filter((heading) => {
-          return heading.getBoundingClientRect().top < 0;
-        });
+      if (passedHeadings.length > 0) {
+        // Get the last heading that passed the threshold
+        targetHeading = passedHeadings[passedHeadings.length - 1];
 
-        if (pastHeadings.length > 0) {
-          closestHeading = pastHeadings[pastHeadings.length - 1];
-        } else {
-          closestHeading = this.headings[0];
+        // Add hysteresis: only switch if we're significantly past the current heading
+        if (this.currentActive) {
+          const currentActiveElement = this.headings.find((h) => h.id === this.currentActive);
+          if (currentActiveElement) {
+            const currentRect = currentActiveElement.getBoundingClientRect();
+            const targetRect = targetHeading.getBoundingClientRect();
+
+            // If current heading is still close to the top and target is below it,
+            // stick with current (prevents jumping when current is just below threshold)
+            if (currentRect.top > -100 && targetRect.top < currentRect.top) {
+              const currentIndex = this.headings.indexOf(currentActiveElement);
+              const targetIndex = this.headings.indexOf(targetHeading);
+
+              // Only switch if we're moving significantly forward or backward
+              if (Math.abs(targetIndex - currentIndex) === 1) {
+                // Add extra buffer for adjacent headings
+                if (this.isScrollingDown && targetRect.top > -50) {
+                  targetHeading = currentActiveElement;
+                } else if (!this.isScrollingDown && currentRect.top < 50) {
+                  targetHeading = currentActiveElement;
+                }
+              }
+            }
+          }
         }
+      } else {
+        // Strategy 3: Default to first heading if nothing has passed
+        targetHeading = this.headings.length > 0 ? this.headings[0] : null;
       }
     }
 
-    if (closestHeading) {
-      this.activateHeading(closestHeading.id);
+    if (targetHeading && targetHeading.id !== this.currentActive) {
+      this.activateHeading(targetHeading.id);
     }
   },
 
