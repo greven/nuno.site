@@ -15,6 +15,18 @@ export const ProfileSlideshow = {
     this.el.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
     this.el.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
 
+    // Add navigation button event listeners
+    const prevButton = this.el.querySelector('.slideshow-nav-prev');
+    const nextButton = this.el.querySelector('.slideshow-nav-next');
+
+    if (prevButton) {
+      prevButton.addEventListener('click', this.handlePreviousClick.bind(this));
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener('click', this.handleNextClick.bind(this));
+    }
+
     // Pause slideshow when tab is not visible
     document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
 
@@ -24,6 +36,14 @@ export const ProfileSlideshow = {
       document.removeEventListener('visibilitychange', this.handleVisibilityChange);
       this.el.removeEventListener('mouseenter', this.handleMouseEnter);
       this.el.removeEventListener('mouseleave', this.handleMouseLeave);
+
+      if (prevButton) {
+        prevButton.removeEventListener('click', this.handlePreviousClick);
+      }
+
+      if (nextButton) {
+        nextButton.removeEventListener('click', this.handleNextClick);
+      }
     };
   },
 
@@ -41,6 +61,16 @@ export const ProfileSlideshow = {
   handleMouseLeave() {
     // Resume the slideshow when mouse leaves
     this.resumeSlideshow();
+  },
+
+  handlePreviousClick() {
+    this.previousSlide();
+    this.resetAndRestartSlideshow();
+  },
+
+  handleNextClick() {
+    this.nextSlide();
+    this.resetAndRestartSlideshow();
   },
 
   handleVisibilityChange() {
@@ -141,5 +171,31 @@ export const ProfileSlideshow = {
     // Restart progress animation
     this.resetProgress();
     this.startProgress();
+  },
+
+  previousSlide() {
+    // Remove the attribute data-active class from current slide
+    this.slides[this.currentSlideIndex].removeAttribute('data-active');
+
+    // Update slide index (go backwards, with wraparound)
+    this.currentSlideIndex = (this.currentSlideIndex - 1 + this.slides.length) % this.slides.length;
+
+    // Add data-active attribute to new slide
+    this.slides[this.currentSlideIndex].setAttribute('data-active', '');
+
+    // Restart progress animation
+    this.resetProgress();
+    this.startProgress();
+  },
+
+  resetAndRestartSlideshow() {
+    // Clear existing timers
+    this.stopSlideshow();
+    this.remainingTime = null;
+
+    // Restart the slideshow with full duration
+    this.resetProgress();
+    this.startProgress();
+    this.startSlideshow();
   },
 };

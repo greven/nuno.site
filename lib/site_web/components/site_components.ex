@@ -1,6 +1,6 @@
 defmodule SiteWeb.SiteComponents do
   @moduledoc """
-  Custom components for the site.
+  Site wide custom components.
   """
 
   use SiteWeb, :html
@@ -142,6 +142,15 @@ defmodule SiteWeb.SiteComponents do
           alt="Photo of traditional Lisbon buildings"
           title="Lisbon"
         />
+
+        <%!-- Navigation Buttons --%>
+        <button type="button" class="slideshow-nav-prev" aria-label="Previous image">
+          <.icon name="hero-chevron-left-mini" class="size-6" />
+        </button>
+
+        <button type="button" class="slideshow-nav-next" aria-label="Next image">
+          <.icon name="hero-chevron-right-mini" class="size-6" />
+        </button>
       </div>
     </div>
     """

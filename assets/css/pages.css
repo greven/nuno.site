@@ -75,6 +75,59 @@
       border-radius: 100%;
       box-shadow: var(--shadow-lg);
     }
+
+    /* Navigation buttons */
+    & .slideshow-nav-prev,
+    & .slideshow-nav-next {
+      position: absolute;
+      top: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-content-20);
+      background-color: --alpha(var(--color-surface-10) / 0.8);
+      border: 1px solid var(--color-surface-20);
+      border-radius: 50%;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(8px);
+      transform: translateY(-50%);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      z-index: 10;
+      opacity: 0;
+
+      &:hover {
+        color: var(--color-content-10);
+        background-color: --alpha(var(--color-surface-10) / 0.95);
+        border-color: var(--color-secondary);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-50%) scale(1.05);
+      }
+
+      &:active {
+        transform: translateY(-50%) scale(0.95);
+      }
+    }
+
+    & .slideshow-nav-prev {
+      left: 0.25rem;
+    }
+
+    & .slideshow-nav-next {
+      right: 0.25rem;
+    }
+
+    &:hover .slideshow-nav-prev,
+    &:hover .slideshow-nav-next {
+      opacity: 1;
+    }
+
+    & .slideshow-nav-prev:focus-visible,
+    & .slideshow-nav-next:focus-visible {
+      opacity: 1;
+    }
   }
 
   .blog-article {
@@ -82,45 +135,49 @@
     flex-direction: column;
     isolation: isolate;
 
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 3px;
-      border-radius: calc(var(--radius-box) - 2px);
-      background-image: repeating-linear-gradient(
-        135deg,
-        var(--color-primary),
-        var(--color-primary) 1px,
-        transparent 1px,
-        transparent 6px
-      );
-      mask-image: linear-gradient(to left top, black, transparent 90%),
-        linear-gradient(45deg, black, transparent 65%);
-      mask-composite: intersect;
-      filter: grayscale(100%);
-      transition: filter opacity 150ms ease-in-out;
-      opacity: 0.1;
-      z-index: -1;
-    }
+    @variant lg {
+      /* Stripes */
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 3px;
+        border-radius: calc(var(--radius-box) - 2px);
+        background-image: repeating-linear-gradient(
+          135deg,
+          var(--color-primary),
+          var(--color-primary) 1px,
+          transparent 1px,
+          transparent 6px
+        );
+        mask-image: linear-gradient(to left top, black, transparent 90%),
+          linear-gradient(45deg, black, transparent 65%);
+        mask-composite: intersect;
+        filter: grayscale(100%);
+        transition: filter opacity 150ms ease-in-out;
+        opacity: 0.2;
+        z-index: -1;
+      }
 
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 3px;
-    }
+      /* Gradient */
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 3px;
+      }
 
-    &:hover::before {
-      filter: none;
-      opacity: 0.3;
-    }
+      &:hover::before {
+        filter: none;
+        opacity: 0.35;
+      }
 
-    &:hover::after {
-      border-radius: var(--radius-box);
-      background-image: linear-gradient(
-        30deg,
-        --alpha(var(--color-primary) / var(--bg-opacity, 3%)),
-        transparent 80%
-      );
+      &:hover::after {
+        border-radius: var(--radius-box);
+        background-image: linear-gradient(
+          30deg,
+          --alpha(var(--color-primary) / var(--bg-opacity, 3%)),
+          transparent 80%
+        );
+      }
     }
   }
 }

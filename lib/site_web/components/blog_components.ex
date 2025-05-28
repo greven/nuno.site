@@ -239,16 +239,12 @@ defmodule SiteWeb.BlogComponents do
 
   attr :post, Blog.Post, required: true
   attr :show_toc, :boolean, default: true
-  attr :class, :string, default: nil
 
   def post_content(assigns) do
     ~H"""
-    <article class={@class}>
+    <article class="relative mt-10 md:mt-16 [--article-gap:14.5rem] lg:[--article-gap:16rem]">
       <.table_of_contents :if={@post.show_toc} headers={@post.headers} />
-
-      <div class="prose">
-        {raw(@post.body)}
-      </div>
+      <div class="prose">{raw(@post.body)}</div>
     </article>
     """
   end
@@ -257,11 +253,10 @@ defmodule SiteWeb.BlogComponents do
 
   attr :next_post, Blog.Post, default: nil
   attr :prev_post, Blog.Post, default: nil
-  attr :rest, :global
 
   def post_footer(assigns) do
     ~H"""
-    <div {@rest}>
+    <div class="my-10">
       <.post_pagination
         :if={@next_post || @prev_post}
         next_post={@next_post}
@@ -305,7 +300,7 @@ defmodule SiteWeb.BlogComponents do
   defp post_pager(%{link: link} = assigns) when not is_nil(link) do
     ~H"""
     <.link navigate={@link} {@rest}>
-      <div class="group border border-surface-30 rounded-box p-4 transition hover:border-primary">
+      <div class="group bg-surface-10 border border-surface-30 rounded-box p-4 transition hover:border-primary">
         <div class={["w-full flex flex-col gap-0.5", @dir == :next && "text-right"]}>
           <div class={["flex items-center gap-1", @dir == :next && "justify-end"]}>
             <.icon
@@ -336,7 +331,7 @@ defmodule SiteWeb.BlogComponents do
   defp post_pager(assigns) do
     ~H"""
     <div class="relative border border-surface-30 rounded-box p-4 flex items-center
-        justify-center text-content-30 opacity-40 select-none">
+        justify-center text-content-30 opacity-40 select-none cursor-not-allowed">
       <div
         class="absolute inset-0 opacity-20 -z-10"
         style="background-image: repeating-linear-gradient(135deg, var(--color-content-40), var(--color-content-40) 1px, transparent 1px, transparent 6px);"
@@ -537,7 +532,8 @@ defmodule SiteWeb.BlogComponents do
       id="toc"
       phx-hook="TableOfContents"
       class={[
-        "fixed bottom-0 right-1 left-1 sm:top-[364px] sm:bottom-auto sm:right-6 sm:left-auto z-10",
+        "fixed bottom-0 left-1 right-1 z-10",
+        "sm:top-[calc(var(--page-gap)+var(--article-gap))] sm:bottom-auto sm:left-auto sm:right-4",
         @class
       ]}
       {@rest}
@@ -594,9 +590,9 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <div
       id="toc-container"
-      class="relative w-full mb-1 min-w-[264px] max-w-[448px] sm:mb-20 sm:w-auto p-5 z-10
+      class="relative w-full mb-1 sm:min-w-[264px] sm:max-w-[448px] sm:mb-20 sm:w-auto p-5 z-10
           bg-surface-10/95 rounded-box border border-surface-30 shadow-xs
-            backdrop-blur-sm transition-transform ease-in-out duration-400"
+            backdrop-blur-sm transition-transform ease-in-out duration-500"
       style="opacity: 0; transform: translateY(400px);"
       inert
       {@rest}

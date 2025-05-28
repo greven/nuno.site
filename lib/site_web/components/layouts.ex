@@ -20,7 +20,7 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <div class="min-h-screen flex flex-col">
       <.site_header active_link={@active_link} />
-      <main id="main" class="relative flex-auto">
+      <main id="main" class="relative flex-auto" phx-hook="Layout">
         <.wrapper wide={@wide}>
           {render_slot(@inner_block)}
         </.wrapper>
@@ -186,7 +186,15 @@ defmodule SiteWeb.Layouts do
 
   def page_content(assigns) do
     ~H"""
-    <div class={["relative mt-8 md:mt-16 lg:mt-32", @class]} {@rest}>
+    <div
+      id="page-content"
+      class={[
+        "relative mt-8 md:mt-16 lg:mt-32",
+        "[--page-gap:2rem] md:[--page-gap:4rem] lg:[--page-gap:8rem]",
+        @class
+      ]}
+      {@rest}
+    >
       {render_slot(@inner_block)}
     </div>
     """

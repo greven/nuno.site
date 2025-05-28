@@ -829,7 +829,7 @@ defmodule SiteWeb.CoreComponents do
 
   def badge_color_class("dot", color) do
     base_class =
-      "bg-surface-10 text-gray-700 ring-1 ring-inset ring-gray-300 dark:text-gray-400 dark:ring-gray-800 before:content=[''] before:size-1.5 before:rounded-full"
+      "bg-surface-10 text-content-32 ring-1 ring-inset ring-surface-40 dark:text-content-20 dark:ring-surface-30 before:content=[''] before:size-1.5 before:rounded-full"
 
     [badge_dot_color(color), base_class]
   end

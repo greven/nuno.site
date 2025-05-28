@@ -8,10 +8,10 @@ defmodule SiteWeb.BlogLive.Show do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} active_link={@active_link} page_transition>
-      <Layouts.page_content class="post">
+      <Layouts.page_content class="relative post">
         <BlogComponents.post_header post={@post} readers={@readers} page_views={@page_views} />
-        <BlogComponents.post_content class="relative mt-10 md:mt-16" post={@post} />
-        <BlogComponents.post_footer class="my-10" next_post={@next_post} prev_post={@prev_post} />
+        <BlogComponents.post_content post={@post} />
+        <BlogComponents.post_footer next_post={@next_post} prev_post={@prev_post} />
       </Layouts.page_content>
     </Layouts.app>
     """

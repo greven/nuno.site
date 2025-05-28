@@ -1,3 +1,6 @@
+const DESKTOP_OFFSET_X = 999;
+const MOBILE_OFFSET_Y = 999;
+
 export const TableOfContents = {
   mounted() {
     // TOC list items
@@ -11,8 +14,6 @@ export const TableOfContents = {
     this.isVisible = false;
     this.currentActive = null;
     this.lastScrollTop = window.scrollY;
-    this.isScrollingProgrammatically = false;
-    this.scrollTimeout = null;
     this.hideTimeout = null;
 
     // Document Header links
@@ -40,10 +41,8 @@ export const TableOfContents = {
 
     // Clear timeouts
     if (this.hideTimeout) clearTimeout(this.hideTimeout);
-    if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
 
     // Remove all event listeners
-
     window.removeEventListener('scroll', this.handleScroll.bind(this));
     window.removeEventListener('resize', this.handleResize.bind(this));
 
@@ -55,11 +54,6 @@ export const TableOfContents = {
 
     this.navigator?.removeEventListener('mouseenter', this.handleDesktopMouseEnter.bind(this));
     this.navigator?.removeEventListener('click', this.handleMobileClick.bind(this));
-
-    // Remove TOC link event listeners
-    this.tocItems.forEach((item) => {
-      item.removeEventListener('click', this.handleTocLinkClick.bind(this));
-    });
   },
 
   setupIntersectionObserver() {
@@ -87,16 +81,9 @@ export const TableOfContents = {
 
     this.navigator.addEventListener('mouseenter', this.handleDesktopMouseEnter.bind(this));
     this.navigator.addEventListener('click', this.handleMobileClick.bind(this));
-
-    this.tocItems.forEach((item) => {
-      item.addEventListener('click', this.handleTocLinkClick.bind(this));
-    });
   },
 
   checkPosition() {
-    // If we're programmatically scrolling, don't override
-    if (this.isScrollingProgrammatically) return;
-
     const viewportHeight = window.innerHeight;
 
     // Define a stable activation zone (top 30% of viewport)
@@ -188,10 +175,10 @@ export const TableOfContents = {
 
     if (this.isMobile()) {
       // Mobile: initially hidden below viewport
-      this.container.style.transform = 'translateY(400px)';
+      this.container.style.transform = `translateY(${MOBILE_OFFSET_Y}px)`;
     } else {
       // Desktop: initially hidden to the right
-      this.container.style.transform = 'translateX(500px)';
+      this.container.style.transform = `translateX(${DESKTOP_OFFSET_X}px)`;
     }
   },
 
@@ -223,10 +210,10 @@ export const TableOfContents = {
 
     if (this.isMobile()) {
       // Mobile: slide down to bottom
-      this.container.style.transform = 'translateY(400px)';
+      this.container.style.transform = `translateY(${MOBILE_OFFSET_Y}px)`;
     } else {
       // Desktop: slide out to right
-      this.container.style.transform = 'translateX(500px)';
+      this.container.style.transform = `translateX(${DESKTOP_OFFSET_X}px)`;
     }
   },
 
@@ -246,54 +233,14 @@ export const TableOfContents = {
     }
   },
 
-  handleTocLinkClick(event) {
-    const href = event.currentTarget.getAttribute('href').replace('#', '');
-
-    // Mark that we're scrolling programmatically
-    this.isScrollingProgrammatically = true;
-
-    // Clear any existing timeout
-    if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
-
-    // Set a timeout to reset the flag and force position check
-    this.scrollTimeout = setTimeout(() => {
-      this.isScrollingProgrammatically = false;
-      // Force activate the clicked heading
-      this.activateHeading(href);
-      // Double-check position after scroll completes
-      setTimeout(() => this.checkPosition(), 100);
-    }, 300); // Wait for scroll animation to complete
-
-    // Hide TOC on mobile after clicking
-    if (this.isMobile()) {
-      this.hideToc();
-    }
-  },
-
   handleIntersection(entries) {
-    // Only use intersection observer if we're not programmatically scrolling
-    if (!this.isScrollingProgrammatically) {
-      // Add a small delay to ensure scroll has settled
-      setTimeout(() => {
-        if (!this.isScrollingProgrammatically) {
-          this.checkPosition();
-        }
-      }, 50);
-    }
+    this.checkPosition();
   },
 
   handleScroll() {
     const scrollTop = window.scrollY;
     this.isScrollingDown = scrollTop > this.lastScrollTop;
     this.lastScrollTop = scrollTop;
-
-    // If we're not programmatically scrolling, check position with debouncing
-    if (!this.isScrollingProgrammatically) {
-      if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
-      this.scrollTimeout = setTimeout(() => {
-        this.checkPosition();
-      }, 100);
-    }
 
     // On mobile, if we are scrolling down, hide the toc and navigator
     if (this.isScrollingDown) {
