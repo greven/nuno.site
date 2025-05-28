@@ -32,7 +32,7 @@ defmodule SiteWeb.TagsLive.Show do
             </.link>
           </:header>
 
-          <:items :let={articles} class="mt-4 flex flex-col gap-4 md:gap-3">
+          <:items :let={articles} class="mt-4 flex flex-col gap-8 md:gap-4">
             <BlogComponents.post_item :for={article <- articles} post={article} />
           </:items>
         </BlogComponents.grouped_articles_list>

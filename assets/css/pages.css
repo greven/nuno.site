@@ -9,12 +9,12 @@
       content: '';
       position: absolute;
       inset: -0.325rem;
-      border: 0.1rem solid --alpha(var(--color-content-40) / 0.5);
+      border: 0.1rem solid --alpha(var(--color-content-40) / 0.4);
       border-radius: 100%;
       background: repeating-linear-gradient(
         45deg,
-        --alpha(var(--color-content-40) / 0.5),
-        --alpha(var(--color-content-40) / 0.5) 0.1rem,
+        --alpha(var(--color-content-40) / 0.3),
+        --alpha(var(--color-content-40) / 0.35) 0.1rem,
         transparent 0,
         transparent 0.725rem
       );
@@ -29,7 +29,7 @@
       border-radius: 100%;
       box-shadow: var(--shadow-lg);
       background: conic-gradient(
-        --alpha(var(--color-content-10) / 0.9) var(--progress, 0%),
+        --alpha(var(--color-primary) / 0.9) var(--progress, 0%),
         transparent var(--progress, 0%)
       );
       mask: radial-gradient(
@@ -39,6 +39,7 @@
       );
       opacity: 1;
       z-index: -1;
+      transition: opacity 0.3s ease;
     }
 
     & .slideshow-container {
@@ -127,6 +128,10 @@
     & .slideshow-nav-prev:focus-visible,
     & .slideshow-nav-next:focus-visible {
       opacity: 1;
+    }
+
+    &:hover::after {
+      opacity: 0;
     }
   }
 

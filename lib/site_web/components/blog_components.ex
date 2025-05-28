@@ -47,7 +47,7 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <div
       class={[
-        "relative group flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-8",
+        "relative group flex flex-col gap-1 md:flex-row md:items-center md:justify-between md:gap-8",
         @class
       ]}
       {@rest}
@@ -62,12 +62,16 @@ defmodule SiteWeb.BlogComponents do
         <.post_category post={@post} class="hidden md:flex col-span-1 order-first" />
       </div>
 
-      <.post_publication_date
-        class="shrink-0 flex items-center font-headings text-content-40
-          transition-colors group-hover:text-content-30"
-        format="%b %d, %Y"
-        post={@post}
-      />
+      <div class="mt-1 flex items-center gap-4">
+        <.post_category post={@post} class="md:hidden" />
+        <.post_read_time post={@post} label="read" class="md:hidden" show_icon />
+        <.post_publication_date
+          class="shrink-0 flex items-center font-headings text-content-30
+          transition-colors group-hover:text-content-10"
+          format="%b %d, %Y"
+          post={@post}
+        />
+      </div>
     </div>
     """
   end
@@ -107,13 +111,12 @@ defmodule SiteWeb.BlogComponents do
       <.badge
         variant="dot"
         color={Site.Blog.Post.category_color(@post.category)}
-        badge_class="group text-xs capitalize tracking-wider"
+        badge_class="group bg-surface-10 text-xs capitalize tracking-wider"
+        navigate={~p"/category/#{@post.category}"}
       >
-        <.link navigate={~p"/category/#{@post.category}"}>
-          <span class="text-content-30 tracking-wider group-hover:text-content-10 transition-colors">
-            {@post.category}
-          </span>
-        </.link>
+        <span class="text-content-30 tracking-wider group-hover:text-content-10 transition-colors">
+          {@post.category}
+        </span>
       </.badge>
     </div>
     """
@@ -142,13 +145,11 @@ defmodule SiteWeb.BlogComponents do
   def post_tag(assigns) do
     ~H"""
     <div class={@class}>
-      <.badge badge_class="group text-xs capitalize">
-        <.link navigate={~p"/tag/#{@tag}"}>
-          <span class="font-headings text-primary/90 group-hover:text-primary">#</span>
-          <span class="text-content-30 tracking-wider group-hover:text-content-10 transition-colors">
-            {@tag}
-          </span>
-        </.link>
+      <.badge badge_class="group bg-surface-10 text-xs capitalize" navigate={~p"/tag/#{@tag}"}>
+        <span class="font-headings text-primary/90 group-hover:text-primary">#</span>
+        <span class="text-content-30 tracking-wider group-hover:text-content transition-colors">
+          {@tag}
+        </span>
       </.badge>
     </div>
     """
@@ -168,8 +169,8 @@ defmodule SiteWeb.BlogComponents do
     <div id="post-meta" class={@class} phx-hook="PostMeta">
       <div class="flex flex-wrap items-center justify-center gap-3 text-content-40">
         <.post_publication_date post={@post} show_icon={true} class="text-content-20" />
-        <span class="font-sans text-xs text-primary">&bull;</span>
-        <.post_read_time post={@post} label="read" show_icon={true} />
+        <span :if={@post.category == :blog} class="font-sans text-xs text-primary">&bull;</span>
+        <.post_read_time :if={@post.category == :blog} post={@post} label="read" show_icon={true} />
 
         <%= if @views do %>
           <span class="hidden lg:inline font-sans text-xs text-primary">&bull;</span>

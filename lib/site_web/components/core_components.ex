@@ -419,25 +419,38 @@ defmodule SiteWeb.CoreComponents do
   attr :variant, :string, values: ~w(default dot), default: "default"
   attr :color, :string, values: Theme.colors(:tailwind)
   attr :badge_class, :string, default: "text-sm"
-  attr :rest, :global
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
-  def badge(assigns) do
+  def badge(%{rest: rest} = assigns) do
     assigns =
       assigns
       |> assign(
         :base_class,
-        "flex items-center ring-1 ring-inset whitespace-nowrap gap-x-1.5 px-2.5 py-0.5 [&>.icon]:size-[0.9375rem] rounded-[var(--badge-radius)]"
+        "flex items-center ring-1 ring-inset whitespace-nowrap gap-x-1.5 px-2.5 py-0.5
+          [&>.icon]:size-[0.9375rem] rounded-[var(--badge-radius)]"
       )
       |> assign(:variant_class, badge_color_class(assigns[:variant], assigns[:color]))
 
-    ~H"""
-    <span {@rest} style="--badge-dot-color: var(--color-gray-400);">
-      <span class={[@base_class, @variant_class, @badge_class]}>
-        {render_slot(@inner_block)}
+    if rest[:href] || rest[:navigate] || rest[:patch] do
+      ~H"""
+      <.link class="group" {@rest}>
+        <span style="--badge-dot-color: var(--color-gray-400);">
+          <span class={["group-hover:ring-surface-40", @base_class, @variant_class, @badge_class]}>
+            {render_slot(@inner_block)}
+          </span>
+        </span>
+      </.link>
+      """
+    else
+      ~H"""
+      <span style="--badge-dot-color: var(--color-gray-400);" {@rest}>
+        <span class={[@base_class, @variant_class, @badge_class]}>
+          {render_slot(@inner_block)}
+        </span>
       </span>
-    </span>
-    """
+      """
+    end
   end
 
   @doc false
@@ -829,7 +842,8 @@ defmodule SiteWeb.CoreComponents do
 
   def badge_color_class("dot", color) do
     base_class =
-      "bg-surface-10 text-content-32 ring-1 ring-inset ring-surface-40 dark:text-content-20 dark:ring-surface-30 before:content=[''] before:size-1.5 before:rounded-full"
+      "bg-surface-10 ring-1 ring-inset ring-surface-30 text-content-30 dark:text-content-20
+        before:content=[''] before:size-1.5 before:rounded-full transition"
 
     [badge_dot_color(color), base_class]
   end

@@ -1,13 +1,13 @@
 .navbar-link {
   --link-accent: var(--color-primary);
-  --link-color: var(--color-content-20);
-  --inactive-link-color: var(--color-content-30);
+  --link-color: var(--color-content-10);
+  --inactive-link-color: var(--color-content-40);
 
   position: relative;
   border-radius: var(--radius-selector);
   font-weight: var(--font-weight-medium);
   font-size: 15px;
-  color: --alpha(var(--inactive-link-color) / 80%);
+  color: var(--inactive-link-color);
   transition: all 0.3s;
 }
 
@@ -22,7 +22,7 @@
   margin-left: auto;
   margin-right: auto;
   pointer-events: none;
-  background: --alpha(var(--inactive-link-color) / 80%);
+  background: var(--inactive-link-color);
 }
 
 .navbar-link::before {

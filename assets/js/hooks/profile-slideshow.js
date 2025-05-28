@@ -85,7 +85,6 @@ export const ProfileSlideshow = {
   },
 
   startProgress() {
-    // Reset progress
     this.el.style.setProperty('--progress', '0%');
 
     // Start progress animation (~60fps)
@@ -117,8 +116,7 @@ export const ProfileSlideshow = {
       this.remainingTime = this.duration - (Date.now() - this.progressStartTime);
     }
 
-    // Clear all timers
-    this.resetProgress();
+    clearInterval(this.progressInterval);
     clearInterval(this.slideshowTimer);
     this.slideshowTimer = null;
   },
@@ -146,7 +144,6 @@ export const ProfileSlideshow = {
 
       this.remainingTime = null;
     } else {
-      this.resetProgress();
       this.startProgress();
       this.startSlideshow();
     }
@@ -154,7 +151,7 @@ export const ProfileSlideshow = {
 
   stopSlideshow() {
     clearInterval(this.progressInterval);
-    clearInterval(this.slideshowTimer);
+    clearTimeout(this.slideshowTimer);
     this.slideshowTimer = null;
   },
 

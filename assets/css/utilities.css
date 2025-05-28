@@ -15,31 +15,3 @@
 @utility breakout {
   @apply relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw];
 }
-
-/* Animations */
-
-@utility animate-fade-in {
-  animation: fade-in 0.5s ease-out forwards;
-}
-
-@utility animate-fade-out {
-  animation: fade-out 0.5s ease-out forwards;
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}

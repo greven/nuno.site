@@ -21,7 +21,9 @@ defmodule SiteWeb.TagsLive.Index do
           articles={@posts}
           icon="hero-hashtag"
         >
-          <:header :let={tag} class="-ml-2 capitalize">{tag}</:header>
+          <:header :let={tag} class="-ml-2 capitalize">
+            <.link navigate={~p"/tag/#{tag}"} class="link-subtle">{tag}</.link>
+          </:header>
 
           <:items :let={articles} class="mt-4 flex flex-col gap-4 md:gap-3">
             <BlogComponents.post_item :for={article <- articles} post={article} />

@@ -2,16 +2,51 @@
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 @custom-variant dark-hover (&:where([data-theme=dark], [data-theme=dark] *):hover:not(:disabled));
 
-/* Typography */
 @theme {
+  /* Typography */
+
   --font-sans: 'Inter', 'Segoe UI', 'Noto Sans', Helvetica, Arial, ui-sans-serif, system-ui,
     sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-headings: 'Montserrat', Georgia, Cambria, 'Times New Roman', Times, ui-serif, serif;
+
+  /* Animations */
+
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+  --animate-fade-out: fade-out 0.5s ease-out forwards;
+  --animate-blink: blink 1s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
 }
 
 /* Colors */
 @theme {
-  --neutral-base: oklch(55.2% 0.016 285.938);
+  --neutral-base: oklch(55.6% 0 0);
   --color-primary: oklch(0.62 0.17 23);
   --color-secondary: oklch(from var(--color-primary) l c calc(h + 180));
   --color-info: oklch(0.72 0.143 215.221);
@@ -36,18 +71,18 @@
   --color-neutral-950: oklch(from var(--color-neutral) 0.13 calc(c * 0.92) calc(h * 1.05));
 
   /* Surfaces */
-  --color-surface: oklch(from var(--color-neutral) 0.965 calc(c * 0.2) h);
-  --color-surface-10: oklch(from var(--color-neutral) 0.98 calc(c * 0.4) h);
-  --color-surface-20: oklch(from var(--color-neutral) 0.95 calc(c * 0.5) h);
+  --color-surface: oklch(from var(--color-neutral) 0.96725 calc(c * 0.2) h);
+  --color-surface-10: oklch(from var(--color-neutral) 0.985 calc(c * 0.4) h);
+  --color-surface-20: oklch(from var(--color-neutral) 0.945 calc(c * 0.5) h);
   --color-surface-30: oklch(from var(--color-neutral) 0.91 calc(c * 0.6) h);
   --color-surface-40: oklch(from var(--color-neutral) 0.87 calc(c * 0.8) h);
 
   /* Content */
   --color-content: oklch(from var(--neutral-base) 0.28 0.01 h);
   --color-content-10: oklch(from var(--neutral-base) 0.36 0.01 h);
-  --color-content-20: oklch(from var(--neutral-base) 0.44 0 h);
-  --color-content-30: oklch(from var(--neutral-base) 0.52 0 h);
-  --color-content-40: oklch(from var(--neutral-base) 0.62 0 h);
+  --color-content-20: oklch(from var(--neutral-base) 0.41 0 h);
+  --color-content-30: oklch(from var(--neutral-base) 0.46 0 h);
+  --color-content-40: oklch(from var(--neutral-base) 0.52 0 h);
 
   /* Primary */
   --color-primary-light: oklch(from var(--color-primary) calc(l * 1.15) calc(c * 0.9) h);
@@ -122,9 +157,9 @@
     --color-surface-40: oklch(from var(--neutral-base) 0.28 calc(c * 0.8) h);
 
     --color-content: oklch(from var(--neutral-base) 0.875 0.01 h);
-    --color-content-10: oklch(from var(--neutral-base) 0.79 0.01 h);
+    --color-content-10: oklch(from var(--neutral-base) 0.78 0.01 h);
     --color-content-20: oklch(from var(--neutral-base) 0.71 0 h);
-    --color-content-30: oklch(from var(--neutral-base) 0.63 0 h);
-    --color-content-40: oklch(from var(--neutral-base) 0.52 0 h);
+    --color-content-30: oklch(from var(--neutral-base) 0.65 0 h);
+    --color-content-40: oklch(from var(--neutral-base) 0.58 0 h);
   }
 }

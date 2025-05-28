@@ -64,8 +64,8 @@ defmodule SiteWeb.Layouts do
       id="site-header"
       phx-hook="SiteHeader"
       class="top-0 z-50 flex flex-none flex-wrap items-center justify-between
-        bg-surface/80 shadow-gray-900/5 transition duration-500 backdrop-blur-sm
-        supports-backdrop-filter:blur(0) supports-backdrop-filter:bg-surface/75
+        bg-surface/85 shadow-gray-900/5 transition duration-500 backdrop-blur-sm
+        supports-backdrop-filter:blur(0) supports-backdrop-filter:bg-surface/85
         border-b border-dashed border-transparent data-scrolled:border-surface-40
         data-scrolled:shadow-sm pointer-events-none"
       style="position:var(--header-position);height:var(--header-height);margin-bottom:var(--header-mb)"
@@ -85,11 +85,14 @@ defmodule SiteWeb.Layouts do
 
   def site_logo(assigns) do
     ~H"""
-    <.link href={~p"/"} class="flex items-center">
-      <span class="font-headings flex items-baseline gap-0.5">
-        <span class="text-2xl text-content-20">nuno</span>
-        <span class="font-semibold text-xl text-primary">.</span>
+    <.link id="site-logo" href={~p"/"} class="relative group flex items-center">
+      <span class="flex items-baseline gap-0.5 font-headings font-medium">
+        <span class="text-2xl text-content-10">nuno</span>
+        <span class="font-semibold text-xl text-content-40/60">.</span>
         <span class="text-xl text-content-30">site</span>
+        <span class="font-mono text-2xl text-primary ml-0.5 motion-safe:animate-blink group-hover:animate-none">
+          _
+        </span>
       </span>
     </.link>
     """

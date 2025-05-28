@@ -86,6 +86,7 @@ defmodule SiteWeb.SiteComponents do
   @doc false
 
   attr :size, :integer, default: 200
+  attr :show_nav, :boolean, default: true
   attr :duration, :integer, default: 5000
 
   def profile_picture(assigns) do
@@ -144,11 +145,11 @@ defmodule SiteWeb.SiteComponents do
         />
 
         <%!-- Navigation Buttons --%>
-        <button type="button" class="slideshow-nav-prev" aria-label="Previous image">
+        <button :if={@show_nav} type="button" class="slideshow-nav-prev" aria-label="Previous image">
           <.icon name="hero-chevron-left-mini" class="size-6" />
         </button>
 
-        <button type="button" class="slideshow-nav-next" aria-label="Next image">
+        <button :if={@show_nav} type="button" class="slideshow-nav-next" aria-label="Next image">
           <.icon name="hero-chevron-right-mini" class="size-6" />
         </button>
       </div>
