@@ -1,6 +1,57 @@
 @layer base {
   /* Page Components */
 
+  .typing-reveal {
+    --typing-length: 9.5ch;
+
+    width: 0;
+    display: none;
+    position: relative;
+    font-family: var(--font-mono);
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    border-right: 2px solid transparent;
+  }
+
+  .group:hover .typing-reveal {
+    display: block;
+    animation: typing 0.8s steps(7, end) forwards, fade-in 0.1s ease-in forwards,
+      blink-cursor 1s step-end infinite 0.8s;
+    width: var(--typing-length);
+    opacity: 1;
+    border-right-color: var(--color-primary);
+  }
+
+  @keyframes typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: var(--typing-length);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes blink-cursor {
+    0%,
+    50% {
+      border-right-color: var(--color-primary);
+    }
+    51%,
+    100% {
+      border-right-color: transparent;
+    }
+  }
+
   .profile-picture {
     position: relative;
 

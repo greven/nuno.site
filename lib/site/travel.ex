@@ -7,20 +7,26 @@ defmodule Site.Travel do
 
   alias Site.Geo
   alias Site.Travel.Trip
-  # alias Site.Travel.Visit
+  alias Site.Travel.Visit
   alias Site.Travel.Measures
 
   @decorate cacheable(cache: Site.Cache, key: {:trips})
   def list_trips do
     trips()
     |> Stream.map(&put_trip_id/1)
-    |> Enum.sort_by(fn %Trip{date: date} -> date end, {:desc, Date})
+    |> Enum.sort(&compare_trips/2)
   end
 
   def list_trips_timeline do
     list_trips()
     |> Enum.group_by(fn %Trip{date: date} -> date.year end)
     |> Enum.sort_by(fn {year, _} -> year end, :desc)
+  end
+
+  def list_visits do
+    visits()
+    |> Stream.map(&put_visit_id/1)
+    |> Enum.sort_by(fn %Visit{date: date} -> date end, {:asc, Date})
   end
 
   @decorate cacheable(cache: Site.Cache, key: {:visited_countries})
@@ -174,6 +180,30 @@ defmodule Site.Travel do
     Map.put(trip, :id, Uniq.UUID.uuid4())
   end
 
+  defp put_visit_id(%Visit{} = visit) do
+    Map.put(visit, :id, Uniq.UUID.uuid4())
+  end
+
+  # Sort by descending date, then by ascending order
+  defp compare_trips(%Trip{date: date1, order: order1}, %Trip{date: date2, order: order2}) do
+    case Date.compare(date1, date2) do
+      :gt ->
+        true
+
+      :lt ->
+        false
+
+      # Same date, sort by order ascending
+      :eq ->
+        case {order1, order2} do
+          {nil, nil} -> true
+          {nil, _} -> false
+          {_, nil} -> true
+          {o1, o2} -> o1 >= o2
+        end
+    end
+  end
+
   defp trips do
     trips_path()
     |> File.read!()
@@ -186,6 +216,7 @@ defmodule Site.Travel do
         alias: item["alias"],
         type: item["type"],
         date: item["date"],
+        order: item["order"],
         origin: item["origin"],
         destination: item["destination"],
         distance: item["distance"],
@@ -196,5 +227,22 @@ defmodule Site.Travel do
     |> Enum.sort_by(fn %{date: date} -> date end, {:asc, Date})
   end
 
+  defp visits do
+    visits_path()
+    |> File.read!()
+    |> JSON.decode!()
+    |> Stream.map(fn item ->
+      Map.put(item, "date", Date.from_iso8601!(item["date"]))
+    end)
+    |> Stream.map(fn item ->
+      %Visit{
+        date: item["date"],
+        location: item["location"],
+        note: item["note"]
+      }
+    end)
+  end
+
   defp trips_path, do: Path.join([:code.priv_dir(:site), "content/trips.json"])
+  defp visits_path, do: Path.join([:code.priv_dir(:site), "content/visits.json"])
 end

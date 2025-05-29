@@ -19,6 +19,7 @@ defmodule Site.Travel.Trip do
     :id,
     :type,
     :date,
+    :order,
     :origin,
     :destination,
     :alias,

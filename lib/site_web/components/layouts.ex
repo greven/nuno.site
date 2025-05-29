@@ -53,6 +53,29 @@ defmodule SiteWeb.Layouts do
 
   @doc false
 
+  def site_logo(assigns) do
+    ~H"""
+    <.link id="site-logo" href={~p"/"} class="relative group flex items-center">
+      <span class="flex items-baseline gap-0.5 font-headings font-medium">
+        <span class="text-2xl text-content-10">nuno</span>
+        <span class="font-semibold text-xl text-content-40/60
+          group-hover:text-primary transition-colors duration-400">
+          .
+        </span>
+        <span class="text-xl text-content-30">site</span>
+        <span class="font-mono text-2xl text-primary ml-0.5 motion-safe:animate-blink group-hover:animate-none group-hover:opacity-0">
+          _
+        </span>
+        <span class="absolute -bottom-3 left-0 font-mono text-xs text-content-40 typing-reveal">
+          cd ~/home
+        </span>
+      </span>
+    </.link>
+    """
+  end
+
+  @doc false
+
   attr :active_link, :atom, required: true
   attr :current_user, :any, default: nil
   attr :class, :string, default: nil
@@ -78,23 +101,6 @@ defmodule SiteWeb.Layouts do
         </div>
       </div>
     </header>
-    """
-  end
-
-  @doc false
-
-  def site_logo(assigns) do
-    ~H"""
-    <.link id="site-logo" href={~p"/"} class="relative group flex items-center">
-      <span class="flex items-baseline gap-0.5 font-headings font-medium">
-        <span class="text-2xl text-content-10">nuno</span>
-        <span class="font-semibold text-xl text-content-40/60">.</span>
-        <span class="text-xl text-content-30">site</span>
-        <span class="font-mono text-2xl text-primary ml-0.5 motion-safe:animate-blink group-hover:animate-none">
-          _
-        </span>
-      </span>
-    </.link>
     """
   end
 
@@ -140,7 +146,23 @@ defmodule SiteWeb.Layouts do
   def site_nav(assigns) do
     ~H"""
     <nav class={@class} {@rest}>
-      <div id="menu" class="hidden min-[540px]:ml-6 min-[540px]:flex items-center">
+      <%!-- Small devices --%>
+      <div id="mobile-menu" class="flex sm:hidden" phx-click={}>
+        <.icon name="hero-bars-2" class="size-6" />
+      </div>
+
+      <%!-- Larger devices --%>
+      <div id="menu" class="hidden sm:ml-6 sm:flex items-center">
+        <button
+          type="button"
+          class="flex items-center gap-1 mr-4 rounded-full px-2 py-1 bg-surface-40/20 inset-ring inset-ring-surface-40/40 cursor-pointer"
+        >
+          <.icon name="hero-magnifying-glass-mini" class="size-4 text-content-40/90" />
+          <kbd class="font-sans text-xs/4 text-content-20
+            not-in-[.macos]:after:content-['Ctrl_K'] in-[.macos]:after:content-['⌘K']">
+          </kbd>
+        </button>
+
         <div class="flex space-x-5 mr-5">
           <.navbar_item item={:home} href={~p"/"} active_link={@active_link}>
             {gettext("Home")}

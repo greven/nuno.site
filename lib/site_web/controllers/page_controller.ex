@@ -19,6 +19,10 @@ defmodule SiteWeb.PageController do
     )
   end
 
+  def photos(conn, _params) do
+    render(conn, :photos, page_title: "Photos")
+  end
+
   def sitemap(conn, _params) do
     render(conn, :sitemap,
       page_title: "Sitemap",

@@ -5,6 +5,7 @@
     "date": "1998-08-18",
     "origin": "Lisbon, Portugal",
     "destination": "Dijon, France",
+    "order": null,
     "distance": 2207553,
     "company": null
   },
@@ -14,6 +15,7 @@
     "date": "1998-08-23",
     "origin": "Dijon, France",
     "destination": "Paris, France",
+    "order": null,
     "distance": 410598,
     "company": null
   },
@@ -23,6 +25,7 @@
     "date": "1998-08-25",
     "origin": "Paris, France",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 2040646,
     "company": null
   },
@@ -32,6 +35,7 @@
     "date": "2000-04-21",
     "origin": "Lloret de Mar, Spain",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1646903,
     "company": null
   },
@@ -41,6 +45,7 @@
     "date": "2000-04-23",
     "origin": "Lisbon, Portugal",
     "destination": "Lloret de Mar, Spain",
+    "order": null,
     "distance": 1646903,
     "company": null
   },
@@ -50,6 +55,7 @@
     "date": "2008-10-18",
     "origin": "Lisbon, Portugal",
     "destination": "Genève, Switzerland",
+    "order": 1,
     "distance": 1985210,
     "company": "EasyJet"
   },
@@ -59,6 +65,7 @@
     "date": "2008-10-18",
     "origin": "Genève, Switzerland",
     "destination": "Dijon, France",
+    "order": 2,
     "distance": 211184,
     "company": null
   },
@@ -68,6 +75,7 @@
     "date": "2008-10-20",
     "origin": "Dijon, France",
     "destination": "Genève, Switzerland",
+    "order": 1,
     "distance": 211184,
     "company": null
   },
@@ -77,6 +85,7 @@
     "date": "2008-10-20",
     "origin": "Genève, Switzerland",
     "destination": "Lisbon, Portugal",
+    "order": 2,
     "distance": 1985210,
     "company": "EasyJet"
   },
@@ -86,6 +95,7 @@
     "date": "2009-08-03",
     "origin": "Lisbon, Portugal",
     "destination": "Cabanas de Tavira, Portugal",
+    "order": null,
     "distance": 292264,
     "company": null
   },
@@ -95,6 +105,7 @@
     "date": "2009-08-10",
     "origin": "Cabanas de Tavira, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 292264,
     "company": null
   },
@@ -104,6 +115,7 @@
     "date": "2010-08-16",
     "origin": "Lisbon, Portugal",
     "destination": "Cabanas de Tavira, Portugal",
+    "order": null,
     "distance": 292264,
     "company": null
   },
@@ -113,6 +125,7 @@
     "date": "2010-08-23",
     "origin": "Cabanas de Tavira, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 292264,
     "company": null
   },
@@ -122,6 +135,7 @@
     "date": "2011-04-10",
     "origin": "Lisbon, Portugal",
     "destination": "Reguengos de Monsaraz, Portugal",
+    "order": null,
     "distance": 216721,
     "company": null
   },
@@ -131,6 +145,7 @@
     "date": "2011-04-10",
     "origin": "Reguengos de Monsaraz, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 216721,
     "company": null
   },
@@ -140,6 +155,7 @@
     "date": "2011-07-29",
     "origin": "Lisbon, Portugal",
     "destination": "Grândola, Portugal",
+    "order": null,
     "distance": 103802,
     "company": null
   },
@@ -149,6 +165,7 @@
     "date": "2011-07-31",
     "origin": "Grândola, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 103802,
     "company": null
   },
@@ -158,6 +175,7 @@
     "date": "2012-07-17",
     "origin": "Lisbon, Portugal",
     "destination": "Cabanas de Tavira, Portugal",
+    "order": null,
     "distance": 292264,
     "company": null
   },
@@ -167,6 +185,7 @@
     "date": "2012-07-23",
     "origin": "Cabanas de Tavira, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 292264,
     "company": null
   },
@@ -176,6 +195,7 @@
     "date": "2013-07-13",
     "origin": "Lisbon, Portugal",
     "destination": "Aveiro, Portugal",
+    "order": null,
     "distance": 262320,
     "company": null
   },
@@ -185,6 +205,7 @@
     "date": "2013-07-14",
     "origin": "Aveiro, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 262320,
     "company": null
   },
@@ -194,6 +215,7 @@
     "date": "2013-08-26",
     "origin": "Lisbon, Portugal",
     "destination": "Cancún, Mexico",
+    "order": null,
     "distance": 9090671,
     "company": "Orbest"
   },
@@ -203,6 +225,7 @@
     "date": "2013-09-04",
     "origin": "Cancún, Mexico",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 9090671,
     "company": "Orbest"
   },
@@ -212,6 +235,7 @@
     "date": "2013-11-12",
     "origin": "Lisbon, Portugal",
     "destination": "Paris, France",
+    "order": 1,
     "distance": 1785566,
     "company": "Air France"
   },
@@ -221,6 +245,7 @@
     "date": "2013-11-12",
     "origin": "Paris, France",
     "destination": "Johannesburg, South Africa",
+    "order": 2,
     "distance": 8840537,
     "company": "Air France"
   },
@@ -230,6 +255,7 @@
     "date": "2013-11-15",
     "origin": "Johannesburg, South Africa",
     "destination": "Maputo, Mozambique",
+    "order": null,
     "distance": 530555,
     "company": "LAM"
   },
@@ -239,6 +265,7 @@
     "date": "2013-12-24",
     "origin": "Maputo, Mozambique",
     "destination": "Johannesburg, South Africa",
+    "order": 1,
     "distance": 530555,
     "company": "British Airways"
   },
@@ -248,6 +275,7 @@
     "date": "2013-12-24",
     "origin": "Johannesburg, South Africa",
     "destination": "Amsterdam, Netherlands",
+    "order": 2,
     "distance": 9063514,
     "company": "KLM"
   },
@@ -257,6 +285,7 @@
     "date": "2013-12-25",
     "origin": "Amsterdam, Netherlands",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 2281878,
     "company": "KLM"
   },
@@ -266,6 +295,7 @@
     "date": "2014-01-19",
     "origin": "Lisbon, Portugal",
     "destination": "Amsterdam, Netherlands",
+    "order": 1,
     "distance": 2281878,
     "company": "KLM"
   },
@@ -275,6 +305,7 @@
     "date": "2014-01-19",
     "origin": "Amsterdam, Netherlands",
     "destination": "Johannesburg, South Africa",
+    "order": 2,
     "distance": 9063514,
     "company": "KLM"
   },
@@ -284,6 +315,7 @@
     "date": "2014-01-23",
     "origin": "Johannesburg, South Africa",
     "destination": "Maputo, Mozambique",
+    "order": null,
     "distance": 530555,
     "company": "British Airways"
   },
@@ -293,6 +325,7 @@
     "date": "2014-04-01",
     "origin": "Maputo, Mozambique",
     "destination": "Johannesburg, South Africa",
+    "order": 1,
     "distance": 530555,
     "company": "British Airways"
   },
@@ -302,6 +335,7 @@
     "date": "2014-04-01",
     "origin": "Johannesburg, South Africa",
     "destination": "Paris, France",
+    "order": 2,
     "distance": 8840537,
     "company": "KLM"
   },
@@ -311,6 +345,7 @@
     "date": "2014-04-02",
     "origin": "Paris, France",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1785566,
     "company": "KLM"
   },
@@ -320,6 +355,7 @@
     "date": "2014-06-20",
     "origin": "Lisbon, Portugal",
     "destination": "Óbidos, Portugal",
+    "order": null,
     "distance": 84881,
     "company": null
   },
@@ -329,6 +365,7 @@
     "date": "2014-06-21",
     "origin": "Óbidos, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 84881,
     "company": null
   },
@@ -338,6 +375,7 @@
     "date": "2014-10-19",
     "origin": "Lisbon, Portugal",
     "destination": "Paris, France",
+    "order": null,
     "distance": 1785566,
     "company": "TAP"
   },
@@ -347,6 +385,7 @@
     "date": "2014-10-22",
     "origin": "Paris, France",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1785566,
     "company": "TAP"
   },
@@ -356,6 +395,7 @@
     "date": "2015-01-06",
     "origin": "Lisbon, Portugal",
     "destination": "Amsterdam, Netherlands",
+    "order": null,
     "distance": 2281878,
     "company": "TAP"
   },
@@ -365,6 +405,7 @@
     "date": "2015-01-09",
     "origin": "Amsterdam, Netherlands",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 2281878,
     "company": "TAP"
   },
@@ -374,6 +415,7 @@
     "date": "2015-02-03",
     "origin": "Lisbon, Portugal",
     "destination": "Frankfurt am Main, Germany",
+    "order": null,
     "distance": 2466663,
     "company": "TAP"
   },
@@ -383,6 +425,7 @@
     "date": "2015-02-13",
     "origin": "Frankfurt am Main, Germany",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 2466663,
     "company": "TAP"
   },
@@ -392,6 +435,7 @@
     "date": "2015-03-11",
     "origin": "Lisbon, Portugal",
     "destination": "Berlin, Germany",
+    "order": null,
     "distance": 3080501,
     "company": "Privilege Style"
   },
@@ -401,6 +445,7 @@
     "date": "2015-03-13",
     "origin": "Berlin, Germany",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 3080501,
     "company": "Privilege Style"
   },
@@ -410,6 +455,7 @@
     "date": "2015-03-23",
     "origin": "Lisbon, Portugal",
     "destination": "Porto, Portugal",
+    "order": null,
     "distance": 328236,
     "company": null
   },
@@ -419,6 +465,7 @@
     "date": "2015-03-25",
     "origin": "Porto, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 328236,
     "company": null
   },
@@ -428,6 +475,7 @@
     "date": "2015-03-28",
     "origin": "Lisbon, Portugal",
     "destination": "Dole, France",
+    "order": null,
     "distance": 1965953,
     "company": "Ryanair"
   },
@@ -437,6 +485,7 @@
     "date": "2015-03-31",
     "origin": "Dijon, France",
     "destination": "Paris, France",
+    "order": null,
     "distance": 342165,
     "company": "SNCF"
   },
@@ -446,6 +495,7 @@
     "date": "2015-04-01",
     "origin": "Paris, France",
     "destination": "Dijon, France",
+    "order": null,
     "distance": 342165,
     "company": "SNCF"
   },
@@ -455,6 +505,7 @@
     "date": "2015-04-05",
     "origin": "Dole, France",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1965953,
     "company": "Ryanair"
   },
@@ -464,6 +515,7 @@
     "date": "2015-07-18",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": 1,
     "distance": 1821358,
     "company": "British Airways"
   },
@@ -473,6 +525,7 @@
     "date": "2015-07-18",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": 2,
     "distance": 1821358,
     "company": "British Airways"
   },
@@ -482,6 +535,7 @@
     "date": "2015-08-23",
     "origin": "Lisbon, Portugal",
     "destination": "Altura, Portugal",
+    "order": null,
     "distance": 298090,
     "company": null
   },
@@ -491,6 +545,7 @@
     "date": "2015-08-28",
     "origin": "Altura, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 298090,
     "company": null
   },
@@ -500,6 +555,7 @@
     "date": "2015-09-29",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "EasyJet"
   },
@@ -509,6 +565,7 @@
     "date": "2015-10-05",
     "origin": "London, United Kingdom",
     "destination": "Shannon, Ireland",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -518,6 +575,7 @@
     "date": "2015-10-09",
     "origin": "Dublin, Ireland",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1724119,
     "company": "Ryanair"
   },
@@ -527,6 +585,7 @@
     "date": "2015-10-12",
     "origin": "Lisbon, Portugal",
     "destination": "Dublin, Ireland",
+    "order": null,
     "distance": 1724119,
     "company": "Ryanair"
   },
@@ -536,6 +595,7 @@
     "date": "2015-10-23",
     "origin": "Dublin, Ireland",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1724119,
     "company": "Ryanair"
   },
@@ -545,6 +605,7 @@
     "date": "2015-10-26",
     "origin": "Lisbon, Portugal",
     "destination": "Dublin, Ireland",
+    "order": null,
     "distance": 1724119,
     "company": "Ryanair"
   },
@@ -554,6 +615,7 @@
     "date": "2015-10-30",
     "origin": "Dublin, Ireland",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1724119,
     "company": "Ryanair"
   },
@@ -563,6 +625,7 @@
     "date": "2015-11-02",
     "origin": "Lisbon, Portugal",
     "destination": "Dublin, Ireland",
+    "order": null,
     "distance": 1724119,
     "company": "Ryanair"
   },
@@ -572,6 +635,7 @@
     "date": "2015-11-06",
     "origin": "Dublin, Ireland",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1724119,
     "company": "Ryanair"
   },
@@ -581,6 +645,7 @@
     "date": "2015-11-19",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -590,6 +655,7 @@
     "date": "2015-11-23",
     "origin": "London, United Kingdom",
     "destination": "Shannon, Ireland",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -599,6 +665,7 @@
     "date": "2015-11-26",
     "origin": "Shannon, Ireland",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -608,6 +675,7 @@
     "date": "2015-11-30",
     "origin": "London, United Kingdom",
     "destination": "Shannon, Ireland",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -617,6 +685,7 @@
     "date": "2015-12-03",
     "origin": "Shannon, Ireland",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -626,6 +695,7 @@
     "date": "2015-12-07",
     "origin": "London, United Kingdom",
     "destination": "Shannon, Ireland",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -635,6 +705,7 @@
     "date": "2015-12-10",
     "origin": "Shannon, Ireland",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -644,6 +715,7 @@
     "date": "2015-12-14",
     "origin": "London, United Kingdom",
     "destination": "Shannon, Ireland",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -653,6 +725,7 @@
     "date": "2015-12-16",
     "origin": "Shannon, Ireland",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -662,6 +735,7 @@
     "date": "2015-12-17",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "Ryanair"
   },
@@ -671,6 +745,7 @@
     "date": "2016-01-04",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "Ryanair"
   },
@@ -680,6 +755,7 @@
     "date": "2016-02-05",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -689,6 +765,7 @@
     "date": "2016-02-14",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -698,6 +775,7 @@
     "date": "2016-02-15",
     "origin": "London, United Kingdom",
     "destination": "Shannon, Ireland",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -707,6 +785,7 @@
     "date": "2016-02-17",
     "origin": "Shannon, Ireland",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1029677,
     "company": "Aer Lingus"
   },
@@ -716,6 +795,7 @@
     "date": "2016-02-18",
     "origin": "London, United Kingdom",
     "destination": "Düsseldorf, Germany",
+    "order": null,
     "distance": 806521,
     "company": "EuroWings"
   },
@@ -725,6 +805,7 @@
     "date": "2016-02-20",
     "origin": "Düsseldorf, Germany",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 806521,
     "company": "EuroWings"
   },
@@ -734,6 +815,7 @@
     "date": "2016-02-24",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "British Airways"
   },
@@ -743,6 +825,7 @@
     "date": "2016-02-28",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -752,6 +835,7 @@
     "date": "2016-03-18",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "British Airways"
   },
@@ -761,6 +845,7 @@
     "date": "2016-03-27",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -770,6 +855,7 @@
     "date": "2016-05-11",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -779,6 +865,7 @@
     "date": "2016-05-15",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -788,6 +875,7 @@
     "date": "2016-06-02",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -797,6 +885,7 @@
     "date": "2016-06-13",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -806,6 +895,7 @@
     "date": "2016-07-15",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "EasyJet"
   },
@@ -815,6 +905,7 @@
     "date": "2016-07-24",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "Monarch"
   },
@@ -824,6 +915,7 @@
     "date": "2016-08-15",
     "origin": "Woking, United Kingdom",
     "destination": "Bath, United Kingdom",
+    "order": 1,
     "distance": 240670,
     "company": null
   },
@@ -833,6 +925,7 @@
     "date": "2016-08-15",
     "origin": "Bath, United Kingdom",
     "destination": "Woking, United Kingdom",
+    "order": 2,
     "distance": 240670,
     "company": null
   },
@@ -842,6 +935,7 @@
     "date": "2016-08-16",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -851,6 +945,7 @@
     "date": "2016-08-23",
     "origin": "Lisbon, Portugal",
     "destination": "Tavira, Portugal",
+    "order": null,
     "distance": 288551,
     "company": null
   },
@@ -860,6 +955,7 @@
     "date": "2016-09-01",
     "origin": "Tavira, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 288551,
     "company": null
   },
@@ -869,6 +965,7 @@
     "date": "2016-09-04",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -878,6 +975,7 @@
     "date": "2016-10-15",
     "origin": "London, United Kingdom",
     "destination": "Paris, France",
+    "order": null,
     "distance": 423697,
     "company": "British Airways"
   },
@@ -887,6 +985,7 @@
     "date": "2016-10-16",
     "origin": "Paris, France",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 423697,
     "company": "British Airways"
   },
@@ -896,6 +995,7 @@
     "date": "2016-10-20",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -905,6 +1005,7 @@
     "date": "2016-10-23",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -914,6 +1015,7 @@
     "date": "2016-11-11",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -923,6 +1025,7 @@
     "date": "2016-11-13",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -932,6 +1035,7 @@
     "date": "2016-11-25",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -941,6 +1045,7 @@
     "date": "2016-11-27",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -950,6 +1055,7 @@
     "date": "2016-12-09",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -959,6 +1065,7 @@
     "date": "2016-12-11",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -968,6 +1075,7 @@
     "date": "2016-12-23",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -977,6 +1085,7 @@
     "date": "2017-01-01",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "British Airways"
   },
@@ -986,6 +1095,7 @@
     "date": "2017-01-13",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -995,6 +1105,7 @@
     "date": "2017-01-17",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1004,6 +1115,7 @@
     "date": "2017-01-27",
     "origin": "Leeds, United Kingdom",
     "destination": "London, United Kingdom",
+    "order": 1,
     "distance": 314496,
     "company": "British Airways"
   },
@@ -1013,6 +1125,7 @@
     "date": "2017-01-27",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": 2,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1022,6 +1135,7 @@
     "date": "2017-01-29",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1031,6 +1145,7 @@
     "date": "2017-02-24",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1040,6 +1155,7 @@
     "date": "2017-02-26",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1049,6 +1165,7 @@
     "date": "2017-03-29",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1058,6 +1175,7 @@
     "date": "2017-04-02",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1067,6 +1185,7 @@
     "date": "2017-04-09",
     "origin": "London, United Kingdom",
     "destination": "Leeds, United Kingdom",
+    "order": null,
     "distance": 314496,
     "company": "British Airways"
   },
@@ -1076,6 +1195,7 @@
     "date": "2017-04-10",
     "origin": "Leeds, United Kingdom",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 314496,
     "company": "British Airways"
   },
@@ -1085,6 +1205,7 @@
     "date": "2017-04-11",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1094,6 +1215,7 @@
     "date": "2017-04-13",
     "origin": "Lisbon, Portugal",
     "destination": "Porto, Portugal",
+    "order": null,
     "distance": 328236,
     "company": null
   },
@@ -1103,6 +1225,7 @@
     "date": "2017-04-17",
     "origin": "Porto, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 328236,
     "company": null
   },
@@ -1112,6 +1235,7 @@
     "date": "2017-04-22",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1121,6 +1245,7 @@
     "date": "2017-05-20",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1130,6 +1255,7 @@
     "date": "2017-05-25",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1139,6 +1265,7 @@
     "date": "2017-06-01",
     "origin": "London, United Kingdom",
     "destination": "Leeds, United Kingdom",
+    "order": null,
     "distance": 299520,
     "company": "Virgin Trains East Coast"
   },
@@ -1148,6 +1275,7 @@
     "date": "2017-07-29",
     "origin": "Leeds, United Kingdom",
     "destination": "Ripley, United Kingdom",
+    "order": null,
     "distance": 103690,
     "company": null
   },
@@ -1157,6 +1285,7 @@
     "date": "2017-07-30",
     "origin": "Ripley, United Kingdom",
     "destination": "Leeds, United Kingdom",
+    "order": null,
     "distance": 103690,
     "company": null
   },
@@ -1166,6 +1295,7 @@
     "date": "2017-08-17",
     "origin": "Leeds, United Kingdom",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 299520,
     "company": "Virgin Trains East Coast"
   },
@@ -1175,6 +1305,7 @@
     "date": "2017-08-19",
     "origin": "London, United Kingdom",
     "destination": "Leeds, United Kingdom",
+    "order": null,
     "distance": 299520,
     "company": "Virgin Trains East Coast"
   },
@@ -1184,6 +1315,7 @@
     "date": "2017-08-23",
     "origin": "Leeds, United Kingdom",
     "destination": "Buxton, United Kingdom",
+    "order": null,
     "distance": 86614,
     "company": null
   },
@@ -1193,6 +1325,7 @@
     "date": "2017-08-28",
     "origin": "Buxton, United Kingdom",
     "destination": "Leeds, United Kingdom",
+    "order": null,
     "distance": 86614,
     "company": null
   },
@@ -1202,6 +1335,7 @@
     "date": "2017-09-02",
     "origin": "Manchester, United Kingdom",
     "destination": "Dubai, United Arab Emirates",
+    "order": null,
     "distance": 7248805,
     "company": "Emirates"
   },
@@ -1211,6 +1345,7 @@
     "date": "2017-09-06",
     "origin": "Dubai, United Arab Emirates",
     "destination": "Male, Maldives",
+    "order": null,
     "distance": 2341966,
     "company": "Emirates"
   },
@@ -1220,6 +1355,7 @@
     "date": "2017-09-13",
     "origin": "Male, Maldives",
     "destination": "Dubai, United Arab Emirates",
+    "order": null,
     "distance": 2341966,
     "company": "Emirates"
   },
@@ -1229,6 +1365,7 @@
     "date": "2017-09-14",
     "origin": "Dubai, United Arab Emirates",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 7248805,
     "company": "Emirates"
   },
@@ -1238,6 +1375,7 @@
     "date": "2017-09-28",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1247,6 +1385,7 @@
     "date": "2017-10-01",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1256,6 +1395,7 @@
     "date": "2017-12-02",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1265,6 +1405,7 @@
     "date": "2017-12-11",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1274,6 +1415,7 @@
     "date": "2017-12-22",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1283,6 +1425,7 @@
     "date": "2017-12-29",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1292,6 +1435,7 @@
     "date": "2018-01-20",
     "origin": "Manchester, United Kingdom",
     "destination": "Berlin, Germany",
+    "order": null,
     "distance": 1830329,
     "company": "EasyJet"
   },
@@ -1301,6 +1445,7 @@
     "date": "2018-01-23",
     "origin": "Berlin, Germany",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1830329,
     "company": "EasyJet"
   },
@@ -1310,6 +1455,7 @@
     "date": "2018-03-02",
     "origin": "Leeds, United Kingdom",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 299520,
     "company": "Virgin Trains East Coast"
   },
@@ -1319,6 +1465,7 @@
     "date": "2018-03-04",
     "origin": "London, United Kingdom",
     "destination": "Leeds, United Kingdom",
+    "order": null,
     "distance": 299520,
     "company": "Virgin Trains East Coast"
   },
@@ -1328,6 +1475,7 @@
     "date": "2018-04-15",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1337,6 +1485,7 @@
     "date": "2018-04-23",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1346,6 +1495,7 @@
     "date": "2018-05-19",
     "origin": "Leeds, United Kingdom",
     "destination": "Amsterdam, Netherlands",
+    "order": null,
     "distance": 769709,
     "company": "KLM"
   },
@@ -1355,6 +1505,7 @@
     "date": "2018-05-22",
     "origin": "Amsterdam, Netherlands",
     "destination": "Leeds, United Kingdom",
+    "order": null,
     "distance": 769709,
     "company": "KLM"
   },
@@ -1364,6 +1515,7 @@
     "date": "2018-06-25",
     "origin": "Leeds, United Kingdom",
     "destination": "Windermere, United Kingdom",
+    "order": null,
     "distance": 197397,
     "company": null
   },
@@ -1373,6 +1525,7 @@
     "date": "2018-06-29",
     "origin": "Windermere, United Kingdom",
     "destination": "Skipton, United Kingdom",
+    "order": null,
     "distance": 131300,
     "company": null
   },
@@ -1382,6 +1535,7 @@
     "date": "2018-06-30",
     "origin": "Skipton, United Kingdom",
     "destination": "Leeds, United Kingdom",
+    "order": null,
     "distance": 66324,
     "company": null
   },
@@ -1391,6 +1545,7 @@
     "date": "2018-07-20",
     "origin": "Leeds, United Kingdom",
     "destination": "Barmouth, United Kingdom",
+    "order": null,
     "distance": 364106,
     "company": null
   },
@@ -1400,6 +1555,7 @@
     "date": "2018-07-22",
     "origin": "Barmouth, United Kingdom",
     "destination": "Leeds, United Kingdom",
+    "order": null,
     "distance": 364106,
     "company": null
   },
@@ -1409,6 +1565,7 @@
     "date": "2018-08-22",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1418,6 +1575,7 @@
     "date": "2018-08-25",
     "origin": "Lisbon, Portugal",
     "destination": "Cabanas de Tavira, Portugal",
+    "order": null,
     "distance": 292264,
     "company": null
   },
@@ -1427,6 +1585,7 @@
     "date": "2018-09-02",
     "origin": "Cabanas de Tavira, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 292264,
     "company": null
   },
@@ -1436,6 +1595,7 @@
     "date": "2018-09-09",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1445,6 +1605,7 @@
     "date": "2018-09-30",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1454,6 +1615,7 @@
     "date": "2018-10-05",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1463,6 +1625,7 @@
     "date": "2018-11-06",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1472,6 +1635,7 @@
     "date": "2018-11-13",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1481,6 +1645,7 @@
     "date": "2018-11-21",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1490,6 +1655,7 @@
     "date": "2018-12-01",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1499,6 +1665,7 @@
     "date": "2018-12-02",
     "origin": "Leeds, United Kingdom",
     "destination": "Warsaw, Poland",
+    "order": null,
     "distance": 2640018,
     "company": "Ryanair"
   },
@@ -1508,6 +1675,7 @@
     "date": "2018-12-05",
     "origin": "Warsaw, Poland",
     "destination": "Leeds, United Kingdom",
+    "order": null,
     "distance": 2640018,
     "company": "Ryanair"
   },
@@ -1517,6 +1685,7 @@
     "date": "2018-12-20",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1526,6 +1695,7 @@
     "date": "2019-01-05",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1535,6 +1705,7 @@
     "date": "2019-01-20",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1544,6 +1715,7 @@
     "date": "2019-02-05",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1553,6 +1725,7 @@
     "date": "2019-02-14",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1562,6 +1735,7 @@
     "date": "2019-02-19",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1571,6 +1745,7 @@
     "date": "2019-02-23",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1580,6 +1755,7 @@
     "date": "2019-03-02",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1589,6 +1765,7 @@
     "date": "2019-03-16",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1598,6 +1775,7 @@
     "date": "2019-03-26",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "Ryanair"
   },
@@ -1607,6 +1785,7 @@
     "date": "2019-04-03",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1616,6 +1795,7 @@
     "date": "2019-04-13",
     "origin": "Lisbon, Portugal",
     "destination": "Barcelona, Spain",
+    "order": null,
     "distance": 1354591,
     "company": "Vueling"
   },
@@ -1625,6 +1805,7 @@
     "date": "2019-04-16",
     "origin": "Barcelona, Spain",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1354591,
     "company": "Vueling"
   },
@@ -1634,6 +1815,7 @@
     "date": "2019-05-01",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1643,6 +1825,7 @@
     "date": "2019-05-12",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "EasyJet"
   },
@@ -1652,6 +1835,7 @@
     "date": "2019-05-16",
     "origin": "Lisbon, Portugal",
     "destination": "Manchester, United Kingdom",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1661,6 +1845,7 @@
     "date": "2019-05-29",
     "origin": "Manchester, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1893866,
     "company": "TAP"
   },
@@ -1670,6 +1855,7 @@
     "date": "2019-06-18",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1679,6 +1865,7 @@
     "date": "2019-06-20",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1688,6 +1875,7 @@
     "date": "2019-07-09",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1697,6 +1885,7 @@
     "date": "2019-07-13",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1706,8 +1895,29 @@
     "date": "2019-08-21",
     "origin": "Lisbon, Portugal",
     "destination": "Funchal, Portugal",
+    "order": null,
     "distance": 1140419,
     "company": "EasyJet"
+  },
+  {
+    "alias": "Porto Santo",
+    "type": "boat",
+    "date": "2019-08-23",
+    "origin": "Funchal, Portugal",
+    "destination": "Vila Baleira, Portugal",
+    "order": null,
+    "distance": 78023,
+    "company": "Porto Santo Line"
+  },
+  {
+    "alias": null,
+    "type": "boat",
+    "date": "2019-08-30",
+    "origin": "Vila Baleira, Portugal",
+    "destination": "Funchal, Portugal",
+    "order": 1,
+    "distance": 78023,
+    "company": "Porto Santo Line"
   },
   {
     "alias": null,
@@ -1715,6 +1925,7 @@
     "date": "2019-08-30",
     "origin": "Funchal, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": 2,
     "distance": 1140419,
     "company": "EasyJet"
   },
@@ -1724,6 +1935,7 @@
     "date": "2019-09-10",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1733,6 +1945,7 @@
     "date": "2019-09-12",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1742,6 +1955,7 @@
     "date": "2019-09-30",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1751,6 +1965,7 @@
     "date": "2019-10-02",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1760,6 +1975,7 @@
     "date": "2019-10-07",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1769,6 +1985,7 @@
     "date": "2019-10-10",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1778,6 +1995,7 @@
     "date": "2019-10-21",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1787,6 +2005,7 @@
     "date": "2019-10-23",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1796,7 +2015,8 @@
     "date": "2019-11-01",
     "origin": "Lisbon, Portugal",
     "destination": "Mourão, Portugal",
-    "distance": null,
+    "order": null,
+    "distance": 243052,
     "company": null
   },
   {
@@ -1805,7 +2025,8 @@
     "date": "2019-11-03",
     "origin": "Mourão, Portugal",
     "destination": "Lisbon, Portugal",
-    "distance": null,
+    "order": null,
+    "distance": 243052,
     "company": null
   },
   {
@@ -1814,6 +2035,7 @@
     "date": "2019-11-12",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "British Airways"
   },
@@ -1823,6 +2045,7 @@
     "date": "2019-11-16",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "British Airways"
   },
@@ -1832,6 +2055,7 @@
     "date": "2019-12-06",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1841,6 +2065,7 @@
     "date": "2019-12-08",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -1850,7 +2075,8 @@
     "date": "2019-12-31",
     "origin": "Lisbon, Portugal",
     "destination": "Grândola, Portugal",
-    "distance": null,
+    "order": null,
+    "distance": 103802,
     "company": null
   },
   {
@@ -1859,7 +2085,8 @@
     "date": "2020-01-02",
     "origin": "Grândola, Portugal",
     "destination": "Lisbon, Portugal",
-    "distance": null,
+    "order": null,
+    "distance": 103802,
     "company": null
   },
   {
@@ -1868,7 +2095,8 @@
     "date": "2020-08-22",
     "origin": "Lisbon, Portugal",
     "destination": "Tavira, Portugal",
-    "distance": null,
+    "order": null,
+    "distance": 288551,
     "company": null
   },
   {
@@ -1877,7 +2105,8 @@
     "date": "2020-08-30",
     "origin": "Tavira, Portugal",
     "destination": "Lisbon, Portugal",
-    "distance": null,
+    "order": null,
+    "distance": 288551,
     "company": null
   },
   {
@@ -1886,7 +2115,8 @@
     "date": "2020-09-16",
     "origin": "Lisbon, Portugal",
     "destination": "Porto, Portugal",
-    "distance": null,
+    "order": null,
+    "distance": 273530,
     "company": "CP - Comboios de Portugal"
   },
   {
@@ -1895,7 +2125,8 @@
     "date": "2020-09-17",
     "origin": "Porto, Portugal",
     "destination": "Lisbon, Portugal",
-    "distance": null,
+    "order": null,
+    "distance": 273530,
     "company": "CP - Comboios de Portugal"
   },
   {
@@ -1904,7 +2135,8 @@
     "date": "2021-04-30",
     "origin": "Lisbon, Portugal",
     "destination": "Porto, Portugal",
-    "distance": null,
+    "order": null,
+    "distance": 328236,
     "company": null
   },
   {
@@ -1913,7 +2145,8 @@
     "date": "2021-05-02",
     "origin": "Porto, Portugal",
     "destination": "Lisbon, Portugal",
-    "distance": null,
+    "order": null,
+    "distance": 328236,
     "company": null
   },
   {
@@ -1922,6 +2155,7 @@
     "date": "2021-06-10",
     "origin": "Lisbon, Portugal",
     "destination": "Óbidos, Portugal",
+    "order": null,
     "distance": 84881,
     "company": null
   },
@@ -1931,6 +2165,7 @@
     "date": "2021-06-12",
     "origin": "Óbidos, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 84881,
     "company": null
   },
@@ -1940,7 +2175,8 @@
     "date": "2021-08-17",
     "origin": "Lisbon, Portugal",
     "destination": "Lagos, Portugal",
-    "distance": 84881,
+    "order": null,
+    "distance": 221492,
     "company": null
   },
   {
@@ -1949,7 +2185,8 @@
     "date": "2021-08-22",
     "origin": "Lagos, Portugal",
     "destination": "Lisbon, Portugal",
-    "distance": 84881,
+    "order": null,
+    "distance": 221492,
     "company": null
   },
   {
@@ -1958,6 +2195,7 @@
     "date": "2022-06-10",
     "origin": "Lisbon, Portugal",
     "destination": "Porto, Portugal",
+    "order": null,
     "distance": 328236,
     "company": null
   },
@@ -1967,6 +2205,7 @@
     "date": "2022-06-14",
     "origin": "Porto, Portugal",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 328236,
     "company": null
   },
@@ -1976,6 +2215,7 @@
     "date": "2022-08-18",
     "origin": "Lisbon, Portugal",
     "destination": "Madrid, Spain",
+    "order": 1,
     "distance": 664008,
     "company": "Iberia"
   },
@@ -1985,6 +2225,7 @@
     "date": "2022-08-18",
     "origin": "Madrid, Spain",
     "destination": "Arrecife, Spain",
+    "order": 2,
     "distance": 1750584,
     "company": "Iberia"
   },
@@ -1994,6 +2235,7 @@
     "date": "2022-08-28",
     "origin": "Arrecife, Spain",
     "destination": "Madrid, Spain",
+    "order": 1,
     "distance": 1750584,
     "company": "Iberia"
   },
@@ -2003,6 +2245,7 @@
     "date": "2022-08-28",
     "origin": "Madrid, Spain",
     "destination": "Lisbon, Portugal",
+    "order": 2,
     "distance": 664008,
     "company": "Iberia"
   },
@@ -2012,6 +2255,7 @@
     "date": "2022-10-29",
     "origin": "Lisbon, Portugal",
     "destination": "Madrid, Spain",
+    "order": null,
     "distance": 758867,
     "company": null
   },
@@ -2021,6 +2265,7 @@
     "date": "2022-11-01",
     "origin": "Madrid, Spain",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 758867,
     "company": null
   },
@@ -2030,6 +2275,7 @@
     "date": "2023-05-17",
     "origin": "Lisbon, Portugal",
     "destination": "London, United Kingdom",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -2039,6 +2285,7 @@
     "date": "2023-05-19",
     "origin": "London, United Kingdom",
     "destination": "Lisbon, Portugal",
+    "order": null,
     "distance": 1821358,
     "company": "TAP"
   },
@@ -2048,6 +2295,7 @@
     "date": "2024-08-19",
     "origin": "Lisbon, Portugal",
     "destination": "Zürich, Switzerland",
+    "order": 1,
     "distance": 2296614,
     "company": "Swiss"
   },
@@ -2057,8 +2305,39 @@
     "date": "2024-08-19",
     "origin": "Zürich, Switzerland",
     "destination": "Athens, Greece",
+    "order": 2,
     "distance": 2058969,
     "company": "Aegean Airlines"
+  },
+  {
+    "alias": null,
+    "type": "boat",
+    "date": "2024-08-20",
+    "origin": "Athens, Greece",
+    "destination": "Tínos, Greece",
+    "order": null,
+    "distance": 165898,
+    "company": "Golden Star Ferries"
+  },
+  {
+    "alias": "Syros",
+    "type": "boat",
+    "date": "2024-08-22",
+    "origin": "Tínos, Greece",
+    "destination": "Ermoúpolis, Greece",
+    "order": null,
+    "distance": 26246,
+    "company": "Golden Star Ferries"
+  },
+  {
+    "alias": "Santorini",
+    "type": "boat",
+    "date": "2024-08-25",
+    "origin": "Ermoúpolis, Greece",
+    "destination": "Firá, Greece",
+    "order": null,
+    "distance": 116414,
+    "company": "Golden Star Ferries"
   },
   {
     "alias": null,
@@ -2066,6 +2345,7 @@
     "date": "2024-08-29",
     "origin": "Firá, Greece",
     "destination": "Frankfurt am Main, Germany",
+    "order": 1,
     "distance": 2477324,
     "company": "Discover Airlines"
   },
@@ -2075,6 +2355,7 @@
     "date": "2024-08-29",
     "origin": "Frankfurt am Main, Germany",
     "destination": "Lisbon, Portugal",
+    "order": 2,
     "distance": 2466663,
     "company": "Lufthansa"
   }

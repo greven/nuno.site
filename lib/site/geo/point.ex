@@ -23,7 +23,7 @@ defmodule Site.Geo.Point do
   def distance_between(point_a, point_b, transport_type \\ :direct)
 
   def distance_between(%Point{} = point_a, %Point{} = point_b, transport_type)
-      when transport_type in [:direct, :air, :car] do
+      when transport_type in [:direct, :air, :car, :boat] do
     base_distance =
       Geocalc.distance_between(Point.to_list(point_a), Point.to_list(point_b))
 
@@ -31,7 +31,8 @@ defmodule Site.Geo.Point do
   end
 
   # Circuity factors for different transport types
-  defp circuity_factor(:direct), do: 1.0
   defp circuity_factor(:air), do: 1.05
   defp circuity_factor(:car), do: 1.20
+  defp circuity_factor(:boat), do: 1.15
+  defp circuity_factor(_), do: 1.0
 end

@@ -25,6 +25,7 @@ defmodule SiteWeb.Router do
     get "/about", PageController, :about
     get "/stack", PageController, :stack
     get "/resume", PageController, :resume
+    get "/photos", PageController, :photos
     get "/sitemap", PageController, :sitemap
     get "/sink", PageController, :sink
 

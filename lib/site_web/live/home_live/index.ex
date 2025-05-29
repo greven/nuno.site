@@ -9,11 +9,11 @@ defmodule SiteWeb.HomeLive.Index do
     <Layouts.app flash={@flash} active_link={@active_link}>
       <Layouts.page_content>
         <div class="container mx-auto px-4 py-8">
-          <h1 class="text-4xl font-bold mb-12 text-center text-gray-800 dark:text-white">
+          <h1 class="text-4xl font-light text-center text-gray-800 dark:text-white">
             Welcome to my Website!
           </h1>
 
-          <SiteComponents.bento_grid>
+          <SiteComponents.bento_grid class="mt-12">
             <SiteComponents.bento_box navigate={~p"/about"}>
               About
             </SiteComponents.bento_box>

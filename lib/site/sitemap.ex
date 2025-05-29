@@ -10,11 +10,14 @@ defmodule Site.Sitemap do
 
   def other_pages do
     [
-      # {"Music", "/music"},
-      # {"Books", "/books"},
-      # {"Gaming", "/gaming"},
       {"Stack", "/stack"},
-      {"Kitchen Sink", "/sink"}
+      {"Music", "/music"},
+      {"Books", "/books"},
+      {"Gaming", "/gaming"},
+      {"Photography", "/photos"},
+      {"Kitchen Sink", "/sink"},
+      {"Categories", "/categories"},
+      {"Tags", "/tags"}
     ]
   end
 

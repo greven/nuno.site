@@ -215,6 +215,10 @@
       color: var(--color-content-10);
       background-color: --alpha(var(--color-secondary) / 0.15);
       padding: 0.15rem 0.125rem;
+
+      @variant dark {
+        background-color: --alpha(var(--color-secondary) / 0.25);
+      }
     }
 
     code,

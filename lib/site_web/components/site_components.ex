@@ -10,12 +10,15 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
+  attr :rest, :global
   slot :inner_block, required: true
 
   def bento_grid(assigns) do
     ~H"""
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {render_slot(@inner_block)}
+    <div {@rest}>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {render_slot(@inner_block)}
+      </div>
     </div>
     """
   end
@@ -327,7 +330,7 @@ defmodule SiteWeb.SiteComponents do
 
     ~H"""
     <li data-item="trip" data-origin={@trip.origin} data-destination={@trip.destination} {@rest}>
-      <div class="group flex gap-1 items-center justify-between text-xs md:text-sm px-3 py-2.5 bg-surface-20/50
+      <div class="group flex gap-1 items-center justify-between text-xs md:text-sm px-3 py-2.5 bg-surface-20/50 hover:cursor-pointer
           rounded-box border border-surface-30 shadow-xs hover:shadow-sm hover:border-primary transition-shadow">
         <div class="flex items-center">
           <div class="flex flex-col justify-center items-start gap-0.5 lg:flex-row lg:items-center">
@@ -335,7 +338,7 @@ defmodule SiteWeb.SiteComponents do
             <div class="text-content-30">{@trip.origin}</div>
             <.icon
               name="hero-arrow-right-mini"
-              class="hidden lg:block mx-2 size-4 text-content-40/60 group-hover:text-primary/80"
+              class="hidden lg:block ml-1.5 mr-2 size-5 text-content-40/60 group-hover:text-primary/80"
             />
             <div class="text-content-10">{@trip.destination}</div>
           </div>
