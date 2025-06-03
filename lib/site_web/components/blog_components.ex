@@ -8,12 +8,14 @@ defmodule SiteWeb.BlogComponents do
   alias Site.Blog
   alias Site.Support
 
+  alias SiteWeb.SiteComponents
+
   @doc false
 
   attr :post, Blog.Post, required: true
   attr :rest, :global
 
-  def article_item(assigns) do
+  def article(assigns) do
     ~H"""
     <.card tag="article" class="group isolate" {@rest}>
       <div class="blog-article">
@@ -39,40 +41,97 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
+  attr :articles, :map,
+    required: true,
+    doc: "Map of articles to display, where each key is
+      the group key and the values the list of articles"
+
+  attr :icon, :string, default: "hero-calendar-days"
+  attr :show_icon, :boolean, default: true
+
+  attr :icon_class, :string, default: "hidden md:flex items-center size-8 text-content-40"
+
+  attr :header_container_class, :string,
+    default: "flex items-center justify-center md:justify-start gap-4"
+
+  attr :sticky_header, :boolean, default: false
+  attr :rest, :global
+
+  slot :header do
+    attr :class, :string
+  end
+
+  slot :items do
+    attr :class, :string
+  end
+
+  def archive(assigns) do
+    ~H"""
+    <div {@rest}>
+      <div class="[--archive-gap:48px] flex flex-col gap-(--archive-gap)">
+        <section :for={{key, articles} <- @articles} class="group">
+          <.header
+            tag="h2"
+            class={@sticky_header && "sticky top-(--header-height) bg-surface pt-4 z-1"}
+            header_class="text-content-20 text-3xl font-medium md:font-normal"
+          >
+            <div class={@header_container_class}>
+              <.icon :if={@show_icon} name={@icon} class={@icon_class} />
+              <%= for header <- @header do %>
+                <div class={header[:class]}>
+                  {render_slot(header, key)}
+                </div>
+              <% end %>
+            </div>
+          </.header>
+
+          <ol :for={items <- @items}>
+            <li class={items[:class]}>{render_slot(items, articles)}</li>
+          </ol>
+
+          <.divider
+            class="group-last:hidden mt-(--archive-gap) mx-8 md:mx-0"
+            border_class="w-full border-t border-surface-40/90 border-dashed"
+          />
+        </section>
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
   attr :post, Blog.Post, required: true
   attr :class, :string, default: nil
   attr :rest, :global
 
-  def post_item(assigns) do
+  def archive_item(assigns) do
     ~H"""
-    <div
-      class={[
-        "relative group flex flex-col gap-1 md:flex-row md:items-center md:justify-between md:gap-8",
-        @class
-      ]}
-      {@rest}
-    >
-      <div class="flex md:grid md:grid-cols-[82px_auto_1fr] items-center gap-1">
-        <h2 class="link-subtle text-base md:text-lg col-start-3 col-span-1 text-pretty line-clamp-2">
-          <.link href={~p"/articles/#{@post.year}/#{@post}"} class="line-clamp-1">
-            <span class="absolute inset-0"></span>
-            {@post.title}
-          </.link>
-        </h2>
-        <.post_category post={@post} class="hidden md:flex col-span-1 order-first" />
-      </div>
+    <article class={["relative flex flex-col px-6 md:p-0 text-center md:text-left", @class]} {@rest}>
+      <h2 class="col-start-3 col-span-1">
+        <.link
+          href={~p"/articles/#{@post.year}/#{@post}"}
+          class="link-subtle font-medium text-lg md:text-xl line-clamp-2 text-balance"
+        >
+          <span class="absolute inset-0"></span>
+          {@post.title}
+        </.link>
+      </h2>
 
-      <div class="mt-1 flex items-center gap-4">
-        <.post_category post={@post} class="md:hidden" />
-        <.post_read_time post={@post} label="read" class="md:hidden" show_icon />
+      <div class="mt-2 flex items-center justify-center md:justify-start gap-1 text-sm font-headings text-content-40">
         <.post_publication_date
-          class="shrink-0 flex items-center font-headings text-content-30
-          transition-colors group-hover:text-content-10"
-          format="%b %d, %Y"
+          class="text-content-20 uppercase"
+          show_icon={false}
+          format="%b.%d"
           post={@post}
         />
+        <span class="opacity-80">in</span><span class="text-content-20">{@post.category}</span>
       </div>
-    </div>
+
+      <p class="my-4 font-light text-content-40 text-base/6 md:text-lg/7.5 text-balance line-clamp-3">
+        {@post.excerpt}
+      </p>
+    </article>
     """
   end
 
@@ -167,7 +226,7 @@ defmodule SiteWeb.BlogComponents do
   def post_meta(assigns) do
     ~H"""
     <div id="post-meta" class={@class} phx-hook="PostMeta">
-      <div class="flex flex-wrap items-center justify-center gap-3 text-content-40">
+      <div class="flex flex-wrap items-center justify-center gap-3 text-content-40 text-sm">
         <.post_publication_date post={@post} show_icon={true} class="text-content-20" />
         <span :if={@post.category == :blog} class="font-sans text-xs text-primary">&bull;</span>
         <.post_read_time :if={@post.category == :blog} post={@post} label="read" show_icon={true} />
@@ -190,6 +249,7 @@ defmodule SiteWeb.BlogComponents do
 
   attr :post, Blog.Post, required: true
   attr :date_format, :string, default: "%B %-d, %Y"
+  attr :text, :string, default: "Updated on"
   attr :rest, :global
 
   def post_updated_disclaimer(assigns) do
@@ -200,8 +260,8 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <div :if={@post_updated?} {@rest}>
       <div class="flex justify-center">
-        <.badge badge_class="text-xs">
-          Last updated on <span class="font-medium">{post_updated_date(@post, @date_format)}</span>
+        <.badge badge_class="ml-2 text-sm shadow-xs" color="sky">
+          {@text} <span class="font-medium">{post_updated_date(@post, @date_format)}</span>
         </.badge>
       </div>
     </div>
@@ -243,7 +303,7 @@ defmodule SiteWeb.BlogComponents do
 
   def post_content(assigns) do
     ~H"""
-    <article class="relative mt-10 md:mt-16 [--article-gap:14.5rem] lg:[--article-gap:16rem]">
+    <article class="relative mt-10 md:mt-16 [--article-gap:16rem] lg:[--article-gap:16rem]">
       <.table_of_contents :if={@post.show_toc} headers={@post.headers} />
       <div class="prose">{raw(@post.body)}</div>
     </article>
@@ -252,18 +312,118 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
+  attr :post, Blog.Post, required: true
   attr :next_post, Blog.Post, default: nil
   attr :prev_post, Blog.Post, default: nil
+  attr :likes, :integer, default: 0
 
   def post_footer(assigns) do
     ~H"""
-    <div class="my-10">
-      <.post_pagination
-        :if={@next_post || @prev_post}
-        next_post={@next_post}
-        prev_post={@prev_post}
-        class="mt-8"
+    <div class="mt-8 mb-4 flex flex-col gap-8">
+      <.the_end />
+
+      <div class={[
+        "w-full flex justify-between flex-wrap gap-x-8 gap-y-4 px-4 py-3",
+        "bg-surface-10/60 border border-surface-30 border-dashed rounded-box"
+      ]}>
+        <.post_authoring post={@post} class="shrink-0" />
+
+        <div class="flex items-center gap-2.5">
+          <.post_likes post={@post} count={@likes} />
+          <.post_share post={@post} />
+        </div>
+      </div>
+
+      <.post_pagination :if={@next_post || @prev_post} next_post={@next_post} prev_post={@prev_post} />
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
+  attr :count, :integer, default: 0
+
+  def post_likes(assigns) do
+    assigns = assign(assigns, :likes, Support.abbreviate_number(assigns.count))
+
+    ~H"""
+    <.subtle_button
+      id="post-like"
+      size="xs"
+      class="group relative overflow-visible!"
+      phx-hook="PostLike"
+      data-post-slug={"#{@post.year}-#{@post.slug}"}
+    >
+      <.icon
+        data-unliked-icon
+        name="hero-heart"
+        class="size-5 text-content-30 group-hover:text-pink-400 transition-colors"
       />
+      <.icon
+        data-liked-icon
+        name="hero-heart-solid"
+        class="hidden size-5 text-pink-500 group-hover:text-pink-400 transition-colors"
+      />
+      <p data-likes-count class="ml-2 font-mono font-medium">{@likes}</p>
+    </.subtle_button>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
+
+  def post_share(%{post: post} = assigns) do
+    assigns =
+      assigns
+      |> assign(:share_title, "#{post.title} - Nuno Moço")
+      |> assign(:share_text, post.excerpt || "Check out this article by Nuno Moço.")
+      |> assign(:share_url, post_url(post))
+
+    ~H"""
+    <div
+      class="relative"
+      id="share-post"
+      phx-hook="SharePost"
+      data-title={@share_title}
+      data-text={@share_text}
+      data-url={@share_url}
+    >
+      <.subtle_button size="xs" class="space-x-2">
+        <.icon name="lucide-share" class="size-5" />
+        <p class="font-medium">Share</p>
+      </.subtle_button>
+
+      <div id="share-container"></div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def post_authoring(assigns) do
+    ~H"""
+    <div class={["flex items-center gap-2.5", @class]} {@rest}>
+      <SiteComponents.avatar_picture size={28} href={~p"/about"} />
+      <div class="group flex items-center gap-1">
+        <.link href={~p"/about"} class="font-headings text-sm md:text-base link-subtle">
+          Nuno Moço
+        </.link>
+
+        <span class="hidden md:block font-sans text-xs text-content-40/60 mx-2">&bull;</span>
+
+        <.post_publication_date
+          post={@post}
+          show_icon={false}
+          format="%B %-d, %Y"
+          class="hidden md:block text-content-40/95"
+        />
+      </div>
     </div>
     """
   end
@@ -280,8 +440,8 @@ defmodule SiteWeb.BlogComponents do
   def post_pagination(assigns) do
     assigns =
       assigns
-      |> assign(next_link: post_url(assigns.next_post))
-      |> assign(prev_link: post_url(assigns.prev_post))
+      |> assign(next_link: post_path(assigns.next_post))
+      |> assign(prev_link: post_path(assigns.prev_post))
 
     ~H"""
     <div {@rest}>
@@ -306,7 +466,11 @@ defmodule SiteWeb.BlogComponents do
           <div class={["flex items-center gap-1", @dir == :next && "justify-end"]}>
             <.icon
               name={if @dir == :prev, do: "lucide-arrow-left", else: "lucide-arrow-right"}
-              class="size-4 shrink-0 text-content-40/80 group-hover:-translate-x-0.5 transition-transform"
+              class={[
+                "size-4 shrink-0 text-content-40/80 transition-transform",
+                @dir == :prev && "group-hover:-translate-x-0.5",
+                @dir == :next && "group-hover:translate-x-0.5"
+              ]}
             />
             <div :if={@dir == :prev} class="text-content-40 text-xs tracking-wider font-sans">
               Previous
@@ -331,7 +495,7 @@ defmodule SiteWeb.BlogComponents do
 
   defp post_pager(assigns) do
     ~H"""
-    <div class="relative border border-surface-30 rounded-box p-4 flex items-center
+    <div class="min-h-[72px] relative border border-surface-30 rounded-box p-4 flex items-center
         justify-center text-content-30 opacity-40 select-none cursor-not-allowed">
       <div
         class="absolute inset-0 opacity-20 -z-10"
@@ -390,10 +554,11 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
+  attr :tag, :string, default: "div"
   attr :value, :string, default: nil
   attr :icon, :string, default: nil
+  attr :icon_class, :string, default: "size-5 text-content-40"
   attr :class, :string, default: nil
-  attr :tag, :string, default: "div"
   attr :rest, :global
 
   slot :inner_block, required: true
@@ -401,8 +566,8 @@ defmodule SiteWeb.BlogComponents do
   def post_meta_item(assigns) do
     ~H"""
     <.dynamic_tag tag_name={@tag} class={@class}>
-      <div class="flex items-center gap-2 text-sm">
-        <.icon :if={@icon} name={@icon} class="size-4.5 text-content-40" />
+      <div class="flex items-center gap-2">
+        <.icon :if={@icon} name={@icon} class={@icon_class} />
         <div class="flex items-center gap-1.5">
           <span :if={@value} class="font-mono text-content-20" {@rest}>{@value}</span>
           {render_slot(@inner_block)}
@@ -416,12 +581,14 @@ defmodule SiteWeb.BlogComponents do
 
   attr :count, :integer, required: true
   attr :show_icon, :boolean, default: true
+  attr :icon_class, :string, default: "size-5 text-content-40"
   attr :class, :string, default: nil
 
   def post_readers(assigns) do
     ~H"""
     <.post_meta_item
       icon={@show_icon && "lucide-users"}
+      icon_class={@icon_class}
       value={@count}
       class={@class}
       data-readers-count
@@ -435,12 +602,18 @@ defmodule SiteWeb.BlogComponents do
 
   attr :count, :integer, required: true
   attr :show_icon, :boolean, default: true
+  attr :icon_class, :string, default: "size-5 text-content-40"
   attr :class, :string, default: nil
 
   def post_views(assigns) do
+    assigns =
+      assigns
+      |> assign(count: Support.abbreviate_number(assigns.count))
+
     ~H"""
     <.post_meta_item
       icon={@show_icon && "lucide-printer"}
+      icon_class={@icon_class}
       value={@count}
       class={@class}
       data-views-count
@@ -457,6 +630,7 @@ defmodule SiteWeb.BlogComponents do
   attr :post, Blog.Post, required: true
   attr :label, :string, default: nil
   attr :show_icon, :boolean, default: true
+  attr :icon_class, :string, default: "size-5 text-content-40"
   attr :class, :string, default: nil
 
   def post_read_time(%{post: %{reading_time: reading_time}} = assigns) do
@@ -472,7 +646,12 @@ defmodule SiteWeb.BlogComponents do
       |> assign(:unit, unit)
 
     ~H"""
-    <.post_meta_item icon={@show_icon && "lucide-clock"} value={"#{@duration}#{@unit}"} class={@class}>
+    <.post_meta_item
+      icon={@show_icon && "lucide-clock"}
+      value={"#{@duration}#{@unit}"}
+      icon_class={@icon_class}
+      class={@class}
+    >
       {@label}
     </.post_meta_item>
     """
@@ -531,15 +710,15 @@ defmodule SiteWeb.BlogComponents do
     <div
       :if={@headers != [] and @has_links? and length(@headers) > @min_count}
       id="toc"
-      phx-hook="TableOfContents"
       class={[
-        "fixed bottom-0 left-1 right-1 z-10",
+        "size-1 fixed bottom-0 right-1 z-10",
         "sm:top-[calc(var(--page-gap)+var(--article-gap))] sm:bottom-auto sm:left-auto sm:right-4",
         @class
       ]}
+      phx-hook="TableOfContents"
       {@rest}
     >
-      <div class="relative isolate flex justify-end">
+      <div class="relative flex justify-end isolate">
         <.toc_navigator id="toc-navigator" headers={@headers} depth={@depth} />
         <.toc_content id="toc-container" headers={@headers} depth={@depth} />
       </div>
@@ -554,13 +733,28 @@ defmodule SiteWeb.BlogComponents do
   defp toc_navigator(assigns) do
     ~H"""
     <div
-      class="absolute bottom-0 right-0 sm:top-0 sm:right-0 sm:bottom-auto p-2 transition ease-in-out duration-300"
+      class={[
+        "fixed bottom-2.5 right-2.5 p-2 transition ease-in-out duration-300",
+        "sm:absolute sm:top-0 sm:right-0 sm:bottom-auto"
+      ]}
       style="opacity: 1"
       {@rest}
     >
-      <%!-- Regular --%>
-      <div class="hidden sm:block w-fit px-2.5 py-2.5 bg-surface-10/80
-          border border-surface-30 shadow-xs rounded-full backdrop-blur-sm">
+      <%!-- Mobile --%>
+      <div
+        id="toc-navigator-mobile"
+        class="hidden sm:hidden items-center justify-center w-12 h-12 bg-surface-10/90
+        border border-surface-30 shadow-sm rounded-full backdrop-blur-sm"
+      >
+        <.icon name="hero-list-bullet-mini" class="text-content-40 size-6" />
+      </div>
+
+      <%!-- Desktop --%>
+      <div
+        id="toc-navigator-desktop"
+        class="hidden sm:block w-fit px-2.5 py-2.5 bg-surface-10/80
+          border border-surface-30 shadow-xs rounded-full backdrop-blur-sm"
+      >
         <ol class="space-y-1">
           <li
             :for={header <- @headers}
@@ -568,16 +762,10 @@ defmodule SiteWeb.BlogComponents do
             class="m-0 p-0 leading-5 text-content-10/20 transition ease-in-out duration-500
             data-[active]:text-primary hover:text-content-40"
           >
-            <a href={"##{header.id}"}>&ndash;</a>
+            <a href={"##{header.id}"} inert>&ndash;</a>
             <span class="sr-only">{header.text}</span>
           </li>
         </ol>
-      </div>
-
-      <%!-- Mini (mobile) --%>
-      <div class="sm:hidden flex items-center justify-center w-12 h-12 bg-surface-10/90 border
-        border-surface-30 shadow-xs rounded-full backdrop-blur-sm">
-        <.icon name="hero-list-bullet-mini" class="text-content-40 size-6" />
       </div>
     </div>
     """
@@ -591,9 +779,12 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <div
       id="toc-container"
-      class="relative w-full mb-1 sm:min-w-[264px] sm:max-w-[448px] sm:mb-20 sm:w-auto p-5 z-10
-          bg-surface-10/95 rounded-box border border-surface-30 shadow-xs
-            backdrop-blur-sm transition-transform ease-in-out duration-500"
+      class={[
+        "fixed -bottom-2 left-1 right-1 w-full mb-1 p-5 z-10 rounded-t-box",
+        "sm:relative sm:mb-20 sm:w-auto sm:min-w-[348px] sm:rounded-box",
+        "bg-surface-10/95 border border-surface-30 shadow-xs backdrop-blur-sm",
+        "transition-transform ease-in-out duration-500"
+      ]}
       style="opacity: 0; transform: translateY(400px);"
       inert
       {@rest}
@@ -634,6 +825,7 @@ defmodule SiteWeb.BlogComponents do
         <li
           :for={header <- @headers}
           :if={header.depth <= @depth}
+          phx-click={JS.dispatch("hide-toc")}
           class="group relative flex items-center text-sm text-content-40
             before:content-[''] before:absolute before:-left-[calc(--spacing(5)+1px)] before:w-px
             before:h-5 before:border-l-2 before:border-l-transparent data-[active]:text-content-10
@@ -657,52 +849,33 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
-  attr :articles, :map,
-    required: true,
-    doc: "Map of articles to display, where each key is
-      the group key and the values the list of articles"
-
-  attr :icon, :string, default: "hero-calendar-days"
-  attr :show_icon, :boolean, default: true
-  attr :icon_class, :string, default: "flex items-center size-8 text-content-40"
-  attr :header_container_class, :string, default: "flex items-center gap-4"
-  attr :rest, :global
-
-  slot :header do
-    attr :class, :string
-  end
-
-  slot :items do
-    attr :class, :string
-  end
-
-  def grouped_articles_list(assigns) do
+  def the_end(assigns) do
     ~H"""
-    <div {@rest}>
-      <section :for={{key, articles} <- @articles}>
-        <.header tag="h2" header_class="text-content-20 text-3xl">
-          <div class={@header_container_class}>
-            <.icon :if={@show_icon} name={@icon} class={@icon_class} />
-            <%= for header <- @header do %>
-              <div class={header[:class]}>
-                {render_slot(header, key)}
-              </div>
-            <% end %>
-          </div>
-        </.header>
-
-        <%= for items <- @items do %>
-          <div class={items[:class]}>{render_slot(items, articles)}</div>
-        <% end %>
-      </section>
+    <div
+      id="the-end"
+      phx-hook="TheEnd"
+      class="w-full flex items-center justify-center gap-1.5 font-sans text-xs"
+    >
+      <span class="the-end-dot transition-all duration-2000 ease-out text-content-40">
+        &bull;
+      </span>
+      <span class="the-end-dot transition-all duration-2000 ease-out text-content-40">
+        &bull;
+      </span>
+      <span class="the-end-dot transition-all duration-2000 ease-out text-content-40">
+        &bull;
+      </span>
     </div>
     """
   end
 
-  defp post_url(%Blog.Post{} = post),
+  defp post_path(%Blog.Post{} = post),
     do: ~p"/articles/#{post.year}/#{post}"
 
-  defp post_url(_), do: nil
+  defp post_path(_), do: nil
+
+  defp post_url(%Blog.Post{} = post),
+    do: url(~p"/articles/#{post.year}/#{post}")
 
   # Check if post has been recently posted or updated
   defp post_is_fresh?(%Blog.Post{} = post) do

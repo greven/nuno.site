@@ -5,6 +5,10 @@ defmodule Site.Blog do
 
   alias __MODULE__
 
+  alias Site.Repo
+  alias Site.Blog.PostLike
+  alias Site.Blog.Event
+
   defmodule NotFoundError do
     defexception [:message, plug_status: 404]
   end
@@ -259,8 +263,95 @@ defmodule Site.Blog do
   end
 
   # ------------------------------------------
+  #  Post Likes
+  # ------------------------------------------
+
+  @doc """
+  Get the likes count for a post.
+  """
+  def get_post_likes_count(%Blog.Post{slug: slug, year: year}) do
+    case Repo.get_by(PostLike, post_slug: "#{year}-#{slug}") do
+      nil -> 0
+      post_like -> post_like.likes_count
+    end
+  end
+
+  @doc """
+  Increments likes for a post.
+  Returns {:ok, likes_count} or {:error, changeset}.
+  """
+  def increment_post_likes(post_slug) do
+    case Repo.get_by(PostLike, post_slug: post_slug) do
+      nil ->
+        %PostLike{post_slug: post_slug, likes_count: 1}
+        |> PostLike.changeset(%{last_updated: now()})
+        |> Repo.insert()
+        |> case do
+          {:ok, post_like} ->
+            broadcast_post_likes(post_like)
+            {:ok, post_like.likes_count}
+
+          error ->
+            error
+        end
+
+      post_like ->
+        post_like
+        |> PostLike.increment_changeset()
+        |> Repo.update()
+        |> case do
+          {:ok, updated_post_like} ->
+            broadcast_post_likes(updated_post_like)
+            {:ok, updated_post_like.likes_count}
+
+          error ->
+            error
+        end
+    end
+  end
+
+  @doc """
+  Decrements likes for a post.
+  Returns {:ok, likes_count} or {:error, changeset}.
+  """
+  def decrement_post_likes(post_slug) do
+    case Repo.get_by(PostLike, post_slug: post_slug) do
+      nil ->
+        {:ok, 0}
+
+      post_like ->
+        post_like
+        |> PostLike.decrement_changeset()
+        |> Repo.update()
+        |> case do
+          {:ok, updated_post_like} ->
+            broadcast_post_likes(updated_post_like)
+            {:ok, updated_post_like.likes_count}
+
+          error ->
+            error
+        end
+    end
+  end
+
+  def broadcast_post_likes(%Blog.PostLike{post_slug: slug, likes_count: likes}) do
+    Phoenix.PubSub.broadcast(Site.PubSub, "post_likes:#{slug}", %Event{
+      type: "post_likes_update",
+      payload: %{likes: likes}
+    })
+  end
+
+  def subscribe_post_likes(%Blog.Post{slug: slug, year: year}),
+    do: Phoenix.PubSub.subscribe(Site.PubSub, "post_likes:#{year}-#{slug}")
+
+  # ------------------------------------------
   #  Helpers
   # ------------------------------------------
+
+  defp now do
+    DateTime.utc_now()
+    |> DateTime.truncate(:second)
+  end
 
   defp apply_options(posts, []), do: posts
 

@@ -2,15 +2,14 @@ defmodule Site.Blog.Parser do
   import MDEx.Sigil
 
   alias Site.Blog.HeaderLink
-
-  @syntax_theme "cyberdream_dark"
+  alias Site.Blog.SyntaxTheme
 
   def parse(_path, contents) do
     [header, markdown_body] = String.split(contents, "---\n", trim: true, parts: 2)
     {%{} = attrs, _} = Code.eval_string(header, [])
 
     options = [
-      syntax_highlight: [formatter: {:html_inline, theme: @syntax_theme}],
+      syntax_highlight: [formatter: {:html_inline, theme: SyntaxTheme.umbra_theme()}],
       render: [
         unsafe_: true,
         github_pre_lang: true,

@@ -184,7 +184,7 @@
         position: absolute;
         top: 0;
         right: 100%;
-        width: 3px;
+        width: 2px;
         height: 100%;
         background: var(--color-primary);
         border-radius: 0.5rem;
@@ -246,14 +246,17 @@
     :not(pre) > code {
       padding-top: 0.125rem;
       padding-bottom: 0.125rem;
-      background-color: --alpha(var(--color-surface-30) / 0.75);
-      color: var(--color-content-20);
+      color: var(--color-content);
+      background-color: var(--color-surface-10);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-xs);
+      padding: 0.125rem;
       white-space: pre-wrap;
 
       &::before,
       &::after {
         content: '`';
-        color: var(--color-content-40);
+        color: --alpha(var(--color-content-40) / 0.75);
       }
     }
 

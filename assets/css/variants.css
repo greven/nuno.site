@@ -4,4 +4,11 @@
 @custom-variant phx-change-loading ([".phx-change-loading&", ".phx-change-loading &"]);
 
 /* Aria variants */
-@custom-variant aria-current (&[aria-current="true"]);
+@custom-variant aria-current (&[aria-current="true"], &[aria-current]);
+
+/* OS-specific Variants */
+@custom-variant linux (&:where([data-os="linux"], [data-os="linux"] *));
+@custom-variant macos (&:where([data-os="macos"], [data-os="macos"] *));
+@custom-variant windows (&:where([data-os="windows"], [data-os="windows"] *));
+@custom-variant android (&:where([data-os="android"], [data-os="android"] *));
+@custom-variant ios (&:where([data-os="ios"], [data-os="ios"] *));

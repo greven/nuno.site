@@ -238,7 +238,6 @@ defmodule SiteWeb.CoreComponents do
       @class
     ]}>
       <div>
-        <%!-- flex items-center gap-2.5  --%>
         <.dynamic_tag
           tag_name={@tag}
           class={[
@@ -249,7 +248,7 @@ defmodule SiteWeb.CoreComponents do
           <%= if @anchor do %>
             <div class="relative group hidden sm:block">
               <a id={@anchor} class="header-link" href={"##{@anchor}"}>
-                <%!-- {@tag} --%>
+                {@tag}
               </a>
               {render_slot(@inner_block)}
             </div>
@@ -260,7 +259,7 @@ defmodule SiteWeb.CoreComponents do
 
         <p
           :for={subtitle <- @subtitle}
-          class={["text-content-40", header_subtitle_font_size(@tag), subtitle[:class]]}
+          class={["mt-2 text-content-40", header_subtitle_font_size(@tag), subtitle[:class]]}
         >
           {render_slot(subtitle)}
         </p>
@@ -418,7 +417,7 @@ defmodule SiteWeb.CoreComponents do
   """
   attr :variant, :string, values: ~w(default dot), default: "default"
   attr :color, :string, values: Theme.colors(:tailwind)
-  attr :badge_class, :string, default: "text-sm"
+  attr :badge_class, :any, default: "text-sm"
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -436,7 +435,12 @@ defmodule SiteWeb.CoreComponents do
       ~H"""
       <.link class="group" {@rest}>
         <span style="--badge-dot-color: var(--color-gray-400);">
-          <span class={["group-hover:ring-surface-40", @base_class, @variant_class, @badge_class]}>
+          <span class={[
+            "group-hover:ring-surface-40 group-hover:bg-surface-10 group-hover:text-content-10",
+            @base_class,
+            @variant_class,
+            @badge_class
+          ]}>
             {render_slot(@inner_block)}
           </span>
         </span>
@@ -483,8 +487,8 @@ defmodule SiteWeb.CoreComponents do
   """
   attr :class, :any, default: nil
   attr :color, :string, values: Theme.colors(:theme)
-  attr :size, :string, values: ~w(sm md), default: "md"
-  attr :variant, :string, values: ~w(default solid light ghost link), default: "default"
+  attr :size, :string, values: ~w(xs sm md), default: "md"
+  attr :variant, :string, values: ~w(default solid light outline ghost link), default: "default"
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -513,8 +517,44 @@ defmodule SiteWeb.CoreComponents do
   @doc false
 
   attr :class, :any, default: nil
+  attr :size, :string, values: ~w(xs sm md), default: "md"
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
+  slot :inner_block, required: true
+
+  def subtle_button(%{rest: rest} = assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :base_class,
+        [
+          "text-content-20 ring-1 ring-neutral-300 rounded-full transition",
+          "hover:bg-neutral-400/10 hover:ring-neutral-400",
+          "active:ring-1! active:ring-neutral-300/80",
+          "dark:hover:bg-neutral-50/5 dark:ring-neutral-800 dark:hover:ring-neutral-700 dark:active:ring-neutral-800/80"
+        ]
+      )
+      |> assign(:size_class, button_size_class(assigns[:size]))
+
+    if rest[:href] || rest[:navigate] || rest[:patch] do
+      ~H"""
+      <.link class={["btn", @base_class, @size_class, @class]} {@rest}>
+        {render_slot(@inner_block)}
+      </.link>
+      """
+    else
+      ~H"""
+      <button type="button" class={["btn", @base_class, @size_class, @class]} {@rest}>
+        {render_slot(@inner_block)}
+      </button>
+      """
+    end
+  end
+
+  @doc false
+
+  attr :class, :any, default: nil
   attr :color, :string, values: Theme.colors(:theme)
-  attr :size, :string, values: ~w(sm md), default: "md"
+  attr :size, :string, values: ~w(xs sm md), default: "md"
   attr :variant, :string, values: ~w(default solid light ghost link), default: "default"
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
@@ -537,8 +577,13 @@ defmodule SiteWeb.CoreComponents do
   attr :on_change, :string, required: true, doc: "the event to trigger on value change"
   attr :aria_label, :string, required: true, doc: "the aria-label for the segmented control"
   attr :balanced, :boolean, default: false, doc: "whether to set equal width for all items"
+  attr :show_backdrop, :boolean, default: false
   attr :size, :string, values: ~w(sm md), default: "md"
   attr :class, :string, default: nil
+
+  attr :backdrop_class, :string,
+    default: "p-1 bg-surface-20 border border-surface-30 rounded-full"
+
   attr :rest, :global
 
   slot :item do
@@ -565,24 +610,27 @@ defmodule SiteWeb.CoreComponents do
     <div class={@class}>
       <ul
         class={[
-          "gap-2 p-1 bg-surface-20 border border-surface-30 rounded-box",
+          "gap-3",
+          @show_backdrop && @backdrop_class,
           @container_class
         ]}
         aria-label={@aria_label}
         {@rest}
       >
-        <li :for={item <- @item} class="w-full">
-          <.button
+        <li :for={item <- @item}>
+          <button
             type="button"
-            size={@size}
-            class={["group w-full", item[:class]]}
             disabled={item[:disabled]}
             aria-current={item[:value] == @value}
-            variant={if(item[:value] == @value, do: "default", else: "ghost")}
             phx-click={JS.push(@on_change, value: %{value: item[:value]})}
+            class={[
+              "group relative h-10 px-4 inline-flex flex-nowrap flex-shrink-0 items-center justify-center text-sm rounded-full
+                overflow-hidden whitespace-nowrap transition cursor-pointer align-middle text-center text-content-40 bg-surface-20/50",
+              "aria-current:bg-surface-30/80 aria-current:text-content-10",
+              "hover:not-aria-current:bg-surface-30/60",
+              item[:class]
+            ]}
           >
-            <%!-- "size-5 text-content-10/45 group-aria-[current]:text-primary group-hover:group-[:not(:disabled)]:group-[:not([aria-current])]:text-content-30" --%>
-
             <%= if item[:icon] do %>
               <div class="flex items-center gap-2">
                 <.icon
@@ -602,7 +650,7 @@ defmodule SiteWeb.CoreComponents do
             <% else %>
               {render_slot(item, item[:value] == @value)}
             <% end %>
-          </.button>
+          </button>
         </li>
       </ul>
     </div>
@@ -702,15 +750,57 @@ defmodule SiteWeb.CoreComponents do
   end
 
   @doc """
-  Renders a modal dialog using the native HTML <dialog> element.
+  Renders a barebones dialog using the native HTML <dialog> element.
   """
 
   attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  attr :on_cancel, JS, default: %JS{}
+  slot :inner_block, required: true
 
-  # TODO: ...!!!
+  def dialog(assigns) do
+    ~H"""
+    <dialog
+      id={@id}
+      phx-hook="Dialog"
+      phx-mounted={@show && show_dialog("##{@id}")}
+      phx-remove={hide_dialog("##{@id}")}
+      data-cancel={JS.exec(@on_cancel, "phx-remove")}
+      class="relative backdrop:bg-neutral-900/80 transition-opacity"
+    >
+      {render_slot(@inner_block, JS.exec("data-cancel", to: "##{@id}"))}
+    </dialog>
+    """
+  end
+
+  @doc """
+  Renders a modal dialog using the headless dialog component.
+  """
+
+  attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  attr :on_cancel, JS, default: %JS{}
+
+  slot :inner_block, required: true
+
+  slot :title
+  slot :icon
+
+  # slot :confirm do
+  # attr :class, :any
+  # attr :type, :string
+  # attr :form, :string
+  # end
+  #
+  # slot :cancel do
+  # attr :class, :any
+  # end
+
   def modal(assigns) do
     ~H"""
-    <dialog id={@id} class="relative z-10"></dialog>
+    <.dialog id={@id}>
+      {render_slot(@title)}
+    </.dialog>
     """
   end
 
@@ -736,6 +826,16 @@ defmodule SiteWeb.CoreComponents do
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
     )
   end
+
+  def show_dialog(js \\ %JS{}, selector) do
+    JS.dispatch(js, "show-dialog", to: selector)
+  end
+
+  def hide_dialog(js \\ %JS{}, selector) do
+    JS.dispatch(js, "hide-dialog", to: selector)
+  end
+
+  ## Helpers
 
   @doc """
   Translates an error message using gettext.
@@ -836,7 +936,7 @@ defmodule SiteWeb.CoreComponents do
         "bg-stone-100/50 ring-stone-300/80 text-stone-700 dark:bg-stone-500/10 dark:text-stone-400 dark:ring-stone-400/20"
 
       _ ->
-        "bg-gray-100/50 ring-gray-300/80 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400 dark:ring-gray-400/20"
+        "bg-surface-10 ring-surface-30 text-content-30 dark:text-content-20"
     end
   end
 
@@ -926,6 +1026,7 @@ defmodule SiteWeb.CoreComponents do
       "default" => "btn-default",
       "solid" => "btn-solid",
       "light" => "btn-light",
+      "outline" => "btn-outline",
       "ghost" => "btn-ghost",
       "link" => "btn-link",
       nil => "btn-default"
@@ -949,6 +1050,7 @@ defmodule SiteWeb.CoreComponents do
 
   def button_size_class(size) do
     case size do
+      "xs" -> "btn-xs"
       "sm" -> "btn-sm"
       "md" -> "btn-md"
       _ -> "btn-md"

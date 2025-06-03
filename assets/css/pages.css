@@ -191,49 +191,45 @@
     flex-direction: column;
     isolation: isolate;
 
-    @variant lg {
-      /* Stripes */
-      &::before {
-        content: '';
-        position: absolute;
-        inset: 3px;
-        border-radius: calc(var(--radius-box) - 2px);
-        background-image: repeating-linear-gradient(
-          135deg,
-          var(--color-primary),
-          var(--color-primary) 1px,
-          transparent 1px,
-          transparent 6px
-        );
-        mask-image: linear-gradient(to left top, black, transparent 90%),
-          linear-gradient(45deg, black, transparent 65%);
-        mask-composite: intersect;
-        filter: grayscale(100%);
-        transition: filter opacity 150ms ease-in-out;
-        opacity: 0.2;
-        z-index: -1;
-      }
+    & .article-bg {
+      position: absolute;
+      inset: 3px;
+      border-radius: var(--radius-box);
+      overflow: hidden;
+    }
 
-      /* Gradient */
-      &::after {
-        content: '';
-        position: absolute;
-        inset: 3px;
-      }
+    /* Gradient */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+    }
 
-      &:hover::before {
-        filter: none;
-        opacity: 0.35;
-      }
+    &:hover::after {
+      border-radius: var(--radius-box);
+      background-image: linear-gradient(
+        30deg,
+        --alpha(var(--color-primary) / var(--bg-opacity, 3%)),
+        transparent 80%
+      );
+    }
+  }
 
-      &:hover::after {
-        border-radius: var(--radius-box);
-        background-image: linear-gradient(
-          30deg,
-          --alpha(var(--color-primary) / var(--bg-opacity, 3%)),
-          transparent 80%
-        );
-      }
+  .dot-jump {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: dot-bounce 0.4s ease-out;
+    }
+  }
+
+  @keyframes dot-bounce {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+    100% {
+      transform: translateY(0);
     }
   }
 }

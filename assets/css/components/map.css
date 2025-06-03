@@ -1,7 +1,7 @@
 .travel-map {
   position: relative;
   width: 100%;
-  height: clamp(150px, 70vh, 200px);
+  height: clamp(250px, 40vh, 300px);
   margin: 0 auto;
   border-radius: var(--radius-box);
   border: 1px solid var(--color-surface-20);
@@ -17,8 +17,12 @@
     z-index: -1;
   }
 
-  @variant sm {
-    height: clamp(300px, 70vh, 500px);
+  @variant md {
+    height: clamp(300px, 40vh, 400px);
+  }
+
+  @variant 2xl {
+    height: clamp(350px, 50vh, 500px);
   }
 }
 

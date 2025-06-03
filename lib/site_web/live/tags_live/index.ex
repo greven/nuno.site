@@ -9,26 +9,24 @@ defmodule SiteWeb.TagsLive.Index do
     ~H"""
     <Layouts.app flash={@flash} active_link={@active_link}>
       <Layouts.page_content class="tags">
-        <.header class="mt-4">
+        <.header class="mt-4 text-center md:text-left">
           All Tags
-          <:subtitle>
+          <:subtitle class="text-center md:text-left">
             Browse articles by topic
           </:subtitle>
         </.header>
 
-        <BlogComponents.grouped_articles_list
-          class="mt-8 flex flex-col gap-16"
-          articles={@posts}
-          icon="hero-hashtag"
-        >
+        <BlogComponents.archive class="mt-8" articles={@posts} icon="hero-hashtag" sticky_header>
           <:header :let={tag} class="-ml-2 capitalize">
             <.link navigate={~p"/tag/#{tag}"} class="link-subtle">{tag}</.link>
           </:header>
 
-          <:items :let={articles} class="mt-4 flex flex-col gap-4 md:gap-3">
-            <BlogComponents.post_item :for={article <- articles} post={article} />
+          <:items :let={articles} class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-16">
+            <%= for article <- articles do %>
+              <BlogComponents.archive_item post={article} />
+            <% end %>
           </:items>
-        </BlogComponents.grouped_articles_list>
+        </BlogComponents.archive>
       </Layouts.page_content>
     </Layouts.app>
     """

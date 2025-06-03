@@ -18,9 +18,9 @@ defmodule SiteWeb.Layouts do
       |> assign_new(:active_link, fn -> nil end)
 
     ~H"""
-    <div class="min-h-screen flex flex-col">
+    <div id="app-layout" class="min-h-screen flex flex-col" phx-hook="Layout">
       <.site_header active_link={@active_link} />
-      <main id="main" class="relative flex-auto" phx-hook="Layout">
+      <main class="relative flex-auto">
         <.wrapper wide={@wide}>
           {render_slot(@inner_block)}
         </.wrapper>
@@ -66,7 +66,7 @@ defmodule SiteWeb.Layouts do
         <span class="font-mono text-2xl text-primary ml-0.5 motion-safe:animate-blink group-hover:animate-none group-hover:opacity-0">
           _
         </span>
-        <span class="absolute -bottom-3 left-0 font-mono text-xs text-content-40 typing-reveal">
+        <span class="ios:hidden android:hidden absolute -bottom-3 left-0 font-mono text-xs text-content-40 typing-reveal">
           cd ~/home
         </span>
       </span>
@@ -86,18 +86,19 @@ defmodule SiteWeb.Layouts do
     <header
       id="site-header"
       phx-hook="SiteHeader"
-      class="top-0 z-50 flex flex-none flex-wrap items-center justify-between
-        bg-surface/85 shadow-gray-900/5 transition duration-500 backdrop-blur-sm
-        supports-backdrop-filter:blur(0) supports-backdrop-filter:bg-surface/85
-        border-b border-dashed border-transparent data-scrolled:border-surface-40
-        data-scrolled:shadow-sm pointer-events-none"
+      class={[
+        "top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
+        "bg-surface/95 border-b border-dashed border-transparent shadow-gray-900/5",
+        "supports-backdrop-filter:bg-surface/85 backdrop-blur-sm supports-backdrop-filter:blur(0)",
+        "data-scrolled:border-surface-40 data-scrolled:shadow-sm"
+      ]}
       style="position:var(--header-position);height:var(--header-height);margin-bottom:var(--header-mb)"
       {@rest}
     >
       <div class="wrapper">
         <div class="flex items-center justify-between py-3">
           <.site_logo />
-          <.site_nav {assigns} />
+          <.site_nav active_link={@active_link} current_user={@current_user} />
         </div>
       </div>
     </header>
@@ -140,12 +141,10 @@ defmodule SiteWeb.Layouts do
 
   attr :active_link, :atom, required: true
   attr :current_user, :any, required: true
-  attr :class, :string, default: nil
-  attr :rest, :global
 
   def site_nav(assigns) do
     ~H"""
-    <nav class={@class} {@rest}>
+    <nav class="flex items-center">
       <%!-- Small devices --%>
       <div id="mobile-menu" class="flex sm:hidden" phx-click={}>
         <.icon name="hero-bars-2" class="size-6" />
@@ -155,11 +154,18 @@ defmodule SiteWeb.Layouts do
       <div id="menu" class="hidden sm:ml-6 sm:flex items-center">
         <button
           type="button"
-          class="flex items-center gap-1 mr-4 rounded-full px-2 py-1 bg-surface-40/20 inset-ring inset-ring-surface-40/40 cursor-pointer"
+          class="group flex items-center gap-1 mr-4 px-2 py-1 rounded-full bg-surface-40/25
+            inset-ring inset-ring-surface-40/40 cursor-pointer hover:inset-ring-surface-40 transition"
         >
-          <.icon name="hero-magnifying-glass-mini" class="size-4 text-content-40/90" />
-          <kbd class="font-sans text-xs/4 text-content-20
-            not-in-[.macos]:after:content-['Ctrl_K'] in-[.macos]:after:content-['⌘K']">
+          <.icon
+            name="hero-magnifying-glass-mini"
+            class="size-4 text-content-40/90 group-hover:text-content-30"
+          />
+          <kbd class="hidden font-sans text-xs/4 text-content-20 macos:block group-hover:text-content-10">
+            ⌘K
+          </kbd>
+          <kbd class="hidden font-sans text-xs/4 text-content-20 not-macos:block group-hover:text-content-10">
+            Ctrl&nbsp;K
           </kbd>
         </button>
 

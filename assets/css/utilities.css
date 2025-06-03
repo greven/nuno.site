@@ -5,11 +5,11 @@
 /* Layout */
 
 @utility wrapper {
-  @apply w-screen mx-auto max-w-5xl px-4 sm:px-16 lg:px-20;
+  @apply container w-screen mx-auto max-w-5xl px-4 sm:px-20 lg:px-24;
 }
 
 @utility wide-wrapper {
-  @apply container mx-auto px-4 sm:px-16 lg:px-20;
+  @apply container mx-auto px-4 sm:px-20 lg:px-24;
 }
 
 @utility breakout {

@@ -24,10 +24,30 @@ export const TableOfContents = {
       })
       .filter(Boolean);
 
+    // Progressive enhancement: If JS is enable, show the mobile navigator
+    const mobileNavigator = document.getElementById('toc-navigator-mobile');
+    mobileNavigator.classList.remove('hidden');
+    mobileNavigator.classList.add('flex');
+
     this.positionNavigator();
     this.checkPosition();
+
     this.setupIntersectionObserver();
-    this.setupEventListeners();
+
+    // Setup event listeners
+    window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
+    window.addEventListener('resize', this.handleResize.bind(this));
+
+    document.addEventListener('pointerdown', this.handleOutsideClick.bind(this));
+    document.addEventListener('keydown', this.handleKeydown.bind(this));
+
+    this.el.addEventListener('hide-toc', this.hideToc.bind(this));
+
+    this.container.addEventListener('mouseenter', this.handleDesktopTocMouseEnter.bind(this));
+    this.container.addEventListener('mouseleave', this.handleDesktopTocMouseLeave.bind(this));
+
+    this.navigator.addEventListener('mouseenter', this.handleNavigatgorMouseEnter.bind(this));
+    this.navigator.addEventListener('pointerdown', this.handleNavigatorClick.bind(this));
   },
 
   destroyed() {
@@ -46,14 +66,16 @@ export const TableOfContents = {
     window.removeEventListener('scroll', this.handleScroll.bind(this));
     window.removeEventListener('resize', this.handleResize.bind(this));
 
-    document.removeEventListener('click', this.handleOutsideClick.bind(this));
+    document.removeEventListener('pointerdown', this.handleOutsideClick.bind(this));
     document.removeEventListener('keydown', this.handleKeydown.bind(this));
+
+    this.el.removeEventListener('hide-toc', this.hideToc.bind(this));
 
     this.container?.removeEventListener('mouseenter', this.handleDesktopTocMouseEnter.bind(this));
     this.container?.removeEventListener('mouseleave', this.handleDesktopTocMouseLeave.bind(this));
 
-    this.navigator?.removeEventListener('mouseenter', this.handleDesktopMouseEnter.bind(this));
-    this.navigator?.removeEventListener('click', this.handleMobileClick.bind(this));
+    this.navigator?.removeEventListener('mouseenter', this.handleNavigatgorMouseEnter.bind(this));
+    this.navigator?.removeEventListener('pointerdown', this.handleNavigatorClick.bind(this));
   },
 
   setupIntersectionObserver() {
@@ -67,20 +89,6 @@ export const TableOfContents = {
     this.headings.forEach((heading) => {
       this.observer.observe(heading);
     });
-  },
-
-  setupEventListeners() {
-    window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
-    window.addEventListener('resize', this.handleResize.bind(this));
-
-    document.addEventListener('click', this.handleOutsideClick.bind(this));
-    document.addEventListener('keydown', this.handleKeydown.bind(this));
-
-    this.container.addEventListener('mouseenter', this.handleDesktopTocMouseEnter.bind(this));
-    this.container.addEventListener('mouseleave', this.handleDesktopTocMouseLeave.bind(this));
-
-    this.navigator.addEventListener('mouseenter', this.handleDesktopMouseEnter.bind(this));
-    this.navigator.addEventListener('click', this.handleMobileClick.bind(this));
   },
 
   checkPosition() {
@@ -264,7 +272,7 @@ export const TableOfContents = {
   },
 
   // Desktop event handlers
-  handleDesktopMouseEnter() {
+  handleNavigatgorMouseEnter() {
     if (this.isMobile()) return; // Don't handle on mobile
     this.showToc();
   },
@@ -290,9 +298,7 @@ export const TableOfContents = {
   },
 
   // Mobile event handlers
-  handleMobileClick(event) {
-    if (!this.isMobile()) return; // Don't handle on desktop
-
+  handleNavigatorClick(event) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -304,8 +310,6 @@ export const TableOfContents = {
   },
 
   handleOutsideClick(event) {
-    if (!this.isMobile() || !this.isVisible) return;
-
     // Check if click is outside the TOC container and navigator
     if (!this.container.contains(event.target) && !this.navigator.contains(event.target)) {
       this.hideToc();

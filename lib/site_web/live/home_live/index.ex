@@ -27,16 +27,21 @@ defmodule SiteWeb.HomeLive.Index do
             </SiteComponents.bento_box>
           </SiteComponents.bento_grid>
 
-          <div class="mt-32">
-            <%!-- <.modal id="basic-modal">
-            <:header>Basic Modal</:header>
-            This is a simple modal with some content.
-            <:actions>
-              <.button phx-click={hide_modal("basic-modal")}>Close</.button>
-            </:actions>
-          </.modal>
+          <div class="mt-16">
+            <.button phx-click={show_dialog("#basic-dialog")}>Open Dialog</.button>
 
-          <.button phx-click={show_modal("basic-modal")}>Open Modal</.button> --%>
+            <.dialog :let={cancel} id="basic-dialog">
+              This is a simple dialog with some content.
+              <.button phx-click={cancel}>Close</.button>
+            </.dialog>
+          </div>
+
+          <div class="mt-16">
+            <.button phx-click={show_dialog("#fancy-modal")}>Open Modal</.button>
+
+            <.modal id="fancy-modal">
+              <:title>This is a fancy modal title!</:title>
+            </.modal>
           </div>
         </div>
       </Layouts.page_content>

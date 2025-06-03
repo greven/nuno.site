@@ -5,6 +5,23 @@ defmodule Site.Support do
 
   ## Strings
 
+  @doc """
+  Create URL-friendly slugs.
+  """
+  def slugify(string, options \\ []) do
+    separator = Keyword.get(options, :separator, "-")
+    lowercase? = Keyword.get(options, :lowercase, true)
+
+    string
+    |> maybe_downcase(lowercase?)
+    |> String.replace(~r/[^a-z0-9\s-]/, "")
+    |> String.replace(~r/\s+/, separator)
+    |> String.trim(separator)
+  end
+
+  defp maybe_downcase(string, true), do: String.downcase(string)
+  defp maybe_downcase(string, false), do: string
+
   def truncate_text(text, opts \\ []) when is_binary(text) do
     length = Keyword.get(opts, :length, 100)
     terminator = Keyword.get(opts, :terminator, "...")
@@ -60,21 +77,16 @@ defmodule Site.Support do
   def format_number(number, _), do: number
 
   @doc """
-  Create URL-friendly slugs.
+  Abbreviate a number by converting it to a shortened format with unit suffixes,
+  such as converting 1000 to 1K, 1000000 to 1M, etc.
   """
-  def slugify(string, options \\ []) do
-    separator = Keyword.get(options, :separator, "-")
-    lowercase? = Keyword.get(options, :lowercase, true)
-
-    string
-    |> maybe_downcase(lowercase?)
-    |> String.replace(~r/[^a-z0-9\s-]/, "")
-    |> String.replace(~r/\s+/, separator)
-    |> String.trim(separator)
+  def abbreviate_number(number) do
+    cond do
+      number >= 1_000_000 -> "#{div(number, 1_000_000)}M"
+      number >= 1_000 -> "#{div(number, 1_000)}K"
+      true -> to_string(number)
+    end
   end
-
-  defp maybe_downcase(string, true), do: String.downcase(string)
-  defp maybe_downcase(string, false), do: string
 
   ## Calendar, Dates and Time
 

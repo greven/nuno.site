@@ -9,33 +9,35 @@ defmodule SiteWeb.TagsLive.Show do
     ~H"""
     <Layouts.app flash={@flash} active_link={@active_link}>
       <Layouts.page_content class="tag">
-        <div class="flex items-center justify-between">
-          <.header class="mt-4">
+        <div class="flex items-center justify-center md:justify-between">
+          <.header class="mt-4 text-center md:text-left">
             <.link navigate={~p"/tags"} class="text-content-40/40">
               #<span class="sr-only">Explore all tags</span>
             </.link>
             <span class="capitalize">{@tag}</span>
 
-            <:subtitle>
+            <:subtitle class="text-center md:text-left">
               Articles tagged with <span class="font-medium">{@tag}</span>
             </:subtitle>
           </.header>
-          <div class="text-xl text-content-40/70">
+          <div class="hidden md:block text-xl text-content-40/70">
             {@count} {ngettext("Article", "Articles", @count)}
           </div>
         </div>
 
-        <BlogComponents.grouped_articles_list class="mt-8 flex flex-col gap-16" articles={@posts}>
+        <BlogComponents.archive class="mt-8" articles={@posts} sticky_header>
           <:header :let={year}>
-            <.link navigate={~p"/updates/year/#{year}"} class="link-subtle">
+            <.link navigate={~p"/updates/year/#{year}"}>
               {year}
             </.link>
           </:header>
 
-          <:items :let={articles} class="mt-4 flex flex-col gap-8 md:gap-4">
-            <BlogComponents.post_item :for={article <- articles} post={article} />
+          <:items :let={articles} class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-16">
+            <%= for article <- articles do %>
+              <BlogComponents.archive_item post={article} />
+            <% end %>
           </:items>
-        </BlogComponents.grouped_articles_list>
+        </BlogComponents.archive>
       </Layouts.page_content>
     </Layouts.app>
     """

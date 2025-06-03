@@ -40,6 +40,7 @@ defmodule SiteWeb.Router do
       live "/category/:category", CategoriesLive.Show, :show
       live "/tags", TagsLive.Index, :index
       live "/tag/:tag", TagsLive.Show, :show
+      live "/analytics", AnalyticsLive.Index, :index
       live "/travel", TravelLive.Index, :index
     end
   end

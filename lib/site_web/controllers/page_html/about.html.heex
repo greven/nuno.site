@@ -1,89 +1,95 @@
 <Layouts.app flash={@flash} active_link={@active_link}>
-  <Layouts.page_content>
-    <div class="grid grid-cols-1 gap-y-12 lg:grid-cols-2 lg:grid-rows-[auto_1fr]">
-      <div class="row-span-2 w-full flex flex-col items-center justify-center lg:flex-row">
-        <SiteComponents.profile_picture size={300} />
-      </div>
+  <Layouts.page_content class="flex flex-col gap-16 md:gap-24">
+    <div class="about-intro">
+      <div class="grid grid-cols-1 gap-y-12 lg:grid-cols-2 lg:grid-rows-[auto_1fr]">
+        <div class="row-span-2 w-full flex flex-col items-center justify-center lg:flex-row">
+          <SiteComponents.profile_picture size={300} class="lg:-mt-8" />
+        </div>
 
-      <%!-- Intro --%>
-      <div class="w-full text-center lg:text-left lg:order-first lg:row-span-2">
-        <h1 class="text-3xl md:text-4xl font-headings font-light tracking-tight">
-          HEY! My name is <em class="font-medium underline not-italic decoration-4 decoration-primary underline-offset-4 text-content-10">Nuno</em>.
-        </h1>
+        <%!-- Intro --%>
+        <div class="w-full text-center lg:text-left lg:order-first lg:row-span-2">
+          <h1 class="text-3xl md:text-4xl font-headings font-light tracking-tight">
+            HEY! My name is <em class="font-medium underline not-italic decoration-4 decoration-primary underline-offset-4 text-content-10">Nuno</em>.
+          </h1>
 
-        <p class="mt-2 text-lg md:text-xl font-light">
-          I'm a <span class="font-semibold">Software Engineer</span>
-          from <span class="font-normal uppercase">
+          <p class="mt-2 text-lg md:text-xl font-light">
+            I'm a <span class="font-semibold">Software Engineer</span>
+            from <span class="font-normal uppercase">
           <.icon
-              name="lucide-map-pin"
-              class="size-5 mr-1 mb-1.5 hidden md:inline-block"
-            />Lisbon</span>.
-        </p>
-
-        <div class="mt-8 space-y-4 text-base text-content-20">
-          <p class="text-pretty md:text-balance">
-            Hello fellow visitor! I'm Nuno Moço, a seasoned software developer focused on web technologies.
-            I love crafting web applications with a focus on <span class="font-medium">User Experience</span>.
+                name="lucide-map-pin"
+                class="size-5 mr-1 mb-1.5 hidden md:inline-block"
+              />Lisbon</span>.
           </p>
 
-          <p class="text-pretty md:text-balance">
-            As a full-stack developer I enjoy working with various technologies. My main toolkit includes <span class="font-medium">Elixir</span>, <span class="font-medium">Phoenix</span>, <span class="font-medium">CSS</span>, <span class="font-medium">SQL</span>, <span class="font-medium">JavaScript</span>, and <span class="font-medium">React</span>.
-          </p>
+          <div class="mt-8 space-y-8 text-base text-content-20">
+            <p class="font-light text-lg md:text-xl text-pretty md:text-balance">
+              Hello fellow visitor! I'm Nuno Moço, a seasoned software developer focused on web technologies.
+              I love crafting web applications with a focus on <span class="font-medium">User Experience</span>.
+            </p>
 
-          <div class="mt-6">
-            <div class="mb-4 ml-1">
-              <div class="relative inline-block">
-                <em class="py-0.5 px-1 not-italic bg-secondary-light/10 text-secondary-darker/90 dark:bg-secondary-light/10 dark:text-secondary">
-                  Stay in contact
-                </em>
-                <.icon
-                  name="lucide-corner-right-down"
-                  class="absolute top-2 -right-6 size-5 text-secondary/90"
-                />
+            <p class="font-light text-base md:text-lg text-pretty md:text-balance">
+              As a full-stack developer I enjoy working with various technologies. My main toolkit includes <span class="font-medium">Elixir</span>, <span class="font-medium">Phoenix</span>, <span class="font-medium">CSS</span>, <span class="font-medium">SQL</span>, <span class="font-medium">JavaScript</span>, and <span class="font-medium">React</span>.
+            </p>
+
+            <div class="mt-12">
+              <div class="mb-4 ml-1">
+                <div class="relative inline-block">
+                  <em class="py-0.5 px-1 not-italic bg-secondary-light/10 text-secondary-darker/90 dark:bg-secondary-light/10 dark:text-secondary">
+                    Stay in contact
+                  </em>
+                  <.icon
+                    name="lucide-corner-right-down"
+                    class="absolute top-2 -right-6 size-5 text-secondary/90"
+                  />
+                </div>
               </div>
-            </div>
 
-            <SiteComponents.contact_links />
+              <SiteComponents.contact_links />
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <%!-- Skills --%>
-    <.header tag="h2" class="mt-16">
-      <div class="flex items-center gap-2">
-        <.icon name="hero-rectangle-stack" class="size-6.5 text-content-30" />
-        <span>Skills</span>
-      </div>
-      <:subtitle>Some of the tech I work with</:subtitle>
-    </.header>
+    <div class="about-skills">
+      <.header tag="h2">
+        <div class="flex items-center gap-2">
+          <.icon name="hero-rectangle-stack" class="size-6.5 text-content-30" />
+          <span>Skills</span>
+        </div>
+        <:subtitle>Some of the tech I work with</:subtitle>
+      </.header>
 
-    <div class="mt-4 max-w-2xl flex flex-wrap gap-2">
-      <%= for {skill, fav} <- @skills do %>
-        <.badge>
-          <.icon :if={fav} name="hero-star-mini" class="icon bg-secondary" />
-          {skill}
-        </.badge>
-      <% end %>
+      <div class="mt-4 max-w-2xl flex flex-wrap gap-2">
+        <%= for {skill, fav} <- @skills do %>
+          <.badge>
+            <.icon :if={fav} name="hero-star-mini" class="icon bg-secondary" />
+            {skill}
+          </.badge>
+        <% end %>
+      </div>
     </div>
 
     <%!-- Experience --%>
-    <.header tag="h2" class="mt-16">
-      <div class="flex items-center gap-2">
-        <.icon name="hero-briefcase" class="size-6.5 text-content-30" />
-        <span>Career</span>
-      </div>
-      <:subtitle>Recent work experience</:subtitle>
-    </.header>
+    <div class="about-experience">
+      <.header tag="h2">
+        <div class="flex items-center gap-2">
+          <.icon name="hero-briefcase" class="size-6.5 text-content-30" />
+          <span>Career</span>
+        </div>
+        <:subtitle>Recent work experience</:subtitle>
+      </.header>
 
-    <SiteWeb.SiteComponents.experience_shortlist class="mt-4 max-w-xl" items={@experience} />
+      <SiteWeb.SiteComponents.experience_shortlist class="mt-4 max-w-xl" items={@experience} />
 
-    <.button href={~p"/resume"} variant="link" class="group">
-      Full Resume
-      <.icon
-        name="hero-arrow-right-mini"
-        class="ml-1 size-5 text-primary duration-200 group-hover:transform group-hover:translate-x-0.5 transition-transform"
-      />
-    </.button>
+      <.button href={~p"/resume"} variant="link" class="group">
+        Full Resume
+        <.icon
+          name="hero-arrow-right-mini"
+          class="ml-1 size-5 text-primary duration-200 group-hover:transform group-hover:translate-x-0.5 transition-transform"
+        />
+      </.button>
+    </div>
   </Layouts.page_content>
 </Layouts.app>

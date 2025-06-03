@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth [scrollbar-gutter:stable]">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,30 +11,86 @@
     <script defer phx-track-static type="module" src={~p"/assets/js/app.js"}>
     </script>
     <script type="text/javascript">
-          (() => {
-        const storageKey = 'phx:theme';
+      // System theme
+      (() => {
+        const storageKey = "phx:theme";
         const getSystemTheme = () => {
-          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
+          return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        };
         const setTheme = (theme) => {
-          if (theme === 'system') {
+          if (theme === "system") {
             localStorage.removeItem(storageKey);
-            document.documentElement.setAttribute('data-theme', getSystemTheme());
-            document.documentElement.setAttribute('data-theme-mode', 'system');
+            document.documentElement.setAttribute("data-theme", getSystemTheme());
+            document.documentElement.setAttribute("data-theme-mode", "system");
           } else {
             localStorage.setItem(storageKey, theme);
-            document.documentElement.setAttribute('data-theme', theme);
-            document.documentElement.setAttribute('data-theme-mode', 'user');
+            document.documentElement.setAttribute("data-theme", theme);
+            document.documentElement.setAttribute("data-theme-mode", "user");
           }
         };
 
-        setTheme(localStorage.getItem(storageKey) || 'system');
+        setTheme(localStorage.getItem(storageKey) || "system");
 
-        window.addEventListener('storage', (e) => e.key === storageKey && setTheme(e.newValue || 'system'));
-        window.addEventListener('phx:set-theme', ({ detail: { theme } }) => setTheme(theme));
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-          if (!localStorage.getItem(storageKey)) { setTheme('system'); }
-        });
+        window.addEventListener(
+          "storage",
+          (e) => e.key === storageKey && setTheme(e.newValue || "system")
+        );
+        window.addEventListener("phx:set-theme", ({ detail: { theme } }) =>
+          setTheme(theme)
+        );
+        window
+          .matchMedia("(prefers-color-scheme: dark)")
+          .addEventListener("change", (e) => {
+            if (!localStorage.getItem(storageKey)) {
+              setTheme("system");
+            }
+          });
+      })();
+
+      // OS Detection
+      (() => {
+        const userAgent = navigator.userAgent;
+
+        let osName = "unknown";
+
+        // Use modern userAgentData if available
+        if (navigator.userAgentData) {
+          const platform = navigator.userAgentData.platform.toLowerCase();
+
+          if (platform.includes("mac")) {
+            if (/iPhone|iPad/.test(userAgent)) {
+              osName = "ios";
+            } else {
+              osName = "macos";
+            }
+          } else if (platform.includes("win")) {
+            osName = "windows";
+          } else if (platform.includes("linux")) {
+            osName = "linux";
+          } else if (platform.includes("android")) {
+            osName = "android";
+          }
+        } else {
+          // Fallback to userAgent parsing for older browsers
+          if (/Mac|iPod|iPhone|iPad/.test(userAgent)) {
+            if (/iPhone|iPad/.test(userAgent)) {
+              osName = "ios";
+            } else {
+              osName = "macos";
+            }
+          } else if (/Win/.test(userAgent)) {
+            osName = "windows";
+          } else if (/Linux/.test(userAgent)) {
+            osName = "linux";
+          } else if (/Android/.test(userAgent)) {
+            osName = "android";
+          }
+        }
+
+        // Set the data-os attribute
+        document.documentElement.setAttribute("data-os", osName);
       })();
     </script>
 

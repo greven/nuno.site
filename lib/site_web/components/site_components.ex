@@ -51,36 +51,47 @@ defmodule SiteWeb.SiteComponents do
   @doc false
 
   attr :class, :string, default: nil
-  attr :link, :boolean, default: false
+  attr :size, :integer, default: 40
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
 
-  def avatar_picture(assigns) do
-    ~H"""
-    <div class="size-10 bg-white/80 p-[1px] rounded-full shadow-sm shadow-gray-800/10 dark:bg-gray-800/90">
-      <%= if @link do %>
-        <.link navigate={~p"/"} aria-label="Home" class="group outline-none">
+  def avatar_picture(%{rest: rest} = assigns) do
+    if rest[:href] || rest[:navigate] || rest[:patch] do
+      ~H"""
+      <.link {@rest}>
+        <div
+          class="bg-white/80 p-[1px] rounded-full shadow-sm shadow-gray-800/10 dark:bg-gray-800/90"
+          style={"width:#{@size}px;height:#{@size}px;"}
+        >
           <.avatar_image class={@class} />
-        </.link>
-      <% else %>
-        <.avatar_image class={@class} />
-      <% end %>
-    </div>
-    """
+        </div>
+      </.link>
+      """
+    else
+      ~H"""
+      <div
+        class="bg-white/80 p-[1px] rounded-full shadow-sm shadow-gray-800/10 dark:bg-gray-800/90"
+        style={"width:#{@size}px;height:#{@size}px;"}
+      >
+        <.avatar_image class={@class} {@rest} />
+      </div>
+      """
+    end
   end
 
   attr :class, :string, default: nil
+  attr :size, :integer, default: 40
 
   defp avatar_image(assigns) do
     ~H"""
     <.image
       src="/images/avatar.png"
       alt="avatar"
-      height={40}
-      width={40}
+      height={@size}
+      width={@size}
       class={[
         @class,
         "rounded-full object-cover",
-        "group-focus:ring-2 group-focus:ring-primary group-focus:ring-offset-2
-          group-focus:ring-offset-surface transition-all"
+        "hover:ring-2 ring-primary ring-offset-2 ring-offset-surface transition-all"
       ]}
     />
     """
@@ -91,12 +102,13 @@ defmodule SiteWeb.SiteComponents do
   attr :size, :integer, default: 200
   attr :show_nav, :boolean, default: true
   attr :duration, :integer, default: 5000
+  attr :class, :string, default: nil
 
   def profile_picture(assigns) do
     ~H"""
     <div
       id="profile-picture"
-      class="profile-picture lg:mt-24"
+      class={["profile-picture", @class]}
       phx-hook="ProfileSlideshow"
       data-duration={@duration}
     >
@@ -198,18 +210,28 @@ defmodule SiteWeb.SiteComponents do
   def contact_links(assigns) do
     ~H"""
     <div {@rest}>
-      <ul role="list" class="flex flex-wrap justify-center lg:justify-start gap-2.5">
-        <.contact_link_item href="mailto:hello@nuno.site" icon="hero-envelope" class="hidden md:block">
+      <ul class="flex flex-wrap justify-center lg:justify-start gap-2.5">
+        <.contact_link href="mailto:hello@nuno.site" icon="hero-envelope" class="hidden md:block">
           Email
-        </.contact_link_item>
+        </.contact_link>
 
-        <.contact_link_item href="https://github.com/greven" icon="si-github">
+        <.contact_link href="https://github.com/greven" icon="si-github">
           Github
-        </.contact_link_item>
+        </.contact_link>
 
-        <.contact_link_item href="https://bsky.app/profile/nuno.site" icon="si-bluesky">
+        <.contact_link href="https://bsky.app/profile/nuno.site" icon="si-bluesky">
           Bluesky
-        </.contact_link_item>
+        </.contact_link>
+      </ul>
+
+      <ul class="mt-2 flex flex-wrap justify-center gap-1">
+        <.secondary_contact_link href="mailto:hello@nuno.site" class="md:hidden">
+          Email
+        </.secondary_contact_link>
+        <.secondary_contact_link href="https://www.linkedin.com/in/nuno-fr3ire/">
+          LinkedIn
+        </.secondary_contact_link>
+        <.secondary_contact_link>Twitter</.secondary_contact_link>
       </ul>
     </div>
     """
@@ -217,12 +239,13 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
-  attr :rest, :global
   attr :href, :string, required: true
   attr :icon, :string, required: true
+  attr :rest, :global
+
   slot :inner_block, required: true
 
-  def contact_link_item(assigns) do
+  def contact_link(assigns) do
     ~H"""
     <li {@rest}>
       <.button href={@href} size="sm" class="group">
@@ -235,6 +258,33 @@ defmodule SiteWeb.SiteComponents do
       </.button>
     </li>
     """
+  end
+
+  @doc false
+
+  attr :href, :string, default: nil
+  attr :rest, :global
+
+  slot :inner_block, required: true
+
+  def secondary_contact_link(%{href: link} = assigns) do
+    if link do
+      ~H"""
+      <li {@rest}>
+        <.link href={@href} class="px-1.5 link-subtle">
+          {render_slot(@inner_block)}
+        </.link>
+      </li>
+      """
+    else
+      ~H"""
+      <li {@rest}>
+        <s class="px-1.5 text-content-40/70 decoration-content-40/70">
+          {render_slot(@inner_block)}
+        </s>
+      </li>
+      """
+    end
   end
 
   @doc """
@@ -280,7 +330,7 @@ defmodule SiteWeb.SiteComponents do
             data-trips={JSON.encode!(@trips)}
           >
             <%!-- Map Controls --%>
-            <div class="hidden md:block absolute left-2 bottom-2">
+            <div class="w-full absolute left-2 right-2 bottom-2 hidden md:flex items-center gap-2">
               <.icon_button
                 variant="light"
                 title="Reset map"

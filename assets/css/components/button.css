@@ -3,6 +3,8 @@
   @apply relative inline-flex flex-nowrap flex-shrink-0 items-center justify-center overflow-hidden whitespace-nowrap
     text-sm transition cursor-pointer align-middle text-center no-underline;
 
+  --btn-border-color: transparent;
+
   min-width: 64px;
   border-radius: var(--btn-radius);
   border-width: var(--btn-border);
@@ -28,6 +30,12 @@
 
 /* Size */
 
+.btn-xs {
+  height: --spacing(8);
+  padding-inline: --spacing(2.5);
+  font-size: var(--text-sm);
+}
+
 .btn-sm {
   height: --spacing(9);
   padding-inline: --spacing(2.5);
@@ -43,9 +51,8 @@
 /* Colors */
 
 .btn-neutral {
-  --btn-bg: var(--color-content-10);
-  --btn-color: var(--color-surface-10);
-  --btn-underline: var(--color-primary);
+  --btn-bg: var(--color-neutral-600);
+  --btn-color: var(--color-neutral-50);
 }
 
 .btn-primary {
@@ -146,6 +153,30 @@
   &:hover:not(:disabled) {
     color: color-mix(in oklch, var(--btn-bg), #000 32%);
     background-color: --alpha(color-mix(in oklch, var(--btn-bg), #000 4%) / 0.125);
+  }
+
+  @variant dark {
+    color: color-mix(in oklch, var(--btn-bg), #fff 8%);
+    background-color: --alpha(var(--btn-bg) / 0.1);
+  }
+
+  @variant dark-hover {
+    color: color-mix(in oklch, var(--btn-bg), #fff 20%);
+    background-color: --alpha(color-mix(in oklch, var(--btn-bg), #fff 20%) / 0.125);
+  }
+}
+
+.btn-outline {
+  --btn-border-color: var(--btn-bg);
+
+  color: var(--btn-bg);
+  background-color: transparent;
+  border-width: var(--btn-border);
+  border-style: solid;
+
+  &:hover:not(:disabled) {
+    color: color-mix(in oklch, var(--btn-bg), #000 12%);
+    background-color: --alpha(color-mix(in oklch, var(--btn-bg), #000 2%) / 0.075);
   }
 
   @variant dark {

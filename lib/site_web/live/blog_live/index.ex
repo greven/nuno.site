@@ -28,16 +28,11 @@ defmodule SiteWeb.BlogLive.Index do
               :for={{category, icon, enabled?} <- @filter_categories}
               value={category}
               disabled={!enabled?}
-              icon_color_class="text-content-10/45 group-hover:group-[:not(:disabled)]:group-[:not([aria-current])]:text-content-30
-                group-aria-[current]:text-primary
-                dark:group-aria-[current]:text-white"
-              icon={icon}
+              icon_color_class={icon.class}
+              icon={icon.name}
             >
               <div class="flex items-center gap-2">
                 <div class="capitalize">{category}</div>
-                <.badge badge_class="hidden sm:inline-block text-xs dark:bg-neutral-900/25">
-                  {Map.get(@categories_count, category, 0)}
-                </.badge>
               </div>
             </:item>
           </.segmented_control>
@@ -51,11 +46,7 @@ defmodule SiteWeb.BlogLive.Index do
 
         <%!-- Posts --%>
         <div id="articles" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4" phx-update="stream">
-          <BlogComponents.article_item
-            :for={{dom_id, post} <- @streams.posts}
-            id={dom_id}
-            post={post}
-          />
+          <BlogComponents.article :for={{dom_id, post} <- @streams.posts} id={dom_id} post={post} />
         </div>
       </Layouts.page_content>
     </Layouts.app>
@@ -80,15 +71,12 @@ defmodule SiteWeb.BlogLive.Index do
       Blog.list_published_posts()
       |> Enum.filter(filter_posts_by_category(filter_category))
 
-    categories_count = Blog.count_posts_by_category()
-
     socket =
       socket
       |> assign(:filter_category, filter_category)
       |> assign(:has_posts?, published_posts != [])
-      |> assign(:filter_categories, filter_categories(categories_count))
+      |> assign(:filter_categories, filter_categories())
       |> stream(:posts, published_posts, reset: true)
-      |> assign(:categories_count, categories_count)
 
     {:noreply, socket}
   end
@@ -112,11 +100,11 @@ defmodule SiteWeb.BlogLive.Index do
   defp filter_posts_by_category("note"), do: &(&1.category == :note)
   defp filter_posts_by_category(_), do: fn _post -> true end
 
-  defp filter_categories(categories_count) do
+  defp filter_categories() do
     [
-      {"all", "hero-rectangle-stack", true},
-      {"blog", "hero-newspaper", Map.get(categories_count, "blog", 0) > 0},
-      {"note", "hero-chat-bubble-bottom-center-text", Map.get(categories_count, "note", 0) > 0}
+      {"all", %{name: "hero-rectangle-stack", class: "text-current"}, true},
+      {"blog", %{name: "hero-newspaper", class: "text-cyan-600"}, true},
+      {"note", %{name: "hero-chat-bubble-bottom-center-text", class: "text-amber-600"}, true}
     ]
   end
 end
