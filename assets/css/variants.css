@@ -1,3 +1,7 @@
+/* Theming */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark-hover (&:where([data-theme=dark], [data-theme=dark] *):hover:not(:disabled));
+
 /* Add variants based on LiveView classes */
 @custom-variant phx-click-loading ([".phx-click-loading&", ".phx-click-loading &"]);
 @custom-variant phx-submit-loading ([".phx-submit-loading&", ".phx-submit-loading &"]);

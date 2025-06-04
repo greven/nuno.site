@@ -1,6 +1,8 @@
 defmodule SiteWeb.BlogLive.Show do
   use SiteWeb, :live_view
 
+  alias Phoenix.LiveView.AsyncResult
+
   alias Site.Blog
   alias SiteWeb.BlogComponents
 
@@ -15,7 +17,7 @@ defmodule SiteWeb.BlogLive.Show do
           post={@post}
           next_post={@next_post}
           prev_post={@prev_post}
-          likes={@likes_count}
+          likes={@likes}
         />
       </Layouts.page_content>
     </Layouts.app>
@@ -27,7 +29,6 @@ defmodule SiteWeb.BlogLive.Show do
   def mount(%{"slug" => slug} = params, _session, socket) do
     post = Blog.get_post_by_slug!(slug)
     {next_post, prev_post} = Blog.get_post_pagination(post)
-    likes_count = Blog.get_post_likes_count(post)
 
     if connected?(socket) do
       Site.Blog.subscribe_post_likes(post)
@@ -42,8 +43,10 @@ defmodule SiteWeb.BlogLive.Show do
       |> assign(:next_post, next_post)
       |> assign(:prev_post, prev_post)
       |> assign(:readers, 1)
-      |> assign(:likes_count, likes_count)
       |> assign(:post, post)
+      |> assign_async(:likes, fn ->
+        {:ok, %{likes: Blog.get_post_likes_count(post)}}
+      end)
     }
   end
 
@@ -72,13 +75,13 @@ defmodule SiteWeb.BlogLive.Show do
     {:noreply, socket}
   end
 
-  def handle_info(%Blog.Event{type: "post_likes_update", payload: %{likes: likes_count}}, socket) do
-    diff = likes_count - socket.assigns.likes_count
+  def handle_info(%Blog.Event{type: "post_likes_update", payload: %{likes: likes}}, socket) do
+    diff = likes - socket.assigns.likes.result
 
     socket =
       socket
-      |> assign(:likes_count, likes_count)
-      |> push_event("likes-updated", %{likes_count: likes_count, diff: diff})
+      |> assign(:likes, AsyncResult.ok(likes))
+      |> push_event("likes-updated", %{likes: likes, diff: diff})
 
     {:noreply, socket}
   end
@@ -88,11 +91,11 @@ defmodule SiteWeb.BlogLive.Show do
     case action do
       "like" ->
         case Blog.increment_post_likes(post_slug) do
-          {:ok, likes_count} ->
+          {:ok, likes} ->
             {:noreply,
              socket
-             |> assign(:likes_count, likes_count)
-             |> push_event("likes-updated", %{likes_count: likes_count, diff: 1})}
+             |> assign(:likes, AsyncResult.ok(likes))
+             |> push_event("likes-updated", %{likes: likes, diff: 1})}
 
           {:error, _changeset} ->
             {:noreply,
@@ -102,11 +105,11 @@ defmodule SiteWeb.BlogLive.Show do
 
       "unlike" ->
         case Blog.decrement_post_likes(post_slug) do
-          {:ok, likes_count} ->
+          {:ok, likes} ->
             {:noreply,
              socket
-             |> assign(:likes_count, likes_count)
-             |> push_event("likes-updated", %{likes_count: likes_count, diff: -1})}
+             |> assign(:likes, AsyncResult.ok(likes))
+             |> push_event("likes-updated", %{likes: likes, diff: -1})}
 
           {:error, _changeset} ->
             {:noreply,

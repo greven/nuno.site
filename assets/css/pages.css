@@ -1,5 +1,105 @@
 @layer base {
-  /* Page Components */
+  /* Keyframes */
+
+  @keyframes typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: var(--typing-length);
+    }
+  }
+
+  @keyframes blink-cursor {
+    0%,
+    50% {
+      border-right-color: var(--color-primary);
+    }
+    51%,
+    100% {
+      border-right-color: transparent;
+    }
+  }
+
+  @keyframes dot-bounce {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  /* Navbar */
+
+  .navbar-link {
+    --link-accent: var(--color-primary);
+    --link-color: var(--color-content-10);
+    --inactive-link-color: var(--color-content-40);
+
+    position: relative;
+    border-radius: var(--radius-selector);
+    font-weight: var(--font-weight-medium);
+    font-size: 15px;
+    color: var(--inactive-link-color);
+    transition: all 0.3s;
+  }
+
+  .navbar-link::before,
+  .navbar-link::after {
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    width: 16px;
+    height: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    pointer-events: none;
+    background: var(--inactive-link-color);
+  }
+
+  .navbar-link::before {
+    content: '';
+    transform-origin: 100% 50%;
+    transform: scale3d(0, 1, 1);
+    transition: transform 0.3s;
+  }
+
+  .navbar-link:hover {
+    color: var(--color-content-20);
+  }
+
+  .navbar-link:hover::before {
+    transform-origin: 0% 50%;
+    transform: scale3d(1, 1, 1);
+  }
+
+  .navbar-link[aria-current='true'] {
+    color: var(--link-color);
+
+    &:focus-visible {
+      color: var(--link-accent);
+    }
+  }
+
+  .navbar-link[aria-current='true']::before,
+  .navbar-link[aria-current='true']::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    width: 16px;
+    height: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    pointer-events: none;
+    background: var(--link-accent);
+  }
 
   .typing-reveal {
     --typing-length: 9.5ch;
@@ -21,35 +121,6 @@
     width: var(--typing-length);
     opacity: 1;
     border-right-color: var(--color-primary);
-  }
-
-  @keyframes typing {
-    from {
-      width: 0;
-    }
-    to {
-      width: var(--typing-length);
-    }
-  }
-
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes blink-cursor {
-    0%,
-    50% {
-      border-right-color: var(--color-primary);
-    }
-    51%,
-    100% {
-      border-right-color: transparent;
-    }
   }
 
   .profile-picture {
@@ -221,15 +292,86 @@
     }
   }
 
-  @keyframes dot-bounce {
-    0% {
-      transform: translateY(0);
+  /* Travel */
+
+  .travel-map {
+    position: relative;
+    width: 100%;
+    height: clamp(250px, 40vh, 300px);
+    margin: 0 auto;
+    border-radius: var(--radius-box);
+    border: 1px solid var(--color-surface-20);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-xs);
+    z-index: 1;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: --alpha(var(--color-surface-20) / 0.5);
+      z-index: -1;
     }
-    50% {
-      transform: translateY(-8px);
+
+    @variant md {
+      height: clamp(300px, 40vh, 400px);
     }
-    100% {
-      transform: translateY(0);
+
+    @variant 2xl {
+      height: clamp(350px, 50vh, 500px);
     }
+  }
+
+  .travel-map svg {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-box);
+  }
+
+  .travel-map .map-pin {
+    transition: fill 0.3s, r 0.3s;
+    cursor: pointer;
+  }
+
+  .travel-map .country {
+    fill: var(--color-surface-30);
+    transition: fill 0.2s ease;
+
+    &.visited {
+      stroke: var(--color-amber-300);
+      fill: --alpha(var(--color-amber-100) / 90%);
+
+      @variant dark {
+        stroke: var(--color-amber-400);
+        fill: var(--color-amber-200);
+      }
+    }
+  }
+
+  /* Pin Tooltip */
+  .travel-map .map-tooltip {
+    padding: 0.5rem 0.75rem;
+    font-size: var(--text-sm);
+    line-height: var(--leading-tight);
+    background-color: --alpha(var(--color-slate-900) / 0.92);
+    color: var(--color-slate-50);
+    border-radius: var(--radius-box);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(4px);
+    white-space: nowrap;
+    z-index: 10;
+  }
+
+  .travel-map .map-tooltip .tooltip-title {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary);
+  }
+
+  .travel-map .map-tooltip .tooltip-subtitle {
+    color: var(--color-slate-100);
+  }
+
+  .travel-map .map-tooltip .tooltip-info {
+    color: var(--color-slate-300);
   }
 }

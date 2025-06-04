@@ -8,8 +8,8 @@
 
 @import './base.css';
 @import './fonts.css';
-@import './theme.css';
 @import './variants.css';
+@import './theme.css';
 @import './utilities.css';
 @import './components.css';
 @import './prose.css';

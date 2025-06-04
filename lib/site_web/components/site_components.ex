@@ -228,6 +228,9 @@ defmodule SiteWeb.SiteComponents do
         <.secondary_contact_link href="mailto:hello@nuno.site" class="md:hidden">
           Email
         </.secondary_contact_link>
+        <.secondary_contact_link href="https://mastodon.social/@nuno_fm">
+          Mastodon
+        </.secondary_contact_link>
         <.secondary_contact_link href="https://www.linkedin.com/in/nuno-fr3ire/">
           LinkedIn
         </.secondary_contact_link>

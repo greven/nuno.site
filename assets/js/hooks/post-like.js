@@ -22,6 +22,7 @@ export const PostLike = {
   },
 
   updated() {
+    this.isLiked = this.getStoredLikeState();
     this.updateUI();
   },
 
@@ -98,14 +99,14 @@ export const PostLike = {
       z-index: 10;
     `;
 
+    this.el.appendChild(floatingEl);
+
     // Animation
     setTimeout(() => {
       floatingEl.style.opacity = '0';
       floatingEl.style.transform = `translateY(-${distance}px)`;
       setTimeout(() => floatingEl.remove(), 1000);
     }, 10);
-
-    this.el.appendChild(floatingEl);
   },
 
   showErrorFeedback() {
@@ -118,7 +119,7 @@ export const PostLike = {
   // Update count from server
   handleLikesUpdated(payload) {
     if (this.likeCount) {
-      this.likeCount.textContent = abbreviateNumber(payload.likes_count);
+      this.likeCount.textContent = abbreviateNumber(payload.likes);
 
       if (payload.diff > 0) {
         this.appendFloatingElement();
@@ -127,8 +128,6 @@ export const PostLike = {
   },
 
   handleLikesError(payload) {
-    console.error('Like error:', payload.error);
-
     // Revert optimistic update
     this.isLiked = !this.isLiked;
     this.updateUI();

@@ -8,6 +8,7 @@ defmodule Site.MixProject do
       elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      consolidate_protocols: Mix.env() != :dev,
       aliases: aliases(),
       deps: deps(),
       listeners: [Phoenix.CodeReloader]
@@ -35,7 +36,7 @@ defmodule Site.MixProject do
     [
       # Phoenix Framework
       {:phoenix, "~> 1.8.0-rc.3", override: true},
-      {:phoenix_live_view, "~> 1.0"},
+      {:phoenix_live_view, "~> 1.0.16"},
       {:phoenix_ecto, "~> 4.6"},
       {:phoenix_html, "~> 4.2"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
@@ -108,7 +109,8 @@ defmodule Site.MixProject do
        depth: 1},
 
       # Development
-      {:credo, "~> 1.7", only: :dev, runtime: false}
+      {:credo, "~> 1.7", only: :dev, runtime: false},
+      {:tidewave, "~> 0.1", only: [:dev]}
       # {:live_debugger, "~> 0.2.2", only: :dev},
       # {:benchee, "~> 1.4", only: :dev}
     ]

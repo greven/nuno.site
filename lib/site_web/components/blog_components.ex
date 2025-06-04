@@ -5,6 +5,8 @@ defmodule SiteWeb.BlogComponents do
 
   use SiteWeb, :html
 
+  alias Phoenix.LiveView.AsyncResult
+
   alias Site.Blog
   alias Site.Support
 
@@ -342,31 +344,48 @@ defmodule SiteWeb.BlogComponents do
   @doc false
 
   attr :post, Blog.Post, required: true
-  attr :count, :integer, default: 0
+  attr :count, AsyncResult
 
   def post_likes(assigns) do
-    assigns = assign(assigns, :likes, Support.abbreviate_number(assigns.count))
-
     ~H"""
-    <.subtle_button
-      id="post-like"
-      size="xs"
-      class="group relative overflow-visible!"
-      phx-hook="PostLike"
-      data-post-slug={"#{@post.year}-#{@post.slug}"}
-    >
-      <.icon
-        data-unliked-icon
-        name="hero-heart"
-        class="size-5 text-content-30 group-hover:text-pink-400 transition-colors"
-      />
-      <.icon
-        data-liked-icon
-        name="hero-heart-solid"
-        class="hidden size-5 text-pink-500 group-hover:text-pink-400 transition-colors"
-      />
-      <p data-likes-count class="ml-2 font-mono font-medium">{@likes}</p>
-    </.subtle_button>
+    <.async_result :let={count} assign={@count}>
+      <:loading>
+        <.subtle_button size="xs" class="animate-pulse" inert>
+          <.icon name="hero-heart" class="size-5 text-content-30 opacity-40" />
+          <p class="ml-2 font-mono font-medium opacity-40">-</p>
+        </.subtle_button>
+      </:loading>
+      <:failed :let={_failure}>
+        <.subtle_button size="xs" disabled>
+          <.icon name="hero-heart" class="size-5 text-content-30 opacity-40" />
+          <p class="ml-2 font-mono font-medium opacity-40">-</p>
+        </.subtle_button>
+      </:failed>
+
+      <%= if @count do %>
+        <.subtle_button
+          id="post-like"
+          size="xs"
+          class="group relative overflow-visible!"
+          data-post-slug={"#{@post.year}-#{@post.slug}"}
+          phx-hook="PostLike"
+        >
+          <.icon
+            data-unliked-icon
+            name="hero-heart"
+            class="size-5 text-content-30 group-hover:text-pink-400 transition"
+          />
+          <.icon
+            data-liked-icon
+            name="hero-heart-solid"
+            class="hidden size-5 text-pink-500 group-hover:text-pink-400 transition"
+          />
+          <p data-likes-count class="ml-2 font-mono font-medium">
+            {Support.abbreviate_number(count)}
+          </p>
+        </.subtle_button>
+      <% end %>
+    </.async_result>
     """
   end
 
@@ -390,9 +409,9 @@ defmodule SiteWeb.BlogComponents do
       data-text={@share_text}
       data-url={@share_url}
     >
-      <.subtle_button size="xs" class="space-x-2">
-        <.icon name="lucide-share" class="size-5" />
-        <p class="font-medium">Share</p>
+      <.subtle_button size="xs" class="btn-icon">
+        <.icon name="lucide-share" class="size-4.5" />
+        <p class="sr-only">Share</p>
       </.subtle_button>
 
       <div id="share-container"></div>
@@ -415,13 +434,13 @@ defmodule SiteWeb.BlogComponents do
           Nuno Moço
         </.link>
 
-        <span class="hidden md:block font-sans text-xs text-content-40/60 mx-2">&bull;</span>
+        <span class="hidden md:block font-sans text-xs text-content-40/80 mx-2">&bull;</span>
 
         <.post_publication_date
           post={@post}
           show_icon={false}
           format="%B %-d, %Y"
-          class="hidden md:block text-content-40/95"
+          class="hidden md:block font-light text-content-40"
         />
       </div>
     </div>
@@ -856,13 +875,13 @@ defmodule SiteWeb.BlogComponents do
       phx-hook="TheEnd"
       class="w-full flex items-center justify-center gap-1.5 font-sans text-xs"
     >
-      <span class="the-end-dot transition-all duration-2000 ease-out text-content-40">
+      <span class="the-end-dot transition-all duration-400 ease-out text-content-40">
         &bull;
       </span>
-      <span class="the-end-dot transition-all duration-2000 ease-out text-content-40">
+      <span class="the-end-dot transition-all duration-400 ease-out text-content-40">
         &bull;
       </span>
-      <span class="the-end-dot transition-all duration-2000 ease-out text-content-40">
+      <span class="the-end-dot transition-all duration-400 ease-out text-content-40">
         &bull;
       </span>
     </div>
