@@ -36,14 +36,14 @@ Error Handling and Validation
 
 UI and Styling
 
-- Use Phoenix LiveView for dynamic, real-time interactions.
-- Implement responsive design with Tailwind CSS.
+- Use Phoenix LiveView for dynamic, real-time interactions (https://hexdocs.pm/phoenix_live_view)
+- Implement responsive design with Tailwind CSS (use Tailwind CSS v4 API).
 - Use Phoenix view helpers and templates to keep views DRY.
 
 Performance Optimization
 
 - Use database indexing effectively.
-- Implement caching strategies (ETS, Redis).
+- Implement caching strategies (ETS, etc.).
 - Use Ecto's preload to avoid N+1 queries.
 - Optimize database queries using preload, joins, or select.
 
@@ -58,12 +58,14 @@ Testing
 
 - Write comprehensive tests using ExUnit.
 - Follow TDD practices.
-- Use ExMachina for test data generation.
+
+Documentation and Maintenance
+- Maintain up-to-date documentation using ExDoc.
 
 Security
 
-- Implement proper authentication and authorization (e.g., Guardian, Pow).
+- Implement proper authentication and authorization.
 - Use strong parameters in controllers (params validation).
 - Protect against common web vulnerabilities (XSS, CSRF, SQL injection).
 
-Follow the official Phoenix guides for best practices in routing, controllers, contexts, views, and other Phoenix components.
+Follow the official Phoenix guides (https://hexdocs.pm/phoenix) for best practices in routing, controllers, contexts, views, and other Phoenix components.
