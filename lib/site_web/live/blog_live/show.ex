@@ -39,7 +39,7 @@ defmodule SiteWeb.BlogLive.Show do
     {
       :ok,
       socket
-      |> assign(:page_title, "Show Post")
+      |> assign(:page_title, post.title)
       |> assign(:next_post, next_post)
       |> assign(:prev_post, prev_post)
       |> assign(:readers, 1)

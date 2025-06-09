@@ -6,8 +6,13 @@ export const SharePost = {
       this.button.addEventListener('click', this.handleShare.bind(this));
     }
 
-    // Check if Web Share API is supported
+    // Check if Web Share API is supported, if not bail out
     this.supportsNativeShare = navigator.share && navigator.canShare;
+    if (!this.supportsNativeShare) {
+      this.button.setAttribute('disabled', true);
+      this.button.removeEventListener('click', this.handleShare.bind(this));
+      return;
+    }
   },
 
   destroyed() {
@@ -24,9 +29,16 @@ export const SharePost = {
     return { title, text, url };
   },
 
-  handleShare() {
+  async handleShare(event) {
     event.preventDefault();
+    event.stopPropagation();
 
-    console.log(this.getShareData());
+    try {
+      await navigator.share(this.getShareData());
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        console.error('Share failed:', error);
+      }
+    }
   },
 };

@@ -34,12 +34,12 @@
             <div class="mt-12">
               <div class="mb-4 ml-1">
                 <div class="relative inline-block">
-                  <em class="py-0.5 px-1 not-italic bg-secondary-light/10 text-secondary-darker/90 dark:bg-secondary-light/10 dark:text-secondary">
+                  <em class="py-0.5 px-1 not-italic text-secondary dark:text-tint-secondary/25 bg-secondary/10 dark:bg-secondary/15">
                     Stay in contact
                   </em>
                   <.icon
                     name="lucide-corner-right-down"
-                    class="absolute top-2 -right-6 size-5 text-secondary/90"
+                    class="absolute top-2 -right-6 size-5 text-secondary"
                   />
                 </div>
               </div>
@@ -64,7 +64,7 @@
       <div class="mt-4 max-w-2xl flex flex-wrap gap-2">
         <%= for {skill, fav} <- @skills do %>
           <.badge>
-            <.icon :if={fav} name="hero-star-mini" class="icon bg-secondary" />
+            <.icon :if={fav} name="hero-star-mini" class="size-4 bg-tint-secondary/25" />
             {skill}
           </.badge>
         <% end %>

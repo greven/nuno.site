@@ -37,9 +37,10 @@ defmodule SiteWeb.BlogLive.Index do
             </:item>
           </.segmented_control>
 
-          <div class="hidden sm:block">
+          <div class="hidden sm:flex items-center">
             <.button variant="link" navigate={~p"/tags"}>
-              <.icon name="hero-hashtag" class="size-4 text-primary mr-1.5" /> Tags
+              <.icon name="hero-hashtag" class="size-4 text-primary" />
+              Tags
             </.button>
           </div>
         </div>

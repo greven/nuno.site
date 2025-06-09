@@ -5,7 +5,59 @@ defmodule SiteWeb.CoreComponents do
   use Gettext, backend: SiteWeb.Gettext
 
   alias Phoenix.LiveView.JS
-  alias SiteWeb.Theme
+
+  @theme_colors ~w(default primary secondary info success warning danger)
+
+  @tailwind_colors ~w(
+    red orange amber yellow lime green emerald teal cyan sky
+    blue indigo violet purple fuchsia pink rose
+    slate gray zinc neutral stone)
+
+  @doc """
+  Box component that provides a base element styled with the theme defaults
+  for background, border, and shadow.
+  """
+
+  attr :class, :any, default: nil
+  attr :tag, :string, default: "div", doc: "the HTML tag to use for the box element"
+  attr :bg, :string, default: "bg-surface-10", doc: "the background color of the box"
+  attr :border, :string, default: "border border-border", doc: "the border color of the box"
+  attr :shadow, :string, default: "shadow-xs", doc: "the shadow class of the box"
+  attr :radius, :string, default: "rounded-lg", doc: "the border radius of the box"
+  attr :padding, :string, default: "p-5", doc: "the padding of the box"
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the box"
+  slot :inner_block, required: true, doc: "the content to be rendered inside the box"
+
+  def box(assigns) do
+    ~H"""
+    <.dynamic_tag
+      tag_name={@tag}
+      class={["transition", @class, @bg, @border, @shadow, @radius, @padding]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </.dynamic_tag>
+    """
+  end
+
+  @doc false
+
+  attr :class, :any, default: nil
+  attr :tag, :string, default: "div"
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def card(assigns) do
+    ~H"""
+    <.box
+      tag={@tag}
+      class={[@class, "relative flex flex-col h-full hover:border-primary hover:shadow-sm"]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </.box>
+    """
+  end
 
   @doc """
   Renders flash notices.
@@ -416,8 +468,10 @@ defmodule SiteWeb.CoreComponents do
   contextual information, such as status or categories.
   """
   attr :variant, :string, values: ~w(default dot), default: "default"
-  attr :color, :string, values: Theme.colors(:tailwind)
+  attr :color, :string, values: @tailwind_colors
+  attr :class, :string, default: nil
   attr :badge_class, :any, default: "text-sm"
+  attr :rounded_class, :string, default: "rounded-full"
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -427,19 +481,20 @@ defmodule SiteWeb.CoreComponents do
       |> assign(
         :base_class,
         "flex items-center ring-1 ring-inset whitespace-nowrap gap-x-1.5 px-2.5 py-0.5
-          [&>.icon]:size-[0.9375rem] rounded-[var(--badge-radius)]"
+          [&>[data-slot=icon]]::size-[0.9375rem]"
       )
       |> assign(:variant_class, badge_color_class(assigns[:variant], assigns[:color]))
 
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
-      <.link class="group" {@rest}>
+      <.link class={["group", @class]} {@rest}>
         <span style="--badge-dot-color: var(--color-gray-400);">
           <span class={[
             "group-hover:ring-surface-40 group-hover:bg-surface-10 group-hover:text-content-10",
             @base_class,
             @variant_class,
-            @badge_class
+            @badge_class,
+            @rounded_class
           ]}>
             {render_slot(@inner_block)}
           </span>
@@ -448,8 +503,8 @@ defmodule SiteWeb.CoreComponents do
       """
     else
       ~H"""
-      <span style="--badge-dot-color: var(--color-gray-400);" {@rest}>
-        <span class={[@base_class, @variant_class, @badge_class]}>
+      <span style="--badge-dot-color: var(--color-gray-400);" class={["group", @class]} {@rest}>
+        <span class={[@base_class, @variant_class, @badge_class, @rounded_class]}>
           {render_slot(@inner_block)}
         </span>
       </span>
@@ -459,7 +514,7 @@ defmodule SiteWeb.CoreComponents do
 
   @doc false
 
-  attr :color, :string, values: Theme.colors(:tailwind)
+  attr :color, :string, values: @tailwind_colors
   attr :class, :string, default: nil
 
   def dot(assigns) do
@@ -486,83 +541,282 @@ defmodule SiteWeb.CoreComponents do
       <.button navigate={~p"/"}>Home</.button>
   """
   attr :class, :any, default: nil
-  attr :color, :string, values: Theme.colors(:theme)
-  attr :size, :string, values: ~w(xs sm md), default: "md"
+  attr :color, :string, values: @theme_colors, default: "default"
   attr :variant, :string, values: ~w(default solid light outline ghost link), default: "default"
+  attr :size, :string, values: ~w(sm md lg), default: "md"
+  attr :wide, :boolean, default: false
+  attr :loading, :boolean, default: false
+  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: "lg"
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
   def button(%{rest: rest} = assigns) do
     assigns =
       assigns
-      |> assign(:size_class, button_size_class(assigns[:size]))
-      |> assign(:variant_class, button_variant_class(assigns[:variant]))
-      |> assign(:color_class, button_color_class(assigns[:color]))
+      |> assign(:clx, button_classes(assigns))
 
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
-      <.link class={["btn", @size_class, @variant_class, @color_class, @class]} {@rest}>
-        {render_slot(@inner_block)}
+      <.link
+        class={[@class, @clx.root]}
+        data-slot="button-root"
+        data-color={@color}
+        data-variant={@variant}
+        data-size={@size}
+        {@rest}
+      >
+        <span class={@clx.inner} data-slot="button-inner">
+          {render_slot(@inner_block)}
+        </span>
       </.link>
       """
     else
       ~H"""
-      <button class={["btn", @size_class, @variant_class, @color_class, @class]} {@rest}>
-        {render_slot(@inner_block)}
+      <button
+        class={[@class, @clx.root]}
+        data-slot="button-root"
+        data-color={@color}
+        data-variant={@variant}
+        data-size={@size}
+        {@rest}
+      >
+        <span class={@clx.inner} data-slot="button-inner">
+          {render_slot(@inner_block)}
+        </span>
       </button>
       """
+    end
+  end
+
+  defp button_classes(assigns) do
+    %{color: color, variant: variant, size: size, radius: radius, wide: wide} = assigns
+
+    size_clx = button_size_clx(size)
+    variant_clx = button_variant_clx(color, variant)
+
+    %{
+      root: [
+        "relative isolate outline-none overflow-hidden cursor-pointer transition-all",
+        "disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed",
+        "focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-[3px]",
+        "aria-invalid:ring-danger aria-invalid:border-danger",
+        "active:shadow-none",
+        "[&_svg]:pointer-events-none [&_[data-slot=icon]]:pointer-events-none [&_svg]:shrink-0 [&_[data-slot=icon]]:shrink-0 [&_svg:not([class*='size-'])]:size-4! [&_[data-slot=icon]:not([class*='size-'])]:size-4!",
+        "[--button-shadow:var(--shadow-xs)]",
+        if(wide, do: "block w-full", else: "inline-block"),
+        radius_class(radius),
+        size_clx.root,
+        variant_clx
+      ],
+      inner: [
+        "h-full flex justify-center items-center shrink-0 text-sm font-medium whitespace-nowrap align-middle text-center no-underline",
+        size_clx.inner
+      ]
+    }
+  end
+
+  defp button_size_clx(size) do
+    case size do
+      "sm" ->
+        %{
+          root: [
+            "[--button-height:--spacing(9)] [--button-padding:--spacing(3)] [--button-gap:--spacing(1.5)] h-(--button-height)"
+          ],
+          inner:
+            "gap-x-(--button-gap) px-(--button-padding) has-[>svg]:px-2.5 has-[>[data-slot=icon]]:px-2.5"
+        }
+
+      "md" ->
+        %{
+          root: [
+            "[--button-height:--spacing(10)] [--button-padding:--spacing(4)] [--button-gap:--spacing(2)] h-(--button-height)"
+          ],
+          inner:
+            "gap-x-(--button-gap) px-(--button-padding) has-[>svg]:px-3 has-[>[data-slot=icon]]:px-3"
+        }
+
+      "lg" ->
+        %{
+          root: [
+            "[--button-height:--spacing(11)] [--button-padding:--spacing(6)] [--button-gap:--spacing(2)] h-(--button-height)"
+          ],
+          inner:
+            "gap-x-(--button-gap) px-(--button-padding) has-[>svg]:px-4 has-[>[data-slot=icon]]:px-4"
+        }
+    end
+  end
+
+  defp button_variant_clx("default", variant) do
+    case variant do
+      "default" ->
+        "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-[1px] before:bg-linear-to-t before:from-neutral-500/15 dark:before:from-white/5 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,_linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-500/8 aria-[pressed]:bg-neutral-500/8 dark:not-active:not-disabled:hover:bg-neutral-700/70 dark:aria-[pressed]:bg-neutral-700/70"
+
+      "solid" ->
+        "bg-neutral-900 text-neutral-50 shadow-(--button-shadow) not-active:not-disabled:hover:bg-neutral-900/85 aria-[pressed]:bg-neutral-900/85"
+
+      "light" ->
+        "bg-neutral-500/8 dark:bg-neutral-500/12 text-neutral-900 dark:text-neutral-200 shadow-none not-active:not-disabled:hover:bg-neutral-500/12 aria-[pressed]:bg-neutral-500/12"
+
+      "outline" ->
+        "bg-transparent text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-neutral-700 ring-inset shadow-(--button-shadow) not-active:not-disabled:hover:bg-neutral-500/8 aria-[pressed]:bg-neutral-500/8"
+
+      "ghost" ->
+        "bg-transparent text-neutral-900 dark:text-neutral-200 shadow-none not-active:not-disabled:hover:bg-neutral-500/12 aria-[pressed]:bg-neutral-500/12"
+
+      "link" ->
+        ""
+    end
+  end
+
+  defp button_variant_clx("primary", variant) do
+    case variant do
+      "default" ->
+        ""
+
+      "solid" ->
+        "bg-primary text-primary-contrast shadow-(--button-shadow) not-active:not-disabled:hover:bg-primary/85 aria-[pressed]:bg-primary/85"
+
+      "light" ->
+        "bg-primary/8 dark:bg-primary/12 text-primary dark:text-primary shadow-none not-active:not-disabled:hover:bg-primary/12 aria-[pressed]:bg-primary/12"
+
+      "outline" ->
+        "bg-transparent text-primary ring-1 ring-primary ring-inset shadow-(--button-shadow) not-active:not-disabled:hover:bg-primary/10 aria-[pressed]:bg-primary/10"
+
+      "ghost" ->
+        "bg-transparent text-primary shadow-none not-active:not-disabled:hover:bg-primary/12 aria-[pressed]:bg-primary/12"
+
+      "link" ->
+        ""
+    end
+  end
+
+  defp button_variant_clx("secondary", variant) do
+    case variant do
+      "default" ->
+        ""
+
+      "solid" ->
+        "bg-secondary text-secondary-contrast shadow-(--button-shadow) not-active:not-disabled:hover:bg-secondary/85 aria-[pressed]:bg-secondary/85"
+
+      "light" ->
+        "bg-secondary/8 dark:bg-secondary/12 text-secondary dark:text-secondary shadow-none not-active:not-disabled:hover:bg-secondary/12 aria-[pressed]:bg-secondary/12"
+
+      "outline" ->
+        "bg-transparent text-secondary ring-1 ring-secondary shadow-(--button-shadow) not-active:not-disabled:hover:bg-secondary/10 aria-[pressed]:bg-secondary/10"
+
+      "ghost" ->
+        "bg-transparent text-secondary shadow-none not-active:not-disabled:hover:bg-secondary/12 aria-[pressed]:bg-secondary/12"
+
+      "link" ->
+        ""
+    end
+  end
+
+  defp button_variant_clx("info", variant) do
+    case variant do
+      "default" ->
+        ""
+
+      "solid" ->
+        "bg-info text-info-contrast shadow-(--button-shadow) not-active:not-disabled:hover:bg-info/85 aria-[pressed]:bg-info/85"
+
+      "light" ->
+        "bg-info/8 dark:bg-info/12 text-info shadow-none not-active:not-disabled:hover:bg-info/12 aria-[pressed]:bg-info/12"
+
+      "outline" ->
+        "bg-transparent text-info ring-1 ring-info shadow-(--button-shadow) not-active:not-disabled:hover:bg-info/10 aria-[pressed]:bg-info/10"
+
+      "ghost" ->
+        "bg-transparent text-info shadow-none not-active:not-disabled:hover:bg-info/12 aria-[pressed]:bg-info/12"
+
+      "link" ->
+        ""
+    end
+  end
+
+  defp button_variant_clx("success", variant) do
+    case variant do
+      "default" ->
+        ""
+
+      "solid" ->
+        "bg-success text-success-contrast shadow-(--button-shadow) not-active:not-disabled:hover:bg-success/85 aria-[pressed]:bg-success/85"
+
+      "light" ->
+        "bg-success/8 dark:bg/12 text-success shadow-none not-active:not-disabled:hover:bg-success/12 aria-[pressed]:bg-success/12"
+
+      "outline" ->
+        "bg-transparent text-success ring-1 ring-success shadow-(--button-shadow) not-active:not-disabled:hover:bg-success/10 aria-[pressed]:bg-success/10"
+
+      "ghost" ->
+        "bg-transparent text-success shadow-none not-active:not-disabled:hover:bg-success/12 aria-[pressed]:bg-success/12"
+
+      "link" ->
+        ""
+    end
+  end
+
+  defp button_variant_clx("warning", variant) do
+    case variant do
+      "default" ->
+        ""
+
+      "solid" ->
+        "bg-warning text-warning-contrast border border-warning shadow-(--button-shadow) not-active:not-disabled:hover:bg-warning/85 aria-[pressed]:bg-warning/85"
+
+      "light" ->
+        "bg-warning/8 dark:bg-warning/12 text-warning border border-transparent shadow-none not-active:not-disabled:hover:bg-warning/12 aria-[pressed]:bg-warning/12"
+
+      "outline" ->
+        "bg-transparent text-warning border border-warning shadow-(--button-shadow) not-active:not-disabled:hover:bg-warning/10 aria-[pressed]:bg-warning/10"
+
+      "ghost" ->
+        "bg-transparent text-warning border border-transparent shadow-none not-active:not-disabled:hover:bg-warning/12 aria-[pressed]:bg-warning/12"
+
+      "link" ->
+        ""
+    end
+  end
+
+  defp button_variant_clx("danger", variant) do
+    case variant do
+      "default" ->
+        ""
+
+      "solid" ->
+        "bg-danger text-danger-contrast shadow-(--button-shadow) not-active:not-disabled:hover:bg-danger/85 aria-[pressed]:bg-danger/85"
+
+      "light" ->
+        "bg-danger/8 dark:bg-danger/12 text-danger shadow-none not-active:not-disabled:hover:bg-danger/12 aria-[pressed]:bg-danger/12"
+
+      "outline" ->
+        "bg-transparent text-danger ring-1 ring-danger shadow-(--button-shadow) not-active:not-disabled:hover:bg-danger/10 aria-[pressed]:bg-danger/10"
+
+      "ghost" ->
+        "bg-transparent text-danger shadow-none not-active:not-disabled:hover:bg-danger/12 aria-[pressed]:bg-danger/12"
+
+      "link" ->
+        ""
     end
   end
 
   @doc false
 
   attr :class, :any, default: nil
-  attr :size, :string, values: ~w(xs sm md), default: "md"
-  attr :rest, :global, include: ~w(href navigate patch method disabled)
-  slot :inner_block, required: true
-
-  def subtle_button(%{rest: rest} = assigns) do
-    assigns =
-      assigns
-      |> assign(
-        :base_class,
-        [
-          "text-content-20 ring-1 ring-neutral-300 rounded-full transition",
-          "hover:bg-neutral-400/10 hover:ring-neutral-400",
-          "active:ring-1! active:ring-neutral-300/80",
-          "dark:hover:bg-neutral-50/5 dark:ring-neutral-800 dark:hover:ring-neutral-700 dark:active:ring-neutral-800/80"
-        ]
-      )
-      |> assign(:size_class, button_size_class(assigns[:size]))
-
-    if rest[:href] || rest[:navigate] || rest[:patch] do
-      ~H"""
-      <.link class={["btn", @base_class, @size_class, @class]} {@rest}>
-        {render_slot(@inner_block)}
-      </.link>
-      """
-    else
-      ~H"""
-      <button type="button" class={["btn", @base_class, @size_class, @class]} {@rest}>
-        {render_slot(@inner_block)}
-      </button>
-      """
-    end
-  end
-
-  @doc false
-
-  attr :class, :any, default: nil
-  attr :color, :string, values: Theme.colors(:theme)
-  attr :size, :string, values: ~w(xs sm md), default: "md"
+  attr :color, :string, values: @theme_colors
+  attr :size, :string, values: ~w(sm md lg), default: "md"
   attr :variant, :string, values: ~w(default solid light ghost link), default: "default"
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
   def icon_button(assigns) do
-    assigns = assign(assigns, :class, ["btn-icon", assigns.class])
+    # assigns = assign(assigns, :class, ["btn-icon", assigns.class])
 
-    button(assigns)
+    # button(assigns)
+
+    ~H"""
+    <div></div>
+    """
   end
 
   @doc """
@@ -657,23 +911,6 @@ defmodule SiteWeb.CoreComponents do
     """
   end
 
-  @doc false
-
-  attr :tag, :string, default: "div"
-  attr :rest, :global
-  slot :inner_block, required: true
-
-  def card(assigns) do
-    ~H"""
-    <.dynamic_tag tag_name={@tag} {@rest}>
-      <div class="relative h-full flex flex-col p-4 bg-surface-10 border border-surface-30 rounded-box
-        shadow-xs transition hover:border-primary hover:shadow-sm">
-        {render_slot(@inner_block)}
-      </div>
-    </.dynamic_tag>
-    """
-  end
-
   @doc """
   Renders an icon.
 
@@ -702,19 +939,19 @@ defmodule SiteWeb.CoreComponents do
 
   def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""
-    <span class={[@name, @class]} {@rest} />
+    <span class={[@name, @class]} data-slot="icon" {@rest} />
     """
   end
 
   def icon(%{name: "lucide-" <> _} = assigns) do
     ~H"""
-    <span class={[@name, @class]} {@rest} />
+    <span class={[@name, @class]} data-slot="icon" {@rest} />
     """
   end
 
   def icon(%{name: "si-" <> _} = assigns) do
     ~H"""
-    <span class={[@name, @class]} {@rest} />
+    <span class={[@name, @class]} data-slot="icon" {@rest} />
     """
   end
 
@@ -867,6 +1104,22 @@ defmodule SiteWeb.CoreComponents do
 
   ## Component Theming
 
+  def radius_class(radius) do
+    case radius do
+      "xs" -> "rounded-xs"
+      "sm" -> "rounded-sm"
+      "md" -> "rounded-md"
+      "lg" -> "rounded-lg"
+      "xl" -> "rounded-xl"
+      "2xl" -> "rounded-2xl"
+      "3xl" -> "rounded-3xl"
+      "4xl" -> "rounded-4xl"
+      "full" -> "rounded-full"
+      "none" -> "rounded-none"
+      _ -> nil
+    end
+  end
+
   def badge_color_class("default", color) do
     case color do
       "red" ->
@@ -1018,42 +1271,6 @@ defmodule SiteWeb.CoreComponents do
 
       _ ->
         "before:bg-(--badge-dot-color)"
-    end
-  end
-
-  def button_variant_class(variant) do
-    %{
-      "default" => "btn-default",
-      "solid" => "btn-solid",
-      "light" => "btn-light",
-      "outline" => "btn-outline",
-      "ghost" => "btn-ghost",
-      "link" => "btn-link",
-      nil => "btn-default"
-    }
-    |> Map.get(variant, "btn-default")
-  end
-
-  def button_color_class(color) do
-    %{
-      "primary" => "btn-primary",
-      "secondary" => "btn-secondary",
-      "accent" => "btn-accent",
-      "info" => "btn-info",
-      "success" => "btn-success",
-      "warning" => "btn-warning",
-      "danger" => "btn-danger",
-      "neutral" => "btn-neutral"
-    }
-    |> Map.get(color, "btn-neutral")
-  end
-
-  def button_size_class(size) do
-    case size do
-      "xs" -> "btn-xs"
-      "sm" -> "btn-sm"
-      "md" -> "btn-md"
-      _ -> "btn-md"
     end
   end
 end

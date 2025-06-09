@@ -54,9 +54,11 @@ export const PostLike = {
     if (!this.likedIcon || !this.unlikedIcon) return;
 
     if (this.isLiked) {
+      this.js().setAttribute(this.el, 'data-liked', true);
       this.likedIcon.classList.remove('hidden');
       this.unlikedIcon.classList.add('hidden');
     } else {
+      this.js().setAttribute(this.el, 'data-liked', false);
       this.likedIcon.classList.add('hidden');
       this.unlikedIcon.classList.remove('hidden');
     }

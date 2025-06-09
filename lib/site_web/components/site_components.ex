@@ -32,7 +32,7 @@ defmodule SiteWeb.SiteComponents do
   def bento_box(%{rest: rest} = assigns) do
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
-      <.card class={["isolate", @class]}>
+      <.card class={@class}>
         <.link {@rest}>
           <span class="absolute inset-0 z-10"></span>
           {render_slot(@inner_block)}
@@ -41,7 +41,7 @@ defmodule SiteWeb.SiteComponents do
       """
     else
       ~H"""
-      <.card class={["isolate", @class]} {@rest}>
+      <.card class={@class} {@rest}>
         {render_slot(@inner_block)}
       </.card>
       """
@@ -210,7 +210,7 @@ defmodule SiteWeb.SiteComponents do
   def contact_links(assigns) do
     ~H"""
     <div {@rest}>
-      <ul class="flex flex-wrap justify-center lg:justify-start gap-2.5">
+      <ul class="flex flex-wrap justify-center items-center gap-2.5">
         <.contact_link href="mailto:hello@nuno.site" icon="hero-envelope" class="hidden md:block">
           Email
         </.contact_link>
@@ -219,12 +219,13 @@ defmodule SiteWeb.SiteComponents do
           Github
         </.contact_link>
 
-        <.contact_link href="https://bsky.app/profile/nuno.site" icon="si-bluesky">
+        <.contact_link href="https://b
+        y.app/profile/nuno.site" icon="si-bluesky">
           Bluesky
         </.contact_link>
       </ul>
 
-      <ul class="mt-2 flex flex-wrap justify-center gap-1">
+      <ul class="mt-2 flex flex-wrap justify-center items-center gap-1">
         <.secondary_contact_link href="mailto:hello@nuno.site" class="md:hidden">
           Email
         </.secondary_contact_link>
@@ -297,14 +298,16 @@ defmodule SiteWeb.SiteComponents do
   attr :class, :string, default: nil
   attr :color, :string, required: true
   attr :label, :string, default: nil
+  slot :inner_block
 
   def color_swatch(assigns) do
     ~H"""
     <div class="flex flex-col items-center gap-2">
       <div
-        class="size-10 rounded-lg border-1"
+        class="h-10 px-3 min-w-10 flex justify-center items-center rounded-lg border-1"
         style={"background: var(#{@color});border-color: color-mix(in oklch, var(#{@color}), #000 5%);"}
       >
+        {render_slot(@inner_block)}
       </div>
       <div :if={@label} class="text-xs text-nowrap text-gray-500">{@label}</div>
     </div>
@@ -384,7 +387,7 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <li data-item="trip" data-origin={@trip.origin} data-destination={@trip.destination} {@rest}>
       <div class="group flex gap-1 items-center justify-between text-xs md:text-sm px-3 py-2.5 bg-surface-20/50 hover:cursor-pointer
-          rounded-box border border-surface-30 shadow-xs hover:shadow-sm hover:border-primary transition-shadow">
+          rounded-lg border border-surface-30 shadow-xs hover:shadow-sm hover:border-primary transition-shadow">
         <div class="flex items-center">
           <div class="flex flex-col justify-center items-start gap-0.5 lg:flex-row lg:items-center">
             <.icon name={@icon} class="hidden lg:block size-4.5 text-content-40/90 mr-2.5 md:mr-3" />

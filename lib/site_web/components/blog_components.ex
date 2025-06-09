@@ -19,12 +19,12 @@ defmodule SiteWeb.BlogComponents do
 
   def article(assigns) do
     ~H"""
-    <.card tag="article" class="group isolate" {@rest}>
+    <.box tag="article" class="group isolate relative hover:border-primary hover:shadow-sm" {@rest}>
       <div class="blog-article">
         <.header tag="h2" class="mt-2">
           <.link href={~p"/articles/#{@post.year}/#{@post}"} class="text-lg line-clamp-2">
             <span class="absolute inset-0 z-10"></span>
-            <span class="group-hover:text-shadow-xs/10 text-shadow-primary-dark">{@post.title}</span>
+            <span class="group-hover:text-shadow-xs/10 text-shadow-primary">{@post.title}</span>
           </.link>
         </.header>
 
@@ -37,7 +37,7 @@ defmodule SiteWeb.BlogComponents do
           {@post.excerpt}
         </div>
       </div>
-    </.card>
+    </.box>
     """
   end
 
@@ -74,7 +74,7 @@ defmodule SiteWeb.BlogComponents do
         <section :for={{key, articles} <- @articles} class="group">
           <.header
             tag="h2"
-            class={@sticky_header && "sticky top-(--header-height) bg-surface pt-4 z-1"}
+            class={@sticky_header && "sticky top-(--header-height) bg-surface z-1"}
             header_class="text-content-20 text-3xl font-medium md:font-normal"
           >
             <div class={@header_container_class}>
@@ -109,11 +109,11 @@ defmodule SiteWeb.BlogComponents do
 
   def archive_item(assigns) do
     ~H"""
-    <article class={["relative flex flex-col px-6 md:p-0 text-center md:text-left", @class]} {@rest}>
+    <.card tag="article" class={["text-center md:text-left", @class]} {@rest}>
       <h2 class="col-start-3 col-span-1">
         <.link
           href={~p"/articles/#{@post.year}/#{@post}"}
-          class="link-subtle font-medium text-lg md:text-xl line-clamp-2 text-balance"
+          class="link-subtle font-medium text-lg md:text-xl line-clamp-2 text-pretty"
         >
           <span class="absolute inset-0"></span>
           {@post.title}
@@ -130,10 +130,11 @@ defmodule SiteWeb.BlogComponents do
         <span class="opacity-80">in</span><span class="text-content-20">{@post.category}</span>
       </div>
 
-      <p class="my-4 font-light text-content-40 text-base/6 md:text-lg/7.5 text-balance line-clamp-3">
+      <p class="mt-6 font-light text-content-40 text-base/6 md:text-lg/7.5 text-balance line-clamp-3">
         {@post.excerpt}
       </p>
-    </article>
+    </.card>
+    <%!-- </article> --%>
     """
   end
 
@@ -168,14 +169,14 @@ defmodule SiteWeb.BlogComponents do
 
   def post_category(assigns) do
     ~H"""
-    <div class={["flex items-center", @class]}>
+    <div class={@class}>
       <.badge
         variant="dot"
         color={Site.Blog.Post.category_color(@post.category)}
-        badge_class="group bg-surface-10 text-xs capitalize tracking-wider"
+        badge_class="group bg-surface-10 text-xs tracking-wider"
         navigate={~p"/category/#{@post.category}"}
       >
-        <span class="text-content-30 tracking-wider group-hover:text-content-10 transition-colors">
+        <span class="text-content-30 group-hover:text-content-10 transition-colors">
           {@post.category}
         </span>
       </.badge>
@@ -187,12 +188,13 @@ defmodule SiteWeb.BlogComponents do
 
   attr :post, Blog.Post, required: true
   attr :class, :string, default: nil
+  attr :badge_class, :string, default: nil
 
   def post_tags(assigns) do
     ~H"""
     <div class={@class}>
-      <div class="flex items-center flex-wrap gap-1.5">
-        <.post_tag :for={tag <- @post.tags} tag={tag} />
+      <div class="flex items-center flex-wrap gap-2">
+        <.post_tag :for={tag <- @post.tags} tag={tag} badge_class={@badge_class} />
       </div>
     </div>
     """
@@ -202,11 +204,17 @@ defmodule SiteWeb.BlogComponents do
 
   attr :tag, :string, required: true
   attr :class, :string, default: nil
+  attr :badge_class, :string, default: "text-sm md:text-base"
 
   def post_tag(assigns) do
     ~H"""
     <div class={@class}>
-      <.badge badge_class="group bg-surface-10 text-xs capitalize" navigate={~p"/tag/#{@tag}"}>
+      <.badge
+        class="group bg-surface-10"
+        badge_class={@badge_class}
+        rounded_class="rounded-lg"
+        navigate={~p"/tag/#{@tag}"}
+      >
         <span class="font-headings text-primary/90 group-hover:text-primary">#</span>
         <span class="text-content-30 tracking-wider group-hover:text-content transition-colors">
           {@tag}
@@ -280,9 +288,8 @@ defmodule SiteWeb.BlogComponents do
   def post_header(assigns) do
     ~H"""
     <div class={@class}>
-      <div class="flex flex-wrap items-center justify-center gap-1.5">
-        <.post_category post={@post} />
-        <.post_tags post={@post} />
+      <div class="flex items-center justify-center">
+        <.post_category post={@post} class="uppercase" />
       </div>
 
       <.post_title class="mt-6" post={@post} />
@@ -321,14 +328,16 @@ defmodule SiteWeb.BlogComponents do
 
   def post_footer(assigns) do
     ~H"""
-    <div class="mt-8 mb-4 flex flex-col gap-8">
+    <div class="mt-8 mb-4 flex flex-col gap-4">
       <.the_end />
 
+      <.post_tags post={@post} class="mt-4 flex items-center justify-centers" badge_class="text-base" />
+
       <div class={[
-        "w-full flex justify-between flex-wrap gap-x-8 gap-y-4 px-4 py-3",
-        "bg-surface-10/60 border border-surface-30 border-dashed rounded-box"
+        "w-full flex justify-between items-center gap-4 px-4 py-3",
+        "bg-surface-10/60 border border-surface-30 border-dashed rounded-lg"
       ]}>
-        <.post_authoring post={@post} class="shrink-0" />
+        <.post_author post={@post} />
 
         <div class="flex items-center gap-2.5">
           <.post_likes post={@post} count={@likes} />
@@ -336,7 +345,12 @@ defmodule SiteWeb.BlogComponents do
         </div>
       </div>
 
-      <.post_pagination :if={@next_post || @prev_post} next_post={@next_post} prev_post={@prev_post} />
+      <.post_pagination
+        :if={@next_post || @prev_post}
+        next_post={@next_post}
+        prev_post={@prev_post}
+        class="mt-4"
+      />
     </div>
     """
   end
@@ -350,22 +364,23 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <.async_result :let={count} assign={@count}>
       <:loading>
-        <.subtle_button size="xs" class="animate-pulse" inert>
-          <.icon name="hero-heart" class="size-5 text-content-30 opacity-40" />
-          <p class="ml-2 font-mono font-medium opacity-40">-</p>
-        </.subtle_button>
+        <.button variant="outline" size="sm" class="animate-pulse" inert>
+          <.icon name="hero-heart" class="text-content-30 opacity-40" />
+          <p class="font-mono font-medium opacity-40">-</p>
+        </.button>
       </:loading>
       <:failed :let={_failure}>
-        <.subtle_button size="xs" disabled>
-          <.icon name="hero-heart" class="size-5 text-content-30 opacity-40" />
-          <p class="ml-2 font-mono font-medium opacity-40">-</p>
-        </.subtle_button>
+        <.button variant="outline" size="sm" disabled>
+          <.icon name="hero-heart" class="text-content-30 opacity-40" />
+          <p class="font-mono font-medium opacity-40">-</p>
+        </.button>
       </:failed>
 
       <%= if @count do %>
-        <.subtle_button
+        <.button
           id="post-like"
-          size="xs"
+          variant="outline"
+          size="sm"
           class="group relative overflow-visible!"
           data-post-slug={"#{@post.year}-#{@post.slug}"}
           phx-hook="PostLike"
@@ -373,17 +388,20 @@ defmodule SiteWeb.BlogComponents do
           <.icon
             data-unliked-icon
             name="hero-heart"
-            class="size-5 text-content-30 group-hover:text-pink-400 transition"
+            class="text-content-30 group-hover:text-pink-400 transition"
           />
           <.icon
             data-liked-icon
             name="hero-heart-solid"
-            class="hidden size-5 text-pink-500 group-hover:text-pink-400 transition"
+            class="hidden text-pink-500 group-hover:text-pink-400 transition"
           />
-          <p data-likes-count class="ml-2 font-mono font-medium">
+          <p
+            data-likes-count
+            class="font-mono font-medium group-data-[liked=true]:text-pink-600 transition-colors"
+          >
             {Support.abbreviate_number(count)}
           </p>
-        </.subtle_button>
+        </.button>
       <% end %>
     </.async_result>
     """
@@ -402,17 +420,17 @@ defmodule SiteWeb.BlogComponents do
 
     ~H"""
     <div
-      class="relative"
       id="share-post"
+      class="relative"
       phx-hook="SharePost"
       data-title={@share_title}
       data-text={@share_text}
       data-url={@share_url}
     >
-      <.subtle_button size="xs" class="btn-icon">
+      <.button variant="outline" size="sm" class="btn-icon">
         <.icon name="lucide-share" class="size-4.5" />
         <p class="sr-only">Share</p>
-      </.subtle_button>
+      </.button>
 
       <div id="share-container"></div>
     </div>
@@ -423,20 +441,24 @@ defmodule SiteWeb.BlogComponents do
 
   attr :post, Blog.Post, required: true
   attr :class, :string, default: nil
+  attr :show_date, :boolean, default: true
   attr :rest, :global
 
-  def post_authoring(assigns) do
+  def post_author(assigns) do
     ~H"""
-    <div class={["flex items-center gap-2.5", @class]} {@rest}>
+    <div class={["flex items-center justify-start gap-2.5", @class]} {@rest}>
       <SiteComponents.avatar_picture size={28} href={~p"/about"} />
-      <div class="group flex items-center gap-1">
-        <.link href={~p"/about"} class="font-headings text-sm md:text-base link-subtle">
+      <div class="group flex items-center justify-start gap-1">
+        <.link href={~p"/about"} class="font-headings text-base link-subtle">
           Nuno Moço
         </.link>
 
-        <span class="hidden md:block font-sans text-xs text-content-40/80 mx-2">&bull;</span>
+        <span :if={@show_date} class="hidden md:block font-sans text-xs text-content-40/80 mx-2">
+          &bull;
+        </span>
 
         <.post_publication_date
+          :if={@show_date}
           post={@post}
           show_icon={false}
           format="%B %-d, %Y"
@@ -480,7 +502,10 @@ defmodule SiteWeb.BlogComponents do
   defp post_pager(%{link: link} = assigns) when not is_nil(link) do
     ~H"""
     <.link navigate={@link} {@rest}>
-      <div class="group bg-surface-10 border border-surface-30 rounded-box p-4 transition hover:border-primary">
+      <.box
+        class="group hover:border-primary"
+        border="border border-neutral-200 dark:border-neutral-800"
+      >
         <div class={["w-full flex flex-col gap-0.5", @dir == :next && "text-right"]}>
           <div class={["flex items-center gap-1", @dir == :next && "justify-end"]}>
             <.icon
@@ -507,14 +532,14 @@ defmodule SiteWeb.BlogComponents do
 
           <div class="font-headings font-medium text-sm md:text-base line-clamp-1">{@title}</div>
         </div>
-      </div>
+      </.box>
     </.link>
     """
   end
 
   defp post_pager(assigns) do
     ~H"""
-    <div class="min-h-[72px] relative border border-surface-30 rounded-box p-4 flex items-center
+    <div class="min-h-[72px] relative border border-surface-30 rounded-lg p-4 flex items-center
         justify-center text-content-30 opacity-40 select-none cursor-not-allowed">
       <div
         class="absolute inset-0 opacity-20 -z-10"
@@ -799,8 +824,8 @@ defmodule SiteWeb.BlogComponents do
     <div
       id="toc-container"
       class={[
-        "fixed -bottom-2 left-1 right-1 w-full mb-1 p-5 z-10 rounded-t-box",
-        "sm:relative sm:mb-20 sm:w-auto sm:min-w-[348px] sm:rounded-box",
+        "fixed -bottom-2 left-1 right-1 w-full mb-1 p-5 z-10 rounded-t-lg",
+        "sm:relative sm:mb-20 sm:w-auto sm:min-w-[348px] sm:rounded-lg",
         "bg-surface-10/95 border border-surface-30 shadow-xs backdrop-blur-sm",
         "transition-transform ease-in-out duration-500"
       ]}

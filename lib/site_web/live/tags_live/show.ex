@@ -11,8 +11,8 @@ defmodule SiteWeb.TagsLive.Show do
       <Layouts.page_content class="tag">
         <div class="flex items-center justify-center md:justify-between">
           <.header class="mt-4 text-center md:text-left">
-            <.link navigate={~p"/tags"} class="text-content-40/40">
-              #<span class="sr-only">Explore all tags</span>
+            <.link navigate={~p"/tags"} class="text-content-40/40" title="Explore all tags">
+              <span class="text-primary font-light">#</span><span class="sr-only">Explore all tags</span>
             </.link>
             <span class="capitalize">{@tag}</span>
 
@@ -32,7 +32,7 @@ defmodule SiteWeb.TagsLive.Show do
             </.link>
           </:header>
 
-          <:items :let={articles} class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-16">
+          <:items :let={articles} class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-8">
             <%= for article <- articles do %>
               <BlogComponents.archive_item post={article} />
             <% end %>

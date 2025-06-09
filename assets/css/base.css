@@ -7,13 +7,9 @@
     --header-mb: 0px;
   }
 
-  /* Make LiveView wrapper divs transparent for layout */
-  [data-phx-session] {
-    display: contents;
-  }
-
-  ::selection {
-    background-color: --alpha(var(--color-secondary) / 0.2);
+  html {
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -21,6 +17,16 @@
     background-color: var(--color-surface);
     color: var(--color-content-10);
     line-height: 1.5;
+    overscroll-behavior: none;
+  }
+
+  /* Make LiveView wrapper divs transparent for layout */
+  [data-phx-session] {
+    display: contents;
+  }
+
+  ::selection {
+    background-color: --alpha(var(--color-secondary) / 0.2);
   }
 
   h1,
@@ -35,6 +41,34 @@
   s {
     text-decoration-color: var(--color-primary);
     text-decoration-thickness: 2px;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 }
 
