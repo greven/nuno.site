@@ -44,19 +44,36 @@ defmodule SiteWeb.CoreComponents do
 
   attr :class, :any, default: nil
   attr :tag, :string, default: "div"
-  attr :rest, :global
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
-  def card(assigns) do
-    ~H"""
-    <.box
-      tag={@tag}
-      class={[@class, "relative flex flex-col h-full hover:border-primary hover:shadow-sm"]}
-      {@rest}
-    >
-      {render_slot(@inner_block)}
-    </.box>
-    """
+  def card(%{rest: rest} = assigns) do
+    if rest[:href] || rest[:navigate] || rest[:patch] do
+      ~H"""
+      <.link
+        class="outline-none rounded-lg focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-[3px]"
+        {@rest}
+      >
+        <.box
+          tag={@tag}
+          class={[@class, "relative flex flex-col h-full hover:border-primary hover:shadow-sm"]}
+          {@rest}
+        >
+          {render_slot(@inner_block)}
+        </.box>
+      </.link>
+      """
+    else
+      ~H"""
+      <.box
+        tag={@tag}
+        class={[@class, "relative flex flex-col h-full hover:border-primary hover:shadow-sm"]}
+        {@rest}
+      >
+        {render_slot(@inner_block)}
+      </.box>
+      """
+    end
   end
 
   @doc """

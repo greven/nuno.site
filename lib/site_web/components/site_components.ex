@@ -25,31 +25,6 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
-  attr :class, :any, default: nil
-  attr :rest, :global, include: ~w(href navigate patch disabled)
-  slot :inner_block
-
-  def bento_box(%{rest: rest} = assigns) do
-    if rest[:href] || rest[:navigate] || rest[:patch] do
-      ~H"""
-      <.card class={@class}>
-        <.link {@rest}>
-          <span class="absolute inset-0 z-10"></span>
-          {render_slot(@inner_block)}
-        </.link>
-      </.card>
-      """
-    else
-      ~H"""
-      <.card class={@class} {@rest}>
-        {render_slot(@inner_block)}
-      </.card>
-      """
-    end
-  end
-
-  @doc false
-
   attr :class, :string, default: nil
   attr :size, :integer, default: 40
   attr :rest, :global, include: ~w(href navigate patch method disabled)

@@ -14,17 +14,17 @@ defmodule SiteWeb.HomeLive.Index do
           </h1>
 
           <SiteComponents.bento_grid class="mt-12">
-            <SiteComponents.bento_box navigate={~p"/about"}>
+            <.card navigate={~p"/about"}>
               About
-            </SiteComponents.bento_box>
+            </.card>
 
-            <SiteComponents.bento_box navigate={~p"/articles"}>
+            <.card navigate={~p"/articles"}>
               Articles
-            </SiteComponents.bento_box>
+            </.card>
 
-            <SiteComponents.bento_box navigate={~p"/travel"}>
+            <.card navigate={~p"/travel"}>
               Travel
-            </SiteComponents.bento_box>
+            </.card>
           </SiteComponents.bento_grid>
 
           <div class="mt-16">
