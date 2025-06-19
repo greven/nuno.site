@@ -26,7 +26,7 @@ defmodule SiteWeb.CoreComponents do
   attr :radius, :string, default: "rounded-lg", doc: "the border radius of the box"
   attr :padding, :string, default: "p-5", doc: "the padding of the box"
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the box"
-  slot :inner_block, required: true, doc: "the content to be rendered inside the box"
+  slot :inner_block, required: true
 
   def box(assigns) do
     ~H"""
@@ -51,14 +51,13 @@ defmodule SiteWeb.CoreComponents do
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
       <.link
-        class="outline-none rounded-lg focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-[3px]"
+        class={[
+          @class,
+          "outline-none rounded-lg focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-[3px]"
+        ]}
         {@rest}
       >
-        <.box
-          tag={@tag}
-          class={[@class, "relative flex flex-col h-full hover:border-primary hover:shadow-sm"]}
-          {@rest}
-        >
+        <.box tag={@tag} class="relative flex flex-col h-full hover:border-primary hover:shadow-sm">
           {render_slot(@inner_block)}
         </.box>
       </.link>
@@ -563,7 +562,7 @@ defmodule SiteWeb.CoreComponents do
   attr :size, :string, values: ~w(sm md lg), default: "md"
   attr :wide, :boolean, default: false
   attr :loading, :boolean, default: false
-  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: "lg"
+  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: "full"
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -951,7 +950,7 @@ defmodule SiteWeb.CoreComponents do
       <.icon name="si-elixir" class="size-5 text-purple-600" />
   """
   attr :name, :string, required: true
-  attr :class, :any, default: "size-4"
+  attr :class, :any, default: "size-5"
   attr :rest, :global
 
   def icon(%{name: "hero-" <> _} = assigns) do

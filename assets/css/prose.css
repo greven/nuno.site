@@ -192,7 +192,7 @@
 
       :where(p:first-of-type)::before,
       :where(p:first-of-type)::after {
-        color: --alpha(var(--color-primary) / 0.85);
+        color: --alpha(var(--color-content-40) / 0.85);
         position: absolute;
       }
 
@@ -247,7 +247,7 @@
       padding-top: 0.125rem;
       padding-bottom: 0.125rem;
       color: var(--color-content);
-      background-color: var(--color-surface-10);
+      background-color: var(--color-surface-20);
       border-radius: var(--radius-sm);
       box-shadow: var(--shadow-xs);
       padding: 0.125rem;
@@ -284,6 +284,7 @@
     h4 code {
       font-size: 0.9em;
       background: none;
+      box-shadow: none;
     }
 
     hr {

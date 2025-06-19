@@ -7,6 +7,33 @@ defmodule SiteWeb.SiteComponents do
 
   alias Site.Support
   alias Site.Travel.Trip
+  alias SiteWeb.BlogComponents
+
+  @doc false
+
+  attr :posts, :list, default: []
+  attr :class, :string, default: nil
+
+  def featured_posts(assigns) do
+    ~H"""
+    <div class={@class}>
+      <div class="group isolate grid grid-cols-2 justify-center gap-4">
+        <%= for post <- @posts do %>
+          <article class="relative w-full px-4 py-2 overflow-hidden not-only:odd:text-right only:text-center">
+            <.link class="link-subtle w-full" navigate={~p"/articles/#{post.year}/#{post}"}>
+              <span class="absolute inset-0 z-10"></span>
+              <h3 class="text-lg line-clamp-1">{post.title}</h3>
+            </.link>
+
+            <date class="inline-block font-light text-content-40">
+              <BlogComponents.post_publication_date post={post} show_icon={false} />
+            </date>
+          </article>
+        <% end %>
+      </div>
+    </div>
+    """
+  end
 
   @doc false
 
@@ -15,11 +42,25 @@ defmodule SiteWeb.SiteComponents do
 
   def bento_grid(assigns) do
     ~H"""
-    <div {@rest}>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <section {@rest}>
+      <div class="relative grid grid-cols-2 md:grid-cols-4 auto-rows-[minmax(0,2fr)] gap-4">
         {render_slot(@inner_block)}
       </div>
-    </div>
+    </section>
+    """
+  end
+
+  @doc false
+
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
+  slot :inner_block, required: true
+
+  def bento_box(assigns) do
+    ~H"""
+    <.card class={@class} {@rest}>
+      {render_slot(@inner_block)}
+    </.card>
     """
   end
 
@@ -194,8 +235,7 @@ defmodule SiteWeb.SiteComponents do
           Github
         </.contact_link>
 
-        <.contact_link href="https://b
-        y.app/profile/nuno.site" icon="si-bluesky">
+        <.contact_link href="https://bsky.app/profile/nuno.site" icon="si-bluesky">
           Bluesky
         </.contact_link>
       </ul>
@@ -228,11 +268,11 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <li {@rest}>
       <.button href={@href} size="sm" class="group">
-        <.icon name={@icon} class="size-5 mr-2" />
+        <.icon name={@icon} class="size-5" />
         {render_slot(@inner_block)}
         <.icon
           name="lucide-arrow-up-right"
-          class="ml-1.5 size-5 text-content-40 group-hover:text-primary transition-colors"
+          class="size-5 text-content-40 group-hover:text-primary transition-colors"
         />
       </.button>
     </li>

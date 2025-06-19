@@ -11,6 +11,8 @@ defmodule SiteWeb.Layouts do
 
   embed_templates "layouts/*"
 
+  @doc false
+
   def app(assigns) do
     assigns =
       assigns
@@ -18,15 +20,38 @@ defmodule SiteWeb.Layouts do
       |> assign_new(:active_link, fn -> nil end)
 
     ~H"""
-    <div id="app-layout" class="min-h-screen flex flex-col" phx-hook="Layout">
+    <div class="min-h-screen flex flex-col">
       <.site_header active_link={@active_link} />
-      <main class="relative flex-auto">
+      <main class="relative flex-auto z-1" tabindex="-1">
         <.wrapper wide={@wide}>
           {render_slot(@inner_block)}
         </.wrapper>
       </main>
 
       <.site_footer />
+      <.flash_group flash={@flash} />
+    </div>
+    """
+  end
+
+  @doc false
+
+  def home(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:wide, fn -> false end)
+      |> assign_new(:active_link, fn -> nil end)
+
+    ~H"""
+    <div class="min-h-screen flex flex-col">
+      <.site_header active_link={@active_link} home />
+      <main class="relative flex-auto bg-surface shadow-sm z-1" tabindex="-1">
+        <.wrapper wide={@wide}>
+          {render_slot(@inner_block)}
+        </.wrapper>
+      </main>
+
+      <.home_footer />
       <.flash_group flash={@flash} />
     </div>
     """
@@ -53,6 +78,8 @@ defmodule SiteWeb.Layouts do
 
   @doc false
 
+  attr :home, :boolean, default: false
+
   def site_logo(assigns) do
     ~H"""
     <.link id="site-logo" href={~p"/"} class="relative group flex items-center">
@@ -63,7 +90,15 @@ defmodule SiteWeb.Layouts do
           .
         </span>
         <span class="text-xl text-content-30">site</span>
-        <span class="font-mono text-2xl text-primary ml-0.5 motion-safe:animate-blink group-hover:animate-none group-hover:opacity-0">
+        <span
+          id="blinking-cursor"
+          class={[
+            "font-mono text-2xl text-content-40 ml-0.5 transition",
+            "group-hover:animate-none group-hover:opacity-0",
+            @home && "opacity-25",
+            !@home && "text-primary motion-safe:animate-blink"
+          ]}
+        >
           _
         </span>
         <span class="ios:hidden android:hidden absolute -bottom-3 left-0 font-mono text-xs text-content-40 typing-reveal">
@@ -79,6 +114,7 @@ defmodule SiteWeb.Layouts do
   attr :active_link, :atom, required: true
   attr :current_user, :any, default: nil
   attr :class, :string, default: nil
+  attr :home, :boolean, default: false
   attr :rest, :global
 
   def site_header(assigns) do
@@ -97,7 +133,7 @@ defmodule SiteWeb.Layouts do
     >
       <div class="wrapper">
         <div class="flex items-center justify-between py-3">
-          <.site_logo />
+          <.site_logo home={@home} />
           <.site_nav active_link={@active_link} current_user={@current_user} />
         </div>
       </div>
@@ -109,31 +145,43 @@ defmodule SiteWeb.Layouts do
 
   def site_footer(assigns) do
     ~H"""
-    <footer class="wrapper">
-      <div class="flex flex-col items-center gap-4 pt-6 pb-3 md:pt-12 md:pb-6">
-        <div class="my-1 flex items-center gap-1 justify-center text-xs font-headings text-content-40">
-          <span class="flex items-center gap-1">
-            &copy; {Date.utc_today().year} nuno.site
-            <div class="hidden md:inline-block">
-              <span class="font-sans text-xs text-content-40/90">&bull;</span>
-              Mixed with
-              <.icon
-                name="si-elixir"
-                class="size-3.5 bg-purple-500 dark:bg-purple-700"
-                title="Elixir"
-              /> by
-              <span class="link-ghost">
-                <a href={~p"/about"}>Nuno Moço</a>
-              </span>
-            </div>
-          </span>
-          <span class="font-sans text-xs text-content-40/90">&bull;</span>
-          <span class="link-ghost">
-            <a href={~p"/sitemap"}>Sitemap</a>
-          </span>
-        </div>
-      </div>
+    <footer class="z-0 flex flex-col items-center gap-4 pt-6 md:pt-12 pb-3">
+      <.wrapper>
+        <.footer_copyright />
+      </.wrapper>
     </footer>
+    """
+  end
+
+  @doc false
+
+  def home_footer(assigns) do
+    ~H"""
+    <div class="sticky bottom-0 left-0 py-3 bg-neutral-950 text-neutral-100 z-0">
+      <.wrapper>
+        <h2 class="font-headings my-8 text-5xl">Footer</h2>
+        <p class="leading-8 text-neutral-400">
+          Footer Content here!
+        </p>
+
+        <.footer_copyright />
+      </.wrapper>
+    </div>
+    """
+  end
+
+  @doc false
+  def footer_copyright(assigns) do
+    ~H"""
+    <div class="my-1 flex items-center gap-2 justify-center text-xs font-headings text-content-30">
+      <span class="flex items-center gap-1">
+        Copyright &copy; {Date.utc_today().year} Nuno Moço
+      </span>
+      <span class="font-sans text-xs text-primary">&bull;</span>
+      <span class="link-ghost">
+        <a href={~p"/sitemap"}>Sitemap</a>
+      </span>
+    </div>
     """
   end
 
@@ -219,6 +267,7 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <div
       id="page-content"
+      phx-hook="Layout"
       class={[
         "relative mt-8 md:mt-16 lg:mt-32",
         "[--page-gap:2rem] md:[--page-gap:4rem] lg:[--page-gap:8rem]",

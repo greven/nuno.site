@@ -11,6 +11,25 @@
       </:actions>
     </.header>
 
+    <%!-- Modals WIP --%>
+    <div>
+      <.button phx-click={show_dialog("#basic-dialog")}>Open Dialog</.button>
+
+      <.dialog :let={cancel} id="basic-dialog">
+        This is a simple dialog with some content.
+        <.button phx-click={cancel}>Close</.button>
+      </.dialog>
+    </div>
+
+    <div>
+      <.button phx-click={show_dialog("#fancy-modal")}>Open Modal</.button>
+
+      <.modal id="fancy-modal">
+        <:title>This is a fancy modal title!</:title>
+      </.modal>
+    </div>
+    <%!-- Modals WIP - END --%>
+
     <%!--Colours --%>
 
     <div class="flex flex-col gap-6">

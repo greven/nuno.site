@@ -1,4 +1,5 @@
 import { Dialog } from './dialog';
+import { Hello } from './hello';
 import { Layout } from './layout';
 import { PostLike } from './post-like';
 import { PostMeta } from './post-meta';
@@ -11,6 +12,7 @@ import { TravelMap } from './travel-map';
 
 export default {
   Dialog,
+  Hello,
   Layout,
   PostLike,
   PostMeta,

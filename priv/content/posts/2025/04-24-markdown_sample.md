@@ -2,7 +2,8 @@
   title: "Tailwind Markdown Sample",
   tags: ~w(offtopic phoenix CSS),
   excerpt: "Let's test our custom markdown styling!",
-  status: :published
+  status: :published,
+  featured: true
 }
 
 ---

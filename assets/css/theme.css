@@ -19,6 +19,7 @@
   --animate-fade-in: fade-in 0.5s ease-out forwards;
   --animate-fade-out: fade-out 0.5s ease-out forwards;
   --animate-blink: blink 1s ease-in-out infinite;
+  --animate-glitch: glitch 1s ease-in-out infinite;
 
   --radius-xs: calc(var(--border-radius) - 6px);
   --radius-sm: calc(var(--border-radius) - 4px);
@@ -43,7 +44,7 @@
   --color-neutral-900: oklch(from var(--neutral) 0.21 calc(c * 0.93) calc(h * 1.04));
   --color-neutral-950: oklch(from var(--neutral) 0.14 calc(c * 0.92) calc(h * 1.05));
 
-  --color-surface: oklch(from var(--neutral) 0.975 calc(c * 0.2) h);
+  --color-surface: oklch(from var(--neutral) 0.97 calc(c * 0.2) h);
   --color-surface-10: oklch(from var(--neutral) 0.985 calc(c * 0.4) h);
   --color-surface-20: oklch(from var(--neutral) 0.945 calc(c * 0.5) h);
   --color-surface-30: oklch(from var(--neutral) 0.91 calc(c * 0.6) h);

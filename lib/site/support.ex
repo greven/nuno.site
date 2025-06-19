@@ -95,6 +95,46 @@ defmodule Site.Support do
   @day_in_seconds 86400
 
   @doc """
+  Calendar.strftime with support for custom %o format for ordinal day.
+  This function formats a date according to the given format string, allowing
+  for a custom %o format that returns the day of the month with an ordinal suffix
+  (e.g., "1st", "2nd", "3rd", "4th").
+  """
+  def format_date_with_ordinal(date, format) do
+    # Handle custom %o format for ordinal day
+    if String.contains?(format, "%o") do
+      ordinal_day = ordinal_day(date)
+
+      format
+      |> String.replace("%o", ordinal_day)
+      |> then(&Calendar.strftime(date, &1))
+    else
+      Calendar.strftime(date, format)
+    end
+  end
+
+  defp ordinal_day(%Date{day: day}), do: ordinal_day(day)
+  defp ordinal_day(%NaiveDateTime{day: day}), do: ordinal_day(day)
+
+  defp ordinal_day(day) when is_integer(day) do
+    suffix =
+      case {rem(day, 100), rem(day, 10)} do
+        # Special cases: 11th, 12th, 13th
+        {n, _} when n in 11..13 -> "th"
+        # 1st, 21st, 31st
+        {_, 1} -> "st"
+        # 2nd, 22nd
+        {_, 2} -> "nd"
+        # 3rd, 23rd
+        {_, 3} -> "rd"
+        # Everything else
+        _ -> "th"
+      end
+
+    "#{day}#{suffix}"
+  end
+
+  @doc """
   Returns the time difference in words between the current time and the given datetime
   in text format, e.g. "5 minutes ago", "1 day ago", "3 hours ago", etc. The cutoff
   is 2 days, so anything older than that will just return the datetime.

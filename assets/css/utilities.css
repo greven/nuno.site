@@ -43,11 +43,11 @@
 /* Layout */
 
 @utility wrapper {
-  @apply container w-screen mx-auto max-w-5xl px-4 sm:px-20 lg:px-24;
+  @apply container w-screen mx-auto max-w-5xl px-5 sm:px-20 lg:px-24;
 }
 
 @utility wide-wrapper {
-  @apply container mx-auto px-4 sm:px-20 lg:px-24;
+  @apply container mx-auto px-5 sm:px-20 lg:px-24;
 }
 
 @utility breakout {
@@ -57,17 +57,17 @@
 /* Links */
 
 @utility link {
-  @apply text-content-10 decoration-[1.5px] decoration-primary underline underline-offset-4
+  @apply text-content-10 decoration-[1.5px] decoration-primary underline underline-offset-3
     transition-colors hover:decoration-secondary;
 }
 
 @utility link-subtle {
-  @apply text-content-10 decoration-[1.5px] decoration-content-40/20 underline underline-offset-4
+  @apply text-content-10 decoration-[1.5px] decoration-content-40/20 underline underline-offset-3
     transition-colors hover:decoration-primary;
 }
 
 @utility link-ghost {
-  @apply text-content-30 decoration-[1.5px] decoration-transparent underline underline-offset-4
+  @apply text-content-30 decoration-[1.5px] decoration-transparent underline underline-offset-3
     transition-colors hover:text-content-10 hover:decoration-primary;
 }
 

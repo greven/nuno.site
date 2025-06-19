@@ -2,7 +2,8 @@
   title: "Creating Components in Phoenix LiveView",
   tags: ~w(elixir phoenix),
   excerpt: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio laboriosam fugit eligendi nihil illo aut. Sint fuga dolorem, nobis nesciunt quidem repellat ratione asperiores illo. Accusamus voluptatem provident neque exercitationem?",
-  status: :published
+  status: :published,
+  featured: true
 }
 
 ---

@@ -33,6 +33,54 @@
     }
   }
 
+  @keyframes glitch {
+    0%,
+    90% {
+      transform: translate(0);
+      filter: hue-rotate(0deg);
+      text-shadow: none;
+    }
+
+    91% {
+      transform: translate(-2px, 1px);
+      filter: hue-rotate(90deg);
+      text-shadow: 2px 0 var(--color-red-500), -2px 0 var(--color-cyan-500),
+        0 0 8px var(--color-primary);
+    }
+
+    92% {
+      transform: translate(2px, -1px);
+      filter: hue-rotate(180deg);
+      text-shadow: -1px 0 var(--color-green-500), 1px 0 var(--color-magenta-500),
+        0 0 12px var(--color-secondary);
+    }
+
+    93% {
+      transform: translate(-1px, 2px) scale(1.01, 0.99);
+      filter: hue-rotate(270deg) contrast(1.2);
+      text-shadow: 3px 0 var(--color-blue-500), -3px 0 var(--color-yellow-500);
+    }
+
+    94% {
+      transform: translate(1px, -2px) scale(0.99, 1.01);
+      filter: hue-rotate(45deg) saturate(1.5);
+      text-shadow: 0 2px var(--color-purple-500), 0 -2px var(--color-orange-500);
+    }
+
+    95% {
+      transform: translate(-3px, 0) skew(2deg);
+      filter: hue-rotate(135deg) brightness(1.2);
+      text-shadow: 1px 1px var(--color-pink-500), -1px -1px var(--color-teal-500);
+    }
+
+    96%,
+    100% {
+      transform: translate(0);
+      filter: hue-rotate(0deg);
+      text-shadow: none;
+    }
+  }
+
   /* Navbar */
 
   .navbar-link {
@@ -102,6 +150,7 @@
 
   .typing-reveal {
     --typing-length: 9.5ch;
+    --typing-steps: 7;
 
     width: 0;
     display: none;
@@ -115,7 +164,7 @@
 
   .group:hover .typing-reveal {
     display: block;
-    animation: typing 0.8s steps(7, end) forwards, fade-in 0.1s ease-in forwards,
+    animation: typing 0.8s steps(var(--typing-steps), end) forwards, fade-in 0.1s ease-in forwards,
       blink-cursor 1s step-end infinite 0.8s;
     width: var(--typing-length);
     opacity: 1;

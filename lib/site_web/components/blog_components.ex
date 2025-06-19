@@ -22,7 +22,7 @@ defmodule SiteWeb.BlogComponents do
     <.box tag="article" class="group isolate relative hover:border-primary hover:shadow-sm" {@rest}>
       <div class="blog-article">
         <.header tag="h2" class="mt-2">
-          <.link href={~p"/articles/#{@post.year}/#{@post}"} class="text-lg line-clamp-2">
+          <.link navigate={~p"/articles/#{@post.year}/#{@post}"} class="text-lg line-clamp-2">
             <span class="absolute inset-0 z-10"></span>
             <span class="group-hover:text-shadow-xs/10 text-shadow-primary">{@post.title}</span>
           </.link>
@@ -112,7 +112,7 @@ defmodule SiteWeb.BlogComponents do
     <.card tag="article" class={["text-center md:text-left", @class]} {@rest}>
       <h2 class="col-start-3 col-span-1">
         <.link
-          href={~p"/articles/#{@post.year}/#{@post}"}
+          navigate={~p"/articles/#{@post.year}/#{@post}"}
           class="link-subtle font-medium text-lg md:text-xl line-clamp-2 text-pretty"
         >
           <span class="absolute inset-0"></span>
@@ -150,8 +150,7 @@ defmodule SiteWeb.BlogComponents do
     <h1
       class={[
         "font-medium text-3xl/10 sm:text-4xl/12 lg:text-5xl/14 text-content text-center text-balance",
-        @underline &&
-          "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6
+        @underline && "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6
             decoration-[2px] md:decoration-[3px] decoration-primary",
         @class
       ]}
@@ -209,12 +208,7 @@ defmodule SiteWeb.BlogComponents do
   def post_tag(assigns) do
     ~H"""
     <div class={@class}>
-      <.badge
-        class="group bg-surface-10"
-        badge_class={@badge_class}
-        rounded_class="rounded-lg"
-        navigate={~p"/tag/#{@tag}"}
-      >
+      <.badge class="group bg-surface-10" badge_class={@badge_class} navigate={~p"/tag/#{@tag}"}>
         <span class="font-headings text-primary/90 group-hover:text-primary">#</span>
         <span class="text-content-30 tracking-wider group-hover:text-content transition-colors">
           {@tag}
@@ -292,7 +286,7 @@ defmodule SiteWeb.BlogComponents do
         <.post_category post={@post} class="uppercase" />
       </div>
 
-      <.post_title class="mt-6" post={@post} />
+      <.post_title class="mt-4" post={@post} />
       <.post_meta
         post={@post}
         readers={@readers}
@@ -705,7 +699,7 @@ defmodule SiteWeb.BlogComponents do
 
   attr :post, Blog.Post, required: true
   attr :show_icon, :boolean, default: true
-  attr :format, :string, default: "%B %-d, %Y"
+  attr :format, :string, default: "%B %o, %Y"
   attr :class, :string, default: nil
 
   def post_publication_date(assigns) do
@@ -722,7 +716,7 @@ defmodule SiteWeb.BlogComponents do
 
   defp post_date(date, format) do
     case Support.time_ago(date) do
-      %NaiveDateTime{} = datetime -> Calendar.strftime(datetime, format)
+      %NaiveDateTime{} = datetime -> Support.format_date_with_ordinal(datetime, format)
       relative_date -> relative_date
     end
   end
