@@ -604,6 +604,33 @@ defmodule SiteWeb.CoreComponents do
     end
   end
 
+  @doc false
+
+  attr :class, :any, default: nil
+  attr :color, :string, values: @theme_colors, default: "default"
+  attr :variant, :string, values: ~w(default solid light outline ghost link), default: "default"
+  attr :size, :string, values: ~w(sm md lg), default: "md"
+  attr :loading, :boolean, default: false
+  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: "full"
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
+  slot :inner_block, required: true
+
+  def icon_button(assigns) do
+    ~H"""
+    <.button
+      class={@class}
+      variant={@variant}
+      size={@size}
+      radius={@radius}
+      loading={@loading}
+      style="width: var(--button-height)"
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </.button>
+    """
+  end
+
   defp button_classes(assigns) do
     %{color: color, variant: variant, size: size, radius: radius, wide: wide} = assigns
 
@@ -814,25 +841,6 @@ defmodule SiteWeb.CoreComponents do
       "link" ->
         ""
     end
-  end
-
-  @doc false
-
-  attr :class, :any, default: nil
-  attr :color, :string, values: @theme_colors
-  attr :size, :string, values: ~w(sm md lg), default: "md"
-  attr :variant, :string, values: ~w(default solid light ghost link), default: "default"
-  attr :rest, :global, include: ~w(href navigate patch method disabled)
-  slot :inner_block, required: true
-
-  def icon_button(assigns) do
-    # assigns = assign(assigns, :class, ["btn-icon", assigns.class])
-
-    # button(assigns)
-
-    ~H"""
-    <div></div>
-    """
   end
 
   @doc """

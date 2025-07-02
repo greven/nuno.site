@@ -1,2362 +1,2402 @@
 [
-  {
-    "alias": null,
-    "type": "car",
-    "date": "1998-08-18",
-    "origin": "Lisbon, Portugal",
-    "destination": "Dijon, France",
-    "order": null,
-    "distance": 2207553,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "1998-08-23",
-    "origin": "Dijon, France",
-    "destination": "Paris, France",
-    "order": null,
-    "distance": 410598,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "1998-08-25",
-    "origin": "Paris, France",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 2040646,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2000-04-21",
-    "origin": "Lloret de Mar, Spain",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1646903,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2000-04-23",
-    "origin": "Lisbon, Portugal",
-    "destination": "Lloret de Mar, Spain",
-    "order": null,
-    "distance": 1646903,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2008-10-18",
-    "origin": "Lisbon, Portugal",
-    "destination": "Genève, Switzerland",
-    "order": 1,
-    "distance": 1985210,
-    "company": "EasyJet"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2008-10-18",
-    "origin": "Genève, Switzerland",
-    "destination": "Dijon, France",
-    "order": 2,
-    "distance": 211184,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2008-10-20",
-    "origin": "Dijon, France",
-    "destination": "Genève, Switzerland",
-    "order": 1,
-    "distance": 211184,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2008-10-20",
-    "origin": "Genève, Switzerland",
-    "destination": "Lisbon, Portugal",
-    "order": 2,
-    "distance": 1985210,
-    "company": "EasyJet"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2009-08-03",
-    "origin": "Lisbon, Portugal",
-    "destination": "Cabanas de Tavira, Portugal",
-    "order": null,
-    "distance": 292264,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2009-08-10",
-    "origin": "Cabanas de Tavira, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 292264,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2010-08-16",
-    "origin": "Lisbon, Portugal",
-    "destination": "Cabanas de Tavira, Portugal",
-    "order": null,
-    "distance": 292264,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2010-08-23",
-    "origin": "Cabanas de Tavira, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 292264,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2011-04-10",
-    "origin": "Lisbon, Portugal",
-    "destination": "Reguengos de Monsaraz, Portugal",
-    "order": null,
-    "distance": 216721,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2011-04-10",
-    "origin": "Reguengos de Monsaraz, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 216721,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2011-07-29",
-    "origin": "Lisbon, Portugal",
-    "destination": "Grândola, Portugal",
-    "order": null,
-    "distance": 103802,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2011-07-31",
-    "origin": "Grândola, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 103802,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2012-07-17",
-    "origin": "Lisbon, Portugal",
-    "destination": "Cabanas de Tavira, Portugal",
-    "order": null,
-    "distance": 292264,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2012-07-23",
-    "origin": "Cabanas de Tavira, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 292264,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2013-07-13",
-    "origin": "Lisbon, Portugal",
-    "destination": "Aveiro, Portugal",
-    "order": null,
-    "distance": 262320,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2013-07-14",
-    "origin": "Aveiro, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 262320,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2013-08-26",
-    "origin": "Lisbon, Portugal",
-    "destination": "Cancún, Mexico",
-    "order": null,
-    "distance": 9090671,
-    "company": "Orbest"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2013-09-04",
-    "origin": "Cancún, Mexico",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 9090671,
-    "company": "Orbest"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2013-11-12",
-    "origin": "Lisbon, Portugal",
-    "destination": "Paris, France",
-    "order": 1,
-    "distance": 1785566,
-    "company": "Air France"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2013-11-12",
-    "origin": "Paris, France",
-    "destination": "Johannesburg, South Africa",
-    "order": 2,
-    "distance": 8840537,
-    "company": "Air France"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2013-11-15",
-    "origin": "Johannesburg, South Africa",
-    "destination": "Maputo, Mozambique",
-    "order": null,
-    "distance": 530555,
-    "company": "LAM"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2013-12-24",
-    "origin": "Maputo, Mozambique",
-    "destination": "Johannesburg, South Africa",
-    "order": 1,
-    "distance": 530555,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2013-12-24",
-    "origin": "Johannesburg, South Africa",
-    "destination": "Amsterdam, Netherlands",
-    "order": 2,
-    "distance": 9063514,
-    "company": "KLM"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2013-12-25",
-    "origin": "Amsterdam, Netherlands",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 2281878,
-    "company": "KLM"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2014-01-19",
-    "origin": "Lisbon, Portugal",
-    "destination": "Amsterdam, Netherlands",
-    "order": 1,
-    "distance": 2281878,
-    "company": "KLM"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2014-01-19",
-    "origin": "Amsterdam, Netherlands",
-    "destination": "Johannesburg, South Africa",
-    "order": 2,
-    "distance": 9063514,
-    "company": "KLM"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2014-01-23",
-    "origin": "Johannesburg, South Africa",
-    "destination": "Maputo, Mozambique",
-    "order": null,
-    "distance": 530555,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2014-04-01",
-    "origin": "Maputo, Mozambique",
-    "destination": "Johannesburg, South Africa",
-    "order": 1,
-    "distance": 530555,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2014-04-01",
-    "origin": "Johannesburg, South Africa",
-    "destination": "Paris, France",
-    "order": 2,
-    "distance": 8840537,
-    "company": "KLM"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2014-04-02",
-    "origin": "Paris, France",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1785566,
-    "company": "KLM"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2014-06-20",
-    "origin": "Lisbon, Portugal",
-    "destination": "Óbidos, Portugal",
-    "order": null,
-    "distance": 84881,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2014-06-21",
-    "origin": "Óbidos, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 84881,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2014-10-19",
-    "origin": "Lisbon, Portugal",
-    "destination": "Paris, France",
-    "order": null,
-    "distance": 1785566,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2014-10-22",
-    "origin": "Paris, France",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1785566,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-01-06",
-    "origin": "Lisbon, Portugal",
-    "destination": "Amsterdam, Netherlands",
-    "order": null,
-    "distance": 2281878,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-01-09",
-    "origin": "Amsterdam, Netherlands",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 2281878,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-02-03",
-    "origin": "Lisbon, Portugal",
-    "destination": "Frankfurt am Main, Germany",
-    "order": null,
-    "distance": 2466663,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-02-13",
-    "origin": "Frankfurt am Main, Germany",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 2466663,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-03-11",
-    "origin": "Lisbon, Portugal",
-    "destination": "Berlin, Germany",
-    "order": null,
-    "distance": 3080501,
-    "company": "Privilege Style"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-03-13",
-    "origin": "Berlin, Germany",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 3080501,
-    "company": "Privilege Style"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2015-03-23",
-    "origin": "Lisbon, Portugal",
-    "destination": "Porto, Portugal",
-    "order": null,
-    "distance": 328236,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2015-03-25",
-    "origin": "Porto, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 328236,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-03-28",
-    "origin": "Lisbon, Portugal",
-    "destination": "Dole, France",
-    "order": null,
-    "distance": 1965953,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "train",
-    "date": "2015-03-31",
-    "origin": "Dijon, France",
-    "destination": "Paris, France",
-    "order": null,
-    "distance": 342165,
-    "company": "SNCF"
-  },
-  {
-    "alias": null,
-    "type": "train",
-    "date": "2015-04-01",
-    "origin": "Paris, France",
-    "destination": "Dijon, France",
-    "order": null,
-    "distance": 342165,
-    "company": "SNCF"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-04-05",
-    "origin": "Dole, France",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1965953,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-07-18",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": 1,
-    "distance": 1821358,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-07-18",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": 2,
-    "distance": 1821358,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2015-08-23",
-    "origin": "Lisbon, Portugal",
-    "destination": "Altura, Portugal",
-    "order": null,
-    "distance": 298090,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2015-08-28",
-    "origin": "Altura, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 298090,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-09-29",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "EasyJet"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-10-05",
-    "origin": "London, United Kingdom",
-    "destination": "Shannon, Ireland",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-10-09",
-    "origin": "Dublin, Ireland",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1724119,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-10-12",
-    "origin": "Lisbon, Portugal",
-    "destination": "Dublin, Ireland",
-    "order": null,
-    "distance": 1724119,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-10-23",
-    "origin": "Dublin, Ireland",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1724119,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-10-26",
-    "origin": "Lisbon, Portugal",
-    "destination": "Dublin, Ireland",
-    "order": null,
-    "distance": 1724119,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-10-30",
-    "origin": "Dublin, Ireland",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1724119,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-11-02",
-    "origin": "Lisbon, Portugal",
-    "destination": "Dublin, Ireland",
-    "order": null,
-    "distance": 1724119,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-11-06",
-    "origin": "Dublin, Ireland",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1724119,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-11-19",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-11-23",
-    "origin": "London, United Kingdom",
-    "destination": "Shannon, Ireland",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-11-26",
-    "origin": "Shannon, Ireland",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-11-30",
-    "origin": "London, United Kingdom",
-    "destination": "Shannon, Ireland",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-12-03",
-    "origin": "Shannon, Ireland",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-12-07",
-    "origin": "London, United Kingdom",
-    "destination": "Shannon, Ireland",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-12-10",
-    "origin": "Shannon, Ireland",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-12-14",
-    "origin": "London, United Kingdom",
-    "destination": "Shannon, Ireland",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-12-16",
-    "origin": "Shannon, Ireland",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2015-12-17",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-01-04",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-02-05",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-02-14",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-02-15",
-    "origin": "London, United Kingdom",
-    "destination": "Shannon, Ireland",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-02-17",
-    "origin": "Shannon, Ireland",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1029677,
-    "company": "Aer Lingus"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-02-18",
-    "origin": "London, United Kingdom",
-    "destination": "Düsseldorf, Germany",
-    "order": null,
-    "distance": 806521,
-    "company": "EuroWings"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-02-20",
-    "origin": "Düsseldorf, Germany",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 806521,
-    "company": "EuroWings"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-02-24",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-02-28",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-03-18",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-03-27",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-05-11",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-05-15",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-06-02",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-06-13",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-07-15",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "EasyJet"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-07-24",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "Monarch"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2016-08-15",
-    "origin": "Woking, United Kingdom",
-    "destination": "Bath, United Kingdom",
-    "order": 1,
-    "distance": 240670,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2016-08-15",
-    "origin": "Bath, United Kingdom",
-    "destination": "Woking, United Kingdom",
-    "order": 2,
-    "distance": 240670,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-08-16",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2016-08-23",
-    "origin": "Lisbon, Portugal",
-    "destination": "Tavira, Portugal",
-    "order": null,
-    "distance": 288551,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2016-09-01",
-    "origin": "Tavira, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 288551,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-09-04",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-10-15",
-    "origin": "London, United Kingdom",
-    "destination": "Paris, France",
-    "order": null,
-    "distance": 423697,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-10-16",
-    "origin": "Paris, France",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 423697,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-10-20",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-10-23",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-11-11",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-11-13",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-11-25",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-11-27",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-12-09",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-12-11",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2016-12-23",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-01-01",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-01-13",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-01-17",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-01-27",
-    "origin": "Leeds, United Kingdom",
-    "destination": "London, United Kingdom",
-    "order": 1,
-    "distance": 314496,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-01-27",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": 2,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-01-29",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-02-24",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-02-26",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-03-29",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-04-02",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-04-09",
-    "origin": "London, United Kingdom",
-    "destination": "Leeds, United Kingdom",
-    "order": null,
-    "distance": 314496,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-04-10",
-    "origin": "Leeds, United Kingdom",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 314496,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-04-11",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2017-04-13",
-    "origin": "Lisbon, Portugal",
-    "destination": "Porto, Portugal",
-    "order": null,
-    "distance": 328236,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2017-04-17",
-    "origin": "Porto, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 328236,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-04-22",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-05-20",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-05-25",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "train",
-    "date": "2017-06-01",
-    "origin": "London, United Kingdom",
-    "destination": "Leeds, United Kingdom",
-    "order": null,
-    "distance": 299520,
-    "company": "Virgin Trains East Coast"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2017-07-29",
-    "origin": "Leeds, United Kingdom",
-    "destination": "Ripley, United Kingdom",
-    "order": null,
-    "distance": 103690,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2017-07-30",
-    "origin": "Ripley, United Kingdom",
-    "destination": "Leeds, United Kingdom",
-    "order": null,
-    "distance": 103690,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "train",
-    "date": "2017-08-17",
-    "origin": "Leeds, United Kingdom",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 299520,
-    "company": "Virgin Trains East Coast"
-  },
-  {
-    "alias": null,
-    "type": "train",
-    "date": "2017-08-19",
-    "origin": "London, United Kingdom",
-    "destination": "Leeds, United Kingdom",
-    "order": null,
-    "distance": 299520,
-    "company": "Virgin Trains East Coast"
-  },
-  {
-    "alias": "Peak District National Park",
-    "type": "car",
-    "date": "2017-08-23",
-    "origin": "Leeds, United Kingdom",
-    "destination": "Buxton, United Kingdom",
-    "order": null,
-    "distance": 86614,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2017-08-28",
-    "origin": "Buxton, United Kingdom",
-    "destination": "Leeds, United Kingdom",
-    "order": null,
-    "distance": 86614,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-09-02",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Dubai, United Arab Emirates",
-    "order": null,
-    "distance": 7248805,
-    "company": "Emirates"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-09-06",
-    "origin": "Dubai, United Arab Emirates",
-    "destination": "Male, Maldives",
-    "order": null,
-    "distance": 2341966,
-    "company": "Emirates"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-09-13",
-    "origin": "Male, Maldives",
-    "destination": "Dubai, United Arab Emirates",
-    "order": null,
-    "distance": 2341966,
-    "company": "Emirates"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-09-14",
-    "origin": "Dubai, United Arab Emirates",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 7248805,
-    "company": "Emirates"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-09-28",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-10-01",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-12-02",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-12-11",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-12-22",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2017-12-29",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-01-20",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Berlin, Germany",
-    "order": null,
-    "distance": 1830329,
-    "company": "EasyJet"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-01-23",
-    "origin": "Berlin, Germany",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1830329,
-    "company": "EasyJet"
-  },
-  {
-    "alias": null,
-    "type": "train",
-    "date": "2018-03-02",
-    "origin": "Leeds, United Kingdom",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 299520,
-    "company": "Virgin Trains East Coast"
-  },
-  {
-    "alias": null,
-    "type": "train",
-    "date": "2018-03-04",
-    "origin": "London, United Kingdom",
-    "destination": "Leeds, United Kingdom",
-    "order": null,
-    "distance": 299520,
-    "company": "Virgin Trains East Coast"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-04-15",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-04-23",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-05-19",
-    "origin": "Leeds, United Kingdom",
-    "destination": "Amsterdam, Netherlands",
-    "order": null,
-    "distance": 769709,
-    "company": "KLM"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-05-22",
-    "origin": "Amsterdam, Netherlands",
-    "destination": "Leeds, United Kingdom",
-    "order": null,
-    "distance": 769709,
-    "company": "KLM"
-  },
-  {
-    "alias": "Lake District National Park",
-    "type": "car",
-    "date": "2018-06-25",
-    "origin": "Leeds, United Kingdom",
-    "destination": "Windermere, United Kingdom",
-    "order": null,
-    "distance": 197397,
-    "company": null
-  },
-  {
-    "alias": "Yorkshire Dales National Park",
-    "type": "car",
-    "date": "2018-06-29",
-    "origin": "Windermere, United Kingdom",
-    "destination": "Skipton, United Kingdom",
-    "order": null,
-    "distance": 131300,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2018-06-30",
-    "origin": "Skipton, United Kingdom",
-    "destination": "Leeds, United Kingdom",
-    "order": null,
-    "distance": 66324,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2018-07-20",
-    "origin": "Leeds, United Kingdom",
-    "destination": "Barmouth, United Kingdom",
-    "order": null,
-    "distance": 364106,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2018-07-22",
-    "origin": "Barmouth, United Kingdom",
-    "destination": "Leeds, United Kingdom",
-    "order": null,
-    "distance": 364106,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-08-22",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2018-08-25",
-    "origin": "Lisbon, Portugal",
-    "destination": "Cabanas de Tavira, Portugal",
-    "order": null,
-    "distance": 292264,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2018-09-02",
-    "origin": "Cabanas de Tavira, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 292264,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-09-09",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-09-30",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-10-05",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-11-06",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-11-13",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-11-21",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-12-01",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-12-02",
-    "origin": "Leeds, United Kingdom",
-    "destination": "Warsaw, Poland",
-    "order": null,
-    "distance": 2640018,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-12-05",
-    "origin": "Warsaw, Poland",
-    "destination": "Leeds, United Kingdom",
-    "order": null,
-    "distance": 2640018,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2018-12-20",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-01-05",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-01-20",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-02-05",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-02-14",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-02-19",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-02-23",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-03-02",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-03-16",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-03-26",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "Ryanair"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-04-03",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-04-13",
-    "origin": "Lisbon, Portugal",
-    "destination": "Barcelona, Spain",
-    "order": null,
-    "distance": 1354591,
-    "company": "Vueling"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-04-16",
-    "origin": "Barcelona, Spain",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1354591,
-    "company": "Vueling"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-05-01",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-05-12",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "EasyJet"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-05-16",
-    "origin": "Lisbon, Portugal",
-    "destination": "Manchester, United Kingdom",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-05-29",
-    "origin": "Manchester, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1893866,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-06-18",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-06-20",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-07-09",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-07-13",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-08-21",
-    "origin": "Lisbon, Portugal",
-    "destination": "Funchal, Portugal",
-    "order": null,
-    "distance": 1140419,
-    "company": "EasyJet"
-  },
-  {
-    "alias": "Porto Santo",
-    "type": "boat",
-    "date": "2019-08-23",
-    "origin": "Funchal, Portugal",
-    "destination": "Vila Baleira, Portugal",
-    "order": null,
-    "distance": 78023,
-    "company": "Porto Santo Line"
-  },
-  {
-    "alias": null,
-    "type": "boat",
-    "date": "2019-08-30",
-    "origin": "Vila Baleira, Portugal",
-    "destination": "Funchal, Portugal",
-    "order": 1,
-    "distance": 78023,
-    "company": "Porto Santo Line"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-08-30",
-    "origin": "Funchal, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": 2,
-    "distance": 1140419,
-    "company": "EasyJet"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-09-10",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-09-12",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-09-30",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-10-02",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-10-07",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-10-10",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-10-21",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-10-23",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2019-11-01",
-    "origin": "Lisbon, Portugal",
-    "destination": "Mourão, Portugal",
-    "order": null,
-    "distance": 243052,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2019-11-03",
-    "origin": "Mourão, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 243052,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-11-12",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-11-16",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "British Airways"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-12-06",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2019-12-08",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2019-12-31",
-    "origin": "Lisbon, Portugal",
-    "destination": "Grândola, Portugal",
-    "order": null,
-    "distance": 103802,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2020-01-02",
-    "origin": "Grândola, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 103802,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2020-08-22",
-    "origin": "Lisbon, Portugal",
-    "destination": "Tavira, Portugal",
-    "order": null,
-    "distance": 288551,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2020-08-30",
-    "origin": "Tavira, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 288551,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "train",
-    "date": "2020-09-16",
-    "origin": "Lisbon, Portugal",
-    "destination": "Porto, Portugal",
-    "order": null,
-    "distance": 273530,
-    "company": "CP - Comboios de Portugal"
-  },
-  {
-    "alias": null,
-    "type": "train",
-    "date": "2020-09-17",
-    "origin": "Porto, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 273530,
-    "company": "CP - Comboios de Portugal"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2021-04-30",
-    "origin": "Lisbon, Portugal",
-    "destination": "Porto, Portugal",
-    "order": null,
-    "distance": 328236,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2021-05-02",
-    "origin": "Porto, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 328236,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2021-06-10",
-    "origin": "Lisbon, Portugal",
-    "destination": "Óbidos, Portugal",
-    "order": null,
-    "distance": 84881,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2021-06-12",
-    "origin": "Óbidos, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 84881,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2021-08-17",
-    "origin": "Lisbon, Portugal",
-    "destination": "Lagos, Portugal",
-    "order": null,
-    "distance": 221492,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2021-08-22",
-    "origin": "Lagos, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 221492,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2022-06-10",
-    "origin": "Lisbon, Portugal",
-    "destination": "Porto, Portugal",
-    "order": null,
-    "distance": 328236,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2022-06-14",
-    "origin": "Porto, Portugal",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 328236,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2022-08-18",
-    "origin": "Lisbon, Portugal",
-    "destination": "Madrid, Spain",
-    "order": 1,
-    "distance": 664008,
-    "company": "Iberia"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2022-08-18",
-    "origin": "Madrid, Spain",
-    "destination": "Arrecife, Spain",
-    "order": 2,
-    "distance": 1750584,
-    "company": "Iberia"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2022-08-28",
-    "origin": "Arrecife, Spain",
-    "destination": "Madrid, Spain",
-    "order": 1,
-    "distance": 1750584,
-    "company": "Iberia"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2022-08-28",
-    "origin": "Madrid, Spain",
-    "destination": "Lisbon, Portugal",
-    "order": 2,
-    "distance": 664008,
-    "company": "Iberia"
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2022-10-29",
-    "origin": "Lisbon, Portugal",
-    "destination": "Madrid, Spain",
-    "order": null,
-    "distance": 758867,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "car",
-    "date": "2022-11-01",
-    "origin": "Madrid, Spain",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 758867,
-    "company": null
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2023-05-17",
-    "origin": "Lisbon, Portugal",
-    "destination": "London, United Kingdom",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2023-05-19",
-    "origin": "London, United Kingdom",
-    "destination": "Lisbon, Portugal",
-    "order": null,
-    "distance": 1821358,
-    "company": "TAP"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2024-08-19",
-    "origin": "Lisbon, Portugal",
-    "destination": "Zürich, Switzerland",
-    "order": 1,
-    "distance": 2296614,
-    "company": "Swiss"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2024-08-19",
-    "origin": "Zürich, Switzerland",
-    "destination": "Athens, Greece",
-    "order": 2,
-    "distance": 2058969,
-    "company": "Aegean Airlines"
-  },
-  {
-    "alias": null,
-    "type": "boat",
-    "date": "2024-08-20",
-    "origin": "Athens, Greece",
-    "destination": "Tínos, Greece",
-    "order": null,
-    "distance": 165898,
-    "company": "Golden Star Ferries"
-  },
-  {
-    "alias": "Syros",
-    "type": "boat",
-    "date": "2024-08-22",
-    "origin": "Tínos, Greece",
-    "destination": "Ermoúpolis, Greece",
-    "order": null,
-    "distance": 26246,
-    "company": "Golden Star Ferries"
-  },
-  {
-    "alias": "Santorini",
-    "type": "boat",
-    "date": "2024-08-25",
-    "origin": "Ermoúpolis, Greece",
-    "destination": "Firá, Greece",
-    "order": null,
-    "distance": 116414,
-    "company": "Golden Star Ferries"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2024-08-29",
-    "origin": "Firá, Greece",
-    "destination": "Frankfurt am Main, Germany",
-    "order": 1,
-    "distance": 2477324,
-    "company": "Discover Airlines"
-  },
-  {
-    "alias": null,
-    "type": "flight",
-    "date": "2024-08-29",
-    "origin": "Frankfurt am Main, Germany",
-    "destination": "Lisbon, Portugal",
-    "order": 2,
-    "distance": 2466663,
-    "company": "Lufthansa"
-  }
+	{
+		"alias": null,
+		"type": "car",
+		"date": "1998-08-18",
+		"origin": "Lisbon, Portugal",
+		"destination": "Dijon, France",
+		"distance": 2207553,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "1998-08-23",
+		"origin": "Dijon, France",
+		"destination": "Paris, France",
+		"distance": 410598,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "1998-08-25",
+		"origin": "Paris, France",
+		"destination": "Lisbon, Portugal",
+		"distance": 2040646,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2000-04-21",
+		"origin": "Lloret de Mar, Spain",
+		"destination": "Lisbon, Portugal",
+		"distance": 1646903,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2000-04-23",
+		"origin": "Lisbon, Portugal",
+		"destination": "Lloret de Mar, Spain",
+		"distance": 1646903,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2008-10-18",
+		"origin": "Lisbon, Portugal",
+		"destination": "Genève, Switzerland",
+		"distance": 1985210,
+		"company": "EasyJet",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2008-10-18",
+		"origin": "Genève, Switzerland",
+		"destination": "Dijon, France",
+		"distance": 211184,
+		"company": null,
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2008-10-20",
+		"origin": "Dijon, France",
+		"destination": "Genève, Switzerland",
+		"distance": 211184,
+		"company": null,
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2008-10-20",
+		"origin": "Genève, Switzerland",
+		"destination": "Lisbon, Portugal",
+		"distance": 1985210,
+		"company": "EasyJet",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2009-08-03",
+		"origin": "Lisbon, Portugal",
+		"destination": "Cabanas de Tavira, Portugal",
+		"distance": 292264,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2009-08-10",
+		"origin": "Cabanas de Tavira, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 292264,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2010-08-16",
+		"origin": "Lisbon, Portugal",
+		"destination": "Cabanas de Tavira, Portugal",
+		"distance": 292264,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2010-08-23",
+		"origin": "Cabanas de Tavira, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 292264,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2011-04-10",
+		"origin": "Lisbon, Portugal",
+		"destination": "Reguengos de Monsaraz, Portugal",
+		"distance": 216721,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2011-04-10",
+		"origin": "Reguengos de Monsaraz, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 216721,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2011-07-29",
+		"origin": "Lisbon, Portugal",
+		"destination": "Grândola, Portugal",
+		"distance": 103802,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2011-07-31",
+		"origin": "Grândola, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 103802,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2012-07-17",
+		"origin": "Lisbon, Portugal",
+		"destination": "Cabanas de Tavira, Portugal",
+		"distance": 292264,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2012-07-23",
+		"origin": "Cabanas de Tavira, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 292264,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2013-07-13",
+		"origin": "Lisbon, Portugal",
+		"destination": "Aveiro, Portugal",
+		"distance": 262320,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2013-07-14",
+		"origin": "Aveiro, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 262320,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2013-08-26",
+		"origin": "Lisbon, Portugal",
+		"destination": "Cancún, Mexico",
+		"distance": 9090671,
+		"company": "Orbest",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2013-09-04",
+		"origin": "Cancún, Mexico",
+		"destination": "Lisbon, Portugal",
+		"distance": 9090671,
+		"company": "Orbest",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2013-11-12",
+		"origin": "Lisbon, Portugal",
+		"destination": "Paris, France",
+		"distance": 1785566,
+		"company": "Air France",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2013-11-12",
+		"origin": "Paris, France",
+		"destination": "Johannesburg, South Africa",
+		"distance": 8840537,
+		"company": "Air France",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2013-11-15",
+		"origin": "Johannesburg, South Africa",
+		"destination": "Maputo, Mozambique",
+		"distance": 530555,
+		"company": "LAM",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2013-12-24",
+		"origin": "Maputo, Mozambique",
+		"destination": "Johannesburg, South Africa",
+		"distance": 530555,
+		"company": "British Airways",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2013-12-24",
+		"origin": "Johannesburg, South Africa",
+		"destination": "Amsterdam, Netherlands",
+		"distance": 9063514,
+		"company": "KLM",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2013-12-25",
+		"origin": "Amsterdam, Netherlands",
+		"destination": "Lisbon, Portugal",
+		"distance": 2281878,
+		"company": "KLM",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2014-01-19",
+		"origin": "Lisbon, Portugal",
+		"destination": "Amsterdam, Netherlands",
+		"distance": 2281878,
+		"company": "KLM",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2014-01-19",
+		"origin": "Amsterdam, Netherlands",
+		"destination": "Johannesburg, South Africa",
+		"distance": 9063514,
+		"company": "KLM",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2014-01-23",
+		"origin": "Johannesburg, South Africa",
+		"destination": "Maputo, Mozambique",
+		"distance": 530555,
+		"company": "British Airways",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2014-04-01",
+		"origin": "Maputo, Mozambique",
+		"destination": "Johannesburg, South Africa",
+		"distance": 530555,
+		"company": "British Airways",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2014-04-01",
+		"origin": "Johannesburg, South Africa",
+		"destination": "Paris, France",
+		"distance": 8840537,
+		"company": "KLM",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2014-04-02",
+		"origin": "Paris, France",
+		"destination": "Lisbon, Portugal",
+		"distance": 1785566,
+		"company": "KLM",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2014-06-20",
+		"origin": "Lisbon, Portugal",
+		"destination": "Óbidos, Portugal",
+		"distance": 84881,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2014-06-21",
+		"origin": "Óbidos, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 84881,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2014-10-19",
+		"origin": "Lisbon, Portugal",
+		"destination": "Paris, France",
+		"distance": 1785566,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2014-10-22",
+		"origin": "Paris, France",
+		"destination": "Lisbon, Portugal",
+		"distance": 1785566,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-01-06",
+		"origin": "Lisbon, Portugal",
+		"destination": "Amsterdam, Netherlands",
+		"distance": 2281878,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-01-09",
+		"origin": "Amsterdam, Netherlands",
+		"destination": "Lisbon, Portugal",
+		"distance": 2281878,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-02-03",
+		"origin": "Lisbon, Portugal",
+		"destination": "Frankfurt am Main, Germany",
+		"distance": 2466663,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-02-13",
+		"origin": "Frankfurt am Main, Germany",
+		"destination": "Lisbon, Portugal",
+		"distance": 2466663,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-03-11",
+		"origin": "Lisbon, Portugal",
+		"destination": "Berlin, Germany",
+		"distance": 3080501,
+		"company": "Privilege Style",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-03-13",
+		"origin": "Berlin, Germany",
+		"destination": "Lisbon, Portugal",
+		"distance": 3080501,
+		"company": "Privilege Style",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2015-03-23",
+		"origin": "Lisbon, Portugal",
+		"destination": "Porto, Portugal",
+		"distance": 328236,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2015-03-25",
+		"origin": "Porto, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 328236,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-03-28",
+		"origin": "Lisbon, Portugal",
+		"destination": "Dole, France",
+		"distance": 1965953,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "train",
+		"date": "2015-03-31",
+		"origin": "Dijon, France",
+		"destination": "Paris, France",
+		"distance": 342165,
+		"company": "SNCF",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "train",
+		"date": "2015-04-01",
+		"origin": "Paris, France",
+		"destination": "Dijon, France",
+		"distance": 342165,
+		"company": "SNCF",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-04-05",
+		"origin": "Dole, France",
+		"destination": "Lisbon, Portugal",
+		"distance": 1965953,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-07-18",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "British Airways",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-07-18",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "British Airways",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2015-08-23",
+		"origin": "Lisbon, Portugal",
+		"destination": "Altura, Portugal",
+		"distance": 298090,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2015-08-28",
+		"origin": "Altura, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 298090,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-09-29",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "EasyJet",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-10-05",
+		"origin": "London, United Kingdom",
+		"destination": "Shannon, Ireland",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-10-09",
+		"origin": "Dublin, Ireland",
+		"destination": "Lisbon, Portugal",
+		"distance": 1724119,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-10-12",
+		"origin": "Lisbon, Portugal",
+		"destination": "Dublin, Ireland",
+		"distance": 1724119,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-10-23",
+		"origin": "Dublin, Ireland",
+		"destination": "Lisbon, Portugal",
+		"distance": 1724119,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-10-26",
+		"origin": "Lisbon, Portugal",
+		"destination": "Dublin, Ireland",
+		"distance": 1724119,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-10-30",
+		"origin": "Dublin, Ireland",
+		"destination": "Lisbon, Portugal",
+		"distance": 1724119,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-11-02",
+		"origin": "Lisbon, Portugal",
+		"destination": "Dublin, Ireland",
+		"distance": 1724119,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-11-06",
+		"origin": "Dublin, Ireland",
+		"destination": "Lisbon, Portugal",
+		"distance": 1724119,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-11-19",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-11-23",
+		"origin": "London, United Kingdom",
+		"destination": "Shannon, Ireland",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-11-26",
+		"origin": "Shannon, Ireland",
+		"destination": "London, United Kingdom",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-11-30",
+		"origin": "London, United Kingdom",
+		"destination": "Shannon, Ireland",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-12-03",
+		"origin": "Shannon, Ireland",
+		"destination": "London, United Kingdom",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-12-07",
+		"origin": "London, United Kingdom",
+		"destination": "Shannon, Ireland",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-12-10",
+		"origin": "Shannon, Ireland",
+		"destination": "London, United Kingdom",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-12-14",
+		"origin": "London, United Kingdom",
+		"destination": "Shannon, Ireland",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-12-16",
+		"origin": "Shannon, Ireland",
+		"destination": "London, United Kingdom",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2015-12-17",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-01-04",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-02-05",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-02-14",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-02-15",
+		"origin": "London, United Kingdom",
+		"destination": "Shannon, Ireland",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-02-17",
+		"origin": "Shannon, Ireland",
+		"destination": "London, United Kingdom",
+		"distance": 1029677,
+		"company": "Aer Lingus",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-02-18",
+		"origin": "London, United Kingdom",
+		"destination": "Düsseldorf, Germany",
+		"distance": 806521,
+		"company": "EuroWings",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-02-20",
+		"origin": "Düsseldorf, Germany",
+		"destination": "London, United Kingdom",
+		"distance": 806521,
+		"company": "EuroWings",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-02-24",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "British Airways",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-02-28",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-03-18",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "British Airways",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-03-27",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-05-11",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-05-15",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-06-02",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-06-13",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-07-15",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "EasyJet",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-07-24",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "Monarch",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2016-08-15",
+		"origin": "Woking, United Kingdom",
+		"destination": "Bath, United Kingdom",
+		"distance": 240670,
+		"company": null,
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2016-08-15",
+		"origin": "Bath, United Kingdom",
+		"destination": "Woking, United Kingdom",
+		"distance": 240670,
+		"company": null,
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-08-16",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2016-08-23",
+		"origin": "Lisbon, Portugal",
+		"destination": "Tavira, Portugal",
+		"distance": 288551,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2016-09-01",
+		"origin": "Tavira, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 288551,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-09-04",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-10-15",
+		"origin": "London, United Kingdom",
+		"destination": "Paris, France",
+		"distance": 423697,
+		"company": "British Airways",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-10-16",
+		"origin": "Paris, France",
+		"destination": "London, United Kingdom",
+		"distance": 423697,
+		"company": "British Airways",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-10-20",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-10-23",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-11-11",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-11-13",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-11-25",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-11-27",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-12-09",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-12-11",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2016-12-23",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-01-01",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "British Airways",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-01-13",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-01-17",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-01-27",
+		"origin": "Leeds, United Kingdom",
+		"destination": "London, United Kingdom",
+		"distance": 314496,
+		"company": "British Airways",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-01-27",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-01-29",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-02-24",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-02-26",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-03-29",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-04-02",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-04-09",
+		"origin": "London, United Kingdom",
+		"destination": "Leeds, United Kingdom",
+		"distance": 314496,
+		"company": "British Airways",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-04-10",
+		"origin": "Leeds, United Kingdom",
+		"destination": "London, United Kingdom",
+		"distance": 314496,
+		"company": "British Airways",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-04-11",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2017-04-13",
+		"origin": "Lisbon, Portugal",
+		"destination": "Porto, Portugal",
+		"distance": 328236,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2017-04-17",
+		"origin": "Porto, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 328236,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-04-22",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-05-20",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-05-25",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "train",
+		"date": "2017-06-01",
+		"origin": "London, United Kingdom",
+		"destination": "Leeds, United Kingdom",
+		"distance": 299520,
+		"company": "Virgin Trains East Coast",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2017-07-29",
+		"origin": "Leeds, United Kingdom",
+		"destination": "Ripley, United Kingdom",
+		"distance": 103690,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2017-07-30",
+		"origin": "Ripley, United Kingdom",
+		"destination": "Leeds, United Kingdom",
+		"distance": 103690,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "train",
+		"date": "2017-08-17",
+		"origin": "Leeds, United Kingdom",
+		"destination": "London, United Kingdom",
+		"distance": 299520,
+		"company": "Virgin Trains East Coast",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "train",
+		"date": "2017-08-19",
+		"origin": "London, United Kingdom",
+		"destination": "Leeds, United Kingdom",
+		"distance": 299520,
+		"company": "Virgin Trains East Coast",
+		"order": null
+	},
+	{
+		"alias": "Peak District National Park",
+		"type": "car",
+		"date": "2017-08-23",
+		"origin": "Leeds, United Kingdom",
+		"destination": "Buxton, United Kingdom",
+		"distance": 86614,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2017-08-28",
+		"origin": "Buxton, United Kingdom",
+		"destination": "Leeds, United Kingdom",
+		"distance": 86614,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-09-02",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Dubai, United Arab Emirates",
+		"distance": 7248805,
+		"company": "Emirates",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-09-06",
+		"origin": "Dubai, United Arab Emirates",
+		"destination": "Male, Maldives",
+		"distance": 2341966,
+		"company": "Emirates",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-09-13",
+		"origin": "Male, Maldives",
+		"destination": "Dubai, United Arab Emirates",
+		"distance": 2341966,
+		"company": "Emirates",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-09-14",
+		"origin": "Dubai, United Arab Emirates",
+		"destination": "Manchester, United Kingdom",
+		"distance": 7248805,
+		"company": "Emirates",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-09-28",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-10-01",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-12-02",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-12-11",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-12-22",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2017-12-29",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-01-20",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Berlin, Germany",
+		"distance": 1830329,
+		"company": "EasyJet",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-01-23",
+		"origin": "Berlin, Germany",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1830329,
+		"company": "EasyJet",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "train",
+		"date": "2018-03-02",
+		"origin": "Leeds, United Kingdom",
+		"destination": "London, United Kingdom",
+		"distance": 299520,
+		"company": "Virgin Trains East Coast",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "train",
+		"date": "2018-03-04",
+		"origin": "London, United Kingdom",
+		"destination": "Leeds, United Kingdom",
+		"distance": 299520,
+		"company": "Virgin Trains East Coast",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-04-15",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-04-23",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-05-19",
+		"origin": "Leeds, United Kingdom",
+		"destination": "Amsterdam, Netherlands",
+		"distance": 769709,
+		"company": "KLM",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-05-22",
+		"origin": "Amsterdam, Netherlands",
+		"destination": "Leeds, United Kingdom",
+		"distance": 769709,
+		"company": "KLM",
+		"order": null
+	},
+	{
+		"alias": "Lake District National Park",
+		"type": "car",
+		"date": "2018-06-25",
+		"origin": "Leeds, United Kingdom",
+		"destination": "Windermere, United Kingdom",
+		"distance": 197397,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": "Yorkshire Dales National Park",
+		"type": "car",
+		"date": "2018-06-29",
+		"origin": "Windermere, United Kingdom",
+		"destination": "Skipton, United Kingdom",
+		"distance": 131300,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2018-06-30",
+		"origin": "Skipton, United Kingdom",
+		"destination": "Leeds, United Kingdom",
+		"distance": 66324,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2018-07-20",
+		"origin": "Leeds, United Kingdom",
+		"destination": "Barmouth, United Kingdom",
+		"distance": 364106,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2018-07-22",
+		"origin": "Barmouth, United Kingdom",
+		"destination": "Leeds, United Kingdom",
+		"distance": 364106,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-08-22",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2018-08-25",
+		"origin": "Lisbon, Portugal",
+		"destination": "Cabanas de Tavira, Portugal",
+		"distance": 292264,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2018-09-02",
+		"origin": "Cabanas de Tavira, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 292264,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-09-09",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-09-30",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-10-05",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-11-06",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-11-13",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-11-21",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-12-01",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-12-02",
+		"origin": "Leeds, United Kingdom",
+		"destination": "Warsaw, Poland",
+		"distance": 2640018,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-12-05",
+		"origin": "Warsaw, Poland",
+		"destination": "Leeds, United Kingdom",
+		"distance": 2640018,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2018-12-20",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-01-05",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-01-20",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-02-05",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-02-14",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-02-19",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-02-23",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-03-02",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-03-16",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-03-26",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "Ryanair",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-04-03",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-04-13",
+		"origin": "Lisbon, Portugal",
+		"destination": "Barcelona, Spain",
+		"distance": 1354591,
+		"company": "Vueling",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-04-16",
+		"origin": "Barcelona, Spain",
+		"destination": "Lisbon, Portugal",
+		"distance": 1354591,
+		"company": "Vueling",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-05-01",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-05-12",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "EasyJet",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-05-16",
+		"origin": "Lisbon, Portugal",
+		"destination": "Manchester, United Kingdom",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-05-29",
+		"origin": "Manchester, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1893866,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-06-18",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-06-20",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-07-09",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-07-13",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-08-21",
+		"origin": "Lisbon, Portugal",
+		"destination": "Funchal, Portugal",
+		"distance": 1140419,
+		"company": "EasyJet",
+		"order": null
+	},
+	{
+		"alias": "Porto Santo",
+		"type": "boat",
+		"date": "2019-08-23",
+		"origin": "Funchal, Portugal",
+		"destination": "Vila Baleira, Portugal",
+		"distance": 78023,
+		"company": "Porto Santo Line",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "boat",
+		"date": "2019-08-30",
+		"origin": "Vila Baleira, Portugal",
+		"destination": "Funchal, Portugal",
+		"distance": 78023,
+		"company": "Porto Santo Line",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-08-30",
+		"origin": "Funchal, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 1140419,
+		"company": "EasyJet",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-09-10",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-09-12",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-09-30",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-10-02",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-10-07",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-10-10",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-10-21",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-10-23",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2019-11-01",
+		"origin": "Lisbon, Portugal",
+		"destination": "Mourão, Portugal",
+		"distance": 243052,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2019-11-03",
+		"origin": "Mourão, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 243052,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-11-12",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "British Airways",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-11-16",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "British Airways",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-12-06",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2019-12-08",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2019-12-31",
+		"origin": "Lisbon, Portugal",
+		"destination": "Grândola, Portugal",
+		"distance": 103802,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2020-01-02",
+		"origin": "Grândola, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 103802,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2020-08-22",
+		"origin": "Lisbon, Portugal",
+		"destination": "Tavira, Portugal",
+		"distance": 288551,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2020-08-30",
+		"origin": "Tavira, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 288551,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "train",
+		"date": "2020-09-16",
+		"origin": "Lisbon, Portugal",
+		"destination": "Porto, Portugal",
+		"distance": 273530,
+		"company": "CP - Comboios de Portugal",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "train",
+		"date": "2020-09-17",
+		"origin": "Porto, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 273530,
+		"company": "CP - Comboios de Portugal",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2021-04-30",
+		"origin": "Lisbon, Portugal",
+		"destination": "Porto, Portugal",
+		"distance": 328236,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2021-05-02",
+		"origin": "Porto, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 328236,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2021-06-10",
+		"origin": "Lisbon, Portugal",
+		"destination": "Óbidos, Portugal",
+		"distance": 84881,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2021-06-12",
+		"origin": "Óbidos, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 84881,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2021-08-17",
+		"origin": "Lisbon, Portugal",
+		"destination": "Lagos, Portugal",
+		"distance": 221492,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2021-08-22",
+		"origin": "Lagos, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 221492,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2022-06-10",
+		"origin": "Lisbon, Portugal",
+		"destination": "Porto, Portugal",
+		"distance": 328236,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2022-06-14",
+		"origin": "Porto, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 328236,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2022-08-18",
+		"origin": "Lisbon, Portugal",
+		"destination": "Madrid, Spain",
+		"distance": 664008,
+		"company": "Iberia",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2022-08-18",
+		"origin": "Madrid, Spain",
+		"destination": "Arrecife, Spain",
+		"distance": 1750584,
+		"company": "Iberia",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2022-08-28",
+		"origin": "Arrecife, Spain",
+		"destination": "Madrid, Spain",
+		"distance": 1750584,
+		"company": "Iberia",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2022-08-28",
+		"origin": "Madrid, Spain",
+		"destination": "Lisbon, Portugal",
+		"distance": 664008,
+		"company": "Iberia",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2022-10-29",
+		"origin": "Lisbon, Portugal",
+		"destination": "Madrid, Spain",
+		"distance": 758867,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2022-11-01",
+		"origin": "Madrid, Spain",
+		"destination": "Lisbon, Portugal",
+		"distance": 758867,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2023-05-17",
+		"origin": "Lisbon, Portugal",
+		"destination": "London, United Kingdom",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2023-05-19",
+		"origin": "London, United Kingdom",
+		"destination": "Lisbon, Portugal",
+		"distance": 1821358,
+		"company": "TAP",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2024-08-19",
+		"origin": "Lisbon, Portugal",
+		"destination": "Zürich, Switzerland",
+		"distance": 2296614,
+		"company": "Swiss",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2024-08-19",
+		"origin": "Zürich, Switzerland",
+		"destination": "Athens, Greece",
+		"distance": 2058969,
+		"company": "Aegean Airlines",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "boat",
+		"date": "2024-08-20",
+		"origin": "Athens, Greece",
+		"destination": "Tínos, Greece",
+		"distance": 165898,
+		"company": "Golden Star Ferries",
+		"order": null
+	},
+	{
+		"alias": "Syros",
+		"type": "boat",
+		"date": "2024-08-22",
+		"origin": "Tínos, Greece",
+		"destination": "Ermoúpolis, Greece",
+		"distance": 26246,
+		"company": "Golden Star Ferries",
+		"order": null
+	},
+	{
+		"alias": "Santorini",
+		"type": "boat",
+		"date": "2024-08-25",
+		"origin": "Ermoúpolis, Greece",
+		"destination": "Firá, Greece",
+		"distance": 116414,
+		"company": "Golden Star Ferries",
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2024-08-29",
+		"origin": "Firá, Greece",
+		"destination": "Frankfurt am Main, Germany",
+		"distance": 2477324,
+		"company": "Discover Airlines",
+		"order": 1
+	},
+	{
+		"alias": null,
+		"type": "flight",
+		"date": "2024-08-29",
+		"origin": "Frankfurt am Main, Germany",
+		"destination": "Lisbon, Portugal",
+		"distance": 2466663,
+		"company": "Lufthansa",
+		"order": 2
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2025-07-04",
+		"origin": "Lisbon, Portugal",
+		"destination": "Évora, Portugal",
+		"distance": 165754,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2025-07-08",
+		"origin": "Évora, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 165754,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2025-08-23",
+		"origin": "Lisbon, Portugal",
+		"destination": "Monchique, Portugal",
+		"distance": 199921,
+		"company": null,
+		"order": null
+	},
+	{
+		"alias": null,
+		"type": "car",
+		"date": "2025-08-30",
+		"origin": "Monchique, Portugal",
+		"destination": "Lisbon, Portugal",
+		"distance": 199921,
+		"company": null,
+		"order": null
+	}
 ]

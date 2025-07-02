@@ -150,8 +150,8 @@ defmodule SiteWeb.BlogComponents do
     <h1
       class={[
         "font-medium text-3xl/10 sm:text-4xl/12 lg:text-5xl/14 text-content text-center text-balance",
-        @underline && "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6
-            decoration-[2px] md:decoration-[3px] decoration-primary",
+        @underline &&
+          "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6 decoration-1 decoration-surface-40/75",
         @class
       ]}
       {@rest}
@@ -286,7 +286,7 @@ defmodule SiteWeb.BlogComponents do
         <.post_category post={@post} class="uppercase" />
       </div>
 
-      <.post_title class="mt-4" post={@post} />
+      <.post_title class="mt-4" post={@post} underline />
       <.post_meta
         post={@post}
         readers={@readers}
@@ -421,10 +421,10 @@ defmodule SiteWeb.BlogComponents do
       data-text={@share_text}
       data-url={@share_url}
     >
-      <.button variant="outline" size="sm" class="btn-icon">
+      <.icon_button variant="outline" size="sm">
         <.icon name="lucide-share" class="size-4.5" />
         <p class="sr-only">Share</p>
-      </.button>
+      </.icon_button>
 
       <div id="share-container"></div>
     </div>
@@ -455,7 +455,6 @@ defmodule SiteWeb.BlogComponents do
           :if={@show_date}
           post={@post}
           show_icon={false}
-          format="%B %-d, %Y"
           class="hidden md:block font-light text-content-40"
         />
       </div>

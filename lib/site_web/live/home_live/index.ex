@@ -14,9 +14,13 @@ defmodule SiteWeb.HomeLive.Index do
             <div class="mb-2 md:mb-0">
               <div
                 id="hello-text"
-                class="relative inline-block px-1.5 py-0.5 text-base md:text-2xl bg-content/10 rounded-xs opacity-0"
+                class="relative inline-block px-1.5 py-0.5 text-base md:text-2xl bg-content/4 rounded-xs opacity-0"
               >
-                <div id="hello-content" class="motion-safe:animate-[glitch_4s_ease-in-out_infinite]">
+                <div
+                  id="hello-content"
+                  class="motion-safe:animate-[glitch_4s_ease-in-out_infinite]"
+                  title="Yes, this is a Mr Robot reference!"
+                >
                   <span class="text-neutral-700 dark:text-neutral-200" data-text="h3ll0, fr13nd!">
                   </span>
                   <span class="font-mono text-primary motion-safe:animate-blink">_</span>
@@ -38,7 +42,7 @@ defmodule SiteWeb.HomeLive.Index do
               <.link href="/about" class="link">
                 Software Engineer
               </.link>
-              <span class="font-light">(&#60;3 the web)</span>
+              <span class="font-light">(web &#60;3)</span>
               from <span class="text-content-10">Lisbon</span>.
             </div>
 

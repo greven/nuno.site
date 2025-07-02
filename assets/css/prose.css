@@ -446,7 +446,7 @@
         color: var(--color-content-10);
         text-wrap: pretty;
 
-        &::before {
+        &:not([data-icon=false])::before {
           content: '‼';
           display: flex;
           height: 2.5rem;
