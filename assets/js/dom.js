@@ -4,14 +4,14 @@ export const morphdomOptions = {
     // which we set on the client.
     for (const attr of from.attributes) {
       if (attr.name.startsWith('data-js-')) {
-        to.setAttribute(attr.name, attr.value);
+        to.setAttribute(attr.name, attr.value)
       }
 
       if (attr.name === 'data-keep-attribute') {
         if (from.hasAttribute(attr.value)) {
-          to.setAttribute(attr.value, from.getAttribute(attr.value));
+          to.setAttribute(attr.value, from.getAttribute(attr.value))
         } else {
-          to.removeAttribute(attr.value);
+          to.removeAttribute(attr.value)
         }
       }
     }
@@ -20,12 +20,12 @@ export const morphdomOptions = {
   onNodeAdded(node) {
     // Mimic autofocus for dynamically inserted elements
     if (node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('autofocus')) {
-      node.focus();
+      node.focus()
 
       if (node.setSelectionRange && node.value) {
-        const lastIndex = node.value.length;
-        node.setSelectionRange(lastIndex, lastIndex);
+        const lastIndex = node.value.length
+        node.setSelectionRange(lastIndex, lastIndex)
       }
     }
   },
-};
+}

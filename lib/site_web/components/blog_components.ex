@@ -789,15 +789,17 @@ defmodule SiteWeb.BlogComponents do
       <%!-- Desktop --%>
       <div
         id="toc-navigator-desktop"
-        class="hidden sm:block w-fit px-2.5 py-2.5 bg-surface-10/80
-          border border-surface-30 shadow-xs rounded-full backdrop-blur-sm"
+        class={[
+          "hidden sm:block w-fit px-2.5 py-2.5 bg-surface-10/80 border border-surface-40 shadow-xs rounded-full backdrop-blur-sm transition-colors duration-300",
+          "hover:bg-surface-10 hover:border-primary hover:cursor-pointer"
+        ]}
       >
         <ol class="space-y-1">
           <li
             :for={header <- @headers}
             :if={header.depth <= @depth}
             class="m-0 p-0 leading-5 text-content-10/20 transition ease-in-out duration-500
-            data-[active]:text-primary hover:text-content-40"
+            data-[active]:text-primary"
           >
             <a href={"##{header.id}"} inert>&ndash;</a>
             <span class="sr-only">{header.text}</span>
@@ -868,7 +870,7 @@ defmodule SiteWeb.BlogComponents do
             before:h-5 before:border-l-2 before:border-l-transparent data-[active]:text-content-10
             data-[active]:before:border-l-primary hover:text-content-20 transition-all"
         >
-          <a href={"##{header.id}"} class="line-clamp-1">
+          <a href={"##{header.id}"} class="w-full line-clamp-1">
             {header.text}
           </a>
 
