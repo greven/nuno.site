@@ -781,9 +781,9 @@ defmodule SiteWeb.BlogComponents do
       <div
         id="toc-navigator-mobile"
         class="hidden sm:hidden items-center justify-center w-12 h-12 bg-surface-10/90
-        border border-surface-30 shadow-sm rounded-full backdrop-blur-sm"
+        border border-surface-30 shadow-sm rounded-full backdrop-blur-sm touch-manipulation"
       >
-        <.icon name="hero-list-bullet-mini" class="text-content-40 size-6" />
+        <.icon name="hero-list-bullet-mini" class="text-content-40 size-6 pointer-events-none" />
       </div>
 
       <%!-- Desktop --%>
@@ -822,7 +822,7 @@ defmodule SiteWeb.BlogComponents do
         "fixed -bottom-2 left-1 right-1 w-full mb-1 p-5 z-10 rounded-t-lg",
         "sm:relative sm:mb-20 sm:w-auto sm:min-w-[348px] sm:rounded-lg",
         "bg-surface-10/95 border border-surface-30 shadow-xs backdrop-blur-sm",
-        "transition-transform ease-in-out duration-500"
+        "transition-transform ease-in-out duration-500 touch-manipulation"
       ]}
       style="opacity: 0; transform: translateY(400px);"
       inert
@@ -868,9 +868,9 @@ defmodule SiteWeb.BlogComponents do
           class="group relative flex items-center text-sm text-content-40
             before:content-[''] before:absolute before:-left-[calc(--spacing(5)+1px)] before:w-px
             before:h-5 before:border-l-2 before:border-l-transparent data-[active]:text-content-10
-            data-[active]:before:border-l-primary hover:text-content-20 transition-all"
+            data-[active]:before:border-l-primary hover:text-content-20 transition-all touch-manipulation"
         >
-          <a href={"##{header.id}"} class="w-full line-clamp-1">
+          <a href={"##{header.id}"} class="w-full line-clamp-1 touch-manipulation">
             {header.text}
           </a>
 

@@ -15,6 +15,9 @@ export const TableOfContents = {
     this.currentActive = null
     this.lastScrollTop = window.scrollY
     this.hideTimeout = null
+    this.isAnimating = false
+    this.clickThroughTimeout = null
+    this.touchOverlay = null
 
     // Document Header links
     this.headings = this.tocItems
@@ -35,7 +38,9 @@ export const TableOfContents = {
     this.setupIntersectionObserver()
 
     // Setup event listeners
-    window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true })
+    window.addEventListener('scroll', this.handleScroll.bind(this), {
+      passive: true,
+    })
     window.addEventListener('resize', this.handleResize.bind(this))
 
     document.addEventListener('keydown', this.handleKeydown.bind(this))
@@ -61,6 +66,7 @@ export const TableOfContents = {
 
     // Clear timeouts
     if (this.hideTimeout) clearTimeout(this.hideTimeout)
+    if (this.clickThroughTimeout) clearTimeout(this.clickThroughTimeout)
 
     // Remove all event listeners
     window.removeEventListener('scroll', this.handleScroll.bind(this))
@@ -193,6 +199,11 @@ export const TableOfContents = {
     this.container.style.opacity = '1'
     this.container.removeAttribute('inert')
 
+    // Prevent click-through during animation on mobile
+    if (this.isMobile()) {
+      this.preventClickThrough()
+    }
+
     this.checkPosition()
 
     if (this.isMobile()) {
@@ -210,6 +221,9 @@ export const TableOfContents = {
     this.isVisible = false
     this.navigator.style.opacity = '1'
     this.container.setAttribute('inert', '')
+
+    // Re-enable interactions when hiding
+    this.enableClickThrough()
 
     if (this.isMobile()) {
       // Mobile: slide down to bottom
@@ -270,6 +284,11 @@ export const TableOfContents = {
     event.preventDefault()
     event.stopPropagation()
 
+    // Prevent rapid successive clicks during animation
+    if (this.isAnimating) {
+      return
+    }
+
     if (this.isVisible) {
       this.hideToc()
     } else {
@@ -299,6 +318,44 @@ export const TableOfContents = {
     // Close TOC on Escape key
     if (event.key === 'Escape') {
       this.hideToc()
+    }
+  },
+
+  preventTouch(event) {
+    event.preventDefault()
+    event.stopPropagation()
+    return false
+  },
+
+  // Mobile click-through prevention
+  preventClickThrough() {
+    this.isAnimating = true
+
+    // Disable pointer events temporarily
+    this.tocItems.forEach((link) => {
+      link.style.pointerEvents = 'none'
+      link.style.touchAction = 'none'
+    })
+
+    // Set animation timeout
+    this.clickThroughTimeout = setTimeout(() => {
+      this.enableClickThrough()
+    }, 600) // Match CSS transition duration + buffer
+  },
+
+  enableClickThrough() {
+    this.isAnimating = false
+
+    // Re-enable pointer events
+    this.tocItems.forEach((link) => {
+      link.style.pointerEvents = 'auto'
+      link.style.touchAction = 'manipulation'
+    })
+
+    // Clear timeout
+    if (this.clickThroughTimeout) {
+      clearTimeout(this.clickThroughTimeout)
+      this.clickThroughTimeout = null
     }
   },
 }
