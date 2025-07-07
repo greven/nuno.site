@@ -31,25 +31,17 @@ config :site, SiteWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :site, Site.Mailer, adapter: Swoosh.Adapters.Local
 
-# Configure esbuild (the version is required)
-config :esbuild,
-  version: "0.25.4",
-  site: [
+config :bun,
+  version: "1.2.18",
+  assets: [args: [], cd: Path.expand("../assets", __DIR__)],
+  js: [
     args:
-      ~w(js/app.js --bundle --target=es2022 --splitting --format=esm --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/*),
-    cd: Path.expand("../assets", __DIR__),
-    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
-  ]
-
-# Configure tailwind (the version is required)
-config :tailwind,
-  version: "4.1.7",
-  site: [
-    args: ~w(
-      --input=assets/css/app.css
-      --output=priv/static/assets/css/app.css
-    ),
-    cd: Path.expand("..", __DIR__)
+      ~w(build js/app.js --outdir=../priv/static/assets/js --splitting --external /fonts/* --external /images/*),
+    cd: Path.expand("../assets", __DIR__)
+  ],
+  css: [
+    args: ~w(run tailwindcss --input=css/app.css --output=../priv/static/assets/css/app.css),
+    cd: Path.expand("../assets", __DIR__)
   ]
 
 # Configures Elixir's Logger

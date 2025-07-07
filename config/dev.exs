@@ -22,8 +22,8 @@ config :site, SiteWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "mzy/g542Y1Z7g/2gg6vzQm/dVsxO25NvShMfPWRzb1nHOcuuw/bSgRTno8K7xxJy",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:site, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:site, ~w(--watch)]}
+    bun_js: {Bun, :install_and_run, [:js, ~w(--sourcemap=inline --watch)]},
+    bun_css: {Bun, :install_and_run, [:css, ~w(--watch)]}
   ]
 
 # ## SSL Support

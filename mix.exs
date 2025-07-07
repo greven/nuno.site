@@ -36,7 +36,7 @@ defmodule Site.MixProject do
     [
       # Phoenix Framework
       {:phoenix, "~> 1.8.0-rc.3", override: true},
-      {:phoenix_live_view, "~> 1.0.16"},
+      {:phoenix_live_view, "~> 1.1.0-rc.2"},
       {:phoenix_ecto, "~> 4.6"},
       {:phoenix_html, "~> 4.2"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
@@ -82,8 +82,7 @@ defmodule Site.MixProject do
       # {:atomex, "~> 0.5"},
 
       # Assets
-      {:esbuild, "~> 0.9", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.3", runtime: Mix.env() == :dev},
+      {:bun, "~> 1.5", runtime: Mix.env() == :dev},
       {:heroicons,
        github: "tailwindlabs/heroicons",
        tag: "v2.1.5",
@@ -91,15 +90,13 @@ defmodule Site.MixProject do
        app: false,
        compile: false,
        depth: 1},
-      {
-        :lucide_icons,
-        github: "lucide-icons/lucide",
-        tag: "0.487.0",
-        sparse: "icons",
-        app: false,
-        compile: false,
-        depth: 1
-      },
+      {:lucide_icons,
+       github: "lucide-icons/lucide",
+       tag: "0.487.0",
+       sparse: "icons",
+       app: false,
+       compile: false,
+       depth: 1},
       {:simple_icons,
        github: "simple-icons/simple-icons",
        tag: "14.12.1",
@@ -128,13 +125,9 @@ defmodule Site.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing", "vendor"],
-      "assets.build": ["tailwind site", "esbuild site"],
-      "assets.deploy": [
-        "tailwind site --minify",
-        "esbuild site --minify",
-        "phx.digest"
-      ]
+      "assets.setup": ["bun.install --if-missing", "bun assets install"],
+      "assets.build": ["bun js", "bun css"],
+      "assets.deploy": ["bun css --minify", "bun js --minify", "phx.digest"]
     ]
   end
 end

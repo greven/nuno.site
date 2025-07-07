@@ -12,37 +12,105 @@ export const TravelMap = {
     this.projection = null // Map projection
     this.highlightedPin = { key: null, selection: null } // { key, selection } of highlighted pin
 
-    Promise.all([import('../../vendor/d3'), import('../../vendor/topojson')])
-      .then(([d3Module, topojsonModule]) => {
-        this.d3 = d3Module.default
-        this.topojson = topojsonModule.default
-
-        this.tooltip = this.d3
-          .select(this.el)
-          .append('div')
-          .attr('class', 'map-tooltip')
-          .style('opacity', 0)
-          .style('position', 'absolute')
-          .style('pointer-events', 'none')
-
-        this.data = JSON.parse(this.el.getAttribute('data-trips'))
-        this.listItems = document.querySelectorAll('[data-item="trip"]')
-
-        // List items hover events
-        this.listItems.forEach((item) => {
-          item.addEventListener('mouseenter', this.onListItemHover.bind(this))
-          item.addEventListener('mouseleave', this.onListItemLeave.bind(this))
-        })
-
-        // Map reset click event
-        window.addEventListener('phx:map-reset', this.onReset.bind(this))
-
-        // Let the party begin!
-        this.initMap()
+    // Lazy load D3 and TopoJSON modules
+    this.loadMapDependencies()
+      .then(() => {
+        this.initializeMap()
       })
       .catch((error) => {
-        console.error('Error loading modules:', error)
+        console.error('Error loading map dependencies:', error)
+        this.handleLoadError(error)
       })
+
+    // Promise.all([import('../../vendor/d3'), import('../../vendor/topojson')])
+    //   .then(([d3Module, topojsonModule]) => {
+    //     this.d3 = d3Module.default
+    //     this.topojson = topojsonModule.default
+
+    //     this.tooltip = this.d3
+    //       .select(this.el)
+    //       .append('div')
+    //       .attr('class', 'map-tooltip')
+    //       .style('opacity', 0)
+    //       .style('position', 'absolute')
+    //       .style('pointer-events', 'none')
+
+    //     this.data = JSON.parse(this.el.getAttribute('data-trips'))
+    //     this.listItems = document.querySelectorAll('[data-item="trip"]')
+
+    //     // List items hover events
+    //     this.listItems.forEach((item) => {
+    //       item.addEventListener('mouseenter', this.onListItemHover.bind(this))
+    //       item.addEventListener('mouseleave', this.onListItemLeave.bind(this))
+    //     })
+
+    //     // Map reset click event
+    //     window.addEventListener('phx:map-reset', this.onReset.bind(this))
+
+    //     // Let the party begin!
+    //     this.initMap()
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error loading modules:', error)
+    //   })
+  },
+
+  async loadMapDependencies() {
+    try {
+      // Dynamic imports for lazy loading
+      const [d3Module, topojsonModule] = await Promise.all([
+        import('d3'),
+        import('topojson-client'),
+      ])
+
+      this.d3 = d3Module
+      this.topojson = topojsonModule
+
+      return { d3: d3Module, topojson: topojsonModule }
+    } catch (error) {
+      throw new Error(`Failed to load map dependencies: ${error.message}`)
+    }
+  },
+
+  initializeMap() {
+    this.createTooltip()
+    this.setupEventListeners()
+    this.initMap()
+  },
+
+  createTooltip() {
+    this.tooltip = this.d3
+      .select(this.el)
+      .append('div')
+      .attr('class', 'map-tooltip')
+      .style('opacity', 0)
+      .style('position', 'absolute')
+      .style('pointer-events', 'none')
+  },
+
+  setupEventListeners() {
+    this.data = JSON.parse(this.el.getAttribute('data-trips'))
+    this.listItems = document.querySelectorAll('[data-item="trip"]')
+
+    // List items hover events
+    this.listItems.forEach((item) => {
+      item.addEventListener('mouseenter', this.onListItemHover.bind(this))
+      item.addEventListener('mouseleave', this.onListItemLeave.bind(this))
+    })
+
+    // Map reset click event
+    window.addEventListener('phx:map-reset', this.onReset.bind(this))
+  },
+
+  handleLoadError() {
+    // Graceful fallback when dependencies fail to load
+    const errorMessage = document.createElement('div')
+    errorMessage.className = 'map-error p-4 text-center text-content-40'
+    errorMessage.innerHTML = `
+      <p class="mb-2">Unable to load map components.</p>
+      <p class="text-sm">Please refresh the page to try again.</p>
+    `
+    this.el.appendChild(errorMessage)
   },
 
   destroyed() {

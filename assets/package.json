@@ -1,0 +1,22 @@
+{
+  "name": "nuno_site",
+  "type": "module",
+  "workspaces": [
+    "../deps/*"
+  ],
+  "dependencies": {
+    "phoenix": "workspace:*",
+    "phoenix_html": "workspace:*",
+    "phoenix_live_view": "workspace:*",
+    "tailwindcss": "^4.1.11",
+    "@tailwindcss/cli": "^4.1.11",
+    "topbar": "^3.0.0",
+    "d3": "^7.9.0",
+    "topojson-client": "^3.1.0"
+  },
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "@tailwindcss/oxide",
+    "unrs-resolver"
+  ]
+}
