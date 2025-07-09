@@ -1,30 +1,30 @@
 export const PostMeta = {
   mounted() {
-    this.viewsEl = document.querySelector('[data-views-count]')
-    this.readersEl = document.querySelector('[data-readers-count]')
+    this.viewsEl = document.querySelector('[data-views-count]');
+    this.readersEl = document.querySelector('[data-readers-count]');
 
     // Event handling
-    this.handleEvent('presence', this.handleReadersRender.bind(this))
-    this.handleEvent(`page-views:${window.location.pathname}`, this.handleMetricsRender.bind(this))
+    this.handleEvent('presence', this.handleReadersRender.bind(this));
+    this.handleEvent(`page-views:${window.location.pathname}`, this.handleMetricsRender.bind(this));
   },
 
   handleReadersRender({ diff }) {
-    if (!diff || diff === 0) return
+    if (!diff || diff === 0) return;
 
-    appendFloatingElement(this.readersEl, diff)
+    appendFloatingElement(this.readersEl, diff);
   },
 
   handleMetricsRender({ diff }) {
-    if (!diff || diff === 0) return
+    if (!diff || diff === 0) return;
 
-    appendFloatingElement(this.viewsEl, diff)
+    appendFloatingElement(this.viewsEl, diff);
   },
-}
+};
 
 // Create and style the floating element
 const appendFloatingElement = (el, diff) => {
-  const floatingNumber = document.createElement('span')
-  floatingNumber.textContent = diff > 0 ? `+${diff}` : diff
+  const floatingNumber = document.createElement('span');
+  floatingNumber.textContent = diff > 0 ? `+${diff}` : diff;
   floatingNumber.style.cssText = `
       position: absolute;
       font-size: 0.85rem;
@@ -34,15 +34,15 @@ const appendFloatingElement = (el, diff) => {
       color: ${diff > 0 ? 'var(--color-success)' : 'var(--color-danger)'};
       pointer-events: none;
       z-index: 10;
-    `
+    `;
 
   // Animation
   setTimeout(() => {
-    floatingNumber.style.opacity = '0'
-    floatingNumber.style.transform = 'translateY(-20px)'
-    setTimeout(() => floatingNumber.remove(), 1000)
-  }, 10)
+    floatingNumber.style.opacity = '0';
+    floatingNumber.style.transform = 'translateY(-20px)';
+    setTimeout(() => floatingNumber.remove(), 1000);
+  }, 10);
 
-  el.style.position = 'relative'
-  el.appendChild(floatingNumber)
-}
+  el.style.position = 'relative';
+  el.appendChild(floatingNumber);
+};

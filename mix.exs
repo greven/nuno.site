@@ -128,7 +128,9 @@ defmodule Site.MixProject do
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["bun.install --if-missing", "bun assets install"],
       "assets.build": ["bun js", "bun css"],
-      "assets.deploy": ["bun css --minify", "bun js --minify", "phx.digest"]
+      "assets.deploy": ["bun css --minify", "bun js --minify", "phx.digest"],
+      "assets.lint": "cmd npm run lint:fix --prefix assets",
+      "assets.format": "cmd npm run format:fix --prefix assets"
     ]
   end
 end
