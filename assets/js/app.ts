@@ -5,7 +5,7 @@ import topbar from 'topbar'
 import { morphdomOptions } from './dom'
 import hooks from './hooks'
 
-const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute('content')
+const csrfToken = document.querySelector("meta[name='csrf-token']")?.getAttribute('content')
 const liveSocket = new LiveSocket('/live', Socket, {
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
@@ -40,7 +40,9 @@ window.liveSocket = liveSocket
 //     2. click on elements to jump to their definitions in your code editor
 //
 if (process.env.NODE_ENV === 'development') {
-  window.addEventListener('phx:live_reload:attached', ({ detail: reloader }) => {
+  window.addEventListener('phx:live_reload:attached', (event) => {
+    const { detail: reloader } = event as CustomEvent
+
     // Enable server log streaming to client.
     // Disable with reloader.disableServerLogs()
     reloader.enableServerLogs()
@@ -49,9 +51,14 @@ if (process.env.NODE_ENV === 'development') {
     //
     //   * click with "c" key pressed to open at caller location
     //   * click with "d" key pressed to open at function component definition location
-    let keyDown
-    window.addEventListener('keydown', (e) => (keyDown = e.key))
-    window.addEventListener('keyup', (e) => (keyDown = null))
+    let keyDown: string | null = null
+
+    window.addEventListener('keydown', (e) => {
+      keyDown = e.key
+    })
+    window.addEventListener('keyup', (_e) => {
+      keyDown = null
+    })
     window.addEventListener(
       'click',
       (e) => {

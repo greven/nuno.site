@@ -38,10 +38,7 @@ defmodule SiteWeb.HomeLive.Index do
             </h1>
 
             <div class="text-xl md:text-2xl text-content-40">
-              A
-              <.link href="/about" class="link">
-                Software Engineer
-              </.link>
+              A <.link href="/about" class="link">Software Engineer</.link>
               <span class="font-light">(web &#60;3)</span>
               from <span class="text-content-10">Lisbon</span>.
             </div>

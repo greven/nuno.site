@@ -36,7 +36,7 @@ config :bun,
   assets: [args: [], cd: Path.expand("../assets", __DIR__)],
   js: [
     args:
-      ~w(build js/app.js --outdir=../priv/static/assets/js --splitting --external /fonts/* --external /images/*),
+      ~w(build js/app.ts --outdir=../priv/static/assets/js --splitting --external /fonts/* --external /images/*),
     cd: Path.expand("../assets", __DIR__)
   ],
   css: [

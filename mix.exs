@@ -9,6 +9,7 @@ defmodule Site.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       consolidate_protocols: Mix.env() != :dev,
+      compilers: [:phoenix_live_view] ++ Mix.compilers(),
       aliases: aliases(),
       deps: deps(),
       listeners: [Phoenix.CodeReloader]
