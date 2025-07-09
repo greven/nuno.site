@@ -21,38 +21,6 @@ export const TravelMap = {
         console.error('Error loading map dependencies:', error);
         this.handleLoadError(error);
       });
-
-    // Promise.all([import('../../vendor/d3'), import('../../vendor/topojson')])
-    //   .then(([d3Module, topojsonModule]) => {
-    //     this.d3 = d3Module.default
-    //     this.topojson = topojsonModule.default
-
-    //     this.tooltip = this.d3
-    //       .select(this.el)
-    //       .append('div')
-    //       .attr('class', 'map-tooltip')
-    //       .style('opacity', 0)
-    //       .style('position', 'absolute')
-    //       .style('pointer-events', 'none')
-
-    //     this.data = JSON.parse(this.el.getAttribute('data-trips'))
-    //     this.listItems = document.querySelectorAll('[data-item="trip"]')
-
-    //     // List items hover events
-    //     this.listItems.forEach((item) => {
-    //       item.addEventListener('mouseenter', this.onListItemHover.bind(this))
-    //       item.addEventListener('mouseleave', this.onListItemLeave.bind(this))
-    //     })
-
-    //     // Map reset click event
-    //     window.addEventListener('phx:map-reset', this.onReset.bind(this))
-
-    //     // Let the party begin!
-    //     this.initMap()
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error loading modules:', error)
-    //   })
   },
 
   async loadMapDependencies() {
