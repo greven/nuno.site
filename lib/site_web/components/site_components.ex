@@ -31,36 +31,38 @@ defmodule SiteWeb.SiteComponents do
   def featured_posts(assigns) do
     ~H"""
     <div class={@class}>
-      <%!-- divide-y-1 divide-border divide-dashed --%>
-      <div class="group isolate flex flex-col justify-center gap-4">
+      <ol id="featured-posts" class="group isolate flex flex-col justify-center gap-4">
         <%= for post <- @posts do %>
-          <article class={[
-            "relative w-full overflow-hidden py-6 flex flex-col justify-center items-center text-center border border-border border-dashed rounded-lg transition",
-            "hover:border-solid hover:bg-surface-10"
-          ]}>
-            <.link class="link-subtle w-full" navigate={~p"/articles/#{post.year}/#{post}"}>
-              <span class="absolute inset-0 z-10"></span>
-              <h3 class="text-lg line-clamp-1">{post.title}</h3>
-            </.link>
+          <li class="relative w-full overflow-hidden">
+            <article class={[
+              "py-6 flex flex-col justify-center items-center text-center border border-border border-dashed rounded-lg transition",
+              "hover:border-solid hover:bg-surface-10"
+            ]}>
+              <.link class="link-subtle w-full" navigate={~p"/articles/#{post.year}/#{post}"}>
+                <span class="absolute inset-0 z-10"></span>
+                <h3 class="text-base md:text-lg lg:text-xl line-clamp-1">{post.title}</h3>
+              </.link>
 
-            <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
-              <BlogComponents.post_publication_date
-                post={post}
-                class="text-content-40"
-                show_icon={false}
-              />
-              <span class="hidden md:inline font-sans text-xs text-primary">&bull;</span>
+              <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+                <BlogComponents.post_publication_date
+                  post={post}
+                  format="%b %d"
+                  class="text-content-40"
+                  show_icon={false}
+                />
+                <span class="hidden md:inline font-sans text-xs text-primary">&bull;</span>
 
-              <div class="flex items-center flex-wrap gap-2">
-                <span :for={tag <- post.tags}>
-                  <span class="text-content-40/50 mr-px">#</span>
-                  <span class="text-content-40">{tag}</span>
-                </span>
+                <div class="flex items-center flex-wrap gap-2">
+                  <span :for={tag <- post.tags}>
+                    <span class="text-content-40/50 mr-px">#</span>
+                    <span class="text-content-40">{tag}</span>
+                  </span>
+                </div>
               </div>
-            </div>
-          </article>
+            </article>
+          </li>
         <% end %>
-      </div>
+      </ol>
     </div>
     """
   end

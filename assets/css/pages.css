@@ -171,6 +171,37 @@
     border-right-color: var(--color-primary);
   }
 
+  #featured-posts {
+    @variant md {
+      counter-reset: item-counter;
+
+      li {
+        counter-increment: item-counter;
+        position: relative;
+      }
+
+      li::before {
+        content: "#" counter(item-counter);
+        position: absolute;
+        left: 4%;
+        top: 50%;
+        transform: translateY(-50%);
+        font-family: var(--font-headings);
+        font-weight: var(--font-weight-semibold);
+        font-size: 4em;
+        color: var(--color-content-10);
+        opacity: 0.05;
+        transition: color, opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      li:hover::before {
+        color: var(--color-primary);
+        opacity: 0.15;
+      }
+    }
+  }
+
   .profile-picture {
     position: relative;
 

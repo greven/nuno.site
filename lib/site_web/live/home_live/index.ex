@@ -32,14 +32,13 @@ defmodule SiteWeb.HomeLive.Index do
           <div id="site-intro" class="text-center md:text-left">
             <h1 class="flex flex-col font-headings leading-tight">
               <div class="-ml-1 md:-ml-2 text-7xl md:text-9xl tracking-tight">
-                <span class="contrast-125">I'm</span>
-                <strong class="contrast-150">Nuno</strong><span class="text-primary">.</span>
+                I'm
+                <strong class="contrast-125 font-semibold">Nuno</strong><span class="text-primary">.</span>
               </div>
             </h1>
 
             <div class="text-md md:text-2xl text-content-40">
-              A <.link href="/about" class="link">Software Engineer</.link>
-              from <span class="text-content-10">Lisbon</span>.
+              A <.link href="/about" class="link">Software Engineer</.link> from Lisbon.
             </div>
 
             <p class="mt-8 max-w-3xl font-light text-base/7 md:text-xl/8 text-content-30 text-balance">
