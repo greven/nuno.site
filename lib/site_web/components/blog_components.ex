@@ -226,14 +226,21 @@ defmodule SiteWeb.BlogComponents do
   attr :readers, :integer, default: nil
   attr :views, :integer, default: nil
   attr :class, :string, default: nil
+  attr :show_tags, :boolean, default: false
+  attr :show_icon, :boolean, default: true
 
   def post_meta(assigns) do
     ~H"""
     <div id="post-meta" class={@class} phx-hook="PostMeta">
-      <div class="flex flex-wrap items-center justify-center gap-3 text-content-40 text-sm">
-        <.post_publication_date post={@post} show_icon={true} class="text-content-20" />
+      <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+        <.post_publication_date post={@post} show_icon={@show_icon} class="text-content-20" />
         <span :if={@post.category == :blog} class="font-sans text-xs text-primary">&bull;</span>
-        <.post_read_time :if={@post.category == :blog} post={@post} label="read" show_icon={true} />
+        <.post_reading_time
+          :if={@post.category == :blog}
+          post={@post}
+          label="read"
+          show_icon={@show_icon}
+        />
 
         <%= if @views do %>
           <span class="hidden lg:inline font-sans text-xs text-primary">&bull;</span>
@@ -243,6 +250,15 @@ defmodule SiteWeb.BlogComponents do
         <%= if @readers do %>
           <span class="hidden md:inline font-sans text-xs text-primary">&bull;</span>
           <.post_readers count={@readers} class="hidden md:inline-block" />
+        <% end %>
+
+        <%= if @show_tags do %>
+          <span class="hidden md:inline font-sans text-xs text-primary">&bull;</span>
+          <div class="flex items-center flex-wrap gap-2">
+            <span :for={tag <- @post.tags}>
+              <span class="text-content-40/60 mr-px">#</span>{tag}
+            </span>
+          </div>
         <% end %>
       </div>
     </div>
@@ -579,7 +595,7 @@ defmodule SiteWeb.BlogComponents do
         </.badge>
       </div>
 
-      <.post_read_time
+      <.post_reading_time
         post={@post}
         label="read"
         show_icon={@show_icon}
@@ -606,7 +622,7 @@ defmodule SiteWeb.BlogComponents do
       <div class="flex items-center gap-2">
         <.icon :if={@icon} name={@icon} class={@icon_class} />
         <div class="flex items-center gap-1.5">
-          <span :if={@value} class="font-mono text-content-20" {@rest}>{@value}</span>
+          <span :if={@value} class="font-mono" {@rest}>{@value}</span>
           {render_slot(@inner_block)}
         </div>
       </div>
@@ -670,7 +686,7 @@ defmodule SiteWeb.BlogComponents do
   attr :icon_class, :string, default: "size-5 text-content-40"
   attr :class, :string, default: nil
 
-  def post_read_time(%{post: %{reading_time: reading_time}} = assigns) do
+  def post_reading_time(%{post: %{reading_time: reading_time}} = assigns) do
     {duration, unit} =
       cond do
         reading_time < 1.0 -> {round(reading_time * 60), "s"}

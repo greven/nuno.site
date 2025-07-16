@@ -8,8 +8,8 @@ defmodule SiteWeb.HomeLive.Index do
   def render(assigns) do
     ~H"""
     <Layouts.home flash={@flash} active_link={@active_link}>
-      <Layouts.page_content>
-        <section id="hero" class="mb-[16%]">
+      <Layouts.page_content class="flex flex-col gap-16">
+        <section id="hero">
           <.link href="/about" id="hello" phx-hook="Hello" class="text-center md:text-left">
             <div class="mb-2 md:mb-0">
               <div
@@ -18,7 +18,7 @@ defmodule SiteWeb.HomeLive.Index do
               >
                 <div
                   id="hello-content"
-                  class="motion-safe:animate-[glitch_4s_ease-in-out_infinite]"
+                  class="motion-safe:animate-[glitch_4s_ease-in-out]"
                   title="Yes, this is a Mr Robot reference!"
                 >
                   <span class="text-neutral-700 dark:text-neutral-200" data-text="h3ll0, fr13nd!">
@@ -29,7 +29,7 @@ defmodule SiteWeb.HomeLive.Index do
             </div>
           </.link>
 
-          <div id="site-intro" class="pb-[20%] text-center md:text-left">
+          <div id="site-intro" class="text-center md:text-left">
             <h1 class="flex flex-col font-headings leading-tight">
               <div class="-ml-1 md:-ml-2 text-7xl md:text-9xl tracking-tight">
                 <span class="contrast-125">I'm</span>
@@ -37,31 +37,19 @@ defmodule SiteWeb.HomeLive.Index do
               </div>
             </h1>
 
-            <div class="text-xl md:text-2xl text-content-40">
+            <div class="text-md md:text-2xl text-content-40">
               A <.link href="/about" class="link">Software Engineer</.link>
-              <span class="font-light">(web &#60;3)</span>
               from <span class="text-content-10">Lisbon</span>.
             </div>
 
-            <p class="mt-8 max-w-3xl font-light text-base/7 md:text-xl/8 text-content-10">
-              I've always been passionate about design and user experience, so the web was a natural fit for me. I've been building web applications (before they were called applications 🧙‍♂️) for over two decades now. This site is where I share my knowledge and ideas with others. Here you'll find a
+            <p class="mt-8 max-w-3xl font-light text-base/7 md:text-xl/8 text-content-30 text-balance">
+              This site is where I share my knowledge and ideas with others. Here you'll find a
               <.link href="/updates" class="link-subtle">collection</.link>
-              of my <.link href="/articles?category=note" class="link-subtle">thoughts</.link>
-              (ramblings), <.link href="/articles?category=note" class="link-subtle">articles</.link>, and experiments.
+              of my <.link href="/articles?category=blog" class="link-subtle">articles</.link>, <.link
+                href="/articles?category=note"
+                class="link-subtle"
+              >notes</.link>, and experiments.
             </p>
-
-            <div class="mt-8 flex justify-center md:justify-start gap-4">
-              <.button variant="default" href="#links">
-                Explore
-                <div class="ml-0.5 -mr-2 flex items-center justify-center size-6 bg-content/8 rounded-full">
-                  <.icon name="lucide-arrow-down" class="size-4 bg-content-10" />
-                </div>
-              </.button>
-
-              <.button variant="light" href="/about">
-                Learn more
-              </.button>
-            </div>
           </div>
         </section>
 
@@ -88,8 +76,8 @@ defmodule SiteWeb.HomeLive.Index do
           </SiteComponents.bento_grid>
 
           <section :if={@posts != []}>
-            <.header tag="h2" class="text-center">Featured Articles</.header>
-            <SiteComponents.featured_posts posts={@posts} class="mt-2" />
+            <SiteComponents.home_section_title>Featured Articles</SiteComponents.home_section_title>
+            <SiteComponents.featured_posts posts={@posts} />
           </section>
         </div>
       </Layouts.page_content>

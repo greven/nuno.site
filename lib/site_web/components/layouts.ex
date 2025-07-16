@@ -45,13 +45,13 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <div class="min-h-screen flex flex-col">
       <.site_header active_link={@active_link} home />
-      <main class="relative flex-auto bg-surface shadow-sm z-1" tabindex="-1">
+      <main class="relative flex-auto bg-surface" tabindex="-1">
         <.wrapper wide={@wide}>
           {render_slot(@inner_block)}
         </.wrapper>
       </main>
 
-      <.home_footer />
+      <.site_footer />
       <.flash_group flash={@flash} />
     </div>
     """
@@ -150,23 +150,6 @@ defmodule SiteWeb.Layouts do
         <.footer_copyright />
       </.wrapper>
     </footer>
-    """
-  end
-
-  @doc false
-
-  def home_footer(assigns) do
-    ~H"""
-    <div class="sticky bottom-0 left-0 py-3 bg-neutral-950 text-neutral-100 z-0">
-      <.wrapper>
-        <h2 class="font-headings my-8 text-5xl">Footer</h2>
-        <p class="leading-8 text-neutral-400">
-          Footer Content here!
-        </p>
-
-        <.footer_copyright />
-      </.wrapper>
-    </div>
     """
   end
 

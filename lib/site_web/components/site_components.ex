@@ -11,23 +11,53 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def home_section_title(assigns) do
+    ~H"""
+    <header class={[@class, "flex items-center justify-center gap-2.5 pb-6"]}>
+      <.icon name="lucide-newspaper" class="size-6.5 text-content-40/80" />
+      <h2 class="font-medium text-3xl text-content-10">{render_slot(@inner_block)}</h2>
+    </header>
+    """
+  end
+
+  @doc false
+
   attr :posts, :list, default: []
   attr :class, :string, default: nil
 
   def featured_posts(assigns) do
     ~H"""
     <div class={@class}>
-      <div class="group isolate grid grid-cols-2 justify-center gap-4">
+      <%!-- divide-y-1 divide-border divide-dashed --%>
+      <div class="group isolate flex flex-col justify-center gap-4">
         <%= for post <- @posts do %>
-          <article class="relative w-full px-4 py-2 overflow-hidden not-only:odd:text-right only:text-center">
+          <article class={[
+            "relative w-full overflow-hidden py-6 flex flex-col justify-center items-center text-center border border-border border-dashed rounded-lg transition",
+            "hover:border-solid hover:bg-surface-10"
+          ]}>
             <.link class="link-subtle w-full" navigate={~p"/articles/#{post.year}/#{post}"}>
               <span class="absolute inset-0 z-10"></span>
               <h3 class="text-lg line-clamp-1">{post.title}</h3>
             </.link>
 
-            <date class="inline-block font-light text-content-40">
-              <BlogComponents.post_publication_date post={post} show_icon={false} />
-            </date>
+            <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+              <BlogComponents.post_publication_date
+                post={post}
+                class="text-content-40"
+                show_icon={false}
+              />
+              <span class="hidden md:inline font-sans text-xs text-primary">&bull;</span>
+
+              <div class="flex items-center flex-wrap gap-2">
+                <span :for={tag <- post.tags}>
+                  <span class="text-content-40/50 mr-px">#</span>
+                  <span class="text-content-40">{tag}</span>
+                </span>
+              </div>
+            </div>
           </article>
         <% end %>
       </div>
