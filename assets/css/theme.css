@@ -57,7 +57,7 @@
   --color-content-40: oklch(from var(--neutral) 0.53 0 h);
 
   --color-border: var(--color-neutral-300);
-  --color-ring: var(--color-secondary);
+  --color-ring: var(--color-primary);
 
   --color-primary: var(--primary);
   --color-primary-contrast: oklch(from var(--primary) 0.99 4% h);

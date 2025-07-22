@@ -53,7 +53,7 @@ defmodule SiteWeb.CoreComponents do
       <.link
         class={[
           @class,
-          "outline-none rounded-lg focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-[3px]"
+          "outline-none rounded-lg focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-2"
         ]}
         {@rest}
       >
@@ -849,8 +849,6 @@ defmodule SiteWeb.CoreComponents do
   all options are visible at once and mutually exclusive.
   """
 
-  # TODO: Replace button with custom selected element (and fix the radius of the element) and the elemnt should "swipe" between changes
-
   attr :value, :any, required: true, doc: "the current value of the segmented control"
   attr :on_change, :string, required: true, doc: "the event to trigger on value change"
   attr :aria_label, :string, required: true, doc: "the aria-label for the segmented control"
@@ -902,11 +900,13 @@ defmodule SiteWeb.CoreComponents do
             aria-current={item[:value] == @value}
             phx-click={JS.push(@on_change, value: %{value: item[:value]})}
             class={[
-              "group relative h-10 px-4 inline-flex flex-nowrap flex-shrink-0 items-center justify-center text-sm rounded-full
-                overflow-hidden whitespace-nowrap transition cursor-pointer align-middle text-center text-content-40 bg-surface-20/50",
-              "aria-current:bg-surface-30/80 aria-current:text-content-10",
-              "hover:not-aria-current:bg-surface-30/60",
-              item[:class]
+              item[:class],
+              "group relative h-10 px-4 inline-flex flex-nowrap flex-shrink-0 items-center justify-center text-sm rounded-full overflow-hidden
+                whitespace-nowrap transition cursor-pointer align-middle text-center text-content-40 border border-surface-30 bg-surface-10/40
+                active:shadow-none",
+              "aria-current:text-content aria-current:bg-surface-10 aria-current:border-primary aria-current:shadow-sm",
+              "hover:not-aria-current:bg-surface-10 hover:not-aria-current:text-content-10",
+              "outline-none focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-[3px]"
             ]}
           >
             <%= if item[:icon] do %>
@@ -915,11 +915,7 @@ defmodule SiteWeb.CoreComponents do
                   name={item[:icon]}
                   class={[
                     Map.get(item, :icon_base_class, "size-5"),
-                    Map.get(
-                      item,
-                      :icon_color_class,
-                      "text-content-10/45 group-aria-[current]:text-primary group-hover:group-[:not(:disabled)]:group-[:not([aria-current])]:text-content-30"
-                    )
+                    "group-aria-[current]:text-primary"
                   ]}
                 />
 

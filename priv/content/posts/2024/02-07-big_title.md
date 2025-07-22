@@ -1,9 +1,9 @@
 %{
-  title: "Hello World: This is a big title that won't fit on one line!",
+  title: "Hello World: This is a big title that won't fit on one line, right, right?!!!!",
   tags: ~w(elixir),
   excerpt: "Let's learn how to say hello world",
   status: :published,
-  category: :note,
+  category: :blog,
   featured: true
 }
 

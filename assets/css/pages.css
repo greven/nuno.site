@@ -196,8 +196,13 @@
       }
 
       li:hover::before {
-        color: var(--color-primary);
-        opacity: 0.15;
+        opacity: 0.075;
+      }
+    }
+
+    @variant dark {
+      li::before {
+        opacity: 0.025;
       }
     }
   }

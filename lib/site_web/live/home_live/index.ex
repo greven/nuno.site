@@ -86,7 +86,7 @@ defmodule SiteWeb.HomeLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    posts = Blog.list_featured_posts()
+    posts = Blog.list_featured_posts() |> Enum.take(3)
 
     {
       :ok,

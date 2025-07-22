@@ -28,7 +28,6 @@ defmodule SiteWeb.BlogLive.Index do
               :for={{category, icon, enabled?} <- @filter_categories}
               value={category}
               disabled={!enabled?}
-              icon_color_class={icon.class}
               icon={icon.name}
             >
               <div class="flex items-center gap-2">

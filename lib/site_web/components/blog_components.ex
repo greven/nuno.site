@@ -22,7 +22,10 @@ defmodule SiteWeb.BlogComponents do
     <.box tag="article" class="group isolate relative hover:border-primary hover:shadow-sm" {@rest}>
       <div class="blog-article">
         <.header tag="h2" class="mt-2">
-          <.link navigate={~p"/articles/#{@post.year}/#{@post}"} class="text-lg line-clamp-2">
+          <.link
+            navigate={~p"/articles/#{@post.year}/#{@post}"}
+            class="link-subtle text-lg line-clamp-2"
+          >
             <span class="absolute inset-0 z-10"></span>
             <span class="group-hover:text-shadow-xs/10 text-shadow-primary">{@post.title}</span>
           </.link>

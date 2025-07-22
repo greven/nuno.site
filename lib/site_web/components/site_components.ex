@@ -35,12 +35,14 @@ defmodule SiteWeb.SiteComponents do
         <%= for post <- @posts do %>
           <li class="relative w-full overflow-hidden">
             <article class={[
-              "py-6 flex flex-col justify-center items-center text-center border border-border border-dashed rounded-lg transition",
+              "p-5 flex flex-col justify-center items-center text-center border border-border border-dashed rounded-lg transition",
               "hover:border-solid hover:bg-surface-10"
             ]}>
               <.link class="link-subtle w-full" navigate={~p"/articles/#{post.year}/#{post}"}>
                 <span class="absolute inset-0 z-10"></span>
-                <h3 class="text-base md:text-lg lg:text-xl line-clamp-1">{post.title}</h3>
+                <h3 class="text-base md:text-lg lg:text-xl line-clamp-1">
+                  {post.title}
+                </h3>
               </.link>
 
               <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
@@ -50,6 +52,7 @@ defmodule SiteWeb.SiteComponents do
                   class="text-content-40"
                   show_icon={false}
                 />
+
                 <span class="hidden md:inline font-sans text-xs text-primary">&bull;</span>
 
                 <div class="flex items-center flex-wrap gap-2">
@@ -364,61 +367,66 @@ defmodule SiteWeb.SiteComponents do
   @doc false
 
   attr :trips, :list, default: []
-  attr :trips_timeline, :list, default: []
   attr :height, :integer, default: 500
   attr :rest, :global
 
   def travel_map(assigns) do
     ~H"""
-    <div {@rest}>
-      <div class="relative h-full flex flex-col isolate">
-        <div class="sticky top-0 z-10">
-          <div class="breakout py-12 bg-surface"></div>
-          <div
-            id="travel-map"
-            class="travel-map"
-            phx-hook="TravelMap"
-            phx-update="ignore"
-            data-height={@height}
-            data-trips={JSON.encode!(@trips)}
+    <div class="sticky top-0 z-10">
+      <div class="breakout py-12 bg-surface"></div>
+      <div
+        id="travel-map"
+        class="travel-map"
+        phx-hook="TravelMap"
+        phx-update="ignore"
+        data-height={@height}
+        data-trips={JSON.encode!(@trips)}
+        {@rest}
+      >
+        <%!-- Map Controls --%>
+        <div class="w-full absolute left-2 right-2 bottom-2 hidden md:flex items-center gap-2">
+          <.icon_button
+            class="rounded-md"
+            variant="light"
+            title="Reset map"
+            phx-click={JS.dispatch("phx:map-reset", to: "#travel-map")}
           >
-            <%!-- Map Controls --%>
-            <div class="w-full absolute left-2 right-2 bottom-2 hidden md:flex items-center gap-2">
-              <.icon_button
-                variant="light"
-                title="Reset map"
-                phx-click={JS.dispatch("phx:map-reset", to: "#travel-map")}
-              >
-                <.icon name="lucide-rotate-ccw" class="size-6" />
-                <span class="sr-only">Reset map</span>
-              </.icon_button>
-            </div>
-          </div>
-          <div class="breakout py-4 md:py-8 h-full bg-linear-to-b
-            from-surface from-60% to-transparent">
-          </div>
-        </div>
-
-        <div id="travel-list" class="relative mx-0.5">
-          <ol class="h-full flex flex-col gap-8">
-            <li :for={{year, trips} <- @trips_timeline}>
-              <div class="flex items-center gap-2 px-1">
-                <.icon name="hero-calendar-date-range" class="size-5 text-content-40" />
-                <div class="w-full flex items-center justify-between">
-                  <h2 class="sticky font-medium text-xl">{year}</h2>
-                  <div class="flex items-center gap-2 text-content-40">
-                    {length(trips)} {ngettext("trip", "trips", length(trips))}
-                  </div>
-                </div>
-              </div>
-
-              <ol class="mt-4 flex flex-col gap-2">
-                <.travel_item :for={trip <- trips} id={"trip-#{trip.id}"} trip={trip} />
-              </ol>
-            </li>
-          </ol>
+            <.icon name="lucide-rotate-ccw" class="size-6" />
+            <span class="sr-only">Reset map</span>
+          </.icon_button>
         </div>
       </div>
+      <div class="breakout py-4 md:py-8 h-full bg-linear-to-b
+            from-surface from-60% to-transparent">
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :trips_timeline, :list, default: []
+
+  def travel_list(assigns) do
+    ~H"""
+    <div id="travel-list" class="relative mx-0.5">
+      <ol class="h-full flex flex-col gap-8">
+        <li :for={{year, trips} <- @trips_timeline}>
+          <div class="flex items-center gap-2 px-1">
+            <.icon name="hero-calendar-date-range" class="size-5 text-content-40" />
+            <div class="w-full flex items-center justify-between">
+              <h2 class="sticky font-medium text-xl">{year}</h2>
+              <div class="flex items-center gap-2 text-content-40">
+                {length(trips)} {ngettext("trip", "trips", length(trips))}
+              </div>
+            </div>
+          </div>
+
+          <ol class="mt-4 flex flex-col gap-2">
+            <.travel_item :for={trip <- trips} id={"trip-#{trip.id}"} trip={trip} />
+          </ol>
+        </li>
+      </ol>
     </div>
     """
   end
@@ -466,6 +474,20 @@ defmodule SiteWeb.SiteComponents do
         </div>
       </div>
     </li>
+    """
+  end
+
+  @doc false
+
+  attr :value, :any, required: true
+  attr :label, :string, required: true
+
+  def travel_stat(assigns) do
+    ~H"""
+    <div class="flex flex-col gap-y-1 border-l-2 border-primary pl-6">
+      <dt class="text-sm/6 text-content-40">{@label}</dt>
+      <dd class="order-first text-3xl font-semibold tracking-tight text-content-10">{@value}</dd>
+    </div>
     """
   end
 

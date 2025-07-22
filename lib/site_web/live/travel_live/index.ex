@@ -25,7 +25,20 @@ defmodule SiteWeb.TravelLive.Index do
           different countries.
         </div>
 
-        <SiteComponents.travel_map trips={@trips} trips_timeline={@grouped_trips} />
+        <dl class="mt-8 grid grid-cols-2 gap-8 md:grid-cols-3 sm:mt-12">
+          <SiteComponents.travel_stat label="Countries Visited" value={@stats.countries_visited} />
+          <SiteComponents.travel_stat label="Cities Visited" value={@stats.cities_visited} />
+          <SiteComponents.travel_stat
+            label="Traveled Distance"
+            value={Support.format_number(@stats.distance, 0)}
+          />
+          <SiteComponents.travel_stat label="Flights" value={@stats.flights} />
+        </dl>
+
+        <div class="relative h-full flex flex-col isolate">
+          <SiteComponents.travel_map trips={@trips} />
+          <SiteComponents.travel_list trips_timeline={@grouped_trips} />
+        </div>
       </Layouts.page_content>
     </Layouts.app>
     """

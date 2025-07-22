@@ -68,9 +68,10 @@ defmodule Site.Travel do
       |> Enum.uniq()
       |> length()
 
-    # number_of_flights =
-    #   list_trips()
-    #   |> length()
+    number_of_flights =
+      list_trips()
+      |> Enum.filter(fn %Trip{type: type} -> type == "flight" end)
+      |> length()
 
     # number_airlines_flown =
     #   list_trips()
@@ -82,8 +83,8 @@ defmodule Site.Travel do
       distance: km_traveled,
       countries_visited: number_countries_visited,
       cities_visited: number_cities_visited,
-      to_the_moon: to_the_moon
-      # flights: number_of_flights,
+      to_the_moon: to_the_moon,
+      flights: number_of_flights
       # airlines_flown: number_airlines_flown,
     }
   end
