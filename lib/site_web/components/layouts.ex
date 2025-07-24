@@ -18,11 +18,17 @@ defmodule SiteWeb.Layouts do
       assigns
       |> assign_new(:wide, fn -> false end)
       |> assign_new(:active_link, fn -> nil end)
+      |> assign_new(:show_progress, fn -> false end)
+      |> assign_new(:progress_icon, fn -> nil end)
 
     ~H"""
     <div class="min-h-screen flex flex-col">
-      <.site_header active_link={@active_link} />
-      <main class="relative flex-auto z-1" tabindex="-1">
+      <.site_header
+        active_link={@active_link}
+        show_progress={@show_progress}
+        progress_icon={@progress_icon}
+      />
+      <main class="relative flex-auto z-1">
         <.wrapper wide={@wide}>
           {render_slot(@inner_block)}
         </.wrapper>
@@ -45,7 +51,7 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <div class="min-h-screen flex flex-col">
       <.site_header active_link={@active_link} home />
-      <main class="relative flex-auto bg-surface" tabindex="-1">
+      <main class="relative flex-auto bg-surface">
         <.wrapper wide={@wide}>
           {render_slot(@inner_block)}
         </.wrapper>
@@ -113,6 +119,8 @@ defmodule SiteWeb.Layouts do
 
   attr :active_link, :atom, required: true
   attr :current_user, :any, default: nil
+  attr :show_progress, :boolean, default: false
+  attr :progress_icon, :string, default: nil
   attr :class, :string, default: nil
   attr :home, :boolean, default: false
   attr :rest, :global
@@ -123,14 +131,29 @@ defmodule SiteWeb.Layouts do
       id="site-header"
       phx-hook="SiteHeader"
       class={[
-        "top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
+        "relative top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
         "bg-surface/95 border-b border-dashed border-transparent shadow-gray-900/5",
         "supports-backdrop-filter:bg-surface/85 backdrop-blur-sm supports-backdrop-filter:blur(0)",
         "data-scrolled:border-surface-40 data-scrolled:shadow-sm"
       ]}
       style="position:var(--header-position);height:var(--header-height);margin-bottom:var(--header-mb)"
+      data-progress={if(@show_progress, do: "true", else: "false")}
       {@rest}
     >
+      <div
+        :if={@show_progress}
+        id="page-progress"
+        class="absolute -bottom-[1.5px] left-0 h-[1.5px] w-[var(--page-progress)] bg-primary shadow-gray-900/10 select-none"
+      >
+      </div>
+
+      <.icon
+        :if={@show_progress and @progress_icon}
+        id="page-progress-icon"
+        name={@progress_icon}
+        class="hidden absolute -bottom-2.5 left-[var(--page-progress)] size-5 bg-content-40"
+      />
+
       <div class="wrapper">
         <div class="flex items-center justify-between py-3">
           <.site_logo home={@home} />

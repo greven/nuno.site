@@ -8,7 +8,7 @@ defmodule SiteWeb.TravelLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} active_link={@active_link}>
+    <Layouts.app flash={@flash} active_link={@active_link} progress_icon="lucide-bus" show_progress>
       <Layouts.page_content class="travel">
         <.header>
           Travel Log
@@ -25,14 +25,15 @@ defmodule SiteWeb.TravelLive.Index do
           different countries.
         </div>
 
-        <dl class="mt-8 grid grid-cols-2 gap-8 md:grid-cols-3 sm:mt-12">
+        <dl class="mt-8 hidden md:grid grid-cols-2 gap-8 md:grid-cols-3 sm:mt-12">
           <SiteComponents.travel_stat label="Countries Visited" value={@stats.countries_visited} />
           <SiteComponents.travel_stat label="Cities Visited" value={@stats.cities_visited} />
           <SiteComponents.travel_stat
-            label="Traveled Distance"
+            label="Distance (km)"
             value={Support.format_number(@stats.distance, 0)}
           />
           <SiteComponents.travel_stat label="Flights" value={@stats.flights} />
+          <SiteComponents.travel_stat label="Airlines Flown" value={@stats.airlines_flown} />
         </dl>
 
         <div class="relative h-full flex flex-col isolate">

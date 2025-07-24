@@ -73,19 +73,22 @@ defmodule Site.Travel do
       |> Enum.filter(fn %Trip{type: type} -> type == "flight" end)
       |> length()
 
-    # number_airlines_flown =
-    #   list_trips()
-    #   |> extract_airlines()
-    #   |> Enum.uniq()
-    #   |> length()
+    number_airlines_flown =
+      list_trips()
+      |> Stream.filter(fn %Trip{type: type} -> type == "flight" end)
+      |> Stream.reject(&is_nil(&1.company))
+      |> Stream.reject(&(&1.company == ""))
+      |> Stream.map(fn %Trip{company: company} -> company end)
+      |> Enum.uniq()
+      |> length()
 
     %{
       distance: km_traveled,
       countries_visited: number_countries_visited,
       cities_visited: number_cities_visited,
       to_the_moon: to_the_moon,
-      flights: number_of_flights
-      # airlines_flown: number_airlines_flown,
+      flights: number_of_flights,
+      airlines_flown: number_airlines_flown
     }
   end
 
@@ -132,11 +135,6 @@ defmodule Site.Travel do
     (origin_countries ++ destination_countries)
     |> Enum.reject(&is_nil/1)
   end
-
-  # Extract all airlines from trip data
-  # defp extract_airlines(trip_data) do
-  #   Enum.map(trip_data, fn %Trip{airline: airline} -> airline end)
-  # end
 
   defp travel_distance(%Trip{origin: origin, destination: destination, type: type}) do
     transport_type = transport_type(type)

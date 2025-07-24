@@ -24,7 +24,7 @@ defmodule SiteWeb.TagsLive.Index do
             </.link>
           </:header>
 
-          <:items :let={articles} class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-16">
+          <:items :let={articles} class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-8">
             <%= for article <- articles do %>
               <BlogComponents.archive_item post={article} />
             <% end %>

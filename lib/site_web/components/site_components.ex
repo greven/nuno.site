@@ -445,7 +445,7 @@ defmodule SiteWeb.SiteComponents do
           rounded-lg border border-surface-30 shadow-xs hover:shadow-sm hover:border-primary transition-shadow">
         <div class="flex items-center">
           <div class="flex flex-col justify-center items-start gap-0.5 lg:flex-row lg:items-center">
-            <.icon name={@icon} class="hidden lg:block size-4.5 text-content-40/90 mr-2.5 md:mr-3" />
+            <.icon name={@icon} class="hidden lg:block size-4.5 text-content-40/50 mr-2.5 md:mr-3" />
             <div class="text-content-30">{@trip.origin}</div>
             <.icon
               name="hero-arrow-right-mini"
