@@ -1,35 +1,36 @@
 defmodule Site.Blog.Parser do
-  import MDEx.Sigil
-
   alias Site.Blog.HeaderLink
-  alias Site.Blog.SyntaxTheme
+  # alias Site.Blog.SyntaxTheme
 
   def parse(_path, contents) do
     [header, markdown_body] = String.split(contents, "---\n", trim: true, parts: 2)
     {%{} = attrs, _} = Code.eval_string(header, [])
 
     options = [
-      syntax_highlight: [formatter: {:html_inline, theme: SyntaxTheme.umbra_theme()}],
+      # syntax_highlight: [formatter: {:html_inline, theme: SyntaxTheme.umbra_theme()}],
       render: [
-        unsafe_: true,
+        unsafe: true,
+        escape: false,
         github_pre_lang: true,
-        hardbreaks: true
+        full_info_string: true
       ],
       extension: [
-        underline: true,
         strikethrough: true,
-        tagfilter: true,
         table: true,
-        autolink: true,
+        autolink: false,
         tasklist: true,
+        superscript: true,
         footnotes: true,
-        shortcodes: true
+        description_lists: true,
+        multiline_block_quotes: true,
+        alerts: true,
+        math_dollars: true,
+        math_code: true,
+        shortcodes: true,
+        underline: true,
+        spoiler: true
       ],
-      parse: [
-        smart: true,
-        relaxed_tasklist_matching: true,
-        relaxed_autolinks: true
-      ]
+      parse: [relaxed_tasklist_matching: true, relaxed_autolinks: true]
     ]
 
     html_body =
@@ -57,12 +58,16 @@ defmodule Site.Blog.Parser do
           |> MDEx.to_html!()
           |> LazyHTML.from_fragment()
           |> LazyHTML.text()
-          |> Site.Support.slugify()
+          |> MDEx.anchorize()
 
-        ~m(<header class="group relative h#{level}">
-            <h#{level} id="#{id}">#{MDEx.to_html!(children)}</h#{level}>
-            <a href="##{id}" class="header-link" aria-labelledby="#{id}">H#{level}</a>
-          </header>)
+        header_markdown =
+          ~s(<header class="group relative h#{level}"><h#{level} id="#{id}">#{MDEx.to_html!(children)}</h#{level}>
+               <a href="##{id}" class="header-link" aria-labelledby="#{id}">H#{level}</a></header>)
+
+        case MDEx.parse_fragment(header_markdown) do
+          {:ok, node} -> node
+          _ -> heading_node
+        end
 
       node ->
         node

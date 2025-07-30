@@ -664,17 +664,17 @@ defmodule SiteWeb.BlogComponents do
   def post_views(assigns) do
     assigns =
       assigns
-      |> assign(count: Support.abbreviate_number(assigns.count))
+      |> assign(abbr_count: Support.abbreviate_number(assigns.count))
 
     ~H"""
     <.post_meta_item
       icon={@show_icon && "lucide-printer"}
       icon_class={@icon_class}
-      value={@count}
+      value={@abbr_count}
       class={@class}
       data-views-count
     >
-      views
+      {ngettext("view", "views", @count)}
     </.post_meta_item>
     """
   end

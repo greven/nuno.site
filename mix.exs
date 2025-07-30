@@ -36,18 +36,18 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.0-rc.3", override: true},
-      {:phoenix_live_view, "~> 1.1.0-rc.2"},
+      {:phoenix, "~> 1.8.0-rc.4", override: true},
+      {:phoenix_live_view, "~> 1.1.0-rc.4"},
       {:phoenix_ecto, "~> 4.6"},
       {:phoenix_html, "~> 4.2"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
 
       # HTTP server
-      {:bandit, "~> 1.6"},
+      {:bandit, "~> 1.7"},
 
       # Database
-      {:ecto_sql, "~> 3.12"},
+      {:ecto_sql, "~> 3.13"},
       {:ecto_sqlite3, ">= 0.0.0"},
       # {:litestream, "~> 0.3.0"},
 
@@ -68,16 +68,16 @@ defmodule Site.MixProject do
       # Utils
       {:req, "~> 0.5"},
       {:dns_cluster, "~> 0.2"},
-      {:lazy_html, "~> 0.1.0"},
-      {:nimble_csv, "~> 1.2"},
-      {:recase, "~> 0.8"},
+      {:lazy_html, "~> 0.1"},
+      {:nimble_csv, "~> 1.3"},
+      {:recase, "~> 0.9"},
       {:dotenvy, "~> 1.1"},
       {:geocalc, "~> 0.8"},
       {:uniq, "~> 0.6"},
       # {:image, "~> 0.56"},
 
       # Content
-      {:mdex, "~> 0.6"},
+      {:mdex, "~> 0.8"},
       {:nimble_publisher, "~> 1.1"},
       # {:phoenix_seo, "~> 0.1"},
       # {:atomex, "~> 0.5"},
