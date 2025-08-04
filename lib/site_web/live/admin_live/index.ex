@@ -1,19 +1,19 @@
 defmodule SiteWeb.AdminLive.Index do
   use SiteWeb, :live_view
 
-  alias Site.Accounts
-
   @impl true
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <Layouts.page_content>
-        Admin Dashboard
-        <div class="mt-4">
-          <.button variant="solid" color="danger" href={~p"/admin/log-out"} method="delete">
-            Log out
-          </.button>
-        </div>
+        <.header tag="h2">
+          Admin Dashboard
+          <:actions>
+            <.button variant="light" color="primary" href={~p"/admin/log-out"} method="delete">
+              <.icon name="lucide-log-out" /> Log out
+            </.button>
+          </:actions>
+        </.header>
       </Layouts.page_content>
     </Layouts.app>
     """

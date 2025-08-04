@@ -6,10 +6,10 @@ defmodule SiteWeb.AdminLive.Confirmation do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <div class="mx-auto max-w-sm">
-        <div class="text-center">
-          <.header>Welcome {@user.email}</.header>
-        </div>
+      <Layouts.page_content class="mx-auto max-w-sm space-y-4">
+        <.header class="text-center">
+          Welcome <span class="text-[0.75em] text-content-40">{@user.email}</span>
+        </.header>
 
         <.form
           :if={!@user.confirmed_at}
@@ -22,14 +22,16 @@ defmodule SiteWeb.AdminLive.Confirmation do
         >
           <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
           <.button
+            variant="solid"
+            color="primary"
             name={@form[:remember_me].name}
             value="true"
             phx-disable-with="Confirming..."
-            class="btn btn-primary w-full"
+            wide
           >
             Confirm and stay logged in
           </.button>
-          <.button phx-disable-with="Confirming..." class="btn btn-primary btn-soft w-full mt-2">
+          <.button variant="light" color="primary" phx-disable-with="Confirming..." class="mt-2" wide>
             Confirm and log in only this time
           </.button>
         </.form>
@@ -45,24 +47,37 @@ defmodule SiteWeb.AdminLive.Confirmation do
         >
           <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
           <%= if @current_scope do %>
-            <.button phx-disable-with="Logging in..." class="btn btn-primary w-full">
+            <.button
+              variant="solid"
+              color="primary"
+              phx-disable-with="Logging in..."
+              class="btn btn-primary w-full"
+            >
               Log in
             </.button>
           <% else %>
             <.button
+              variant="solid"
+              color="primary"
               name={@form[:remember_me].name}
               value="true"
               phx-disable-with="Logging in..."
-              class="btn btn-primary w-full"
+              wide
             >
               Keep me logged in on this device
             </.button>
-            <.button phx-disable-with="Logging in..." class="btn btn-primary btn-soft w-full mt-2">
+            <.button
+              variant="light"
+              color="primary"
+              class="mt-2"
+              phx-disable-with="Logging in..."
+              wide
+            >
               Log me in only this time
             </.button>
           <% end %>
         </.form>
-      </div>
+      </Layouts.page_content>
     </Layouts.app>
     """
   end

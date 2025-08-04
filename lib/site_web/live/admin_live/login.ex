@@ -6,8 +6,8 @@ defmodule SiteWeb.AdminLive.Login do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <Layouts.page_content class="mx-auto max-w-sm space-y-4 text-center">
-        <.header>Admin Login</.header>
+      <Layouts.page_content class="mx-auto max-w-sm space-y-4">
+        <.header class="text-center">Admin Login</.header>
 
         <.alert :if={local_mail_adapter?()} intent="info">
           To see sent emails, visit <.link href="/dev/mailbox" class="underline">the mailbox page</.link>.

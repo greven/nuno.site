@@ -153,7 +153,7 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <div
       class={[
-        "relative flex items-center gap-2 p-4 rounded-lg border text-sm",
+        "relative flex items-center gap-3.5 p-4 rounded-lg border text-sm",
         @alert_classes,
         @class
       ]}
@@ -273,35 +273,47 @@ defmodule SiteWeb.CoreComponents do
       end)
 
     ~H"""
-    <fieldset class="fieldset mb-2">
-      <label>
+    <div class="mb-4">
+      <label class="inline-flex items-center gap-3">
         <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
-        <span class="fieldset-label">
-          <input
-            type="checkbox"
-            id={@id}
-            name={@name}
-            value="true"
-            checked={@checked}
-            class="checkbox checkbox-sm"
-            {@rest}
-          />{@label}
-        </span>
+        <input
+          type="checkbox"
+          id={@id}
+          name={@name}
+          value="true"
+          checked={@checked}
+          class={[
+            "size-4 rounded border-2 text-primary transition-colors",
+            "border-surface-30 bg-surface-10",
+            "focus:ring-2 focus:ring-primary/20 focus:border-primary",
+            "checked:bg-primary checked:border-primary",
+            "disabled:opacity-50 disabled:cursor-not-allowed",
+            @errors != [] && "border-danger focus:border-danger focus:ring-danger/20"
+          ]}
+          {@rest}
+        />
+        <span :if={@label} class="text-sm font-medium text-content-10">{@label}</span>
       </label>
       <.error :for={msg <- @errors}>{msg}</.error>
-    </fieldset>
+    </div>
     """
   end
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <fieldset class="fieldset mb-2">
-      <label>
-        <span :if={@label} class="fieldset-label mb-1">{@label}</span>
+    <div class="mb-4">
+      <label class="block">
+        <span :if={@label} class="block text-sm font-medium text-content-10 mb-2">{@label}</span>
         <select
           id={@id}
           name={@name}
-          class={["w-full select", @errors != [] && "select-error"]}
+          class={[
+            "w-full px-3 py-2 text-sm rounded-lg border transition-colors",
+            "bg-surface-10 border-surface-30 text-content-10",
+            "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
+            "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
+            @errors != [] && "border-danger focus:border-danger focus:ring-danger/20"
+          ]}
           multiple={@multiple}
           {@rest}
         >
@@ -310,39 +322,55 @@ defmodule SiteWeb.CoreComponents do
         </select>
       </label>
       <.error :for={msg <- @errors}>{msg}</.error>
-    </fieldset>
+    </div>
     """
   end
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <fieldset class="fieldset mb-2">
-      <label>
-        <span :if={@label} class="fieldset-label mb-1">{@label}</span>
+    <div class="mb-4">
+      <label class="block">
+        <span :if={@label} class="block text-sm font-medium text-content-10 mb-2">{@label}</span>
         <textarea
           id={@id}
           name={@name}
-          class={["w-full textarea", @errors != [] && "textarea-error"]}
+          class={[
+            "w-full px-3 py-2 text-sm rounded-lg border transition-colors resize-y",
+            "bg-surface-10 border-surface-30 text-content-10",
+            "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
+            "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
+            "placeholder:text-content-40",
+            @errors != [] && "border-danger focus:border-danger focus:ring-danger/20"
+          ]}
           {@rest}
         >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
       </label>
       <.error :for={msg <- @errors}>{msg}</.error>
-    </fieldset>
+    </div>
     """
   end
 
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <fieldset class="fieldset mb-2">
+    <fieldset class="grid grid-cols-1 gap-1.5 py-1 mb-2">
       <label>
-        <span :if={@label} class="fieldset-label mb-1">{@label}</span>
+        <span :if={@label} class="block text-sm/6 font-medium text-content-10 pl-0.5 mb-2">
+          {@label}
+        </span>
         <input
           type={@type}
           name={@name}
           id={@id}
           value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-          class={["w-full input", @errors != [] && "input-error"]}
+          class={[
+            "w-full px-3 py-2 text-sm rounded-lg border transition-colors",
+            "bg-surface-10 border-surface-30 text-content-10",
+            "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
+            "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
+            "placeholder:text-content-40",
+            @errors != [] && "border-danger focus:border-danger focus:ring-danger/20"
+          ]}
           {@rest}
         />
       </label>
@@ -645,8 +673,8 @@ defmodule SiteWeb.CoreComponents do
   attr :size, :string, values: ~w(sm md lg), default: "md"
   attr :wide, :boolean, default: false
   attr :loading, :boolean, default: false
-  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: "full"
-  attr :rest, :global, include: ~w(href navigate patch method disabled)
+  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: "lg"
+  attr :rest, :global, include: ~w(href navigate patch method disabled name value)
   slot :inner_block, required: true
 
   def button(%{rest: rest} = assigns) do
@@ -703,6 +731,7 @@ defmodule SiteWeb.CoreComponents do
     <.button
       class={@class}
       variant={@variant}
+      color={@color}
       size={@size}
       radius={@radius}
       loading={@loading}
