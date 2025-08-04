@@ -58,6 +58,8 @@ defmodule SiteWeb.Layouts do
   attr :wide, :boolean, default: false, doc: "whether to use the wide wrapper"
   attr :active_link, :atom, default: nil, doc: "the active link for the header"
 
+  slot :inner_block, required: true
+
   def home(assigns) do
     ~H"""
     <div class="min-h-screen flex flex-col">
