@@ -9,7 +9,7 @@ defmodule SiteWeb.BlogLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} active_link={@active_link} page_transition>
+    <Layouts.app flash={@flash} current_scope={@current_scope} active_link={@active_link}>
       <Layouts.page_content class="relative post" data-cateogry={@post.category}>
         <BlogComponents.post_header post={@post} readers={@readers} page_views={@page_views} />
         <BlogComponents.post_content post={@post} />
@@ -24,11 +24,16 @@ defmodule SiteWeb.BlogLive.Show do
     """
   end
 
-  # TODO: Raise not found Exception if post status is not published and current_user is not admin
   @impl true
   def mount(%{"slug" => slug} = params, _session, socket) do
     post = Blog.get_post_by_slug!(slug)
+    current_user = get_in(socket.assigns, [:current_scope, Access.key(:user)])
     {next_post, prev_post} = Blog.get_post_pagination(post)
+
+    # Raise not found exception if post status is not published and no current_user
+    if post.status != :published and !current_user do
+      raise Site.Blog.NotFoundError, "Post not found!"
+    end
 
     if connected?(socket) do
       Site.Blog.subscribe_post_likes(post)

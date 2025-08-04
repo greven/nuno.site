@@ -1,8 +1,8 @@
 %{
-  title: "This WAS a draft!",
+  title: "This is a draft!",
   tags: ~w(CSS),
   excerpt: "Some draft post",
-  status: :published
+  status: :draft
 }
 
 ---

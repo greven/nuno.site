@@ -7,7 +7,7 @@ defmodule SiteWeb.TagsLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} active_link={@active_link}>
+    <Layouts.app flash={@flash} current_scope={@current_scope} active_link={@active_link}>
       <Layouts.page_content class="tags">
         <.header class="mt-4 text-center md:text-left">
           All Tags

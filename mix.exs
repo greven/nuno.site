@@ -35,6 +35,7 @@ defmodule Site.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:bcrypt_elixir, "~> 3.0"},
       # Phoenix Framework
       {:phoenix, "~> 1.8.0-rc.4", override: true},
       {:phoenix_live_view, "~> 1.1.0-rc.4"},

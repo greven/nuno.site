@@ -7,7 +7,7 @@ defmodule SiteWeb.HomeLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.home flash={@flash} active_link={@active_link}>
+    <Layouts.home flash={@flash} current_scope={@current_scope} active_link={@active_link}>
       <Layouts.page_content class="flex flex-col gap-16">
         <section id="hero">
           <.link href="/about" id="hello" phx-hook="Hello" class="text-center md:text-left">

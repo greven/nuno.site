@@ -43,6 +43,11 @@
     text-decoration-thickness: 2px;
   }
 
+  @keyframes circle-in {
+    from { clip-path: circle(0% at 50% 50%); }
+    to { clip-path: circle(100% at 50% 50%); }
+  }
+
   @keyframes fade-in {
     from {
       opacity: 0;

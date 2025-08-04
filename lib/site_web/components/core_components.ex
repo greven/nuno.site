@@ -124,6 +124,89 @@ defmodule SiteWeb.CoreComponents do
   end
 
   @doc """
+  Renders an alert component for displaying contextual feedback messages.
+
+  ## Examples
+
+      <.alert intent="info">This is an info alert</.alert>
+      <.alert intent="success" closable>Operation completed successfully</.alert>
+      <.alert intent="warning" icon="hero-exclamation-triangle">
+        Warning: This action cannot be undone
+      </.alert>
+  """
+  attr :class, :any, default: nil
+  attr :intent, :string, default: "default", values: @theme_colors
+  attr :show_icon, :boolean, default: true
+  attr :icon, :string, default: nil
+  attr :title, :string, default: nil
+  attr :id, :string, default: nil
+  attr :rest, :global
+
+  slot :inner_block, required: true
+
+  def alert(assigns) do
+    assigns =
+      assigns
+      |> assign(:alert_classes, alert_classes(assigns.intent))
+      |> assign(:icon, assigns.icon || default_alert_icon(assigns.intent))
+
+    ~H"""
+    <div
+      class={[
+        "relative flex items-center gap-2 p-4 rounded-lg border text-sm",
+        @alert_classes,
+        @class
+      ]}
+      role="alert"
+      {@rest}
+    >
+      <.icon :if={@icon && @show_icon} name={@icon} class="shrink-0" />
+
+      <div class="flex-1 min-w-0">
+        <h4 :if={@title} class="font-semibold mb-1">{@title}</h4>
+        <div>{render_slot(@inner_block)}</div>
+      </div>
+    </div>
+    """
+  end
+
+  defp alert_classes(intent) do
+    case intent do
+      "default" ->
+        "bg-surface-10 border-surface-30 text-content"
+
+      "primary" ->
+        "bg-primary/10 border-primary/20 text-primary dark:bg-primary/5 dark:border-primary/15"
+
+      "secondary" ->
+        "bg-secondary/10 border-secondary/20 text-secondary dark:bg-secondary/5 dark:border-secondary/15"
+
+      "info" ->
+        "bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-950/30 dark:border-blue-800/30 dark:text-blue-200"
+
+      "success" ->
+        "bg-green-50 border-green-200 text-green-800 dark:bg-green-950/30 dark:border-green-800/30 dark:text-green-200"
+
+      "warning" ->
+        "bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950/30 dark:border-amber-800/30 dark:text-amber-200"
+
+      "danger" ->
+        "bg-red-50 border-red-200 text-red-800 dark:bg-red-950/30 dark:border-red-800/30 dark:text-red-200"
+    end
+  end
+
+  defp default_alert_icon(intent) do
+    case intent do
+      "default" -> "hero-information-circle"
+      "info" -> "hero-information-circle"
+      "success" -> "hero-check-circle"
+      "warning" -> "hero-exclamation-triangle"
+      "danger" -> "hero-exclamation-circle"
+      _ -> nil
+    end
+  end
+
+  @doc """
   Renders an input with label and error messages.
 
   A `Phoenix.HTML.FormField` may be passed as argument,

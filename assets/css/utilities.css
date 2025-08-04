@@ -72,7 +72,7 @@
 }
 
 @utility header-link {
-  @apply hidden sm:inline-block absolute -left-[1.85em] top-0 text-[0.825em]/[1.725em] shadow-none
-  text-content-40/30 cursor-pointer no-underline bg-transparent capitalize
-  group-hover:text-content-40/50;
+  @apply hidden sm:inline-block absolute -left-[1.85em] top-0 shadow-none
+  text-content-40/20 cursor-pointer no-underline bg-transparent capitalize
+  group-hover:text-content-40/40;
 }

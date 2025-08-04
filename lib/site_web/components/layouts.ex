@@ -13,18 +13,25 @@ defmodule SiteWeb.Layouts do
 
   @doc false
 
-  def app(assigns) do
-    assigns =
-      assigns
-      |> assign_new(:wide, fn -> false end)
-      |> assign_new(:active_link, fn -> nil end)
-      |> assign_new(:show_progress, fn -> false end)
-      |> assign_new(:progress_icon, fn -> nil end)
+  attr :flash, :map, required: true, doc: "the map of flash messages"
 
+  attr :current_scope, :map,
+    default: nil,
+    doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
+
+  attr :wide, :boolean, default: false, doc: "whether to use the wide wrapper"
+  attr :active_link, :atom, default: nil, doc: "the active link for the header"
+  attr :show_progress, :boolean, default: false, doc: "whether to show the page progress bar"
+  attr :progress_icon, :string, default: nil, doc: "the icon to show in the progress bar (if any)"
+
+  slot :inner_block, required: true
+
+  def app(assigns) do
     ~H"""
     <div class="min-h-screen flex flex-col">
       <.site_header
         active_link={@active_link}
+        current_scope={@current_scope}
         show_progress={@show_progress}
         progress_icon={@progress_icon}
       />
@@ -42,15 +49,19 @@ defmodule SiteWeb.Layouts do
 
   @doc false
 
-  def home(assigns) do
-    assigns =
-      assigns
-      |> assign_new(:wide, fn -> false end)
-      |> assign_new(:active_link, fn -> nil end)
+  attr :flash, :map, required: true, doc: "the map of flash messages"
 
+  attr :current_scope, :map,
+    default: nil,
+    doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
+
+  attr :wide, :boolean, default: false, doc: "whether to use the wide wrapper"
+  attr :active_link, :atom, default: nil, doc: "the active link for the header"
+
+  def home(assigns) do
     ~H"""
     <div class="min-h-screen flex flex-col">
-      <.site_header active_link={@active_link} home />
+      <.site_header active_link={@active_link} current_scope={@current_scope} home />
       <main class="relative flex-auto bg-surface">
         <.wrapper wide={@wide}>
           {render_slot(@inner_block)}
@@ -117,8 +128,8 @@ defmodule SiteWeb.Layouts do
 
   @doc false
 
+  attr :current_scope, :map, default: nil
   attr :active_link, :atom, required: true
-  attr :current_user, :any, default: nil
   attr :show_progress, :boolean, default: false
   attr :progress_icon, :string, default: nil
   attr :class, :string, default: nil
@@ -157,7 +168,7 @@ defmodule SiteWeb.Layouts do
       <div class="wrapper">
         <div class="flex items-center justify-between py-3">
           <.site_logo home={@home} />
-          <.site_nav active_link={@active_link} current_user={@current_user} />
+          <.site_nav active_link={@active_link} current_scope={@current_scope} />
         </div>
       </div>
     </header>
@@ -193,8 +204,8 @@ defmodule SiteWeb.Layouts do
 
   @doc false
 
+  attr :current_scope, :map, default: nil
   attr :active_link, :atom, required: true
-  attr :current_user, :any, required: true
 
   def site_nav(assigns) do
     ~H"""
@@ -234,6 +245,15 @@ defmodule SiteWeb.Layouts do
 
           <.navbar_item item={:articles} navigate={~p"/articles"} active_link={@active_link}>
             {gettext("Articles")}
+          </.navbar_item>
+
+          <.navbar_item
+            :if={@current_scope}
+            item={:admin}
+            navigate={~p"/admin"}
+            active_link={@active_link}
+          >
+            {gettext("Admin")}
           </.navbar_item>
         </div>
       </div>

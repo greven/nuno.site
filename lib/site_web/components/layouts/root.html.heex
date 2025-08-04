@@ -35,16 +35,23 @@
 
         window.addEventListener(
           "storage",
-          (e) => e.key === storageKey && setTheme(e.newValue || "system")
-        );
-        window.addEventListener("phx:set-theme", ({ detail: { theme } }) =>
-          setTheme(theme)
-        );
+          (e) => e.key === storageKey && document.startViewTransition(() => {
+            setTheme(e.newValue || "system");
+          }));
+
+        window.addEventListener("phx:set-theme", ({ detail: { theme } }) => {
+          document.startViewTransition(() => {
+            setTheme(theme);
+          });
+        });
+
         window
           .matchMedia("(prefers-color-scheme: dark)")
           .addEventListener("change", (e) => {
             if (!localStorage.getItem(storageKey)) {
-              setTheme("system");
+              document.startViewTransition(() => {
+                setTheme("system");
+              });
             }
           });
       })();

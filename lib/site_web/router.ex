@@ -1,6 +1,8 @@
 defmodule SiteWeb.Router do
   use SiteWeb, :router
 
+  import SiteWeb.UserAuth
+
   alias SiteWeb.Plugs
   alias SiteWeb.Hooks
 
@@ -11,6 +13,7 @@ defmodule SiteWeb.Router do
     plug :put_root_layout, html: {SiteWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_scope_for_user
     plug Plugs.ActiveLinks
     plug Plugs.BumpMetric
   end
@@ -33,7 +36,11 @@ defmodule SiteWeb.Router do
     get "/sitemap", PageController, :sitemap
 
     live_session :default,
-      on_mount: [Hooks.ActiveLinks, Hooks.Metrics] do
+      on_mount: [
+        {SiteWeb.UserAuth, :mount_current_scope},
+        Hooks.ActiveLinks,
+        Hooks.Metrics
+      ] do
       live "/", HomeLive.Index, :index
       live "/updates", UpdatesLive.Index, :index
       live "/updates/year/:year", UpdatesLive.Show, :show
@@ -69,5 +76,31 @@ defmodule SiteWeb.Router do
       live_dashboard "/dashboard", metrics: SiteWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## Admin routes
+
+  scope "/admin", SiteWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :require_authenticated_user,
+      on_mount: [{SiteWeb.UserAuth, :require_authenticated}] do
+      live "/", AdminLive.Index, :index
+    end
+  end
+
+  # Authentication
+
+  scope "/admin", SiteWeb do
+    pipe_through [:browser]
+
+    live_session :current_user,
+      on_mount: [{SiteWeb.UserAuth, :mount_current_scope}] do
+      live "/log-in", AdminLive.Login, :new
+      live "/log-in/:token", AdminLive.Confirmation, :new
+    end
+
+    post "/log-in", UserSessionController, :create
+    delete "/log-out", UserSessionController, :delete
   end
 end

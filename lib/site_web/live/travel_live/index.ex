@@ -8,7 +8,13 @@ defmodule SiteWeb.TravelLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} active_link={@active_link} progress_icon="lucide-bus" show_progress>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      active_link={@active_link}
+      progress_icon="lucide-bus"
+      show_progress
+    >
       <Layouts.page_content class="travel">
         <.header>
           Travel Log
