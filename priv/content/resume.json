@@ -6,7 +6,7 @@
     "email": "mail@nuno.site",
     "phone": "964 895 114",
     "url": "https://nuno.site",
-    "summary": "I’m a seasoned software engineer with over 15 years of experience, primarily in Web Development and User Experience (UX). I hold a master’s degree in Electronic and Computer Engineering, but my true passion lies in software development. Right now, I’m particularly interested in working with Elixir and Phoenix LiveView.",
+    "summary": "I’m a seasoned software engineer with over 15 years of experience, primarily in Web Development and User Experience (UX). I hold a master’s degree in Electronic and Computer Engineering, but my true passion lies in software development. Right now, I’m particularly interested in working with **Elixir** and **Phoenix LiveView**, but I'm always open to projects that involve **JavaScript**, **CSS**, **ReactJS**, **Web accessibility**, **UX** or generally focused on web applications development.",
     "location": {
       "address": null,
       "postalCode": null,
@@ -22,11 +22,9 @@
       "location": "Lisbon, Portugal",
       "url": "https://eikko.ai",
       "startDate": "2020-01-01",
-      "endDate": "2025-05-01",
+      "endDate": "2025-06-01",
       "summary": "Co-founded a small Startup to develop a recruiting platform with a strong focus on people and fair processes. The platform is skill based first, backed by personality and culture tests to match candidates with the right jobs. The platform was developed from the ground up with Elixir, Phoenix LiveView and PostgreSQL. Custom made CSS library and Phoenix Components.",
-      "highlights": [
-        "Co-founded the company"
-      ]
+      "highlights": ["Co-founded the company"]
     },
     {
       "role": "Senior Developer",
@@ -56,9 +54,7 @@
       "startDate": "2014-07-01",
       "endDate": "2015-09-01",
       "summary": "Front-end development and UX consulting with SAPUI5, Javascript, VueJS, CSS, and OData.",
-      "highlights": [
-        "Won a best consultant award in 2015."
-      ]
+      "highlights": ["Won a best consultant award in 2015."]
     },
     {
       "role": "Full-stack Web Developer Consultant",
@@ -211,25 +207,15 @@
   "interests": [
     {
       "name": "Photography",
-      "keywords": [
-        "Lanscapes",
-        "Street"
-      ]
+      "keywords": ["Lanscapes", "Street"]
     },
     {
       "name": "Web Design",
-      "keywords": [
-        "User Experience",
-        "User Interface"
-      ]
+      "keywords": ["User Experience", "User Interface"]
     },
     {
       "name": "Computer Vision",
-      "keywords": [
-        "Image Processing",
-        "Object Detection",
-        "Machine Learning"
-      ]
+      "keywords": ["Image Processing", "Object Detection", "Machine Learning"]
     }
   ],
   "projects": [

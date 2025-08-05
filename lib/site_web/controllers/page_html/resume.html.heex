@@ -14,20 +14,40 @@
 
       <div class="flex items-center justify-center gap-1.5">
         <.icon name="hero-at-symbol" class="size-5 text-primary" />
-        <a href={"mailto:#{@resume["profile"]["email"]}"}>{@resume["profile"]["email"]}</a>
+        <a href={"mailto:#{@resume["profile"]["email"]}"} class="link-subtle">
+          {@resume["profile"]["email"]}
+        </a>
       </div>
 
       <div class="flex items-center justify-center gap-1.5">
         <.icon name="si-github" class="size-4 text-primary" />
-        <a href="https://github.com/greven">github</a>
+        <a href="https://github.com/greven" class="link-subtle">github</a>
       </div>
     </div>
 
-    <%!-- Summary --%>
-    <div class="mt-8 flex justify-center w-full text-center text-pretty">
-      <div class="max-w-[64ch] font-light text-content-20/90 text-base/8 md:text-xl/8">
-        {@resume["profile"]["summary"]}
-      </div>
+    <div class="">
+      <.tabs class="mt-8" id="resume-tabs">
+        <.tabs_list>
+          <:tab name="Curriculum"></:tab>
+          <:tab name="Summary"></:tab>
+        </.tabs_list>
+
+        <.tabs_panel name="Curriculum">
+          <div class="mt-8">
+            Curriculum Vitae
+          </div>
+        </.tabs_panel>
+
+        <.tabs_panel name="Summary">
+          <div class="mt-8">
+            <div class="w-full mx-auto">
+              <div class="flex justify-center font-light text-content-20/90 text-base/8 md:text-lg/8 text-pretty">
+                {Helpers.render_markdown!(@resume["profile"]["summary"])}
+              </div>
+            </div>
+          </div>
+        </.tabs_panel>
+      </.tabs>
     </div>
   </Layouts.page_content>
 </Layouts.app>

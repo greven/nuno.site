@@ -26,6 +26,7 @@ defmodule SiteWeb.AdminLive.Login do
             type="email"
             label="Email"
             autocomplete="username"
+            placeholder="Your email address"
             required
             phx-mounted={JS.focus()}
           />

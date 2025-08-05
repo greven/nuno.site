@@ -6,6 +6,8 @@ defmodule SiteWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
 
+  @button_radius "lg"
+
   @theme_colors ~w(default primary secondary info success warning danger)
 
   @tailwind_colors ~w(
@@ -392,9 +394,9 @@ defmodule SiteWeb.CoreComponents do
           class={[
             "w-full px-3 py-2 text-sm rounded-lg border transition-colors",
             "bg-surface-10 border-surface-30 text-content-10",
-            "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
+            "focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary",
             "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
-            "placeholder:text-content-40",
+            "placeholder:text-content-40/80",
             @errors != [] && "border-danger focus:border-danger focus:ring-danger/20"
           ]}
           {@rest}
@@ -699,7 +701,7 @@ defmodule SiteWeb.CoreComponents do
   attr :size, :string, values: ~w(sm md lg), default: "md"
   attr :wide, :boolean, default: false
   attr :loading, :boolean, default: false
-  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: "lg"
+  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: @button_radius
   attr :rest, :global, include: ~w(href navigate patch method disabled name value)
   slot :inner_block, required: true
 
@@ -748,7 +750,7 @@ defmodule SiteWeb.CoreComponents do
   attr :variant, :string, values: ~w(default solid light outline ghost link), default: "default"
   attr :size, :string, values: ~w(sm md lg), default: "md"
   attr :loading, :boolean, default: false
-  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: "full"
+  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: @button_radius
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -845,7 +847,7 @@ defmodule SiteWeb.CoreComponents do
         "bg-transparent text-neutral-900 dark:text-neutral-200 shadow-none not-active:not-disabled:hover:bg-neutral-500/12 aria-[pressed]:bg-neutral-500/12"
 
       "link" ->
-        ""
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-primary underline underline-offset-3 transition-colors hover:decoration-secondary"
     end
   end
 
@@ -867,7 +869,7 @@ defmodule SiteWeb.CoreComponents do
         "bg-transparent text-primary shadow-none not-active:not-disabled:hover:bg-primary/12 aria-[pressed]:bg-primary/12"
 
       "link" ->
-        ""
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-primary underline underline-offset-3 transition-colors hover:decoration-secondary"
     end
   end
 
@@ -889,7 +891,7 @@ defmodule SiteWeb.CoreComponents do
         "bg-transparent text-secondary shadow-none not-active:not-disabled:hover:bg-secondary/12 aria-[pressed]:bg-secondary/12"
 
       "link" ->
-        ""
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-secondary underline underline-offset-3 transition-colors hover:decoration-content-40/60"
     end
   end
 
@@ -911,7 +913,7 @@ defmodule SiteWeb.CoreComponents do
         "bg-transparent text-info shadow-none not-active:not-disabled:hover:bg-info/12 aria-[pressed]:bg-info/12"
 
       "link" ->
-        ""
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-info underline underline-offset-3 transition-colors hover:decoration-content-40/60"
     end
   end
 
@@ -933,7 +935,7 @@ defmodule SiteWeb.CoreComponents do
         "bg-transparent text-success shadow-none not-active:not-disabled:hover:bg-success/12 aria-[pressed]:bg-success/12"
 
       "link" ->
-        ""
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-secondary underline underline-offset-3 transition-colors hover:decoration-content-40/60"
     end
   end
 
@@ -955,7 +957,7 @@ defmodule SiteWeb.CoreComponents do
         "bg-transparent text-warning border border-transparent shadow-none not-active:not-disabled:hover:bg-warning/12 aria-[pressed]:bg-warning/12"
 
       "link" ->
-        ""
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-warning underline underline-offset-3 transition-colors hover:decoration-content-40/60"
     end
   end
 
@@ -977,8 +979,83 @@ defmodule SiteWeb.CoreComponents do
         "bg-transparent text-danger shadow-none not-active:not-disabled:hover:bg-danger/12 aria-[pressed]:bg-danger/12"
 
       "link" ->
-        ""
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-danger underline underline-offset-3 transition-colors hover:decoration-content-40/60"
     end
+  end
+
+  @doc """
+  Renders a tab component with a list of tabs.
+  """
+
+  attr :value, :string, default: nil, doc: "the current active tab name"
+  attr :on_change, :string, default: nil, doc: "the event to trigger on value change"
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def tabs(assigns) do
+    ~H"""
+    <div class={@class} {@rest}>
+      <div class="">
+        {render_slot(@inner_block)}
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  # attr :value, :string, required: true, doc: "the current active tab name"
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  slot :tab do
+    attr :name, :string
+    attr :disabled, :boolean
+    attr :class, :any
+  end
+
+  def tabs_list(assigns) do
+    ~H"""
+    <div class={@class}>
+      <div
+        class={[
+          "relative flex flex-wrap items-center justify-start gap-4",
+          "before:content-[''] before:absolute before:bottom-0 before:left-0 before:right-0 before:border-1 before:border-surface-30"
+        ]}
+        aria-orientation="horizontal"
+        role="tablist"
+      >
+        <button
+          :for={tab <- @tab}
+          type="button"
+          disabled={tab[:disabled]}
+          class={[
+            "relative flex flex-shrink-0 items-center whitespace-nowrap select-none cursor-pointer",
+            tab[:class]
+          ]}
+        >
+          {tab[:name]}
+        </button>
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :name, :string, required: true
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def tabs_panel(assigns) do
+    ~H"""
+    <div class={@class}>
+      <div class="">
+        {render_slot(@inner_block)}
+      </div>
+    </div>
+    """
   end
 
   @doc """

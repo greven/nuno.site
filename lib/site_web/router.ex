@@ -18,6 +18,16 @@ defmodule SiteWeb.Router do
     plug Plugs.BumpMetric
   end
 
+  pipeline :browser_admin do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, html: {SiteWeb.Layouts, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug :fetch_current_scope_for_user
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -81,7 +91,7 @@ defmodule SiteWeb.Router do
   ## Admin routes
 
   scope "/admin", SiteWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser_admin, :require_authenticated_user]
 
     live_session :require_authenticated_user,
       on_mount: [{SiteWeb.UserAuth, :require_authenticated}] do
@@ -92,7 +102,7 @@ defmodule SiteWeb.Router do
   # Authentication
 
   scope "/admin", SiteWeb do
-    pipe_through [:browser]
+    pipe_through [:browser_admin]
 
     live_session :current_user,
       on_mount: [{SiteWeb.UserAuth, :mount_current_scope}] do

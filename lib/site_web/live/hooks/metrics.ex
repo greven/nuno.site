@@ -20,6 +20,7 @@ defmodule SiteWeb.Hooks.Metrics do
       case URI.parse(uri) do
         %URI{path: path} when is_binary(path) ->
           if connected?(socket) do
+            maybe_bump_metric(socket, path)
             Site.Analytics.subscribe(path)
           end
 
@@ -52,5 +53,14 @@ defmodule SiteWeb.Hooks.Metrics do
     socket
     |> assign(:today_views, today_views || 1)
     |> assign(:page_views, total_views || 1)
+  end
+
+  # Bump the metric if the socket is connected and hasn't been bumped yet (Live Session navigation)
+  defp maybe_bump_metric(socket, path) do
+    if not Map.has_key?(socket.assigns, :bumped_metric) do
+      Site.Analytics.bump(path)
+    end
+
+    socket
   end
 end

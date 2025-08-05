@@ -212,7 +212,9 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <div class={@class}>
       <.badge class="group bg-surface-10" badge_class={@badge_class} navigate={~p"/tag/#{@tag}"}>
-        <span class="font-headings text-primary/90 group-hover:text-primary">#</span>
+        <span class="font-headings text-content-40/80 group-hover:text-primary transition-colors">
+          #
+        </span>
         <span class="text-content-30 tracking-wider group-hover:text-content transition-colors">
           {@tag}
         </span>

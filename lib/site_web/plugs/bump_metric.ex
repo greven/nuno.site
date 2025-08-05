@@ -16,7 +16,7 @@ defmodule SiteWeb.Plugs.BumpMetric do
         Site.Analytics.bump(path)
       end
 
-      conn
+      assign(conn, :bumped_metric, true)
     end)
   end
 end

@@ -1,6 +1,7 @@
 defmodule Site.Analytics do
   @moduledoc """
-  Simple application analytics.
+  Simple built-in application analytics
+  (inspired/taken from a Dashbit blog post).
   """
 
   use Supervisor
@@ -80,6 +81,7 @@ defmodule Site.Analytics do
     Metric
     |> select([m], sum(m.counter))
     |> Site.Repo.all()
+    |> List.first()
   end
 
   def upsert_page_counter!(path, counter) do
@@ -91,11 +93,21 @@ defmodule Site.Analytics do
     |> after_metric_update(path)
   end
 
-  defp after_metric_update(metric, path), do: Site.Analytics.broadcast(path, metric)
+  defp after_metric_update(metric, path) do
+    Site.Analytics.broadcast(metric)
+    Site.Analytics.broadcast(path, metric)
+  end
 
   # ------------------------------------------
   #  PubSub
   # ------------------------------------------
+
+  def broadcast(metric) do
+    Phoenix.PubSub.broadcast(Site.PubSub, "metrics", %{
+      event: "metrics_update",
+      payload: %{metric: metric}
+    })
+  end
 
   def broadcast(path, metric) do
     Phoenix.PubSub.broadcast(Site.PubSub, "metrics:#{path}", %{
@@ -104,5 +116,6 @@ defmodule Site.Analytics do
     })
   end
 
+  def subscribe, do: Phoenix.PubSub.subscribe(Site.PubSub, "metrics")
   def subscribe(path), do: Phoenix.PubSub.subscribe(Site.PubSub, "metrics:#{path}")
 end

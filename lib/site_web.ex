@@ -91,6 +91,9 @@ defmodule SiteWeb do
       alias Phoenix.LiveView.JS
       alias SiteWeb.Layouts
 
+      # Helper functions
+      alias SiteWeb.Helpers
+
       # Routes generation with the ~p sigil
       unquote(verified_routes())
     end
