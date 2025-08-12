@@ -48,6 +48,7 @@ defmodule Site.Geo do
   @doc """
   Get a country by its country ISO-2 code (alpha2)
   """
+  @decorate cacheable(cache: Site.Cache, key: {:get_country, alpha2})
   def get_country(alpha2) when is_binary(alpha2) do
     iso_code = String.upcase(alpha2)
 

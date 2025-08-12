@@ -984,30 +984,26 @@ defmodule SiteWeb.CoreComponents do
   end
 
   @doc """
-  Renders a tab component with a list of tabs.
+  Renders a tabs component with a list of tabs and panels.
   """
 
-  attr :value, :string, default: nil, doc: "the current active tab name"
-  attr :on_change, :string, default: nil, doc: "the event to trigger on value change"
-  attr :class, :string, default: nil
+  attr :id, :string, required: true
+  attr :default, :string, default: nil, doc: "the default active tab name"
+
+  attr :on_select, :string,
+    default: nil,
+    doc: "the client event to trigger on tab select"
+
+  attr :grow, :boolean,
+    default: false,
+    doc: "Determines whether tabs should take all available space"
+
+  attr :justify, :string,
+    values: ~w(start center end),
+    default: "start",
+    doc: "Determines how tabs are justified"
+
   attr :rest, :global
-  slot :inner_block, required: true
-
-  def tabs(assigns) do
-    ~H"""
-    <div class={@class} {@rest}>
-      <div class="">
-        {render_slot(@inner_block)}
-      </div>
-    </div>
-    """
-  end
-
-  @doc false
-
-  # attr :value, :string, required: true, doc: "the current active tab name"
-  attr :class, :string, default: nil
-  slot :inner_block, required: true
 
   slot :tab do
     attr :name, :string
@@ -1015,48 +1011,66 @@ defmodule SiteWeb.CoreComponents do
     attr :class, :any
   end
 
-  def tabs_list(assigns) do
+  slot :panel do
+    attr :name, :string
+    attr :class, :any
+  end
+
+  def tabs(assigns) do
     ~H"""
-    <div class={@class}>
-      <div
+    <div id={@id} {@rest} phx-hook="Tabs" data-value={@default} data-onselect={@on_select}>
+      <nav
         class={[
-          "relative flex flex-wrap items-center justify-start gap-4",
-          "before:content-[''] before:absolute before:bottom-0 before:left-0 before:right-0 before:border-1 before:border-surface-30"
+          "relative flex flex-wrap items-center gap-4",
+          "before:content-[''] before:absolute before:bottom-0 before:left-0 before:right-0 before:border-b before:border-surface-30",
+          tabs_justify_class(@justify)
         ]}
-        aria-orientation="horizontal"
         role="tablist"
+        data-value={@default}
+        aria-orientation="horizontal"
+        aria-label="Tabs"
       >
         <button
           :for={tab <- @tab}
           type="button"
+          id={"#{@id}-tab-#{tab[:name]}"}
+          data-name={tab[:name]}
           disabled={tab[:disabled]}
           class={[
-            "relative flex flex-shrink-0 items-center whitespace-nowrap select-none cursor-pointer",
+            "relative flex flex-shrink-0 items-center justify-center gap-x-2 px-4 py-2 border-b-2 border-transparent whitespace-nowrap select-none cursor-pointer text-content-40 text-sm font-medium transition-colors",
+            "[&>svg]:pointer-events-none [&>[data-slot=icon]]:pointer-events-none [&>svg]:shrink-0 [&>[data-slot=icon]]:shrink-0 [&>svg:not([class*='size-'])]:[1.25em] [&>[data-slot=icon]:not([class*='size-'])]:[1.25em]",
+            "aria-[selected]:border-content aria-[selected]:text-zinc-800",
+            "hover:not-aria-[selected]:text-content-10",
+            @grow && "flex-1",
             tab[:class]
           ]}
+          role="tab"
+          aria-selected={tab[:name] == @default}
+          aria-controls={"#{@id}-panel-#{tab[:name]}"}
+          tabindex={if(tab[:name] == @default, do: "0", else: "-1")}
         >
-          {tab[:name]}
+          {render_slot(tab, tab[:name] == @default)}
         </button>
+      </nav>
+
+      <div
+        :for={panel <- @panel}
+        id={"#{@id}-panel-#{panel[:name]}"}
+        role="tabpanel"
+        aria-labelledby={panel[:name]}
+        aria-hidden={panel[:name] != @default}
+        hidden={panel[:name] != @default}
+        class={panel[:class]}
+      >
+        {render_slot(panel)}
       </div>
     </div>
     """
   end
 
-  @doc false
-
-  attr :name, :string, required: true
-  attr :class, :string, default: nil
-  slot :inner_block, required: true
-
-  def tabs_panel(assigns) do
-    ~H"""
-    <div class={@class}>
-      <div class="">
-        {render_slot(@inner_block)}
-      </div>
-    </div>
-    """
-  end
+  defp tabs_justify_class("start"), do: "justify-start"
+  defp tabs_justify_class("center"), do: "justify-center"
+  defp tabs_justify_class("end"), do: "justify-end"
 
   @doc """
   Renders a segmented control component with a list of options.
@@ -1067,7 +1081,7 @@ defmodule SiteWeb.CoreComponents do
   attr :value, :any, required: true, doc: "the current value of the segmented control"
   attr :on_change, :string, required: true, doc: "the event to trigger on value change"
   attr :aria_label, :string, required: true, doc: "the aria-label for the segmented control"
-  attr :balanced, :boolean, default: false, doc: "whether to set equal width for all items"
+
   attr :show_backdrop, :boolean, default: false
   attr :size, :string, values: ~w(sm md), default: "md"
   attr :class, :string, default: nil
@@ -1087,24 +1101,10 @@ defmodule SiteWeb.CoreComponents do
   end
 
   def segmented_control(assigns) do
-    assigns =
-      assigns
-      |> assign(
-        :container_class,
-        if(assigns.balanced,
-          do: "inline-grid grid-cols-#{length(assigns.item)}",
-          else: "w-full inline-flex"
-        )
-      )
-
     ~H"""
     <div class={@class}>
       <ul
-        class={[
-          "gap-3",
-          @show_backdrop && @backdrop_class,
-          @container_class
-        ]}
+        class={["w-full inline-flex gap-3", @show_backdrop && @backdrop_class]}
         aria-label={@aria_label}
         {@rest}
       >

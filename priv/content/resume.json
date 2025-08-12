@@ -6,7 +6,10 @@
     "email": "mail@nuno.site",
     "phone": "964 895 114",
     "url": "https://nuno.site",
-    "summary": "I’m a seasoned software engineer with over 15 years of experience, primarily in Web Development and User Experience (UX). I hold a master’s degree in Electronic and Computer Engineering, but my true passion lies in software development. Right now, I’m particularly interested in working with **Elixir** and **Phoenix LiveView**, but I'm always open to projects that involve **JavaScript**, **CSS**, **ReactJS**, **Web accessibility**, **UX** or generally focused on web applications development.",
+    "summary": [
+      "I’m a seasoned software engineer with over 15 years of experience, primarily in Web Development and User Experience (UX). I hold a master’s degree in Electronic and Computer Engineering, but my true passion lies in software development. Right now, I’m particularly interested in working with **Elixir** and **Phoenix LiveView**, but I'm always open to projects that involve JavaScript, CSS, ReactJS, SQL, Web accessibility, **UX** and/or projects focused on web applications development.",
+      "My passion for web development stems from the desire to create intuitive and user-friendly interfaces that enhance the overall user experience, the marriage of form and function, design and functionality allows for expressiveness while striving for simplicity and user delight! I still find that I am most fulfilled when I can combine my technical skills with my creative instincts to build products that truly resonate with users. I don't have a design background, but I do have a keen eye for design and I love to work on projects that allow me to express that side of myself (hence my interest in UI/UX)."
+    ],
     "location": {
       "address": null,
       "postalCode": null,

@@ -491,16 +491,14 @@ defmodule SiteWeb.SiteComponents do
     """
   end
 
-  @doc """
-  Render my experience shortlist for the about page.
-  """
+  @doc false
 
   attr :items, :list, default: []
-  attr :class, :string, default: nil
+  attr :rest, :global
 
   def experience_shortlist(assigns) do
     ~H"""
-    <div class={@class}>
+    <div {@rest}>
       <ul class="flex flex-col gap-8 divide-y divide-content-40/20 divide-dashed">
         <%= for item <- @items do %>
           <.experience_shortlist_item

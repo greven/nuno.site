@@ -11,14 +11,6 @@ defmodule SiteWeb.PageController do
     )
   end
 
-  def resume(conn, _params) do
-    render(conn, :resume,
-      page_title: "Resume",
-      resume: Site.Resume.data(),
-      skills: Site.Resume.list_skills()
-    )
-  end
-
   def photos(conn, _params) do
     render(conn, :photos, page_title: "Photography")
   end

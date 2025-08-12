@@ -36,7 +36,6 @@ defmodule SiteWeb.Router do
     pipe_through :browser
 
     get "/about", PageController, :about
-    get "/resume", PageController, :resume
     get "/books", PageController, :books
     get "/gaming", PageController, :gaming
     get "/photos", PageController, :photos
@@ -63,6 +62,7 @@ defmodule SiteWeb.Router do
       live "/analytics", AnalyticsLive.Index, :index
       live "/travel", TravelLive.Index, :index
       live "/music", MusicLive.Index, :index
+      live "/resume", ResumeLive.Index, :index
     end
   end
 

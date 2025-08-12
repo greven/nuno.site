@@ -236,7 +236,7 @@ defmodule SiteWeb.Layouts do
           </kbd>
         </button>
 
-        <div class="flex space-x-5 mr-5">
+        <div class="flex space-x-5">
           <.navbar_item item={:home} href={~p"/"} active_link={@active_link}>
             {gettext("Home")}
           </.navbar_item>
