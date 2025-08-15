@@ -17,6 +17,10 @@
     background-color: var(--color-surface);
     color: var(--color-content-10);
     line-height: 1.5;
+
+    @media print {
+      background-color: white;
+    }
   }
 
   /* Make LiveView wrapper divs transparent for layout */

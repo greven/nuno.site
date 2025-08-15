@@ -5,11 +5,9 @@
     "image": null,
     "email": "mail@nuno.site",
     "phone": "964 895 114",
+    "phoneCountryCode": "+351",
     "url": "https://nuno.site",
-    "summary": [
-      "I’m a seasoned software engineer with over 15 years of experience, primarily in Web Development and User Experience (UX). I hold a master’s degree in Electronic and Computer Engineering, but my true passion lies in software development. Right now, I’m particularly interested in working with **Elixir** and **Phoenix LiveView**, but I'm always open to projects that involve JavaScript, CSS, ReactJS, SQL, Web accessibility, **UX** and/or projects focused on web applications development.",
-      "My passion for web development stems from the desire to create intuitive and user-friendly interfaces that enhance the overall user experience, the marriage of form and function, design and functionality allows for expressiveness while striving for simplicity and user delight! I still find that I am most fulfilled when I can combine my technical skills with my creative instincts to build products that truly resonate with users. I don't have a design background, but I do have a keen eye for design and I love to work on projects that allow me to express that side of myself (hence my interest in UI/UX)."
-    ],
+    "summary": "I'm a seasoned software engineer with over **15 years of experience**, primarily in Web Development (**Fullstack**) and User Experience (UX), holding a master's degree in Electronic and Computer Engineering. My passion for web development stems from the desire to create intuitive, user-friendly interfaces that enhance the overall user experience. Currently, I'm particularly interested in working with **Elixir** and **Phoenix LiveView**, but I'm always open to projects involving **JavaScript**, **CSS**, **ReactJS**, **SQL**, web accessibility, and **UX**. While I don't have a formal design background, I have a keen eye for design and love projects that allow me to express that creative side (hence my deep interest in UI/UX).",
     "location": {
       "address": null,
       "postalCode": null,
@@ -60,13 +58,23 @@
       "highlights": ["Won a best consultant award in 2015."]
     },
     {
+      "role": "Computer Vision Researcher",
+      "company": "Instituto de Telecomunicações",
+      "location": "Lisbon, Portugal",
+      "url": "https://www.it.pt/",
+      "startDate": "2011-08-01",
+      "endDate": "2013-07-01",
+      "summary": "Research and development in Biometrics applied to mobile devices. Computer Vision. Java development. Android SDK. OpenCV. Mathematics. Machine Learning.",
+      "highlights": null
+    },
+    {
       "role": "Full-stack Web Developer Consultant",
       "company": "Freelancer",
       "location": "Lisbon, Portugal",
       "url": "https://www.nuno.site/",
       "startDate": "2008-01-01",
       "endDate": "2020-01-01",
-      "summary": "Freelancing / contracting projects in web development, frontend and backend. UX, Javascript, NodeJS, ReactJS, VueJS, Python, Elixir, Django, Phoenix, CSS, SQL, etc.",
+      "summary": "Freelancing / contracting projects in web development, frontend and backend. UX, Javascript, NodeJS, ReactJS, VueJS, Python, Elixir, Django, Phoenix, CSS, SQL, Computer Vision, ...",
       "highlights": null
     }
   ],
@@ -74,22 +82,24 @@
     {
       "institution": "Instituto Superior Técnico",
       "url": "https://tecnico.ulisboa.pt",
+      "location": "Lisbon, Portugal",
       "area": "Electrical and Electronics Engineering",
       "studyType": "Master of Science",
       "startDate": "2008-09-01",
       "endDate": "2013-07-01",
       "score": "14",
-      "courses": null
+      "courses": "Specializations: Telecommunications; Systems, Decision and Control. Focus: Computer Vision, Algorithm Optimization, Data Compression, Multimedia, Telecommunications Networks."
     },
     {
       "institution": "Instituto Superior Técnico",
       "url": "https://tecnico.ulisboa.pt",
+      "location": "Lisbon, Portugal",
       "area": "Electrical and Electronics Engineering",
       "studyType": "Graduate",
-      "startDate": "2005-07-01",
-      "endDate": "2000-09-01",
+      "startDate": "2000-09-01",
+      "endDate": "2005-07-01",
       "score": "14",
-      "courses": null
+      "courses": "Electrical and Computer Engineering Bachelor focusing on Micro Electronics, Computer Architecture, Algorithms, Mathematics and Physics."
     }
   ],
   "languages": [
@@ -171,7 +181,7 @@
     },
     {
       "name": "PostgreSQL",
-      "level": 4,
+      "level": 5,
       "category": "Databases",
       "favourite": false
     },
@@ -223,25 +233,31 @@
   ],
   "projects": [
     {
-      "name": "Compass Group (Freelance)",
+      "name": "Compass Group",
+      "context": "Freelance",
       "startDate": "2019-05-01",
       "endDate": "2019-12-01",
-      "description": "Front-end development in ReactJS. Services in OData with SAP Hana backend. Custom implementation of a meals planner application in ReactJS backed by a SAP backend REST service. Freelancing / Contracting on Site in London.",
+      "location": "London, United Kingdom",
+      "description": "Front-end development in ReactJS. Services in OData with SAP Hana backend. Custom implementation of a meals planner application in ReactJS backed by a SAP backend REST service.Freelancing / Contracting on Site in London focused on UI and UX. ReactJS, CSS, JavaScript.",
       "url": "https://www.compass-group.co.uk",
       "highlights": null
     },
     {
-      "name": "Exertis (Itelligence UK, London)",
+      "name": "Exertis",
+      "context": "Itelligence UK",
       "startDate": "2016-04-01",
       "endDate": "2019-10-01",
+      "location": "London, United Kingdom",
       "description": "Worked as a UX Consultant for Exertis (England) on the implementation of a standard Fiori Application as well as in the development of another custom Fiori MM application.",
       "url": "https://www.exertis.co.uk",
       "highlights": null
     },
     {
-      "name": "Smyths Toys (Itelligence UK, London)",
+      "name": "Smyths Toys",
+      "context": "Itelligence UK",
       "startDate": "2015-10-01",
       "endDate": "2016-03-01",
+      "location": "Galway, Ireland",
       "description": "Worked as a SAP Fiori Consultant and Developer on bespoke Fiori applications throughout the whole development cycle of the applications for Smyths Toys (Ireland).",
       "url": "https://www.smythstoys.com",
       "highlights": null

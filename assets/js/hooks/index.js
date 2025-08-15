@@ -5,6 +5,7 @@ import { Layout } from './layout';
 import { PostLike } from './post-like';
 import { PostMeta } from './post-meta';
 import { ProfileSlideshow } from './profile-slideshow';
+import { Resume } from './resume';
 import { SharePost } from './share-post';
 import { SiteHeader } from './site-header';
 import { Tabs } from './tabs';
@@ -18,6 +19,7 @@ export default {
   PostLike,
   PostMeta,
   ProfileSlideshow,
+  Resume,
   SharePost,
   SiteHeader,
   TableOfContents,

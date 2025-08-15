@@ -125,14 +125,6 @@ defmodule SiteWeb.CoreComponents do
           <p :if={@title} class="font-semibold mb-1">{@title}</p>
           <p class="text-wrap break-words">{msg}</p>
         </div>
-
-        <button
-          type="button"
-          class="group shrink-0 p-1 rounded-md hover:bg-surface-20 transition-colors"
-          aria-label={gettext("close")}
-        >
-          <.icon name="hero-x-mark-solid" class="size-4 opacity-60 group-hover:opacity-80" />
-        </button>
       </div>
     </div>
     """
@@ -420,10 +412,11 @@ defmodule SiteWeb.CoreComponents do
   @doc """
   Renders a header with title.
   """
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :header_class, :string, default: nil
   attr :anchor, :string, default: nil
   attr :tag, :string, default: "h1"
+  attr :rest, :global
 
   slot :inner_block, required: true
 
@@ -439,11 +432,14 @@ defmodule SiteWeb.CoreComponents do
       |> assign(:default_header_class, ["font-medium", header_font_size(assigns.tag)])
 
     ~H"""
-    <header class={[
-      @actions != [] && "flex items-center justify-between gap-6",
-      "pb-4",
-      @class
-    ]}>
+    <header
+      class={[
+        @actions != [] && "flex items-center justify-between gap-6",
+        "pb-4",
+        @class
+      ]}
+      {@rest}
+    >
       <div>
         <.dynamic_tag
           tag_name={@tag}

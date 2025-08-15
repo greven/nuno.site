@@ -147,7 +147,8 @@ defmodule SiteWeb.Layouts do
         "relative top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
         "bg-surface/95 border-b border-dashed border-transparent shadow-gray-900/5",
         "supports-backdrop-filter:bg-surface/85 backdrop-blur-sm supports-backdrop-filter:blur(0)",
-        "data-scrolled:border-surface-40 data-scrolled:shadow-sm"
+        "data-scrolled:border-surface-40 data-scrolled:shadow-sm",
+        "print:hidden"
       ]}
       style="position:var(--header-position);height:var(--header-height);margin-bottom:var(--header-mb)"
       data-progress={if(@show_progress, do: "true", else: "false")}
@@ -183,24 +184,35 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <footer class="z-0 flex flex-col items-center gap-4 pt-6 md:pt-12 pb-3">
       <.wrapper>
-        <.footer_copyright />
+        <div class="my-1 flex items-center gap-2 justify-center text-xs font-headings text-content-30">
+          <.footer_copyright />
+          <.footer_divider class="print:hidden" />
+          <span class="link-ghost print:hidden"><a href={~p"/sitemap"}>Sitemap</a></span>
+        </div>
       </.wrapper>
     </footer>
     """
   end
 
   @doc false
+
+  attr :class, :string, default: nil
+
+  def footer_divider(assigns) do
+    ~H"""
+    <span class={["font-sans text-xs text-primary", @class]}>&bull;</span>
+    """
+  end
+
+  @doc false
+
+  attr :class, :string, default: nil
+
   def footer_copyright(assigns) do
     ~H"""
-    <div class="my-1 flex items-center gap-2 justify-center text-xs font-headings text-content-30">
-      <span class="flex items-center gap-1">
-        Copyright &copy; {Date.utc_today().year} Nuno Moço
-      </span>
-      <span class="font-sans text-xs text-primary">&bull;</span>
-      <span class="link-ghost">
-        <a href={~p"/sitemap"}>Sitemap</a>
-      </span>
-    </div>
+    <span class={["flex items-center gap-1", @class]}>
+      Copyright &copy; {Date.utc_today().year} Nuno Moço
+    </span>
     """
   end
 

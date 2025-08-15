@@ -43,7 +43,7 @@
 /* Layout */
 
 @utility wrapper {
-  @apply container w-screen mx-auto max-w-5xl px-5 sm:px-20 lg:px-24;
+  @apply not-print:container w-screen mx-auto not-print:max-w-5xl px-5 sm:px-20 lg:px-24;
 }
 
 @utility wide-wrapper {

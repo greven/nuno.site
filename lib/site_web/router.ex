@@ -28,6 +28,10 @@ defmodule SiteWeb.Router do
     plug :fetch_current_scope_for_user
   end
 
+  pipeline :rss do
+    plug :accepts, ["xml"]
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -64,6 +68,11 @@ defmodule SiteWeb.Router do
       live "/music", MusicLive.Index, :index
       live "/resume", ResumeLive.Index, :index
     end
+  end
+
+  scope "/", SiteWeb do
+    pipe_through :rss
+    get "/rss", RssController, :feed
   end
 
   # Other scopes may use custom stacks.

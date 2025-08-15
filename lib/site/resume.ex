@@ -17,6 +17,11 @@ defmodule Site.Resume do
     |> Enum.map(fn skill -> {skill["name"], skill["favourite"]} end)
   end
 
+  def list_favourite_skills do
+    list_skills()
+    |> Enum.filter(fn {_, favourite} -> favourite end)
+  end
+
   @decorate cacheable(cache: Site.Cache, key: {:resume})
   def data do
     resume_path()

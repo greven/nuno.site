@@ -457,4 +457,13 @@
   .travel-map .map-tooltip .tooltip-info {
     color: var(--color-slate-300);
   }
+
+  /* Resume Summary */
+
+  #resume-summary {
+    & strong {
+      text-decoration: underline;
+      text-decoration-color: var(--color-surface-40);
+    }
+  }
 }

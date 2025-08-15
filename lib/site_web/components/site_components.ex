@@ -477,6 +477,12 @@ defmodule SiteWeb.SiteComponents do
     """
   end
 
+  defp trip_icon(%Trip{type: "flight"}), do: "lucide-plane"
+  defp trip_icon(%Trip{type: "train"}), do: "lucide-rail-symbol"
+  defp trip_icon(%Trip{type: "boat"}), do: "lucide-sailboat"
+  defp trip_icon(%Trip{type: "car"}), do: "lucide-bus"
+  defp trip_icon(%Trip{type: _}), do: "lucide-map-pin"
+
   @doc false
 
   attr :value, :any, required: true
@@ -494,20 +500,23 @@ defmodule SiteWeb.SiteComponents do
   @doc false
 
   attr :items, :list, default: []
+  attr :show_summary, :boolean, default: false
   attr :rest, :global
 
-  def experience_shortlist(assigns) do
+  def work_experience_list(assigns) do
     ~H"""
     <div {@rest}>
       <ul class="flex flex-col gap-8 divide-y divide-content-40/20 divide-dashed">
         <%= for item <- @items do %>
-          <.experience_shortlist_item
+          <.experience_list_item
             role={item["role"]}
             company={item["company"]}
             location={item["location"]}
             start_date={item["start_date"]}
             end_date={item["end_date"]}
-            link={item["url"]}
+            show_summary={@show_summary}
+            summary={item["summary"]}
+            url={item["url"]}
           />
         <% end %>
       </ul>
@@ -522,20 +531,22 @@ defmodule SiteWeb.SiteComponents do
   attr :location, :string, default: nil
   attr :start_date, :string, default: nil
   attr :end_date, :string, default: nil
-  attr :link, :string, default: nil
+  attr :url, :string, default: nil
+  attr :summary, :string, default: nil
+  attr :show_summary, :boolean, default: false
   attr :class, :string, default: nil
   attr :rest, :global
 
-  def experience_shortlist_item(assigns) do
+  def experience_list_item(assigns) do
     ~H"""
-    <li class="space-y-1 pb-8">
+    <li class="space-y-1 not-last:pb-8">
       <div class="flex items-center gap-1.5">
         <.icon name="hero-calendar-mini" class="size-4.5 text-content-40/90" />
         <span :if={@start_date} class="text-content-30/90 uppercase text-sm">
           <%= if @start_date && @end_date do %>
             {parse_date(@start_date)} - {parse_date(@end_date)}
           <% else %>
-            {@start_date}
+            {parse_date(@start_date)}
           <% end %>
         </span>
       </div>
@@ -543,8 +554,8 @@ defmodule SiteWeb.SiteComponents do
         {@role}<span class="ml-px text-primary text-xl">.</span>
       </div>
       <div class="text-content-20">
-        <%= if @link do %>
-          <.link href={@link} target="_blank" rel="noopener noreferrer" class="link-ghost">
+        <%= if @url do %>
+          <.link href={@url} target="_blank" rel="noopener noreferrer" class="link-ghost">
             {@company}
           </.link>
         <% else %>
@@ -554,15 +565,187 @@ defmodule SiteWeb.SiteComponents do
           <span class="text-content-40/90">—</span> {@location}
         </span>
       </div>
+
+      <div :if={@show_summary} class="mt-2 max-w-[72ch] font-light text-lg/7 text-content-40">
+        {@summary}
+      </div>
     </li>
     """
   end
 
-  defp trip_icon(%Trip{type: "flight"}), do: "lucide-plane"
-  defp trip_icon(%Trip{type: "train"}), do: "lucide-rail-symbol"
-  defp trip_icon(%Trip{type: "boat"}), do: "lucide-sailboat"
-  defp trip_icon(%Trip{type: "car"}), do: "lucide-bus"
-  defp trip_icon(%Trip{type: _}), do: "lucide-map-pin"
+  @doc false
+
+  attr :items, :list, default: []
+  attr :rest, :global
+
+  def education_list(assigns) do
+    ~H"""
+    <div {@rest}>
+      <ul class="flex flex-col gap-8 divide-y divide-content-40/20 divide-dashed">
+        <%= for item <- @items do %>
+          <.education_list_item
+            area={item["area"]}
+            institution={item["institution"]}
+            location={item["location"]}
+            study_type={item["study_type"]}
+            start_date={item["start_date"]}
+            end_date={item["end_date"]}
+            courses={item["courses"]}
+            url={item["url"]}
+          />
+        <% end %>
+      </ul>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :area, :string, required: true
+  attr :institution, :string, required: true
+  attr :study_type, :string, default: nil
+  attr :location, :string, default: nil
+  attr :start_date, :string, default: nil
+  attr :end_date, :string, default: nil
+  attr :url, :string, default: nil
+  attr :courses, :string, default: nil
+  attr :show_start_date, :boolean, default: false
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def education_list_item(assigns) do
+    ~H"""
+    <li class="space-y-1 not-last:pb-8">
+      <div class="flex items-center gap-1.5">
+        <.icon name="hero-calendar-mini" class="size-4.5 text-content-40/90" />
+        <span :if={@end_date} class="text-content-30/90 uppercase text-sm">
+          <%= if @start_date && @end_date && @show_start_date do %>
+            {parse_date(@start_date)} - {parse_date(@end_date)}
+          <% else %>
+            {parse_date(@end_date)}
+          <% end %>
+        </span>
+      </div>
+
+      <div class="mt-2 font-headings text-xl">
+        <span :if={@study_type}>
+          <span>{@study_type}</span>
+          <span class="font-light text-content-40">in</span>
+        </span>
+        <span class="font-medium">{@area}</span><span class="text-primary text-xl">.</span>
+      </div>
+      <div class="text-content-20">
+        <%= if @url do %>
+          <.link href={@url} target="_blank" rel="noopener noreferrer" class="link-ghost">
+            {@institution}<span :if={@location}> — {@location}</span>
+          </.link>
+        <% else %>
+          {@institution}
+        <% end %>
+      </div>
+
+      <div :if={@courses} class="mt-2 max-w-[72ch] font-light text-lg/7 text-content-40">
+        {@courses}
+      </div>
+    </li>
+    """
+  end
+
+  @doc false
+
+  attr :items, :list, default: []
+  attr :rest, :global
+
+  def project_list(assigns) do
+    ~H"""
+    <div {@rest}>
+      <ul class="flex flex-col gap-8 divide-y divide-content-40/20 divide-dashed">
+        <%= for item <- @items do %>
+          <.project_list_item
+            name={item["name"]}
+            context={item["context"]}
+            description={item["description"]}
+            start_date={item["start_date"]}
+            end_date={item["end_date"]}
+            location={item["location"]}
+            url={item["url"]}
+          />
+        <% end %>
+      </ul>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :name, :string, required: true
+  attr :context, :string, required: true
+  attr :description, :string, required: true
+  attr :start_date, :string, default: nil
+  attr :end_date, :string, default: nil
+  attr :location, :string, default: nil
+  attr :url, :string, default: nil
+
+  def project_list_item(assigns) do
+    ~H"""
+    <li class="space-y-1 not-last:pb-8">
+      <div class="font-headings font-medium text-xl">
+        <span>{@name}</span><span class="text-primary text-xl"></span><span class="text-primary text-xl">.</span>
+      </div>
+      <div class="text-content-20">
+        {@context}
+        <span :if={@location} class="text-content-30">
+          <span class="text-content-40/90">—</span> {@location}
+        </span>
+      </div>
+
+      <div class="mt-2 flex items-center gap-1.5">
+        <.icon name="hero-calendar-mini" class="size-4.5 text-content-40/90" />
+        <span :if={@start_date} class="text-content-30/90 uppercase text-sm">
+          <%= if @start_date && @end_date do %>
+            {parse_date(@start_date)} - {parse_date(@end_date)}
+          <% else %>
+            {parse_date(@start_date)}
+          <% end %>
+        </span>
+      </div>
+
+      <div :if={@description} class="mt-2 max-w-[72ch] font-light text-lg/7 text-content-40">
+        {@description}
+      </div>
+    </li>
+    """
+  end
+
+  @doc false
+
+  attr :title, :string, required: true
+  attr :subtitle, :string, default: nil
+  attr :icon, :string, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def resume_section_header(assigns) do
+    ~H"""
+    <.header
+      tag="h2"
+      class={[
+        "relative xl:block",
+        "before:content-['0'_counter(item-counter)] before:hidden lg:before:block before:absolute before:-left-28 before:top-0 before:text-7xl before:font-semibold before:font-headings
+            before:text-primary before:text-right before:opacity-10 dark:before:saturate-0",
+        @class
+      ]}
+      style="counter-increment: item-counter;"
+      {@rest}
+    >
+      <div class="flex items-center gap-2.5">
+        <.icon name={@icon} class="size-7 text-content-40" />
+        <span>{@title}<span class="text-primary">.</span></span>
+      </div>
+      <:subtitle :if={@subtitle}>{@subtitle}</:subtitle>
+    </.header>
+    """
+  end
 
   # Shortened date string, e.g. "2023-10-01" -> "Oct 2023"
   defp parse_date(nil), do: "Present"
