@@ -106,7 +106,7 @@ defmodule SiteWeb.CoreComponents do
       {@rest}
     >
       <div class={[
-        "relative flex items-center gap-3 p-4 rounded-lg border text-sm shadow-lg",
+        "relative flex items-center gap-3 p-4 rounded-lg border text-sm shadow",
         "bg-surface-10 backdrop-blur-sm",
         flash_variant_classes(@kind)
       ]}>

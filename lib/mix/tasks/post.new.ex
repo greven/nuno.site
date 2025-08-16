@@ -36,9 +36,17 @@ defmodule Mix.Tasks.Post.New do
          title <- post_title(post_title),
          dir_path <- Path.join(@posts_path, Integer.to_string(date.year)),
          :ok <- File.mkdir_p(dir_path) do
-      filename = "#{date.month}-#{date.day}-#{title}.md"
+      filename = "#{pad_date(date.month)}-#{pad_date(date.day)}-#{title}.md"
 
-      File.write(Path.join(dir_path, filename), post_content(post_title))
+      # Check if file exists already so we don't overwrite it
+      if File.exists?(Path.join(dir_path, filename)) do
+        Mix.raise("File #{filename} already exists.")
+      else
+        Mix.shell().info("Creating post file: #{filename} in #{dir_path}")
+
+        Path.join(dir_path, filename)
+        |> File.write(post_content(post_title))
+      end
     end
   end
 
@@ -49,6 +57,18 @@ defmodule Mix.Tasks.Post.New do
     |> String.replace(~r/\s+/, "_")
     |> String.downcase()
   end
+
+  defp parse_opts_date([] = _opts), do: {:ok, Date.utc_today()}
+  defp parse_opts_date(date: date), do: Date.from_iso8601(date)
+
+  defp pad_date(digit) when is_integer(digit) do
+    digit
+    |> Integer.to_string()
+    |> pad_date()
+  end
+
+  defp pad_date(digit) when is_binary(digit),
+    do: String.pad_leading(digit, 2, "0")
 
   defp post_content(post_title) do
     """
@@ -64,7 +84,4 @@ defmodule Mix.Tasks.Post.New do
     Lorem ipsum dolor sit amet consectetur adipisicing elit.
     """
   end
-
-  defp parse_opts_date([] = _opts), do: {:ok, Date.utc_today()}
-  defp parse_opts_date(date: date), do: Date.from_iso8601(date)
 end

@@ -1,8 +1,8 @@
 %{
   title: "Link Previews",
-  tags: ~w(development),
-  excerpt: "Link previews in Phoenix",
-  status: :published
+  tags: ~w(random),
+  excerpt: "Lorem ipsum",
+  status: :draft
 }
 
 ---
