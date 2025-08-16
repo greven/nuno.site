@@ -1217,6 +1217,23 @@ defmodule SiteWeb.CoreComponents do
     String.replace(src, ~r/\.(jpg|jpeg|png|gif)$/, ".#{ext}")
   end
 
+  # @doc """
+  # Renders a link with a preview image (Open Graph).
+  # If no image is available, it falls back to a default image with
+  # the first letter of the link text.
+  # """
+
+  # attr :url, :string, required: true
+  # attr :data, :map, default: nil
+  # attr :loading, :boolean, default: false
+  # attr :rest, :global
+
+  # def link_preview(assigns) do
+  #   ~H"""
+  #   <a {@rest}></a>
+  #   """
+  # end
+
   @doc """
   Renders a barebones dialog using the native HTML <dialog> element.
   """
