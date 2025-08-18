@@ -58,12 +58,8 @@ defmodule SiteWeb.HomeLive.Index do
               Articles
             </SiteComponents.bento_box>
 
-            <SiteComponents.bento_box navigate={~p"/travel"} class="col-span-1 row-span-1">
+            <SiteComponents.bento_box navigate={~p"/music"} class="col-span-1 row-span-1">
               Music
-            </SiteComponents.bento_box>
-
-            <SiteComponents.bento_box navigate={~p"/travel"} class="col-span-1 row-span-1">
-              Lights
             </SiteComponents.bento_box>
 
             <SiteComponents.bento_box

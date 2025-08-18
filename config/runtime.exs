@@ -26,8 +26,16 @@ end
 ## External Services
 
 config :site, :steam, api_key: env!("STEAM_API_KEY", :string!)
-config :site, :bluesky, handle: env!("BLUESKY_HANDLE", :string!)
-config :site, :bluesky, app_password: env!("BLUESKY_APP_PASSWORD", :string!)
+
+config :site, :bluesky,
+  handle: env!("BLUESKY_HANDLE", :string!),
+  app_password: env!("BLUESKY_APP_PASSWORD", :string!)
+
+config :site, :lastfm,
+  api_key: env!("LASTFM_API_KEY"),
+  shared_secret: env!("LASTFM_SHARED_SECRET"),
+  username: env!("LASTFM_USERNAME"),
+  session_key: env!("LASTFM_SESSION_KEY")
 
 if config_env() == :prod do
   database_path =
