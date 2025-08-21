@@ -6,6 +6,8 @@ defmodule Site.Services.Lastfm do
 
   require Logger
 
+  alias Site.Services.MusicTrack
+
   @api_endpoint "https://ws.audioscrobbler.com/2.0"
   @auth_endpoint "https://www.last.fm/api/auth"
 
@@ -205,7 +207,7 @@ defmodule Site.Services.Lastfm do
   defp parse_track(track) do
     now_playing = get_in(track, ["@attr", "nowplaying"]) == "true"
 
-    %{
+    %MusicTrack{
       name: track["name"],
       artist: get_in(track, ["artist", "name"]) || track["artist"],
       album: get_in(track, ["album", "#text"]),
@@ -217,7 +219,7 @@ defmodule Site.Services.Lastfm do
   end
 
   defp parse_top_track(track) do
-    %{
+    %MusicTrack{
       name: track["name"],
       artist: get_in(track, ["artist", "name"]) || track["artist"],
       url: track["url"],
@@ -242,7 +244,6 @@ defmodule Site.Services.Lastfm do
     %{
       name: artist["name"],
       url: artist["url"],
-      image: extract_image(artist["image"]),
       playcount: String.to_integer(artist["playcount"] || "0"),
       rank: String.to_integer(get_in(artist, ["@attr", "rank"]) || "0")
     }

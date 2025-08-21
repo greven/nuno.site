@@ -5,6 +5,7 @@ defmodule SiteWeb.CoreComponents do
   use Gettext, backend: SiteWeb.Gettext
 
   alias Phoenix.LiveView.JS
+  alias Site.Support
 
   @button_radius "lg"
 
@@ -44,8 +45,8 @@ defmodule SiteWeb.CoreComponents do
 
   @doc false
 
-  attr :class, :any, default: nil
   attr :tag, :string, default: "div"
+  attr :class, :any, default: nil
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -68,13 +69,29 @@ defmodule SiteWeb.CoreComponents do
       ~H"""
       <.box
         tag={@tag}
-        class={[@class, "relative flex flex-col h-full hover:border-primary hover:shadow-sm"]}
+        class={[@class, "relative flex flex-col h-full"]}
         {@rest}
       >
         {render_slot(@inner_block)}
       </.box>
       """
     end
+  end
+
+  @doc """
+  Renders a skeleton placeholder for content loading.
+  """
+
+  attr :class, :any, default: "bg-surface-30 rounded-xs"
+  attr :loading, :boolean, default: true, doc: "whether the skeleton is in loading state"
+  attr :height, :string, default: "24px", doc: "the height of the skeleton"
+  attr :width, :string, default: "100%", doc: "the width of the skeleton"
+
+  def skeleton(assigns) do
+    ~H"""
+    <div class={[@loading && "animate-pulse", @class]} style={"height:#{@height}; width:#{@width};"}>
+    </div>
+    """
   end
 
   @doc """
@@ -1215,6 +1232,30 @@ defmodule SiteWeb.CoreComponents do
   # Replace the file extension in the srcset attribute
   defp srcset(src, ext) do
     String.replace(src, ~r/\.(jpg|jpeg|png|gif)$/, ".#{ext}")
+  end
+
+  @doc """
+  Renders a date as a relative time string.
+  """
+
+  attr :date, :string, required: true
+  attr :format, :string, default: "%B %o, %Y"
+  attr :class, :any, default: nil
+
+  def relative_time(%{date: date, format: format} = assigns) do
+    assigns =
+      assign(
+        assigns,
+        :date,
+        case Support.time_ago(date) do
+          %NaiveDateTime{} = datetime -> Support.format_date_with_ordinal(datetime, format)
+          relative_date -> relative_date
+        end
+      )
+
+    ~H"""
+    <time datetime={@date} class={@class}>{@date}</time>
+    """
   end
 
   # @doc """

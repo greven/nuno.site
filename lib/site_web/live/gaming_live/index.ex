@@ -1,4 +1,4 @@
-defmodule SiteWeb.CategoriesLive.Index do
+defmodule SiteWeb.GamingLive.Index do
   use SiteWeb, :live_view
 
   @impl true

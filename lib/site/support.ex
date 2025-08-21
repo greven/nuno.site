@@ -168,6 +168,7 @@ defmodule Site.Support do
       diff < @hour_in_seconds -> minutes_ago(diff)
       diff < @day_in_seconds -> hours_ago(diff)
       diff < 2 * @day_in_seconds -> days_ago(diff)
+      diff < 14 * @day_in_seconds -> weeks_ago(diff)
       true -> datetime
     end
   end
@@ -203,6 +204,15 @@ defmodule Site.Support do
     case days do
       1 -> "1 day ago"
       _ -> "#{days} days ago"
+    end
+  end
+
+  defp weeks_ago(seconds) do
+    weeks = div(seconds, 7 * @day_in_seconds)
+
+    case weeks do
+      1 -> "1 week ago"
+      _ -> "#{weeks} weeks ago"
     end
   end
 end

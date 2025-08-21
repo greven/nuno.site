@@ -5,8 +5,11 @@ defmodule SiteWeb.SiteComponents do
 
   use SiteWeb, :html
 
+  alias Phoenix.LiveView.AsyncResult
+
   alias Site.Support
   alias Site.Travel.Trip
+
   alias SiteWeb.BlogComponents
 
   @doc false
@@ -746,6 +749,282 @@ defmodule SiteWeb.SiteComponents do
     </.header>
     """
   end
+
+  @doc false
+
+  attr :track, AsyncResult, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def now_playing(assigns) do
+    ~H"""
+    <div class={["flex items-center gap-2", @class]} {@rest}>
+      <.async_result :let={track} assign={@track}>
+        <:loading>
+          <div class="flex gap-4 items-center">
+            <.track_image loading={true} />
+            <div class="flex flex-col gap-1">
+              <div class="flex flex-col gap-2.5">
+                <.playing_indicator loading />
+                <.skeleton height="20px" width="182px" />
+                <.skeleton height="14px" width="80%" />
+                <.skeleton height="14px" width="60%" />
+              </div>
+            </div>
+          </div>
+        </:loading>
+
+        <:failed :let={_failure}>
+          <div class="flex gap-4 items-center">
+            <.track_image offline={true} />
+            <div class="flex flex-col gap-1">
+              Failed to load track
+            </div>
+          </div>
+        </:failed>
+
+        <div class="flex gap-4 items-center">
+          <.track_image src={track.image} />
+          <div class="flex flex-col gap-1">
+            <.playing_indicator is_playing={track.now_playing} last_played={track.played_at} />
+            <div class="leading-5 line-clamp-1">
+              <a
+                href={track.url}
+                target="_blank"
+                class="link-subtle font-medium text-base lg:text-xl hover:decoration-emerald-600"
+              >
+                {track.name}
+              </a>
+
+              <div class="text-sm lg:text-base text-content-40 line-clamp-1">{track.album}</div>
+              <div class="text-sm lg:text-base font-medium text-content-40 line-clamp-1">
+                {track.artist}
+              </div>
+            </div>
+          </div>
+        </div>
+      </.async_result>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :src, :string, default: nil
+  attr :loading, :boolean, default: false
+  attr :offline, :boolean, default: false
+
+  attr :class, :string, default: nil
+
+  attr :wrapper_class, :string,
+    default: "relative aspect-square shrink-0 flex items-center justify-center"
+
+  attr :image_class, :string, default: "object-cover brightness-110"
+
+  attr :size_class, :string, default: "size-28 lg:size-36"
+  attr :padding_class, :string, default: "p-1"
+  attr :border_class, :string, default: "border-none"
+  attr :shadow_class, :string, default: "shadow-sm"
+  attr :radius_class, :string, default: "rounded-md"
+  attr :rest, :global
+
+  def track_image(assigns) do
+    ~H"""
+    <div class={@class} {@rest}>
+      <.box
+        class={[@wrapper_class, @size_class]}
+        padding={@padding_class}
+        border={@border_class}
+        shadow={@shadow_class}
+      >
+        <%= cond do %>
+          <% @src -> %>
+            <.image
+              class={[@radius_class, @image_class]}
+              alt="Album cover"
+              src={@src}
+              width={164}
+              height={164}
+            />
+          <% @loading -> %>
+            <.icon name="lucide-loader-circle" class="size-10 bg-surface-30 animate-spin" />
+          <% @offline -> %>
+            <.icon name="lucide-volume-off" class="size-14 bg-surface-30" />
+          <% true -> %>
+            <.icon name="lucide-volume-off" class="size-14 bg-surface-30" />
+        <% end %>
+      </.box>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :loading, :boolean, default: false
+  attr :is_playing, :boolean, default: false
+  attr :last_played, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def playing_indicator(assigns) do
+    ~H"""
+    <div class={["relative text-sm lg:text-base", @class]} {@rest}>
+      <%= cond do %>
+        <% @loading -> %>
+          <div class="flex items-center gap-1.5">
+            <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+          </div>
+        <% @is_playing -> %>
+          <div class="flex items-center gap-1.5">
+            <.playing_icon is_playing={@is_playing} />
+            <div class="font-medium text-emerald-600">Playing...</div>
+          </div>
+        <% @last_played -> %>
+          <div class="flex items-center gap-1.5">
+            <.icon
+              name="hero-bolt-slash-solid"
+              class="size-4 text-content-40 animate-pulse"
+            />
+            <span :if={@last_played} class="font-medium text-content-30">Offline</span>
+            <.relative_time
+              date={@last_played}
+              class="hidden lg:block ml-0.5 text-sm font-headings text-content-40"
+            />
+          </div>
+        <% true -> %>
+          <div class="flex items-center gap-1.5">
+            <.icon
+              name="hero-bolt-slash-solid"
+              class="size-4 text-content-40 animate-pulse"
+            />
+            <span class="font-medium text-content-30">Offline</span>
+          </div>
+      <% end %>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :is_playing, :boolean, default: false
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def playing_icon(assigns) do
+    ~H"""
+    <div class={["now-playing-icon", @class]} {@rest}>
+      <span></span><span></span><span></span>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :tracks, AsyncResult, required: true
+  attr :rest, :global
+
+  def recent_tracks(assigns) do
+    ~H"""
+    <div {@rest}>
+      <.async_result :let={tracks} assign={@tracks}>
+        <ul class="flex flex-col gap-2 text-content-10 text-sm md:text-base">
+          <li :for={track <- tracks} class="grid grid-cols-12 items-center gap-2">
+            <.track_image
+              src={track.image}
+              class="col-span-1"
+              size_class="size-10"
+              padding_class="p-0"
+              radius_class="rounded-sm"
+            />
+            <div class="col-span-7 items-center">
+              <div class="flex items-center gap-3">
+                <div class="text-sm md:text-base text-content-20 whitespace-nowrap text-ellipsis line-clamp-1">
+                  <a href={track.url} target="_blank" class="link-ghost">{track.name}</a>
+                </div>
+                <.playing_icon
+                  :if={track.now_playing}
+                  style="--playing-color: var(--color-surface-40)"
+                />
+              </div>
+            </div>
+            <div class="col-span-4 ml-2 text-sm md:text-base font-light text-content-40 whitespace-nowrap text-ellipsis line-clamp-1">
+              {track.artist}
+            </div>
+          </li>
+        </ul>
+      </.async_result>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :items, AsyncResult, required: true
+  attr :rest, :global
+
+  def top_artists_list(assigns) do
+    ~H"""
+    <div {@rest}>
+      <.async_result :let={items} assign={@items}>
+        <ol class="list-decimal list-inside marker:text-content-40/80 columns-2">
+          <li
+            :for={item <- items}
+            class="group text-xl/9 font-light hover:marker:text-primary transition-colors"
+          >
+            <a href={item.url} target="_blank" class="link-ghost">{item.name}</a>
+            <span
+              :if={item.playcount}
+              class="font-light text-content-40/50 group-hover:text-content-40 transition-colors"
+            >
+              ({Support.format_number(item.playcount, 0)})
+            </span>
+          </li>
+        </ol>
+      </.async_result>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :albums, AsyncResult, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def albums_grid(assigns) do
+    ~H"""
+    <div class={[@class, "bg-surface-10 shadow-lg"]} {@rest}>
+      <.async_result :let={albums} assign={@albums}>
+        <ol class="grid grid-cols-6 p-1">
+          <li
+            :for={album <- albums}
+            class={[
+              "group relative ease-in-out transition-transform duration-300",
+              "hover:scale-110 hover:shadow-xl hover:z-10"
+            ]}
+          >
+            <img src={album.image} alt={album.name} class="w-full h-auto group-hover:brightness-40" />
+            <div class="absolute inset-0 rounded-md overflow-hidden p-1">
+              <div class="flex h-full items-end justify-start text-white transition-opacity opacity-0 group-hover:opacity-100 duration-300">
+                <div class="flex flex-col">
+                  <div class="font-medium text-sm line-clamp-1 text-ellipsis">
+                    <a href={album.url} target="_blank" class="text-white">{album.name}</a>
+                  </div>
+                  <div class="text-gray-200 text-xs line-clamp-1 text-ellipsis">{album.artist}</div>
+                  <div class="text-gray-300 text-xs line-clamp-1 text-ellipsis">
+                    {Support.format_number(album.playcount, 0)} plays
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </.async_result>
+    </div>
+    """
+  end
+
+  ## Renderless Helpers
 
   # Shortened date string, e.g. "2023-10-01" -> "Oct 2023"
   defp parse_date(nil), do: "Present"

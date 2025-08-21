@@ -39,14 +39,8 @@ defmodule SiteWeb.Router do
   scope "/", SiteWeb do
     pipe_through :browser
 
-    get "/about", PageController, :about
-    get "/books", PageController, :books
-    get "/gaming", PageController, :gaming
-    get "/photos", PageController, :photos
-    get "/bookmarks", PageController, :bookmarks
-    get "/stack", PageController, :stack
-    get "/sink", PageController, :sink
     get "/sitemap", PageController, :sitemap
+    get "/sink", PageController, :sink
 
     live_session :default,
       on_mount: [
@@ -66,6 +60,12 @@ defmodule SiteWeb.Router do
       live "/analytics", AnalyticsLive.Index, :index
       live "/travel", TravelLive.Index, :index
       live "/music", MusicLive.Index, :index
+      live "/books", BooksLive.Index, :index
+      live "/gaming", GamingLive.Index, :index
+      live "/photos", PhotosLive.Index, :index
+      live "/bookmarks", BookmarksLive.Index, :index
+      live "/stack", StackLive.Index, :index
+      live "/about", AboutLive.Index, :index
       live "/resume", ResumeLive.Index, :index
     end
   end

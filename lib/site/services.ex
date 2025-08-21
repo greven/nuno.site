@@ -10,45 +10,62 @@ defmodule Site.Services do
   # alias Site.Services.Steam
 
   @music_default_limit 20
+  @music_albums_limit 36
 
   ## Music
 
-  @decorate cacheable(cache: Site.Cache, key: {:now_playing}, ttl: :timer.seconds(10))
+  @decorate cacheable(cache: Site.Cache, key: {:now_playing}, opts: [ttl: :timer.seconds(10)])
   def get_now_playing do
     Lastfm.get_now_playing()
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:recently_played_tracks}, ttl: :timer.minutes(1))
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: {:recently_played_tracks},
+              opts: [ttl: :timer.minutes(1)]
+            )
   def get_recently_played_tracks do
     Lastfm.get_recently_played()
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_artists}, ttl: :timer.hours(6))
+  @decorate cacheable(cache: Site.Cache, key: {:top_artists}, opts: [ttl: :timer.hours(6)])
   def get_top_artists do
     Lastfm.get_top_artists("overall", @music_default_limit)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_artists, period, limit}, ttl: :timer.hours(6))
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: {:top_artists, period, limit},
+              opts: [ttl: :timer.hours(6)]
+            )
   def get_top_artists(period, limit \\ @music_default_limit) do
     Lastfm.get_top_artists(period, limit)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_albums}, ttl: :timer.hours(6))
+  @decorate cacheable(cache: Site.Cache, key: {:top_albums}, opts: [ttl: :timer.hours(6)])
   def get_top_albums do
-    Lastfm.get_top_albums("overall", @music_default_limit)
+    Lastfm.get_top_albums("overall", @music_albums_limit)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_albums, period, limit}, ttl: :timer.hours(6))
-  def get_top_albums(period, limit \\ @music_default_limit) do
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: {:top_albums, period, limit},
+              opts: [ttl: :timer.hours(6)]
+            )
+  def get_top_albums(period, limit \\ @music_albums_limit) do
     Lastfm.get_top_albums(period, limit)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_tracks}, ttl: :timer.hours(6))
+  @decorate cacheable(cache: Site.Cache, key: {:top_tracks}, opts: [ttl: :timer.hours(6)])
   def get_top_tracks do
     Lastfm.get_top_tracks("overall", @music_default_limit)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_tracks, period, limit}, ttl: :timer.hours(6))
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: {:top_tracks, period, limit},
+              opts: [ttl: :timer.hours(6)]
+            )
   def get_top_tracks(period, limit \\ @music_default_limit) do
     Lastfm.get_top_tracks(period, limit)
   end
