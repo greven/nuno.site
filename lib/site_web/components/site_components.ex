@@ -783,26 +783,40 @@ defmodule SiteWeb.SiteComponents do
           </div>
         </:failed>
 
-        <div class="flex gap-4 items-center">
-          <.track_image src={track.image} />
-          <div class="flex flex-col gap-1">
-            <.playing_indicator is_playing={track.now_playing} last_played={track.played_at} />
-            <div class="leading-5 line-clamp-1">
-              <a
-                href={track.url}
-                target="_blank"
-                class="link-subtle font-medium text-base lg:text-xl hover:decoration-emerald-600"
-              >
-                {track.name}
-              </a>
+        <%= if track.name do %>
+          <div class="flex gap-4 items-center">
+            <.track_image src={track.image} />
+            <div class="flex flex-col gap-1">
+              <.playing_indicator is_playing={track.now_playing} last_played={track.played_at} />
+              <div class="leading-5 line-clamp-1">
+                <a
+                  href={track.url}
+                  target="_blank"
+                  class="link-subtle font-medium text-base lg:text-xl hover:decoration-emerald-600"
+                >
+                  {track.name}
+                </a>
 
-              <div class="text-sm lg:text-base text-content-40 line-clamp-1">{track.album}</div>
-              <div class="text-sm lg:text-base font-medium text-content-40 line-clamp-1">
-                {track.artist}
+                <div class="text-sm lg:text-base text-content-40 line-clamp-1">{track.album}</div>
+                <div class="text-sm lg:text-base font-medium text-content-40 line-clamp-1">
+                  {track.artist}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        <% else %>
+          <div class="flex gap-4 items-center">
+            <.track_image offline={true} />
+            <div class="flex flex-col gap-1">
+              <.playing_indicator is_playing={track.now_playing} last_played={track.played_at} />
+              <div class="leading-5 line-clamp-1 text-content-40/50">
+                n/a
+                <div class="text-sm lg:text-base line-clamp-1">n/a</div>
+                <div class="text-sm lg:text-base font-medium line-clamp-1">n/a</div>
+              </div>
+            </div>
+          </div>
+        <% end %>
       </.async_result>
     </div>
     """
@@ -927,31 +941,41 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <div {@rest}>
       <.async_result :let={tracks} assign={@tracks}>
-        <ul class="flex flex-col gap-2 text-content-10 text-sm md:text-base">
-          <li :for={track <- tracks} class="grid grid-cols-12 items-center gap-2">
-            <.track_image
-              src={track.image}
-              class="col-span-1"
-              size_class="size-10"
-              padding_class="p-0"
-              radius_class="rounded-sm"
-            />
-            <div class="col-span-7 items-center">
-              <div class="flex items-center gap-3">
-                <div class="text-sm md:text-base text-content-20 whitespace-nowrap text-ellipsis line-clamp-1">
-                  <a href={track.url} target="_blank" class="link-ghost">{track.name}</a>
+        <:loading>
+          <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+        </:loading>
+
+        <%= if tracks != [] do %>
+          <ul class="flex flex-col gap-2 text-content-10 text-sm md:text-base">
+            <li :for={track <- tracks} class="grid grid-cols-12 items-center gap-2">
+              <.track_image
+                src={track.image}
+                class="col-span-1"
+                size_class="size-10"
+                padding_class="p-0"
+                radius_class="rounded-sm"
+              />
+              <div class="col-span-7 items-center">
+                <div class="flex items-center gap-3">
+                  <div class="text-sm md:text-base text-content-20 whitespace-nowrap text-ellipsis line-clamp-1">
+                    <a href={track.url} target="_blank" class="link-ghost">{track.name}</a>
+                  </div>
+                  <.playing_icon
+                    :if={track.now_playing}
+                    style="--playing-color: var(--color-surface-40)"
+                  />
                 </div>
-                <.playing_icon
-                  :if={track.now_playing}
-                  style="--playing-color: var(--color-surface-40)"
-                />
               </div>
-            </div>
-            <div class="col-span-4 ml-2 text-sm md:text-base font-light text-content-40 whitespace-nowrap text-ellipsis line-clamp-1">
-              {track.artist}
-            </div>
-          </li>
-        </ul>
+              <div class="col-span-4 ml-2 text-sm md:text-base font-light text-content-40 whitespace-nowrap text-ellipsis line-clamp-1">
+                {track.artist}
+              </div>
+            </li>
+          </ul>
+        <% else %>
+          <div class="flex items-center">
+            <.icon name="hero-bolt-slash-solid" class="mt-2 size-6 text-content-40/20" />
+          </div>
+        <% end %>
       </.async_result>
     </div>
     """
@@ -966,20 +990,30 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <div {@rest}>
       <.async_result :let={items} assign={@items}>
-        <ol class="list-decimal list-inside marker:text-content-40/80 columns-2">
-          <li
-            :for={item <- items}
-            class="group text-xl/9 font-light hover:marker:text-primary transition-colors"
-          >
-            <a href={item.url} target="_blank" class="link-ghost">{item.name}</a>
-            <span
-              :if={item.playcount}
-              class="font-light text-content-40/50 group-hover:text-content-40 transition-colors"
+        <:loading>
+          <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+        </:loading>
+
+        <%= if items != [] do %>
+          <ol class="list-decimal list-inside marker:text-content-40/80 columns-2">
+            <li
+              :for={item <- items}
+              class="group text-xl/9 font-light hover:marker:text-primary transition-colors"
             >
-              ({Support.format_number(item.playcount, 0)})
-            </span>
-          </li>
-        </ol>
+              <a href={item.url} target="_blank" class="link-ghost">{item.name}</a>
+              <span
+                :if={item.playcount}
+                class="font-light text-content-40/50 group-hover:text-content-40 transition-colors"
+              >
+                ({Support.format_number(item.playcount, 0)})
+              </span>
+            </li>
+          </ol>
+        <% else %>
+          <div class="flex items-center">
+            <.icon name="hero-bolt-slash-solid" class="mt-2 size-6 text-content-40/20" />
+          </div>
+        <% end %>
       </.async_result>
     </div>
     """
@@ -993,32 +1027,50 @@ defmodule SiteWeb.SiteComponents do
 
   def albums_grid(assigns) do
     ~H"""
-    <div class={[@class, "bg-surface-10 shadow-lg"]} {@rest}>
+    <div class={@class} {@rest}>
       <.async_result :let={albums} assign={@albums}>
-        <ol class="grid grid-cols-6 p-1">
-          <li
-            :for={album <- albums}
-            class={[
-              "group relative ease-in-out transition-transform duration-300",
-              "hover:scale-110 hover:shadow-xl hover:z-10"
-            ]}
-          >
-            <img src={album.image} alt={album.name} class="w-full h-auto group-hover:brightness-40" />
-            <div class="absolute inset-0 rounded-md overflow-hidden p-1">
-              <div class="flex h-full items-end justify-start text-white transition-opacity opacity-0 group-hover:opacity-100 duration-300">
-                <div class="flex flex-col">
-                  <div class="font-medium text-sm line-clamp-1 text-ellipsis">
-                    <a href={album.url} target="_blank" class="text-white">{album.name}</a>
-                  </div>
-                  <div class="text-gray-200 text-xs line-clamp-1 text-ellipsis">{album.artist}</div>
-                  <div class="text-gray-300 text-xs line-clamp-1 text-ellipsis">
-                    {Support.format_number(album.playcount, 0)} plays
+        <:loading>
+          <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+        </:loading>
+
+        <%= if albums != [] do %>
+          <div class="bg-surface-10 shadow-lg">
+            <ol class="grid grid-cols-6 p-1">
+              <li
+                :for={album <- albums}
+                class={[
+                  "group relative ease-in-out transition-transform duration-300",
+                  "hover:scale-110 hover:shadow-xl hover:z-10"
+                ]}
+              >
+                <img
+                  src={album.image}
+                  alt={album.name}
+                  class="w-full h-auto transition group-hover:brightness-40 group-hover:rounded-xs"
+                />
+                <div class="absolute inset-0 rounded-md overflow-hidden p-1">
+                  <div class="flex h-full items-end justify-start text-white transition-opacity opacity-0 group-hover:opacity-100 duration-300">
+                    <div class="flex flex-col">
+                      <div class="font-medium text-sm line-clamp-1 text-ellipsis">
+                        <a href={album.url} target="_blank" class="text-white">{album.name}</a>
+                      </div>
+                      <div class="text-gray-200 text-xs line-clamp-1 text-ellipsis">
+                        {album.artist}
+                      </div>
+                      <div class="text-gray-300 text-xs line-clamp-1 text-ellipsis">
+                        {Support.format_number(album.playcount, 0)} plays
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </li>
-        </ol>
+              </li>
+            </ol>
+          </div>
+        <% else %>
+          <div class="flex items-center">
+            <.icon name="hero-bolt-slash-solid" class="mt-2 size-6 text-content-40/20" />
+          </div>
+        <% end %>
       </.async_result>
     </div>
     """

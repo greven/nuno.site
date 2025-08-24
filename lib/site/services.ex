@@ -9,8 +9,9 @@ defmodule Site.Services do
   # alias Site.Services.Goodreads
   # alias Site.Services.Steam
 
-  @music_default_limit 20
   @music_albums_limit 36
+  @music_top_artists_limit 50
+  @music_top_tracks_limit 50
 
   ## Music
 
@@ -30,7 +31,7 @@ defmodule Site.Services do
 
   @decorate cacheable(cache: Site.Cache, key: {:top_artists}, opts: [ttl: :timer.hours(6)])
   def get_top_artists do
-    Lastfm.get_top_artists("overall", @music_default_limit)
+    Lastfm.get_top_artists("overall", @music_top_artists_limit)
   end
 
   @decorate cacheable(
@@ -38,7 +39,7 @@ defmodule Site.Services do
               key: {:top_artists, period, limit},
               opts: [ttl: :timer.hours(6)]
             )
-  def get_top_artists(period, limit \\ @music_default_limit) do
+  def get_top_artists(period, limit \\ @music_top_artists_limit) do
     Lastfm.get_top_artists(period, limit)
   end
 
@@ -58,7 +59,7 @@ defmodule Site.Services do
 
   @decorate cacheable(cache: Site.Cache, key: {:top_tracks}, opts: [ttl: :timer.hours(6)])
   def get_top_tracks do
-    Lastfm.get_top_tracks("overall", @music_default_limit)
+    Lastfm.get_top_tracks("overall", @music_top_tracks_limit)
   end
 
   @decorate cacheable(
@@ -66,7 +67,7 @@ defmodule Site.Services do
               key: {:top_tracks, period, limit},
               opts: [ttl: :timer.hours(6)]
             )
-  def get_top_tracks(period, limit \\ @music_default_limit) do
+  def get_top_tracks(period, limit \\ @music_top_tracks_limit) do
     Lastfm.get_top_tracks(period, limit)
   end
 

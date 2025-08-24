@@ -136,7 +136,7 @@ defmodule SiteWeb.ResumeLive.Index do
           </section>
 
           <%!-- Experience --%>
-          <section class="py-12 border-t border-surface-40">
+          <section class="py-12 border-t border-surface-40 border-dashed">
             <SiteWeb.SiteComponents.resume_section_header
               title="Career"
               subtitle="Recent work experience"

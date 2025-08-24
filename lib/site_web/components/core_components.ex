@@ -288,6 +288,8 @@ defmodule SiteWeb.CoreComponents do
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
 
+  attr :class, :string, default: "w-full mb-4", doc: "the CSS class to apply to the root element"
+
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
@@ -310,7 +312,7 @@ defmodule SiteWeb.CoreComponents do
       end)
 
     ~H"""
-    <div class="mb-4">
+    <div class={@class}>
       <label class="inline-flex items-center gap-3">
         <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
         <input
@@ -338,25 +340,40 @@ defmodule SiteWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div class="mb-4">
-      <label class="block">
+    <div class={@class}>
+      <label class="block w-full">
         <span :if={@label} class="block text-sm font-medium text-content-10 mb-2">{@label}</span>
-        <select
-          id={@id}
-          name={@name}
-          class={[
-            "w-full px-3 py-2 text-sm rounded-lg border transition-colors",
-            "bg-surface-10 border-surface-30 text-content-10",
-            "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
-            "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
-            @errors != [] && "border-danger focus:border-danger focus:ring-danger/20"
-          ]}
-          multiple={@multiple}
-          {@rest}
-        >
-          <option :if={@prompt} value="">{@prompt}</option>
-          {Phoenix.HTML.Form.options_for_select(@options, @value)}
-        </select>
+        <div class="grid grid-cols-1">
+          <select
+            id={@id}
+            name={@name}
+            class={[
+              "col-start-1 row-start-1 w-full px-3 py-2 text-sm rounded-lg border transition-colors appearance-none",
+              "bg-surface-10 border-surface-30 text-content-10",
+              "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
+              "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
+              @errors != [] && "border-danger focus:border-danger focus:ring-danger/20"
+            ]}
+            multiple={@multiple}
+            {@rest}
+          >
+            <option :if={@prompt} value="">{@prompt}</option>
+            {Phoenix.HTML.Form.options_for_select(@options, @value)}
+          </select>
+          <svg
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            data-slot="icon"
+            aria-hidden="true"
+            class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-content-40 sm:size-4"
+          >
+            <path
+              d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+              clip-rule="evenodd"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </div>
       </label>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
@@ -365,7 +382,7 @@ defmodule SiteWeb.CoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div class="mb-4">
+    <div class={@class}>
       <label class="block">
         <span :if={@label} class="block text-sm font-medium text-content-10 mb-2">{@label}</span>
         <textarea
@@ -390,7 +407,7 @@ defmodule SiteWeb.CoreComponents do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <fieldset class="grid grid-cols-1 gap-1.5 py-1 mb-2">
+    <fieldset class={["grid grid-cols-1 gap-1.5 py-1", @class]}>
       <label>
         <span :if={@label} class="block text-sm/6 font-medium text-content-10 pl-0.5 mb-2">
           {@label}
@@ -450,18 +467,14 @@ defmodule SiteWeb.CoreComponents do
 
     ~H"""
     <header
-      class={[
-        @actions != [] && "flex items-center justify-between gap-6",
-        "pb-4",
-        @class
-      ]}
+      class={[@actions != [] && "flex items-center justify-between gap-6", "pb-4"]}
       {@rest}
     >
-      <div>
+      <div class={@class}>
         <.dynamic_tag
           tag_name={@tag}
           class={[
-            "text-content-10",
+            "flex items-center text-content-10",
             if(@header_class, do: @header_class, else: @default_header_class)
           ]}
         >
