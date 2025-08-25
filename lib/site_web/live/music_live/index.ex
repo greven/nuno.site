@@ -1,6 +1,8 @@
 defmodule SiteWeb.MusicLive.Index do
   use SiteWeb, :live_view
 
+  alias Phoenix.LiveView.AsyncResult
+
   alias Site.Services
   alias Site.Services.MusicTrack
   alias SiteWeb.SiteComponents
@@ -14,21 +16,15 @@ defmodule SiteWeb.MusicLive.Index do
       <Layouts.page_content class="flex flex-col gap-16">
         <SiteComponents.now_playing track={@track} />
 
-        <.form for={@form} phx-change="change_top_artists_range">
-          <.input
-            type="text"
-            field={@form[:artists_time_range]}
-            disabled={if @top_artists.loading, do: true, else: false}
-            value={@form[:artists_time_range].value}
-            class="w-40"
-          />
-        </.form>
-
         <section>
           <.header tag="h3">
             <.icon name="lucide-history" class="mr-2.5 text-content-40" /> Recently Played
           </.header>
-          <SiteComponents.recent_tracks tracks={@recent_tracks} class="mt-2" />
+          <SiteComponents.recent_tracks
+            async={@recent_tracks}
+            tracks={@streams.recent_tracks}
+            class="mt-2"
+          />
         </section>
 
         <section>
@@ -46,7 +42,11 @@ defmodule SiteWeb.MusicLive.Index do
               </.form>
             </:actions>
           </.header>
-          <SiteComponents.top_artists_list items={@top_artists} class="mt-2" />
+          <SiteComponents.top_artists_list
+            async={@top_artists}
+            items={@streams.top_artists}
+            class="mt-2"
+          />
         </section>
 
         <section>
@@ -64,7 +64,7 @@ defmodule SiteWeb.MusicLive.Index do
               </.form>
             </:actions>
           </.header>
-          <SiteComponents.albums_grid albums={@top_albums} class="mt-2" />
+          <SiteComponents.albums_grid async={@top_albums} albums={@streams.top_albums} class="mt-2" />
         </section>
       </Layouts.page_content>
     </Layouts.app>
@@ -86,63 +86,87 @@ defmodule SiteWeb.MusicLive.Index do
       {"Last 12 months", "12month"}
     ]
 
+    filters = %{"artists_time_range" => "overall", "albums_time_range" => "overall"}
+
     socket =
       socket
       |> assign(:page_title, "Music")
-      |> assign(:form, to_form(%{artists_time_range: "7day", albums_time_range: "overall"}))
-      |> assign_async(:track, fn -> {:ok, %{track: get_now_playing()}} end)
-      |> assign_async(:recent_tracks, fn ->
-        {:ok, %{recent_tracks: get_recently_played_tracks()}}
-      end)
-      |> assign_async(:top_artists, fn -> {:ok, %{top_artists: get_top_artists()}} end)
-      |> assign_async(:top_albums, fn -> {:ok, %{top_albums: get_top_albums()}} end)
+      |> assign(:form, to_form(filters))
+      |> assign_async(:track, &get_currently_playing/0)
+      |> stream_configure(:recent_tracks,
+        dom_id: &"songs-#{&1.name}-#{&1.played_at || (&1.now_playing && DateTime.utc_now())}"
+      )
+      |> stream_configure(:top_artists, dom_id: &"artist-#{&1.name}-#{&1.rank}")
+      |> stream_configure(:top_albums, dom_id: &"album-#{&1.name}-#{&1.rank}")
+      |> stream_async(:recent_tracks, fn -> get_recent_tracks(limit: 10) end)
+      |> stream_async(:top_artists, fn -> get_top_artists("overall", limit: 30) end)
+      |> stream_async(:top_albums, fn -> get_top_albums("overall") end)
 
-    {:ok, socket,
-     temporary_assigns: [
-       time_range_options: time_range_options
-     ]}
+    {:ok, socket, temporary_assigns: [time_range_options: time_range_options]}
   end
 
   @impl true
   def handle_info(:refresh_music, socket) do
     Process.send_after(self(), :refresh_music, @refresh_interval)
 
-    {:noreply,
-     socket
-     |> assign_async([:track, :recent_tracks], fn ->
-       {:ok,
-        %{
-          track: get_now_playing(),
-          recent_tracks: get_recently_played_tracks()
-        }}
-     end)}
+    socket =
+      socket
+      |> assign_async(:track, &get_currently_playing/0)
+      |> stream_async(:recent_tracks, fn -> get_recent_tracks(limit: 10, reset: true) end)
+
+    {:noreply, socket}
   end
 
-  defp get_now_playing do
+  @impl true
+  def handle_event("change_top_artists_range", %{"artists_time_range" => time_range}, socket) do
+    form_data = Map.merge(socket.assigns.form.source, %{"artists_time_range" => time_range})
+
+    socket =
+      socket
+      |> assign(:form, to_form(form_data))
+      |> assign(:top_artists, AsyncResult.loading())
+      |> stream_async(:top_artists, fn -> get_top_artists(time_range, limit: 30) end)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("change_top_albums_range", %{"albums_time_range" => time_range}, socket) do
+    form_data = Map.merge(socket.assigns.form.source, %{"albums_time_range" => time_range})
+
+    socket =
+      socket
+      |> assign(:form, to_form(form_data))
+      |> assign(:top_albums, AsyncResult.loading())
+      |> stream_async(:top_albums, fn -> get_top_albums(time_range) end)
+
+    {:noreply, socket}
+  end
+
+  defp get_currently_playing do
     case Services.get_now_playing() do
-      {:ok, %MusicTrack{} = track} -> track
-      {:error, _reason} -> %MusicTrack{}
+      {:ok, %MusicTrack{} = track} -> {:ok, %{track: track}}
+      error -> error
     end
   end
 
-  defp get_recently_played_tracks do
+  defp get_recent_tracks(opts) do
     case Services.get_recently_played_tracks() do
-      {:ok, tracks} -> Enum.take(tracks, 10)
-      {:error, _reason} -> []
+      {:ok, tracks} -> {:ok, tracks, opts}
+      error -> error
     end
   end
 
-  defp get_top_artists do
-    case Services.get_top_artists() do
-      {:ok, artists} -> Enum.take(artists, 30)
-      {:error, _reason} -> []
+  defp get_top_artists(time_range, opts) do
+    case Services.get_top_artists(time_range) do
+      {:ok, artists} -> {:ok, artists, opts}
+      error -> error
     end
   end
 
-  defp get_top_albums do
-    case Services.get_top_albums() do
-      {:ok, albums} -> albums
-      {:error, _reason} -> []
+  defp get_top_albums(time_range, opts \\ []) do
+    case Services.get_top_albums(time_range) do
+      {:ok, albums} -> {:ok, albums, opts}
+      error -> error
     end
   end
 end

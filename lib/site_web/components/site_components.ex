@@ -934,20 +934,29 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
-  attr :tracks, AsyncResult, required: true
+  attr :async, AsyncResult, required: true
+  attr :tracks, :list, required: true
   attr :rest, :global
 
   def recent_tracks(assigns) do
     ~H"""
     <div {@rest}>
-      <.async_result :let={tracks} assign={@tracks}>
+      <.async_result assign={@async}>
         <:loading>
           <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
         </:loading>
 
-        <%= if tracks != [] do %>
-          <ul class="flex flex-col gap-2 text-content-10 text-sm md:text-base">
-            <li :for={track <- tracks} class="grid grid-cols-12 items-center gap-2">
+        <%= if @tracks != [] do %>
+          <ul
+            id="recent-tracks"
+            class="flex flex-col gap-2 text-content-10 text-sm md:text-base"
+            phx-update={is_struct(@tracks, Phoenix.LiveView.LiveStream) && "stream"}
+          >
+            <li
+              :for={{dom_id, track} <- @tracks}
+              class="grid grid-cols-12 items-center gap-2"
+              id={dom_id}
+            >
               <.track_image
                 src={track.image}
                 class="col-span-1"
@@ -983,22 +992,24 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
-  attr :items, AsyncResult, required: true
+  attr :async, AsyncResult, required: true
+  attr :items, :list, required: true
   attr :rest, :global
 
   def top_artists_list(assigns) do
     ~H"""
     <div {@rest}>
-      <.async_result :let={items} assign={@items}>
+      <.async_result assign={@async}>
         <:loading>
           <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
         </:loading>
 
-        <%= if items != [] do %>
+        <%= if @items != [] do %>
           <ol class="list-decimal list-inside marker:text-content-40/80 columns-2">
             <li
-              :for={item <- items}
+              :for={{dom_id, item} <- @items}
               class="group text-xl/9 font-light hover:marker:text-primary transition-colors"
+              id={dom_id}
             >
               <a href={item.url} target="_blank" class="link-ghost">{item.name}</a>
               <span
@@ -1021,32 +1032,36 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
-  attr :albums, AsyncResult, required: true
+  attr :async, AsyncResult, required: true
+  attr :albums, :list, required: true
   attr :class, :string, default: nil
   attr :rest, :global
 
   def albums_grid(assigns) do
     ~H"""
     <div class={@class} {@rest}>
-      <.async_result :let={albums} assign={@albums}>
+      <.async_result :let={_async} assign={@async}>
         <:loading>
           <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
         </:loading>
 
-        <%= if albums != [] do %>
+        <%= if @albums != [] do %>
           <div class="bg-surface-10 shadow-lg">
             <ol class="grid grid-cols-6 p-1">
               <li
-                :for={album <- albums}
+                :for={{dom_id, album} <- @albums}
                 class={[
                   "group relative ease-in-out transition-transform duration-300",
                   "hover:scale-110 hover:shadow-xl hover:z-10"
                 ]}
+                id={dom_id}
               >
-                <img
+                <.image
                   src={album.image}
                   alt={album.name}
                   class="w-full h-auto transition group-hover:brightness-40 group-hover:rounded-xs"
+                  width={164}
+                  height={164}
                 />
                 <div class="absolute inset-0 rounded-md overflow-hidden p-1">
                   <div class="flex h-full items-end justify-start text-white transition-opacity opacity-0 group-hover:opacity-100 duration-300">
