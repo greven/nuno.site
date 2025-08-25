@@ -1222,30 +1222,51 @@ defmodule SiteWeb.CoreComponents do
   attr :alt, :string, required: true
   attr :width, :integer, required: true
   attr :height, :integer, required: true
-  attr :picture, :boolean, default: true
-  attr :source_ext, :list, default: ~w(webp)
+  # attr :use_loader, :boolean, default: true
+  attr :use_picture, :boolean, default: false
+
+  attr :source_ext, :list,
+    default: ~w(webp),
+    doc: "list of source extensions for the <picture> tag
+      if :use_picture is true and no :source slots are provided"
+
+  attr :sizes, :string, default: nil, doc: "list of sizes for the <source> tag
+    if :use_picture is true and no :source slots are provided"
+
   attr :class, :any, default: nil
-  attr :rest, :global
+  attr :rest, :global, include: ~w(loading)
+
+  slot :source do
+    attr :type, :string
+    attr :srcset, :string
+    attr :sizes, :string
+  end
 
   def image(assigns) do
     ~H"""
-    <%= if @picture do %>
-      <picture>
-        <%= for ext <- @source_ext do %>
-          <source type={"image/#{ext}"} srcset={srcset(@src, ext)} />
+    <%= cond do %>
+      <% @use_picture && @source != []  -> %>
+        <%= for source <- @source do %>
+          <source type={source.type} srcset={source.srcset} sizes={source.sizes} />
+          <img class={@class} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
         <% end %>
+      <% @use_picture && @source_ext != [] -> %>
+        <%= for ext <- @source_ext do %>
+          <source type={"image/#{ext}"} srcset={picture_srcset(@srcset, @src, ext)} sizes={@sizes} />
+          <img class={@class} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
+        <% end %>
+      <% true -> %>
         <img class={@class} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
-      </picture>
-    <% else %>
-      <img class={@class} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
     <% end %>
     """
   end
 
   # Replace the file extension in the srcset attribute
-  defp srcset(src, ext) do
+  defp picture_srcset(nil, src, ext) do
     String.replace(src, ~r/\.(jpg|jpeg|png|gif)$/, ".#{ext}")
   end
+
+  defp picture_srcset(srcset, _src, _ext), do: srcset
 
   @doc """
   Renders a date as a relative time string.

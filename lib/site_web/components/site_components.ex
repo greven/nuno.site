@@ -147,6 +147,7 @@ defmodule SiteWeb.SiteComponents do
         "rounded-full object-cover",
         "hover:ring-2 ring-primary ring-offset-2 ring-offset-surface transition-all"
       ]}
+      use_picture
     />
     """
   end
@@ -239,7 +240,7 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <div class="slide" data-active={@active}>
       <div class="relative">
-        <.image src={@src} alt={@alt} width={@size} height={@size} data-title={@title} />
+        <.image src={@src} alt={@alt} width={@size} height={@size} data-title={@title} use_picture />
 
         <div :if={@title} class="absolute bottom-4 w-full flex items-center justify-center">
           <span class={[
@@ -1062,6 +1063,7 @@ defmodule SiteWeb.SiteComponents do
                   class="w-full h-auto transition group-hover:brightness-40 group-hover:rounded-xs"
                   width={164}
                   height={164}
+                  loading="lazy"
                 />
                 <div class="absolute inset-0 rounded-md overflow-hidden p-1">
                   <div class="flex h-full items-end justify-start text-white transition-opacity opacity-0 group-hover:opacity-100 duration-300">
