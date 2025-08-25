@@ -1225,6 +1225,11 @@ defmodule SiteWeb.CoreComponents do
   # attr :use_loader, :boolean, default: true
   attr :use_picture, :boolean, default: false
 
+  attr :srcset, :string,
+    default: nil,
+    doc: "the srcset attribute for the <source> tag
+      if :use_picture is true and no :source slots are provided"
+
   attr :source_ext, :list,
     default: ~w(webp),
     doc: "list of source extensions for the <picture> tag

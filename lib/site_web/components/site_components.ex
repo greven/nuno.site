@@ -138,6 +138,7 @@ defmodule SiteWeb.SiteComponents do
   defp avatar_image(assigns) do
     ~H"""
     <.image
+      use_picture
       src="/images/avatar.png"
       alt="avatar"
       height={@size}
@@ -147,7 +148,6 @@ defmodule SiteWeb.SiteComponents do
         "rounded-full object-cover",
         "hover:ring-2 ring-primary ring-offset-2 ring-offset-surface transition-all"
       ]}
-      use_picture
     />
     """
   end
