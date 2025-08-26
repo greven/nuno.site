@@ -1109,40 +1109,40 @@ defmodule SiteWeb.SiteComponents do
         </:loading>
 
         <%= if @books != [] do %>
-          <ol class="grid grid-cols-6 gap-4">
-            <li
-              :for={{dom_id, book} <- @books}
-              class={[
-                "group relative ease-in-out transition-transform duration-300",
-                "hover:scale-110 hover:shadow-xl hover:z-10"
-              ]}
-              id={dom_id}
-            >
+          <ul class="flex flex-col gap-4">
+            <li :for={{dom_id, book} <- @books} class="flex flex-row gap-4" id={dom_id}>
               <.image
                 src={book.cover_url}
                 alt={book.title}
-                class="w-full h-auto rounded-xs group-hover:brightness-40"
-                width={200}
+                class="object-cover rounded-sm shadow-sm"
+                width={100}
                 height={200}
                 loading="lazy"
               />
-              <div class="absolute inset-0 rounded-md overflow-hidden p-1">
-                <div class="flex h-full items-end justify-start text-white transition-opacity opacity-0 group-hover:opacity-100 duration-300">
-                  <div class="flex flex-col">
-                    <div class="font-medium text-sm line-clamp-1 text-ellipsis">
-                      <a href={book.url} target="_blank" class="text-white">{book.title}</a>
-                    </div>
-                    <div class="text-gray-200 text-xs line-clamp-1 text-ellipsis">
+              <div class="max-w-md flex justify-center items-start">
+                <div class="flex flex-col">
+                  <div class="line-clamp-2 text-ellipsis text-balance">
+                    <a
+                      href={book.url}
+                      target="_blank"
+                      class="link-ghost font-headings font-medium text-xl text-content-20"
+                    >
+                      {book.title}
+                    </a>
+                  </div>
+                  <div class="line-clamp-1 text-ellipsis">
+                    <a
+                      href={book.author_url}
+                      target="_blank"
+                      class="link-ghost font-light text-lg text-content-40"
+                    >
                       {book.author}
-                    </div>
-                    <%!-- <div class="text-gray-300 text-xs line-clamp-1 text-ellipsis">
-                        {Support.format_number(book.read_count, 0)} reads
-                      </div> --%>
+                    </a>
                   </div>
                 </div>
               </div>
             </li>
-          </ol>
+          </ul>
         <% else %>
           <div class="flex items-center">
             <.icon name="hero-bolt-slash-solid" class="mt-2 size-6 text-content-40/20" />

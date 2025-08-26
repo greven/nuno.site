@@ -23,23 +23,26 @@ defmodule Site.Services.Goodreads do
     |> parse_currently_reading_response()
   end
 
+  # TODO: Wrap each fragment into a task so we can parallelize the fetching
   defp parse_currently_reading_response({:ok, body}) do
-    document = LazyHTML.from_fragment(body)
+    document = LazyHTML.from_document(body)
 
     books =
       document
       |> LazyHTML.query("#booksBody tr.bookalike")
-      |> Enum.map(fn row ->
-        thumbnail_url = parse_book_thumbnail_url(row)
+      |> Enum.map(fn html_fragment ->
+        thumbnail_url = parse_book_thumbnail_url(html_fragment)
+        book_url = parse_book_url(html_fragment)
 
         %Book{
-          id: parse_book_id(row),
-          title: parse_book_title(row),
-          author: parse_book_author(row),
-          url: parse_book_url(row),
+          id: parse_book_id(html_fragment),
+          title: parse_book_title(html_fragment),
+          author: parse_book_author(html_fragment),
+          url: book_url,
+          author_url: parse_author_url(html_fragment),
           thumbnail_url: thumbnail_url,
           cover_url: book_cover_url(thumbnail_url),
-          date_started: parse_book_date(row)
+          date_started: parse_book_date(html_fragment)
         }
       end)
 
@@ -47,6 +50,43 @@ defmodule Site.Services.Goodreads do
   end
 
   defp parse_currently_reading_response({:error, _} = error), do: error
+
+  # Fetch book details since GoodReads doesn't provide all the book info 
+  # in the initial response nor it has a dedicated API
+  def fetch_book_details(%Book{url: book_url}) when is_binary(book_url) do
+    with {:ok, html} <- fetch_book_html(book_url),
+         {:ok, attrs} <- extract_book_attributes(html, book_url) do
+      {:ok, struct(Book, attrs)}
+    else
+      {:error, _} = err -> err
+    end
+  end
+
+  defp fetch_book_html(book_url) do
+    book_url
+    |> Req.get(headers: default_headers())
+    |> case do
+      {:ok, %Req.Response{status: 200, body: body}} -> {:ok, body}
+      {:ok, %Req.Response{status: status, body: body}} -> {:error, {status, body}}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp default_headers do
+    [
+      {"user-agent",
+       "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"},
+      {"accept", "text/html,application/xhtml+xml"},
+      {"accept-language", "en-US,en;q=0.9"},
+      {"cache-control", "no-cache"}
+    ]
+  end
+
+  defp extract_book_attributes(html, url) do
+    document = LazyHTML.from_fragment(html)
+    dbg(document)
+    {:ok, %{}}
+  end
 
   defp parse_book_id(lazy_html) do
     lazy_html
@@ -73,6 +113,14 @@ defmodule Site.Services.Goodreads do
     |> Enum.join(" ")
   end
 
+  defp parse_author_url(lazy_html) do
+    lazy_html
+    |> LazyHTML.query(".field.author a")
+    |> LazyHTML.attribute("href")
+    |> List.first()
+    |> then(&("#{@base_url}" <> &1))
+  end
+
   defp parse_book_url(lazy_html) do
     lazy_html
     |> LazyHTML.query(".field.title a")
@@ -94,7 +142,7 @@ defmodule Site.Services.Goodreads do
     book_path =
       String.split(thumbnail_url, "/books/")
       |> List.last()
-      |> String.replace(~r/(\._S\w\d+_)/, "")
+      |> String.replace(~r/(\._S\w\d+_)/, "._SY300_")
 
     cdn_url <> "/books/" <> book_path
   end

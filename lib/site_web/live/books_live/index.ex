@@ -8,7 +8,12 @@ defmodule SiteWeb.BooksLive.Index do
     ~H"""
     <Layouts.app flash={@flash} active_link={@active_link}>
       <Layouts.page_content class="flex flex-col gap-16">
-        <SiteComponents.books_list async={@books} books={@streams.books} />
+        <section>
+          <.header tag="h3">
+            <.icon name="lucide-book-open" class="mr-2.5 text-content-40" /> Currently Reading
+          </.header>
+          <SiteComponents.books_list async={@books} books={@streams.books} class="mt-2" />
+        </section>
       </Layouts.page_content>
     </Layouts.app>
     """
