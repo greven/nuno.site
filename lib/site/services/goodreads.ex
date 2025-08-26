@@ -4,137 +4,160 @@ defmodule Site.Services.Goodreads do
   retrive my currently reading and total books read.
   """
 
-  # require Logger
+  @base_url "https://www.goodreads.com"
 
-  # @cache_ttl :timer.hours(12)
+  require Logger
 
-  # def base_url, do: "https://www.goodreads.com/review/list/87020422-nuno-freire"
+  alias Site.Services.Book
 
-  # def get_currently_reading(opts \\ []) do
-  #   ttl = Keyword.get(opts, :ttl, @cache_ttl)
-  #   use_cache? = Keyword.get(opts, :use_cache, true)
+  def profile_url, do: "#{@base_url}/review/list/87020422-nuno-freire"
 
-  #   if Site.Cache.ttl(:currently_reading) && use_cache? do
-  #     {:ok, Site.Cache.get(:currently_reading)}
-  #   else
-  #     case do_get_currently_reading() do
-  #       {:ok, books} ->
-  #         Site.Cache.put(:currently_reading, books, ttl: ttl)
-  #         {:ok, books}
+  def get_currently_reading do
+    "#{profile_url()}?shelf=currently-reading"
+    |> Req.get()
+    |> case do
+      {:ok, %Req.Response{status: 200, body: body}} -> {:ok, body}
+      {:ok, %Req.Response{status: status, body: body}} -> {:error, {status, body}}
+      {:error, reason} -> {:error, reason}
+    end
+    |> parse_currently_reading_response()
+  end
 
-  #       {:error, status} ->
-  #         Logger.error("Error fetching currently reading books: #{inspect(status)}")
-  #         {:error, status}
-  #     end
-  #   end
-  # end
+  defp parse_currently_reading_response({:ok, body}) do
+    document = LazyHTML.from_fragment(body)
 
-  # defp do_get_currently_reading do
-  #   "#{base_url()}?shelf=currently-reading"
-  #   |> Req.get()
-  #   |> parse_currently_reading_response()
-  # end
+    books =
+      document
+      |> LazyHTML.query("#booksBody tr.bookalike")
+      |> Enum.map(fn row ->
+        thumbnail_url = parse_book_thumbnail_url(row)
 
-  # TODO: Replace Flok with lazy_html
-  # defp parse_currently_reading_response({:ok, resp}) do
-  # case resp.status do
-  #   200 ->
-  #     {:ok, document} = Floki.parse_document(resp.body)
+        %Book{
+          id: parse_book_id(row),
+          title: parse_book_title(row),
+          author: parse_book_author(row),
+          url: parse_book_url(row),
+          thumbnail_url: thumbnail_url,
+          cover_url: book_cover_url(thumbnail_url),
+          date_started: parse_book_date(row)
+        }
+      end)
 
-  #     books =
-  #       document
-  #       |> Floki.find("#booksBody")
-  #       |> Floki.find("tr.bookalike")
-  #       |> Enum.map(fn row ->
-  #         %{
-  #           id: book_id(row),
-  #           title: book_title(row),
-  #           author: book_author(row),
-  #           book_url: book_url(row),
-  #           cover_url: book_cover_url(row),
-  #           date_started: book_date_started(row)
-  #         }
-  #       end)
-  #       |> Enum.sort_by(& &1.date_started)
+    {:ok, books}
+  end
 
-  #     {:ok, books}
+  defp parse_currently_reading_response({:error, _} = error), do: error
 
-  #   _ ->
-  #     {:error, resp.status}
-  # end
-  # end
+  defp parse_book_id(lazy_html) do
+    lazy_html
+    |> LazyHTML.query(".field.title a")
+    |> LazyHTML.attribute("href")
+    |> List.first()
+    |> String.split("/")
+    |> List.last()
+  end
 
-  # defp parse_currently_reading_response({:error, _} = error), do: error
+  defp parse_book_title(lazy_html) do
+    lazy_html
+    |> LazyHTML.query(".field.title a")
+    |> LazyHTML.attribute("title")
+    |> List.first()
+  end
 
-  # TODO: Replace Flok with lazy_html
-  # defp book_id(row) do
-  # Floki.find(row, ".field.title a")
-  # |> Floki.attribute("href")
-  # |> Floki.text()
-  # |> String.split("/")
-  # |> List.last()
-  # end
+  defp parse_book_author(lazy_html) do
+    lazy_html
+    |> LazyHTML.query(".field.author a")
+    |> LazyHTML.text()
+    |> String.split(", ")
+    |> Enum.reverse()
+    |> Enum.join(" ")
+  end
 
-  # TODO: Replace Flok with lazy_html
-  # defp book_title(row) do
-  # Floki.find(row, ".field.title a") |> Floki.attribute("title") |> Floki.text()
-  # end
+  defp parse_book_url(lazy_html) do
+    lazy_html
+    |> LazyHTML.query(".field.title a")
+    |> LazyHTML.attribute("href")
+    |> List.first()
+    |> then(&("#{@base_url}" <> &1))
+  end
 
-  # TODO: Replace Flok with lazy_html
-  # Find the book author and invert the name order
-  # defp book_author(row) do
-  # Floki.find(row, ".field.author a")
-  # |> Floki.text()
-  # |> String.split(", ")
-  # |> Enum.reverse()
-  # |> Enum.join(" ")
-  # end
+  defp parse_book_thumbnail_url(lazy_html) do
+    lazy_html
+    |> LazyHTML.query(".field.cover img")
+    |> LazyHTML.attribute("src")
+    |> List.first()
+  end
 
-  # TODO: Replace Flok with lazy_html
-  # defp book_url(row) do
-  # book_relative_url =
-  #   Floki.find(row, ".field.title a")
-  #   |> Floki.attribute("href")
-  #   |> Floki.text()
+  defp book_cover_url(thumbnail_url) do
+    cdn_url = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com"
 
-  # "https://goodreads.com" <> book_relative_url
-  # end
+    book_path =
+      String.split(thumbnail_url, "/books/")
+      |> List.last()
+      |> String.replace(~r/(\._S\w\d+_)/, "")
 
-  # TODO: Replace Flok with lazy_html
-  # Find the book cover image and get the medium image size
-  # defp book_cover_url(row, image_size \\ 300) do
-  # image_url =
-  #   Floki.find(row, ".field.cover img")
-  #   |> Floki.attribute("src")
-  #   |> List.first()
+    cdn_url <> "/books/" <> book_path
+  end
 
-  # base_url =
-  #   image_url
-  #   |> String.split("._")
-  #   |> List.first()
+  defp parse_book_date(lazy_html) do
+    lazy_html
+    |> LazyHTML.query(".field .date_started_value")
+    |> LazyHTML.text()
+    |> maybe_parse_date()
+    |> case do
+      {:ok, date_started} ->
+        date_started
 
-  # base_url <> "._SX#{image_size}_.jpg"
-  # end
+      _ ->
+        nil
+    end
+  end
 
-  # TODO: Replace Flok with lazy_html
-  # defp book_date_started(row) do
-  # Floki.find(row, ".field .date_started_value")
-  # |> Floki.text()
-  # |> maybe_parse_date()
-  # |> case do
-  #   {:ok, data_started} ->
-  #     data_started
+  # Parse the book date from the format MMM DD, YYYY to Date,
+  # example: "Jan 17, 2020" -> {:ok, ~D[2020-01-17]}
+  defp maybe_parse_date(date) when is_binary(date) do
+    case String.trim(date) do
+      "" -> {:error, :invalid_date}
+      date -> do_parse_date(date)
+    end
+  end
 
-  #   _ ->
-  #     nil
-  # end
-  # end
+  # Two-digit day: "Jan 17, 2020"
+  defp do_parse_date(<<m1, m2, m3, " ", d1, d2, ", ", y1, y2, y3, y4>>)
+       when d1 in ?0..?9 and d2 in ?0..?9 and m1 in ?A..?Z and m2 in ?a..?z and m3 in ?a..?z do
+    parse_date(<<m1, m2, m3>>, <<d1, d2>>, <<y1, y2, y3, y4>>)
+  end
 
-  # TODO: Replace Timex
-  # defp maybe_parse_date(date) when is_binary(date) do
-  # case Timex.parse(date, "{Mshort} {D}, {YYYY}") do
-  #   {:ok, date} -> {:ok, date}
-  #   _ -> Timex.parse(date, "{Mshort} {YYYY}")
-  # end
-  # end
+  # One-digit day: "Jan 7, 2020"
+  defp do_parse_date(<<m1, m2, m3, " ", d1, ", ", y1, y2, y3, y4>>)
+       when d1 in ?0..?9 and m1 in ?A..?Z and m2 in ?a..?z and m3 in ?a..?z do
+    parse_date(<<m1, m2, m3>>, <<d1>>, <<y1, y2, y3, y4>>)
+  end
+
+  defp do_parse_date(_), do: {:error, :invalid_date}
+
+  defp parse_date(mon_abbr_str, day_str, year_str) do
+    with {:ok, month} <- month_number(mon_abbr_str),
+         {day, ""} <- Integer.parse(day_str),
+         {year, ""} <- Integer.parse(year_str),
+         {:ok, date} <- Date.new(year, month, day) do
+      {:ok, date}
+    else
+      _ -> {:error, :invalid_date}
+    end
+  end
+
+  defp month_number("Jan"), do: {:ok, 1}
+  defp month_number("Feb"), do: {:ok, 2}
+  defp month_number("Mar"), do: {:ok, 3}
+  defp month_number("Apr"), do: {:ok, 4}
+  defp month_number("May"), do: {:ok, 5}
+  defp month_number("Jun"), do: {:ok, 6}
+  defp month_number("Jul"), do: {:ok, 7}
+  defp month_number("Aug"), do: {:ok, 8}
+  defp month_number("Sep"), do: {:ok, 9}
+  defp month_number("Oct"), do: {:ok, 10}
+  defp month_number("Nov"), do: {:ok, 11}
+  defp month_number("Dec"), do: {:ok, 12}
+  defp month_number(_), do: {:error, :invalid_month}
 end

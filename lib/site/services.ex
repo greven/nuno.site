@@ -6,7 +6,7 @@ defmodule Site.Services do
   use Nebulex.Caching
 
   alias Site.Services.Lastfm
-  # alias Site.Services.Goodreads
+  alias Site.Services.Goodreads
   # alias Site.Services.Steam
 
   @music_albums_limit 36
@@ -73,9 +73,14 @@ defmodule Site.Services do
 
   ## Books
 
-  # def get_currently_reading(opts \\ []) do
-  # Goodreads.get_currently_reading(opts)
-  # end
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: :books,
+              opts: [ttl: :timer.hours(12)]
+            )
+  def get_currently_reading() do
+    Goodreads.get_currently_reading()
+  end
 
   ## Games
 

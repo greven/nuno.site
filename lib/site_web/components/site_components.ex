@@ -1093,6 +1093,66 @@ defmodule SiteWeb.SiteComponents do
     """
   end
 
+  @doc false
+
+  attr :async, AsyncResult, required: true
+  attr :books, :list, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def books_list(assigns) do
+    ~H"""
+    <div class={@class} {@rest}>
+      <.async_result :let={_async} assign={@async}>
+        <:loading>
+          <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+        </:loading>
+
+        <%= if @books != [] do %>
+          <ol class="grid grid-cols-6 gap-4">
+            <li
+              :for={{dom_id, book} <- @books}
+              class={[
+                "group relative ease-in-out transition-transform duration-300",
+                "hover:scale-110 hover:shadow-xl hover:z-10"
+              ]}
+              id={dom_id}
+            >
+              <.image
+                src={book.cover_url}
+                alt={book.title}
+                class="w-full h-auto rounded-xs group-hover:brightness-40"
+                width={200}
+                height={200}
+                loading="lazy"
+              />
+              <div class="absolute inset-0 rounded-md overflow-hidden p-1">
+                <div class="flex h-full items-end justify-start text-white transition-opacity opacity-0 group-hover:opacity-100 duration-300">
+                  <div class="flex flex-col">
+                    <div class="font-medium text-sm line-clamp-1 text-ellipsis">
+                      <a href={book.url} target="_blank" class="text-white">{book.title}</a>
+                    </div>
+                    <div class="text-gray-200 text-xs line-clamp-1 text-ellipsis">
+                      {book.author}
+                    </div>
+                    <%!-- <div class="text-gray-300 text-xs line-clamp-1 text-ellipsis">
+                        {Support.format_number(book.read_count, 0)} reads
+                      </div> --%>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ol>
+        <% else %>
+          <div class="flex items-center">
+            <.icon name="hero-bolt-slash-solid" class="mt-2 size-6 text-content-40/20" />
+          </div>
+        <% end %>
+      </.async_result>
+    </div>
+    """
+  end
+
   ## Renderless Helpers
 
   # Shortened date string, e.g. "2023-10-01" -> "Oct 2023"
