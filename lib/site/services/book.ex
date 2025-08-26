@@ -4,12 +4,11 @@ defmodule Site.Services.Book do
     :title,
     :author,
     :author_url,
-    :publication_date,
-    :genres,
     :url,
     :cover_url,
     :thumbnail_url,
-    :date_started,
+    :pub_date,
+    :started_date,
     :rating
   ]
 end

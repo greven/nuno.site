@@ -1115,17 +1115,17 @@ defmodule SiteWeb.SiteComponents do
                 src={book.cover_url}
                 alt={book.title}
                 class="object-cover rounded-sm shadow-sm"
-                width={100}
-                height={200}
+                width={90}
+                height={180}
                 loading="lazy"
               />
-              <div class="max-w-md flex justify-center items-start">
-                <div class="flex flex-col">
+              <div class="max-w-md flex justify-center items-center">
+                <div class="flex flex-col gap-0.5">
                   <div class="line-clamp-2 text-ellipsis text-balance">
                     <a
                       href={book.url}
                       target="_blank"
-                      class="link-ghost font-headings font-medium text-xl text-content-20"
+                      class="link-subtle font-headings font-medium text-xl text-content-20"
                     >
                       {book.title}
                     </a>
@@ -1134,10 +1134,13 @@ defmodule SiteWeb.SiteComponents do
                     <a
                       href={book.author_url}
                       target="_blank"
-                      class="link-ghost font-light text-lg text-content-40"
+                      class="link-ghost font-light text-xl text-content-30"
                     >
                       {book.author}
                     </a>
+                  </div>
+                  <div class="line-clamp-1 font-light text-ellipsis text-base text-content-40">
+                    {format_date(book.started_date)}
                   </div>
                 </div>
               </div>

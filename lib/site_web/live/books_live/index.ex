@@ -1,6 +1,7 @@
 defmodule SiteWeb.BooksLive.Index do
   use SiteWeb, :live_view
 
+  alias Site.Services.Goodreads
   alias SiteWeb.SiteComponents
 
   @impl true
@@ -13,6 +14,14 @@ defmodule SiteWeb.BooksLive.Index do
             <.icon name="lucide-book-open" class="mr-2.5 text-content-40" /> Currently Reading
           </.header>
           <SiteComponents.books_list async={@books} books={@streams.books} class="mt-2" />
+
+          <.button href={Goodreads.profile_url()} target="_blank" variant="light" class="group mt-8">
+            My Goodreads
+            <.icon
+              name="hero-arrow-up-right-mini"
+              class="size-5 text-primary duration-200 group-hover:transform group-hover:translate-x-0.5 transition-transform"
+            />
+          </.button>
         </section>
       </Layouts.page_content>
     </Layouts.app>
