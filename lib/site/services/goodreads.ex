@@ -12,17 +12,32 @@ defmodule Site.Services.Goodreads do
 
   def profile_url, do: "#{@base_url}/review/list/87020422-nuno-freire"
   defp currently_reading_shelf_url, do: "#{profile_url()}?shelf=currently-reading"
-  # def read_shelf_url, do: "#{profile_url()}?shelf=read"
 
   def get_currently_reading do
-    currently_reading_shelf_url()
-    |> Req.get()
-    |> case do
-      {:ok, %Req.Response{status: 200, body: body}} -> {:ok, body}
-      {:ok, %Req.Response{status: status, body: body}} -> {:error, {status, body}}
-      {:error, reason} -> {:error, reason}
-    end
+    fetch_reading_shelf()
     |> parse_currently_reading_response()
+  end
+
+  defp fetch_reading_shelf do
+    case Site.Cache.get(:currently_reading) do
+      nil ->
+        currently_reading_shelf_url()
+        |> Req.get()
+        |> case do
+          {:ok, %Req.Response{status: 200, body: body}} ->
+            Site.Cache.put(:currently_reading, body, ttl: :timer.minutes(5))
+            {:ok, body}
+
+          {:ok, %Req.Response{status: status, body: body}} ->
+            {:error, {status, body}}
+
+          {:error, reason} ->
+            {:error, reason}
+        end
+
+      body ->
+        {:ok, body}
+    end
   end
 
   defp parse_currently_reading_response({:ok, body}) do
@@ -44,7 +59,6 @@ defmodule Site.Services.Goodreads do
           cover_url: book_cover_url(thumbnail_url),
           pub_date: parse_book_pub_date(html_fragment),
           started_date: parse_book_started_date(html_fragment)
-          # rating: parse_book_rating(html_fragment)
         }
       end)
 
@@ -52,6 +66,47 @@ defmodule Site.Services.Goodreads do
   end
 
   defp parse_currently_reading_response({:error, _} = error), do: error
+
+  def get_reading_stats do
+    fetch_reading_shelf()
+    |> parse_reading_stats_response()
+  end
+
+  defp parse_reading_stats_response({:ok, body}) do
+    document = LazyHTML.from_document(body)
+
+    %{
+      currently_reading: parse_currently_reading(document),
+      total_read: parse_total_read(document)
+    }
+  end
+
+  defp parse_reading_stats_response({:error, _} = error), do: error
+
+  defp parse_total_read(lazy_html) do
+    lazy_html
+    |> LazyHTML.query("#shelvesSection .userShelf a[title=\"Nuno's Read shelf\"]")
+    |> LazyHTML.text()
+    |> String.split(["(", ")"])
+    |> Enum.at(1)
+    |> case do
+      "" -> nil
+      count when is_binary(count) -> String.to_integer(count)
+      _ -> nil
+    end
+  end
+
+  defp parse_currently_reading(lazy_html) do
+    lazy_html
+    |> LazyHTML.query("#shelvesSection .userShelf a[title=\"Nuno's Currently Reading shelf\"]")
+    |> LazyHTML.text()
+    |> String.split(["(", ")"])
+    |> Enum.at(1)
+    |> case do
+      count when is_binary(count) -> String.to_integer(count)
+      _ -> nil
+    end
+  end
 
   defp parse_book_id(lazy_html) do
     lazy_html
@@ -111,18 +166,6 @@ defmodule Site.Services.Goodreads do
 
     cdn_url <> "/books/" <> book_path
   end
-
-  # defp parse_book_rating(lazy_html) do
-  # lazy_html
-  # |> LazyHTML.query(".field .rating_value")
-  # |> LazyHTML.text()
-  # |> String.trim()
-  # |> String.to_integer()
-  # |> case do
-  #   {:ok, rating} -> rating
-  #   _ -> nil
-  # end
-  # end
 
   defp parse_book_pub_date(lazy_html) do
     lazy_html

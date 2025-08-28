@@ -62,6 +62,10 @@ defmodule SiteWeb.HomeLive.Index do
               Music
             </SiteComponents.bento_box>
 
+            <SiteComponents.bento_box navigate={~p"/books"} class="col-span-1 row-span-1">
+              Books
+            </SiteComponents.bento_box>
+
             <SiteComponents.bento_box
               navigate={~p"/travel"}
               class="col-span-1 md:col-span-2 md:row-span-2"

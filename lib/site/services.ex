@@ -29,7 +29,7 @@ defmodule Site.Services do
     Lastfm.get_recently_played()
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_artists}, opts: [ttl: :timer.hours(6)])
+  @decorate cacheable(cache: Site.Cache, key: {:top_artists}, opts: [ttl: :timer.minutes(10)])
   def get_top_artists do
     Lastfm.get_top_artists("overall", @music_top_artists_limit)
   end
@@ -43,7 +43,7 @@ defmodule Site.Services do
     Lastfm.get_top_artists(period, limit)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_albums}, opts: [ttl: :timer.hours(6)])
+  @decorate cacheable(cache: Site.Cache, key: {:top_albums}, opts: [ttl: :timer.minutes(10)])
   def get_top_albums do
     Lastfm.get_top_albums("overall", @music_albums_limit)
   end
@@ -80,6 +80,15 @@ defmodule Site.Services do
             )
   def get_currently_reading() do
     Goodreads.get_currently_reading()
+  end
+
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: :reading_stats,
+              opts: [ttl: :timer.hours(12)]
+            )
+  def get_reading_stats do
+    Goodreads.get_reading_stats()
   end
 
   ## Games

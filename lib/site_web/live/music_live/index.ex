@@ -43,9 +43,10 @@ defmodule SiteWeb.MusicLive.Index do
             </:actions>
           </.header>
           <SiteComponents.top_artists_list
+            id="top-artists"
+            class="mt-2"
             async={@top_artists}
             items={@streams.top_artists}
-            class="mt-2"
           />
         </section>
 
@@ -64,7 +65,12 @@ defmodule SiteWeb.MusicLive.Index do
               </.form>
             </:actions>
           </.header>
-          <SiteComponents.albums_grid async={@top_albums} albums={@streams.top_albums} class="mt-2" />
+          <SiteComponents.albums_grid
+            id="top-albums"
+            class="mt-2"
+            async={@top_albums}
+            albums={@streams.top_albums}
+          />
         </section>
       </Layouts.page_content>
     </Layouts.app>

@@ -839,7 +839,7 @@ defmodule SiteWeb.SiteComponents do
   attr :size_class, :string, default: "size-28 lg:size-36"
   attr :padding_class, :string, default: "p-1"
   attr :border_class, :string, default: "border-none"
-  attr :shadow_class, :string, default: "shadow-sm"
+  attr :shadow_class, :string, default: "shadow-md"
   attr :radius_class, :string, default: "rounded-md"
   attr :rest, :global
 
@@ -950,7 +950,7 @@ defmodule SiteWeb.SiteComponents do
         <%= if @tracks != [] do %>
           <ul
             id="recent-tracks"
-            class="flex flex-col gap-2 text-content-10 text-sm md:text-base"
+            class="min-h-96 flex flex-col gap-2 text-content-10 text-sm md:text-base"
             phx-update={is_struct(@tracks, Phoenix.LiveView.LiveStream) && "stream"}
           >
             <li
@@ -993,6 +993,7 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
+  attr :id, :string, default: "top-artists-list"
   attr :async, AsyncResult, required: true
   attr :items, :list, required: true
   attr :rest, :global
@@ -1006,7 +1007,11 @@ defmodule SiteWeb.SiteComponents do
         </:loading>
 
         <%= if @items != [] do %>
-          <ol class="list-decimal list-inside marker:text-content-40/80 columns-2">
+          <ol
+            id={@id}
+            class="min-h-96 list-decimal list-inside marker:text-content-40/80 lg:columns-2"
+            phx-update={is_struct(@items, Phoenix.LiveView.LiveStream) && "stream"}
+          >
             <li
               :for={{dom_id, item} <- @items}
               class="group text-xl/9 font-light hover:marker:text-primary transition-colors"
@@ -1033,6 +1038,7 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
+  attr :id, :string, default: "albums-grid"
   attr :async, AsyncResult, required: true
   attr :albums, :list, required: true
   attr :class, :string, default: nil
@@ -1047,15 +1053,19 @@ defmodule SiteWeb.SiteComponents do
         </:loading>
 
         <%= if @albums != [] do %>
-          <div class="bg-surface-10 shadow-lg">
-            <ol class="grid grid-cols-6 p-1">
+          <div class="bg-surface-10 shadow-lg aspect-square">
+            <ol
+              id={@id}
+              class="min-h-80 grid grid-cols-6 p-1"
+              phx-update={is_struct(@albums, Phoenix.LiveView.LiveStream) && "stream"}
+            >
               <li
                 :for={{dom_id, album} <- @albums}
+                id={dom_id}
                 class={[
                   "group relative ease-in-out transition-transform duration-300",
                   "hover:scale-110 hover:shadow-xl hover:z-10"
                 ]}
-                id={dom_id}
               >
                 <.image
                   src={album.image}
@@ -1095,6 +1105,7 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
+  attr :id, :string, default: "books-list"
   attr :async, AsyncResult, required: true
   attr :books, :list, required: true
   attr :class, :string, default: nil
@@ -1109,16 +1120,35 @@ defmodule SiteWeb.SiteComponents do
         </:loading>
 
         <%= if @books != [] do %>
-          <ul class="flex flex-col gap-4">
+          <ul
+            id={@id}
+            class="flex flex-col gap-4"
+            phx-update={is_struct(@books, Phoenix.LiveView.LiveStream) && "stream"}
+          >
             <li :for={{dom_id, book} <- @books} class="flex flex-row gap-4" id={dom_id}>
-              <.image
-                src={book.cover_url}
-                alt={book.title}
-                class="object-cover rounded-sm shadow-sm"
-                width={90}
-                height={180}
-                loading="lazy"
-              />
+              <a
+                href={book.url}
+                target="_blank"
+                class="group relative shrink-0 rounded-md border-2 border-transparent hover:border-secondary transition-border"
+              >
+                <div class={[
+                  "absolute inset-0 rounded-sm bg-secondary/25 opacity-0 transition-opacity",
+                  "group-hover:opacity-100"
+                ]}>
+                  <.icon
+                    name="hero-arrow-top-right-on-square"
+                    class="size-10 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90"
+                  />
+                </div>
+                <.image
+                  src={book.cover_url}
+                  alt={"#{book.title} cover by #{book.author}"}
+                  class="object-cover rounded-sm shadow-sm"
+                  width={110}
+                  height={220}
+                  loading="lazy"
+                />
+              </a>
               <div class="max-w-md flex justify-center items-center">
                 <div class="flex flex-col gap-0.5">
                   <div class="line-clamp-2 text-ellipsis text-balance">
@@ -1139,9 +1169,15 @@ defmodule SiteWeb.SiteComponents do
                       {book.author}
                     </a>
                   </div>
-                  <div class="line-clamp-1 font-light text-ellipsis text-base text-content-40">
-                    {format_date(book.started_date)}
-                  </div>
+                  <%= if book.pub_date do %>
+                    <div class="line-clamp-1 font-light text-ellipsis text-base text-content-40">
+                      {format_date(book.pub_date, "%Y")}
+                    </div>
+                  <% else %>
+                    <div class="font-light text-ellipsis text-base text-content-40/50">
+                      Unknown
+                    </div>
+                  <% end %>
                 </div>
               </div>
             </li>
@@ -1168,7 +1204,11 @@ defmodule SiteWeb.SiteComponents do
     end
   end
 
-  defp format_date(%Date{} = date, format \\ "%d %b, %Y") do
+  defp format_date(date, format \\ "%d %b, %Y")
+
+  defp format_date(nil, _), do: nil
+
+  defp format_date(%Date{} = date, format) do
     Calendar.strftime(date, format)
   end
 
