@@ -944,13 +944,15 @@ defmodule SiteWeb.SiteComponents do
     <div {@rest}>
       <.async_result assign={@async}>
         <:loading>
-          <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+          <div class="min-h-80">
+            <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+          </div>
         </:loading>
 
         <%= if @tracks != [] do %>
           <ul
             id="recent-tracks"
-            class="min-h-96 flex flex-col gap-2 text-content-10 text-sm md:text-base"
+            class="flex flex-col gap-2 text-content-10 text-sm md:text-base"
             phx-update={is_struct(@tracks, Phoenix.LiveView.LiveStream) && "stream"}
           >
             <li
@@ -1003,13 +1005,15 @@ defmodule SiteWeb.SiteComponents do
     <div {@rest}>
       <.async_result assign={@async}>
         <:loading>
-          <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+          <div class="min-h-80">
+            <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+          </div>
         </:loading>
 
         <%= if @items != [] do %>
           <ol
             id={@id}
-            class="min-h-96 list-decimal list-inside marker:text-content-40/80 lg:columns-2"
+            class="list-decimal list-inside marker:text-content-40/80 md:columns-2"
             phx-update={is_struct(@items, Phoenix.LiveView.LiveStream) && "stream"}
           >
             <li
@@ -1049,14 +1053,16 @@ defmodule SiteWeb.SiteComponents do
     <div class={@class} {@rest}>
       <.async_result :let={_async} assign={@async}>
         <:loading>
-          <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+          <div class="min-h-80">
+            <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+          </div>
         </:loading>
 
         <%= if @albums != [] do %>
           <div class="bg-surface-10 shadow-lg aspect-square">
             <ol
               id={@id}
-              class="min-h-80 grid grid-cols-6 p-1"
+              class="grid grid-cols-6 p-1"
               phx-update={is_struct(@albums, Phoenix.LiveView.LiveStream) && "stream"}
             >
               <li

@@ -14,24 +14,31 @@ defmodule SiteWeb.BooksLive.Index do
             Currently Reading
             <div class="ml-2 text-content-40/70">({@currently_reading})</div>
 
-            <:subtitle>
+            <:subtitle phx-no-format>
               In my lifetime I've read
               <.link
                 href={"#{Goodreads.profile_url()}?shelf=read"}
                 target="_blank"
                 class="font-medium link-subtle"
-              >
-                {@total_read}+ books
-              </.link>
+              >{@total_read}+ books</.link>
+              <.icon
+                name="hero-arrow-up-right-mini"
+                class="size-5 text-surface-40 duration-200 group-hover:transform group-hover:translate-x-0.5 transition-transform"
+              />
             </:subtitle>
           </.header>
           <SiteComponents.books_list async={@books} books={@streams.books} class="mt-2" />
 
-          <.button href={Goodreads.profile_url()} target="_blank" variant="light" class="group mt-8">
+          <.button
+            href={Goodreads.profile_url()}
+            target="_blank"
+            variant="light"
+            class="group mt-8"
+          >
             My Goodreads
             <.icon
               name="hero-arrow-up-right-mini"
-              class="size-5 text-primary duration-200 group-hover:transform group-hover:translate-x-0.5 transition-transform"
+              class="-ml-0.5 size-5 text-content-40/60 duration-200 group-hover:text-primary transition-colors"
             />
           </.button>
         </section>
