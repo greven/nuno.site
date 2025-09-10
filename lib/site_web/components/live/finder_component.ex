@@ -18,7 +18,6 @@ defmodule SiteWeb.FinderComponent do
         id="finder-dialog"
         class="fixed inset-0 w-screen overflow-y-auto p-4 focus:outline-none sm:p-6 md:p-20"
         data-close={Finder.close()}
-        show
       >
         <div class={[
           "mx-auto block max-w-2xl overflow-hidden rounded-lg bg-surface-10/90 shadow-2xl outline-1 outline-black/5 backdrop-blur-md backdrop-filter",
@@ -43,7 +42,7 @@ defmodule SiteWeb.FinderComponent do
           </div>
 
           <%!-- Commands list --%>
-          <div class="max-h-[400px] scroll-py-1 overflow-y-auto" role="listbox">
+          <div class="max-h-[400px] scroll-py-1 overflow-y-auto" role="listbox" tabindex="-1">
             <%!-- Theme switcher --%>
             <section :if={@show_theme_switcher} id="theme-section">
               <h3 class="mt-4 mb-0.5 px-5 font-headings text-xs text-content-40/80">
@@ -137,7 +136,7 @@ defmodule SiteWeb.FinderComponent do
           </div>
 
           <%!-- Footer --%>
-          <div class="flex justify-between bg-surface-20 px-4 py-2.5 text-xs text-content-40">
+          <div class="flex justify-between bg-surface-30/40 px-4 py-2.5 text-xs text-content-40">
             <div class="flex flex-wrap items-center">
               Type
               <kbd class="mx-1 flex size-5 items-center justify-center rounded-sm border border-border bg-surface-30 font-medium text-content-30 sm:mx-2
