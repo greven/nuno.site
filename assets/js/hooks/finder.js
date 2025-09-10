@@ -14,6 +14,10 @@ export const Finder = {
     // Search content cache
     this.searchCache = [];
 
+    // Prevent mouse hover from interfering with keyboard navigation
+    this.ignoreHover = false;
+    this.hoverSuppressionTimer = null;
+
     this.addMountedEventListeners();
     this.warmUpSearchCache();
   },
@@ -26,6 +30,12 @@ export const Finder = {
     // Window keydown event listener
     this.handleWindowKeydown = this.handleWindowKeydown.bind(this);
     window.addEventListener('keydown', this.handleWindowKeydown);
+
+    // Pointer interactions: restore hover handling when the user interacts with the pointer
+    this.handlePointerMove = this.handlePointerMove.bind(this);
+    window.addEventListener('pointermove', this.handlePointerMove);
+    this.handlePointerDown = this.handlePointerDown.bind(this);
+    window.addEventListener('pointerdown', this.handlePointerDown);
 
     // Open custom event listener
     this.handleFinderOpen = this.handleFinderOpen.bind(this);
@@ -62,6 +72,8 @@ export const Finder = {
 
   removeMountedEventListeners() {
     window.removeEventListener('keydown', this.handleWindowKeydown);
+    window.removeEventListener('pointermove', this.handlePointerMove);
+    window.removeEventListener('pointerdown', this.handlePointerDown);
 
     this.el.removeEventListener('phx:finder-open', this.handleFinderOpen);
     this.el.removeEventListener('phx:finder-close', this.handleFinderClose);
@@ -130,9 +142,9 @@ export const Finder = {
     }
 
     item.current = true;
-    item.setAttribute('aria-selected', 'true');
     item.tabIndex = 0;
-    item.scrollIntoView({ block: 'nearest' });
+    item.setAttribute('aria-selected', 'true');
+    item.scrollIntoView({ block: 'nearest', behavior: 'smooth', container: 'nearest' });
   },
 
   // Deselect all items
@@ -141,8 +153,8 @@ export const Finder = {
 
     allItems?.forEach((item) => {
       item.current = false;
-      item.setAttribute('aria-selected', 'false');
       item.tabIndex = -1;
+      item.setAttribute('aria-selected', 'false');
     });
   },
 
@@ -375,6 +387,8 @@ export const Finder = {
         newIndex = currentItems.length - 1;
       }
 
+      // Prevent hover from stealing focus while keyboard scrolling
+      this.suppressHover();
       this.setCurrentItem(currentItems[newIndex]);
     }
 
@@ -407,11 +421,42 @@ export const Finder = {
   },
 
   handleItemMouseEnter(event) {
+    if (this.ignoreHover) return;
     this.setCurrentItem(event.currentTarget);
   },
 
   handleItemMouseLeave(event) {
+    if (this.ignoreHover) return;
     this.clearCurrentItems();
+  },
+
+  // Suppress hover-driven selection briefly during keyboard navigation
+  suppressHover() {
+    this.ignoreHover = true;
+    if (this.hoverSuppressionTimer) clearTimeout(this.hoverSuppressionTimer);
+
+    this.hoverSuppressionTimer = setTimeout(() => {
+      this.ignoreHover = false;
+      this.hoverSuppressionTimer = null;
+    }, 400);
+  },
+
+  // When the user moves the pointer, re-enable hover behavior immediately
+  handlePointerMove() {
+    this.ignoreHover = false;
+    if (this.hoverSuppressionTimer) {
+      clearTimeout(this.hoverSuppressionTimer);
+      this.hoverSuppressionTimer = null;
+    }
+  },
+
+  // Also re-enable hover behavior on pointer down (mouse/touch/pen click)
+  handlePointerDown() {
+    this.ignoreHover = false;
+    if (this.hoverSuppressionTimer) {
+      clearTimeout(this.hoverSuppressionTimer);
+      this.hoverSuppressionTimer = null;
+    }
   },
 };
 
