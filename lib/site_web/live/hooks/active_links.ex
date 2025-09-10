@@ -19,6 +19,7 @@ defmodule SiteWeb.Hooks.ActiveLinks do
         {SiteWeb.HomeLive.Index, _} -> :home
         {SiteWeb.BlogLive.Index, _} -> :articles
         {SiteWeb.BlogLive.Show, _} -> :articles
+        {SiteWeb.AboutLive.Index, _} -> :about
         {SiteWeb.AdminLive.Index, _} -> :admin
         {_, _} -> nil
       end

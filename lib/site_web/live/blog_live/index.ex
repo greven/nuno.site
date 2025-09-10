@@ -8,7 +8,11 @@ defmodule SiteWeb.BlogLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} active_link={@active_link}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      active_link={@active_link}
+    >
       <Layouts.page_content class="blog">
         <.header>
           Articles
@@ -40,14 +44,14 @@ defmodule SiteWeb.BlogLive.Index do
             <.button variant="link" navigate={~p"/tags"}>
               <.icon
                 name="hero-hashtag"
-                class="size-4 text-content-40 group-hover:text-primary transition-colors"
+                class="size-4 text-content-40/60 group-hover:text-content-40 transition-colors"
               /> Tags
             </.button>
           </div>
         </div>
 
         <%!-- Posts --%>
-        <div id="articles" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4" phx-update="stream">
+        <div id="articles" class="mt-8 flex flex-col gap-8" phx-update="stream">
           <BlogComponents.article :for={{dom_id, post} <- @streams.posts} id={dom_id} post={post} />
         </div>
       </Layouts.page_content>
@@ -102,7 +106,7 @@ defmodule SiteWeb.BlogLive.Index do
   defp filter_posts_by_category("note"), do: &(&1.category == :note)
   defp filter_posts_by_category(_), do: fn _post -> true end
 
-  defp filter_categories() do
+  defp filter_categories do
     [
       {"all", %{name: "hero-rectangle-stack", class: "text-current"}, true},
       {"blog", %{name: "hero-newspaper", class: "text-cyan-600"}, true},

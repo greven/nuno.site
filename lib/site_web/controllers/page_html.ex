@@ -6,7 +6,5 @@ defmodule SiteWeb.PageHTML do
   """
   use SiteWeb, :html
 
-  alias SiteWeb.SiteComponents
-
   embed_templates "page_html/*"
 end

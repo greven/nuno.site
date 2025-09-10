@@ -21,23 +21,19 @@ defmodule SiteWeb.CoreComponents do
   for background, border, and shadow.
   """
 
-  attr :class, :any, default: nil
+  attr :class, :any, default: nil, doc: "the base classes to apply to the box element"
   attr :tag, :string, default: "div", doc: "the HTML tag to use for the box element"
   attr :bg, :string, default: "bg-surface-10", doc: "the background color of the box"
   attr :border, :string, default: "border border-border", doc: "the border color of the box"
   attr :shadow, :string, default: "shadow-xs", doc: "the shadow class of the box"
   attr :radius, :string, default: "rounded-lg", doc: "the border radius of the box"
-  attr :padding, :string, default: "p-5", doc: "the padding of the box"
+  attr :padding, :string, default: "p-4", doc: "the padding of the box"
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the box"
   slot :inner_block, required: true
 
   def box(assigns) do
     ~H"""
-    <.dynamic_tag
-      tag_name={@tag}
-      class={["transition", @class, @bg, @border, @shadow, @radius, @padding]}
-      {@rest}
-    >
+    <.dynamic_tag tag_name={@tag} class={[@class, @bg, @border, @shadow, @radius, @padding]} {@rest}>
       {render_slot(@inner_block)}
     </.dynamic_tag>
     """
@@ -60,22 +56,67 @@ defmodule SiteWeb.CoreComponents do
         ]}
         {@rest}
       >
-        <.box tag={@tag} class="relative flex flex-col h-full hover:border-primary hover:shadow-sm">
+        <.card_box tag={@tag}>
           {render_slot(@inner_block)}
-        </.box>
+        </.card_box>
       </.link>
       """
     else
       ~H"""
-      <.box
-        tag={@tag}
-        class={[@class, "relative flex flex-col h-full"]}
-        {@rest}
-      >
+      <.card_box tag={@tag} {@rest}>
         {render_slot(@inner_block)}
-      </.box>
+      </.card_box>
       """
     end
+  end
+
+  attr :tag, :string, required: true
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  # TODO: Add pattern effect!
+  # .blog-article {
+  #   display: flex;
+  #   flex-direction: column;
+  #   isolation: isolate;
+
+  #   & .article-bg {
+  #     position: absolute;
+  #     inset: 3px;
+  #     border-radius: var(--radius-lg);
+  #     overflow: hidden;
+  #   }
+
+  #   /* Gradient */
+  #   &::after {
+  #     content: '';
+  #     position: absolute;
+  #     inset: 3px;
+  #   }
+
+  #   &:hover::after {
+  #     border-radius: var(--radius-lg);
+  #     background-image: linear-gradient(
+  #       30deg,
+  #       --alpha(var(--color-primary) / var(--bg-opacity, 3%)),
+  #       transparent 80%
+  #     );
+  #   }
+  # }
+
+  defp card_box(assigns) do
+    ~H"""
+    <.box
+      tag={@tag}
+      class="relative flex flex-col h-full"
+      bg="bg-surface-10/60 hover:bg-surface-10"
+      border="border border-border border-dashed hover:border-solid"
+      shadow="hover:shadow-drop"
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </.box>
+    """
   end
 
   @doc """
@@ -86,10 +127,14 @@ defmodule SiteWeb.CoreComponents do
   attr :loading, :boolean, default: true, doc: "whether the skeleton is in loading state"
   attr :height, :string, default: "24px", doc: "the height of the skeleton"
   attr :width, :string, default: "100%", doc: "the width of the skeleton"
+  slot :inner_block
 
   def skeleton(assigns) do
     ~H"""
     <div class={[@loading && "animate-pulse", @class]} style={"height:#{@height}; width:#{@width};"}>
+      <div :if={@inner_block != []} class="flex items-center justify-center h-full">
+        {render_slot(@inner_block)}
+      </div>
     </div>
     """
   end
@@ -446,8 +491,9 @@ defmodule SiteWeb.CoreComponents do
   @doc """
   Renders a header with title.
   """
-  attr :class, :any, default: nil
+  attr :class, :any, default: "flex flex-col"
   attr :header_class, :string, default: nil
+  attr :padding_class, :string, default: "pb-4"
   attr :anchor, :string, default: nil
   attr :tag, :string, default: "h1"
   attr :rest, :global
@@ -467,7 +513,7 @@ defmodule SiteWeb.CoreComponents do
 
     ~H"""
     <header
-      class={[@actions != [] && "flex items-center justify-between gap-6", "pb-4"]}
+      class={[@padding_class, @actions != [] && "flex items-center justify-between gap-6"]}
       {@rest}
     >
       <div class={@class}>
@@ -1319,8 +1365,10 @@ defmodule SiteWeb.CoreComponents do
   """
 
   attr :id, :string, required: true
+  attr :class, :any, default: nil
   attr :show, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
+  attr :rest, :global
   slot :inner_block, required: true
 
   def dialog(assigns) do
@@ -1331,41 +1379,11 @@ defmodule SiteWeb.CoreComponents do
       phx-mounted={@show && show_dialog("##{@id}")}
       phx-remove={hide_dialog("##{@id}")}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
-      class="relative backdrop:bg-neutral-900/80 transition-opacity"
+      class={@class}
+      {@rest}
     >
       {render_slot(@inner_block, JS.exec("data-cancel", to: "##{@id}"))}
     </dialog>
-    """
-  end
-
-  @doc """
-  Renders a modal dialog using the headless dialog component.
-  """
-
-  attr :id, :string, required: true
-  attr :show, :boolean, default: false
-  attr :on_cancel, JS, default: %JS{}
-
-  slot :inner_block, required: true
-
-  slot :title
-  slot :icon
-
-  # slot :confirm do
-  # attr :class, :any
-  # attr :type, :string
-  # attr :form, :string
-  # end
-  #
-  # slot :cancel do
-  # attr :class, :any
-  # end
-
-  def modal(assigns) do
-    ~H"""
-    <.dialog id={@id}>
-      {render_slot(@title)}
-    </.dialog>
     """
   end
 

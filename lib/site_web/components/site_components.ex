@@ -16,12 +16,17 @@ defmodule SiteWeb.SiteComponents do
 
   attr :class, :string, default: nil
   slot :inner_block, required: true
+  slot :subtitle
+  slot :addon
 
   def home_section_title(assigns) do
     ~H"""
-    <header class={[@class, "flex items-center justify-center gap-2.5 pb-6"]}>
-      <.icon name="lucide-newspaper" class="size-6.5 text-content-40/80" />
-      <h2 class="font-medium text-3xl text-content-10">{render_slot(@inner_block)}</h2>
+    <header class={[@class, "flex flex-col items-center pb-6"]}>
+      <div class="w-full flex items-center justify-center gap-2.5">
+        <.icon name="lucide-newspaper" class="size-6.5 text-content-40/80" />
+        <h2 class="font-medium text-3xl text-content-10">{render_slot(@inner_block)}</h2>
+      </div>
+      <p :if={@subtitle != []} class="font-light text-content-40">{render_slot(@subtitle)}</p>
     </header>
     """
   end
@@ -34,38 +39,41 @@ defmodule SiteWeb.SiteComponents do
   def featured_posts(assigns) do
     ~H"""
     <div class={@class}>
-      <ol id="featured-posts" class="group isolate flex flex-col justify-center gap-4">
+      <ol id="featured-posts" class="isolate flex flex-col justify-center gap-3">
         <%= for post <- @posts do %>
-          <li class="relative w-full overflow-hidden">
-            <article class={[
-              "p-5 flex flex-col justify-center items-center text-center border border-border border-dashed rounded-lg transition",
-              "hover:border-solid hover:bg-surface-10"
-            ]}>
-              <.link class="link-subtle w-full" navigate={~p"/articles/#{post.year}/#{post}"}>
+          <li class={[
+            "relative w-full px-2.5 lg:px-5 py-2.5 flex items-center justify-between gap-6 bg-surface-10/50 border border-border border-dashed rounded-lg overflow-hidden [counter-increment:item-counter]",
+            "before:opacity-0 before:content-['#'_counter(item-counter)] before:absolute before:left-4 before:font-headings
+              before:font-semibold before:text-content-10 md:before:opacity-10 before:text-xl
+              before:pointer-events-none",
+            "hover:border-solid hover:bg-surface-10 hover:shadow-drop hover:cursor-pointer
+              hover:before:opacity-25"
+          ]}>
+            <div class="max-w-5/6 flex items-center gap-2">
+              <.link
+                class="md:pl-12 link-subtle transition-none"
+                navigate={~p"/articles/#{post.year}/#{post}"}
+              >
                 <span class="absolute inset-0 z-10"></span>
-                <h3 class="text-base md:text-lg lg:text-xl line-clamp-1">
-                  {post.title}
-                </h3>
+                <h3 class="text-xs md:text-sm line-clamp-1">{post.title}</h3>
               </.link>
+            </div>
 
-              <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
-                <BlogComponents.post_publication_date
-                  post={post}
-                  format="%b %d"
-                  class="text-content-40"
-                  show_icon={false}
-                />
-
-                <span class="hidden md:inline font-sans text-xs text-primary">&bull;</span>
-
-                <div class="flex items-center flex-wrap gap-2">
-                  <span :for={tag <- post.tags}>
-                    <span class="text-content-40/50 mr-px">#</span>
-                    <span class="text-content-40">{tag}</span>
-                  </span>
-                </div>
+            <div class="flex items-center shrink-0 gap-2">
+              <div class="hidden md:flex items-center flex-nowrap shrink-0 text-sm line-clamp-1">
+                <span class="text-content-40/50 mr-1">#</span>
+                <span class="text-content-40">{List.first(post.tags)}</span>
               </div>
-            </article>
+
+              <span class="hidden opacity-10 md:flex">|</span>
+
+              <BlogComponents.post_publication_date
+                post={post}
+                format="%b %d, %Y"
+                class="shrink-0 text-xs text-content-40"
+                show_icon={false}
+              />
+            </div>
           </li>
         <% end %>
       </ol>
@@ -91,20 +99,6 @@ defmodule SiteWeb.SiteComponents do
   @doc false
 
   attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(href navigate patch method disabled)
-  slot :inner_block, required: true
-
-  def bento_box(assigns) do
-    ~H"""
-    <.card class={@class} {@rest}>
-      {render_slot(@inner_block)}
-    </.card>
-    """
-  end
-
-  @doc false
-
-  attr :class, :string, default: nil
   attr :size, :integer, default: 40
   attr :rest, :global, include: ~w(href navigate patch method disabled)
 
@@ -113,7 +107,7 @@ defmodule SiteWeb.SiteComponents do
       ~H"""
       <.link {@rest}>
         <div
-          class="bg-white/80 p-[1px] rounded-full shadow-sm shadow-gray-800/10 dark:bg-gray-800/90"
+          class="bg-white/80 p-[1px] rounded-full shadow-sm shadow-neutral-800/10 dark:bg-neutral-800/90"
           style={"width:#{@size}px;height:#{@size}px;"}
         >
           <.avatar_image class={@class} />
@@ -123,7 +117,7 @@ defmodule SiteWeb.SiteComponents do
     else
       ~H"""
       <div
-        class="bg-white/80 p-[1px] rounded-full shadow-sm shadow-gray-800/10 dark:bg-gray-800/90"
+        class="bg-white/80 p-[1px] rounded-full shadow-sm shadow-neutral-800/10 dark:bg-neutral-800/90"
         style={"width:#{@size}px;height:#{@size}px;"}
       >
         <.avatar_image class={@class} {@rest} />
@@ -363,7 +357,7 @@ defmodule SiteWeb.SiteComponents do
       >
         {render_slot(@inner_block)}
       </div>
-      <div :if={@label} class="text-xs text-nowrap text-gray-500">{@label}</div>
+      <div :if={@label} class="text-xs text-nowrap text-neutral-500">{@label}</div>
     </div>
     """
   end
@@ -762,10 +756,10 @@ defmodule SiteWeb.SiteComponents do
     <div class={["flex items-center gap-2", @class]} {@rest}>
       <.async_result :let={track} assign={@track}>
         <:loading>
-          <div class="flex gap-4 items-center">
+          <div class="-mt-0.5 flex gap-4 items-center">
             <.track_image loading={true} />
             <div class="flex flex-col gap-1">
-              <div class="flex flex-col gap-2.5">
+              <div class="flex flex-col gap-2">
                 <.playing_indicator loading />
                 <.skeleton height="20px" width="182px" />
                 <.skeleton height="14px" width="80%" />
@@ -952,33 +946,39 @@ defmodule SiteWeb.SiteComponents do
         <%= if @tracks != [] do %>
           <ul
             id="recent-tracks"
-            class="flex flex-col gap-2 text-content-10 text-sm md:text-base"
+            class="w-full flex flex-col gap-2 text-content-10 text-sm md:text-base"
             phx-update={is_struct(@tracks, Phoenix.LiveView.LiveStream) && "stream"}
           >
             <li
               :for={{dom_id, track} <- @tracks}
-              class="grid grid-cols-12 items-center gap-2"
+              class="flex items-center gap-6"
               id={dom_id}
             >
               <.track_image
                 src={track.image}
-                class="col-span-1"
+                class="shrink-0"
                 size_class="size-10"
                 padding_class="p-0"
                 radius_class="rounded-sm"
               />
-              <div class="col-span-7 items-center">
+              <%!-- Track name --%>
+              <div class="items-center">
                 <div class="flex items-center gap-3">
-                  <div class="text-sm md:text-base text-content-20 whitespace-nowrap text-ellipsis line-clamp-1">
+                  <div class="text-sm md:text-base text-content-20 whitespace-nowrap text-ellipsis line-clamp-1 shrink-0">
                     <a href={track.url} target="_blank" class="link-ghost">{track.name}</a>
                   </div>
                   <.playing_icon
                     :if={track.now_playing}
+                    class="shrink-0"
                     style="--playing-color: var(--color-surface-40)"
                   />
                 </div>
               </div>
-              <div class="col-span-4 ml-2 text-sm md:text-base font-light text-content-40 whitespace-nowrap text-ellipsis line-clamp-1">
+
+              <hr class="hidden w-full border-0.5 border-surface-40 border-dashed opacity-70 md:flex" />
+
+              <%!-- Track artist --%>
+              <div class="ml-2 text-sm md:text-base text-right font-light text-content-40 whitespace-nowrap text-ellipsis line-clamp-1 shrink-0">
                 {track.artist}
               </div>
             </li>
@@ -1087,10 +1087,10 @@ defmodule SiteWeb.SiteComponents do
                       <div class="font-medium text-sm line-clamp-1 text-ellipsis">
                         <a href={album.url} target="_blank" class="text-white">{album.name}</a>
                       </div>
-                      <div class="text-gray-200 text-xs line-clamp-1 text-ellipsis">
+                      <div class="text-neutral-200 text-xs line-clamp-1 text-ellipsis">
                         {album.artist}
                       </div>
-                      <div class="text-gray-300 text-xs line-clamp-1 text-ellipsis">
+                      <div class="text-neutral-300 text-xs line-clamp-1 text-ellipsis">
                         {Support.format_number(album.playcount, 0)} plays
                       </div>
                     </div>

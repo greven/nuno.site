@@ -103,7 +103,7 @@ defmodule Site.Blog do
       iex> list_posts_by_tag!("elixir")
       [%Post{}, ...]
   """
-  def list_posts_by_tag(tag, opts \\ []) do
+  def list_published_posts_by_tag(tag, opts \\ []) do
     list_published_posts()
     |> Enum.filter(fn post -> post_has_tag?(post, tag) end)
     |> apply_options(opts)
@@ -117,7 +117,7 @@ defmodule Site.Blog do
       iex> list_posts_by_tag_grouped_by_year!("elixir")
       %{"2025" => [%Post{}, ...], "2024" => ...}
   """
-  def list_posts_by_tag_grouped_by_year(tag) do
+  def list_published_posts_by_tag_grouped_by_year(tag) do
     list_published_posts()
     |> Enum.filter(fn post -> post_has_tag?(post, tag) end)
     |> Enum.group_by(& &1.year)
@@ -129,7 +129,7 @@ defmodule Site.Blog do
   lists of posts of the corresponding tag.
   The posts are sorted by date in descending order.
   """
-  def list_posts_grouped_by_tag do
+  def list_published_posts_grouped_by_tag do
     posts = list_published_posts()
 
     list_tags()
@@ -137,6 +137,7 @@ defmodule Site.Blog do
       matching_posts = Enum.filter(posts, fn post -> post_has_tag?(post, tag) end)
       {tag, matching_posts}
     end)
+    |> Enum.reject(fn {_tag, posts} -> posts == [] end)
   end
 
   defp post_has_tag?(%Blog.Post{tags: tags}, tag) do
@@ -144,24 +145,50 @@ defmodule Site.Blog do
   end
 
   @doc """
+  List published articles for searching. Returns a list of
+  articles where each item has the following shape:
+
+  `%{
+    id: "post-id",
+    year: 2025,
+    title: "Post Title",
+    keywords: ["tag1", "tag2"]
+  }`.
+  """
+  def list_articles_for_search do
+    list_published_posts()
+    |> Enum.map(fn post ->
+      %{
+        id: post.id,
+        year: post.year,
+        title: post.title,
+        keywords: post.tags
+      }
+    end)
+  end
+
+  @doc """
   Get the post by id.
 
   Examples:
 
-      iex> get_post_by_id!("hello_world")
+      iex> get_post_by_year_and_id!(2025, "hello_world")
       %Post{}
 
-      iex> get_post_by_id!("i-do-not-exist")
-      ** (Site.Blog.NotFoundError) post with id=i-do-not-exist not found
+      iex> get_post_by_year_and_id!(2025, "i-do-not-exist")
+      ** (Site.Blog.NotFoundError) post with year=2025 and id=i-do-not-exist not found
   """
-  def get_post_by_id!(id) do
-    Enum.find(all_posts(), &(&1.id == id)) ||
-      raise NotFoundError, "post with id=#{id} not found"
+  def get_post_by_year_and_id!(year, id) do
+    Enum.find(all_posts(), &(&1.id == id and &1.year == String.to_integer(year))) ||
+      raise NotFoundError, "post with year=#{year} and id=#{id} not found"
   end
 
-  def get_post_by_slug!(slug) do
-    Enum.find(all_posts(), &(&1.slug == slug)) ||
-      raise NotFoundError, "post with slug=#{slug} not found"
+  @doc """
+  Similar to `get_post_by_year_and_id!/2`, but retrieves the post by slug.
+  """
+  def get_post_by_year_and_slug!(year, slug) do
+    Enum.find(all_posts(), &(&1.slug == slug and &1.year == String.to_integer(year))) ||
+      raise NotFoundError, "post with year=#{year} and slug=#{slug} not found"
   end
 
   @doc """

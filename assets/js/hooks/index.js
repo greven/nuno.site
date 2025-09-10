@@ -1,5 +1,6 @@
 import { TableOfContents } from './article-toc';
 import { Dialog } from './dialog';
+import { Finder } from './finder';
 import { Hello } from './hello';
 import { Layout } from './layout';
 import { PostLike } from './post-like';
@@ -14,6 +15,7 @@ import { TravelMap } from './travel-map';
 
 export default {
   Dialog,
+  Finder,
   Hello,
   Layout,
   PostLike,

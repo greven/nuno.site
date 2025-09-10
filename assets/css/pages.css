@@ -44,33 +44,43 @@
     91% {
       transform: translate(-2px, 1px);
       filter: hue-rotate(90deg);
-      text-shadow: 2px 0 var(--color-red-500), -2px 0 var(--color-cyan-500),
+      text-shadow:
+        2px 0 var(--color-red-500),
+        -2px 0 var(--color-cyan-500),
         0 0 8px var(--color-primary);
     }
 
     92% {
       transform: translate(2px, -1px);
       filter: hue-rotate(180deg);
-      text-shadow: -1px 0 var(--color-green-500), 1px 0 var(--color-magenta-500),
+      text-shadow:
+        -1px 0 var(--color-green-500),
+        1px 0 var(--color-magenta-500),
         0 0 12px var(--color-secondary);
     }
 
     93% {
       transform: translate(-1px, 2px) scale(1.01, 0.99);
       filter: hue-rotate(270deg) contrast(1.2);
-      text-shadow: 3px 0 var(--color-blue-500), -3px 0 var(--color-yellow-500);
+      text-shadow:
+        3px 0 var(--color-blue-500),
+        -3px 0 var(--color-yellow-500);
     }
 
     94% {
       transform: translate(1px, -2px) scale(0.99, 1.01);
       filter: hue-rotate(45deg) saturate(1.5);
-      text-shadow: 0 2px var(--color-purple-500), 0 -2px var(--color-orange-500);
+      text-shadow:
+        0 2px var(--color-purple-500),
+        0 -2px var(--color-orange-500);
     }
 
     95% {
       transform: translate(-3px, 0) skew(2deg);
       filter: hue-rotate(135deg) brightness(1.2);
-      text-shadow: 1px 1px var(--color-pink-500), -1px -1px var(--color-teal-500);
+      text-shadow:
+        1px 1px var(--color-pink-500),
+        -1px -1px var(--color-teal-500);
     }
 
     96%,
@@ -164,47 +174,13 @@
 
   .group:hover .typing-reveal {
     display: block;
-    animation: typing 0.8s steps(var(--typing-steps), end) forwards, fade-in 0.1s ease-in forwards,
+    animation:
+      typing 0.8s steps(var(--typing-steps), end) forwards,
+      fade-in 0.1s ease-in forwards,
       blink-cursor 1s step-end infinite 0.8s;
     width: var(--typing-length);
     opacity: 1;
     border-right-color: var(--color-primary);
-  }
-
-  #featured-posts {
-    @variant md {
-      counter-reset: item-counter;
-
-      li {
-        counter-increment: item-counter;
-        position: relative;
-      }
-
-      li::before {
-        content: "#" counter(item-counter);
-        position: absolute;
-        left: 4%;
-        top: 50%;
-        transform: translateY(-50%);
-        font-family: var(--font-headings);
-        font-weight: var(--font-weight-semibold);
-        font-size: 4em;
-        color: var(--color-content-10);
-        opacity: 0.05;
-        transition: color, opacity 0.3s ease;
-        pointer-events: none;
-      }
-
-      li:hover::before {
-        opacity: 0.075;
-      }
-    }
-
-    @variant dark {
-      li::before {
-        opacity: 0.025;
-      }
-    }
   }
 
   .profile-picture {
@@ -340,35 +316,6 @@
     }
   }
 
-  .blog-article {
-    display: flex;
-    flex-direction: column;
-    isolation: isolate;
-
-    & .article-bg {
-      position: absolute;
-      inset: 3px;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-
-    /* Gradient */
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 3px;
-    }
-
-    &:hover::after {
-      border-radius: var(--radius-lg);
-      background-image: linear-gradient(
-        30deg,
-        --alpha(var(--color-primary) / var(--bg-opacity, 3%)),
-        transparent 80%
-      );
-    }
-  }
-
   .dot-jump {
     @media (prefers-reduced-motion: no-preference) {
       animation: dot-bounce 0.4s ease-out;
@@ -412,7 +359,9 @@
   }
 
   .travel-map .map-pin {
-    transition: fill 0.3s, r 0.3s;
+    transition:
+      fill 0.3s,
+      r 0.3s;
     cursor: pointer;
   }
 
@@ -472,7 +421,6 @@
   .now-playing-icon {
     --playing-color: var(--color-emerald-500);
 
-
     height: 13px;
     width: 13px;
     position: relative;
@@ -500,23 +448,23 @@
 
   @keyframes spectrum {
     10% {
-      transform: scaleY(0.3); /* start by scaling to 30% */
+      transform: scaleY(0.3);
     }
 
     30% {
-      transform: scaleY(1); /* scale up to 100% */
+      transform: scaleY(1);
     }
 
     60% {
-      transform: scaleY(0.5); /* scale down to 50% */
+      transform: scaleY(0.5);
     }
 
     80% {
-      transform: scaleY(0.75); /* scale up to 75% */
+      transform: scaleY(0.75);
     }
 
     100% {
-      transform: scaleY(0.6); /* scale down to 60% */
+      transform: scaleY(0.6);
     }
   }
 }

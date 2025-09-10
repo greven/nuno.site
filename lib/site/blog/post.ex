@@ -41,7 +41,7 @@ defmodule Site.Blog.Post do
   @doc """
   The color given to each post category.
   """
-  def category_color(:blog), do: "cyan"
+  def category_color(:blog), do: "sky"
   def category_color(:note), do: "amber"
   def category_color(_), do: "gray"
 

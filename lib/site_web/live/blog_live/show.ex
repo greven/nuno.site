@@ -9,7 +9,11 @@ defmodule SiteWeb.BlogLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} active_link={@active_link}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      active_link={@active_link}
+    >
       <Layouts.page_content class="relative post" data-cateogry={@post.category}>
         <BlogComponents.post_header post={@post} readers={@readers} page_views={@page_views} />
         <BlogComponents.post_content post={@post} />
@@ -25,8 +29,8 @@ defmodule SiteWeb.BlogLive.Show do
   end
 
   @impl true
-  def mount(%{"slug" => slug} = params, _session, socket) do
-    post = Blog.get_post_by_slug!(slug)
+  def mount(%{"slug" => slug, "year" => year} = params, _session, socket) do
+    post = Blog.get_post_by_year_and_slug!(year, slug)
     current_user = get_in(socket.assigns, [:current_scope, Access.key(:user)])
     {next_post, prev_post} = Blog.get_post_pagination(post)
 

@@ -39,9 +39,6 @@ defmodule SiteWeb.Router do
   scope "/", SiteWeb do
     pipe_through :browser
 
-    get "/sitemap", PageController, :sitemap
-    get "/sink", PageController, :sink
-
     live_session :default,
       on_mount: [
         {SiteWeb.UserAuth, :mount_current_scope},
@@ -66,7 +63,9 @@ defmodule SiteWeb.Router do
       live "/bookmarks", BookmarksLive.Index, :index
       live "/stack", StackLive.Index, :index
       live "/about", AboutLive.Index, :index
-      live "/resume", ResumeLive.Index, :index
+      live "/resume", AboutLive.Resume, :show
+      live "/sitemap", SitemapLive.Index, :index
+      live "/sink", KitchenSinkLive.Index, :index
     end
   end
 

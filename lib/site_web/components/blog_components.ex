@@ -19,28 +19,80 @@ defmodule SiteWeb.BlogComponents do
 
   def article(assigns) do
     ~H"""
-    <.box tag="article" class="group isolate relative hover:border-primary hover:shadow-sm" {@rest}>
-      <div class="blog-article">
-        <.header tag="h2" class="mt-2">
+    <article
+      class={[
+        "group relative isolate flex flex-col gap-4 rounded-xl border border-transparent border-dashed md:flex-row",
+        "md:gap-8 md:p-2",
+        "hover:bg-surface-20/60 hover:border-border/80"
+      ]}
+      {@rest}
+    >
+      <.article_thumbnail post={@post} />
+      <div class="py-1 flex flex-col">
+        <.post_card_meta post={@post} format="%b %-d, %Y" class="font-light text-content-30 text-sm" />
+        <.header tag="h2" class="mt-1" header_class="flex justify-between gap-8">
           <.link
             navigate={~p"/articles/#{@post.year}/#{@post}"}
             class="link-subtle text-lg line-clamp-2"
           >
             <span class="absolute inset-0 z-10"></span>
-            <span class="group-hover:text-shadow-xs/10 text-shadow-primary">{@post.title}</span>
+            <span>{@post.title}</span>
           </.link>
         </.header>
 
-        <div class="h-5 flex items-center justify-between order-first">
-          <.post_card_meta post={@post} format="%b %-d, %Y" class="text-content-40 text-sm" />
-          <.post_category post={@post} />
-        </div>
-
-        <div class="-mt-2 text-sm text-content-40 line-clamp-2 group-hover:text-content-30">
+        <p class="text-sm/6 text-content-40 line-clamp-3 group-hover:text-content-30">
           {@post.excerpt}
-        </div>
+        </p>
       </div>
-    </.box>
+    </article>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
+  attr :size, :integer, default: 500
+  attr :rest, :global
+
+  def article_thumbnail(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :base_class,
+        [
+          "w-full aspect-video rounded-md border border-border/50 shadow-sm object-cover",
+          "md:w-44 md:aspect-square md:shrink-0"
+        ]
+      )
+      |> assign(
+        :fallback_image,
+        case assigns.post.category do
+          :blog -> "icons.svg"
+          :note -> "note.svg"
+          _ -> "icons.svg"
+        end
+      )
+
+    ~H"""
+    <%= if @post.image do %>
+      <.image
+        src={@image}
+        alt={@post.title}
+        width={@size}
+        height={@size}
+        class={@base_class}
+        {@rest}
+      />
+    <% else %>
+      <.image
+        src={"/images/posts/#{@fallback_image}"}
+        alt={@post.title}
+        width={@size}
+        height={@size}
+        class={[@base_class, "bg-surface-10/60"]}
+        {@rest}
+      />
+    <% end %>
     """
   end
 
@@ -113,31 +165,30 @@ defmodule SiteWeb.BlogComponents do
   def archive_item(assigns) do
     ~H"""
     <.card tag="article" class={["text-center md:text-left", @class]} {@rest}>
-      <h2 class="col-start-3 col-span-1">
+      <div class="flex items-center justify-center md:justify-start gap-1 text-sm font-headings text-content-40">
+        <.post_publication_date
+          class="text-content-40"
+          show_icon={false}
+          format="%b %-d, %Y"
+          post={@post}
+        />
+        <span class="opacity-70">in</span><span class="text-content-20 uppercase">{@post.category}</span>
+      </div>
+
+      <h2 class="mt-1 col-start-3 col-span-1">
         <.link
           navigate={~p"/articles/#{@post.year}/#{@post}"}
-          class="link-subtle font-medium text-lg md:text-xl line-clamp-2 text-pretty"
+          class="link-subtle font-medium text-lg line-clamp-2 text-pretty"
         >
           <span class="absolute inset-0"></span>
           {@post.title}
         </.link>
       </h2>
 
-      <div class="mt-2 flex items-center justify-center md:justify-start gap-1 text-sm font-headings text-content-40">
-        <.post_publication_date
-          class="text-content-20 uppercase"
-          show_icon={false}
-          format="%b.%d"
-          post={@post}
-        />
-        <span class="opacity-80">in</span><span class="text-content-20">{@post.category}</span>
-      </div>
-
-      <p class="mt-6 font-light text-content-40 text-base/6 md:text-lg/7.5 text-balance line-clamp-3">
+      <p class="mt-4 font-light text-content-40 text-sm md:text-base text-balance line-clamp-3">
         {@post.excerpt}
       </p>
     </.card>
-    <%!-- </article> --%>
     """
   end
 
@@ -161,28 +212,6 @@ defmodule SiteWeb.BlogComponents do
     >
       {@post.title}
     </h1>
-    """
-  end
-
-  @doc false
-
-  attr :post, Blog.Post, required: true
-  attr :class, :string, default: nil
-
-  def post_category(assigns) do
-    ~H"""
-    <div class={@class}>
-      <.badge
-        variant="dot"
-        color={Site.Blog.Post.category_color(@post.category)}
-        badge_class="group bg-surface-10 text-xs tracking-wider"
-        navigate={~p"/category/#{@post.category}"}
-      >
-        <span class="text-content-30 group-hover:text-content-10 transition-colors">
-          {@post.category}
-        </span>
-      </.badge>
-    </div>
     """
   end
 
@@ -303,8 +332,13 @@ defmodule SiteWeb.BlogComponents do
   def post_header(assigns) do
     ~H"""
     <div class={@class}>
-      <div class="flex items-center justify-center">
-        <.post_category post={@post} class="uppercase" />
+      <div class="text-center">
+        <.link
+          navigate={~p"/category/#{@post.category}"}
+          class="font-medium tracking-widest text-xs uppercase text-primary"
+        >
+          {@post.category}
+        </.link>
       </div>
 
       <.post_title class="mt-4" post={@post} underline />
@@ -579,33 +613,18 @@ defmodule SiteWeb.BlogComponents do
   """
 
   attr :post, Blog.Post, required: true
-  attr :show_icon, :boolean, default: true
   attr :format, :string, default: "%B %-d, %Y"
   attr :label, :string, default: nil
   attr :class, :string, default: nil
 
-  def post_card_meta(%{post: post} = assigns) do
-    assigns =
-      assigns
-      |> assign(:post_updated?, Blog.post_updated?(post))
-      |> assign(:update_fresh?, post_is_fresh?(post))
-
+  def post_card_meta(assigns) do
     ~H"""
-    <div class={["relative w-full h-full", @class]}>
-      <div class="absolute flex items-center bottom-0 transitions duration-150 delay-150 group-hover:-translate-y-4 group-hover:opacity-0">
-        <.post_publication_date post={@post} show_icon={@show_icon} format={@format} />
-
-        <.badge :if={@post_updated? && @update_fresh?} badge_class="ml-2 text-xs" color="red">
-          Updated
-        </.badge>
+    <div class={@class}>
+      <div class="flex items-center gap-2">
+        <.post_publication_date post={@post} show_icon={false} format={@format} />
+        <span class="font-sans text-sm text-primary">&bull;</span>
+        <span class="font-normal tracking-widest uppercase">{@post.category}</span>
       </div>
-
-      <.post_reading_time
-        post={@post}
-        label="read"
-        show_icon={@show_icon}
-        class="opacity-0 absolute inset-0 translate-y-4 transition delay-150 group-hover:opacity-100 group-hover:flex group-hover:translate-y-0"
-      />
     </div>
     """
   end
@@ -936,19 +955,4 @@ defmodule SiteWeb.BlogComponents do
 
   defp post_url(%Blog.Post{} = post),
     do: url(~p"/articles/#{post.year}/#{post}")
-
-  # Check if post has been recently posted or updated
-  defp post_is_fresh?(%Blog.Post{} = post) do
-    freshness_in_days =
-      case post.category do
-        :blog -> 30
-        :note -> 7
-        _ -> 0
-      end
-
-    posted_recently? = Date.diff(Date.utc_today(), post.date) < freshness_in_days
-    updated_recently? = Blog.post_updated_within?(post, freshness_in_days)
-
-    posted_recently? || updated_recently?
-  end
 end

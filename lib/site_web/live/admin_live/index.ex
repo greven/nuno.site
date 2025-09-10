@@ -6,7 +6,11 @@ defmodule SiteWeb.AdminLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      active_link={@active_link}
+    >
       <Layouts.page_content>
         <.header tag="h2">
           Admin Dashboard

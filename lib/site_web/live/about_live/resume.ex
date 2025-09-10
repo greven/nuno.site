@@ -1,4 +1,4 @@
-defmodule SiteWeb.ResumeLive.Index do
+defmodule SiteWeb.AboutLive.Resume do
   use SiteWeb, :live_view
 
   alias Site.Resume

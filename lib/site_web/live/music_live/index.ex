@@ -12,7 +12,11 @@ defmodule SiteWeb.MusicLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} active_link={@active_link}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      active_link={@active_link}
+    >
       <Layouts.page_content class="flex flex-col gap-16">
         <SiteComponents.now_playing track={@track} />
 
@@ -65,6 +69,7 @@ defmodule SiteWeb.MusicLive.Index do
               </.form>
             </:actions>
           </.header>
+
           <SiteComponents.albums_grid
             id="top-albums"
             class="mt-2"

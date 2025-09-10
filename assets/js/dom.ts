@@ -1,7 +1,6 @@
 export const morphdomOptions = {
   onBeforeElUpdated(from: HTMLElement, to: HTMLElement) {
-    // Keep element attributes starting with data-js-
-    // which we set on the client.
+    // Keep element attributes starting with data-js-* which we set on the client.
     for (const attr of from.attributes) {
       if (attr.name.startsWith('data-js-')) {
         to.setAttribute(attr.name, attr.value);
@@ -17,6 +16,13 @@ export const morphdomOptions = {
           to.removeAttribute(attr.value);
         }
       }
+    }
+
+    // Dialog and Details elements
+    if (['DIALOG', 'DETAILS'].indexOf(from.tagName) >= 0) {
+      Array.from(from.attributes).forEach((attr) => {
+        to.setAttribute(attr.name, attr.value);
+      });
     }
   },
 

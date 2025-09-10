@@ -19,10 +19,13 @@ defmodule SiteWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
 
+  attr :finder_commands, :list, default: [], doc: "the list of finder commands"
+
   attr :wide, :boolean, default: false, doc: "whether to use the wide wrapper"
   attr :active_link, :atom, default: nil, doc: "the active link for the header"
   attr :show_progress, :boolean, default: false, doc: "whether to show the page progress bar"
   attr :progress_icon, :string, default: nil, doc: "the icon to show in the progress bar (if any)"
+  attr :is_home, :boolean, default: false, doc: "whether the page is the home page"
 
   slot :inner_block, required: true
 
@@ -34,6 +37,7 @@ defmodule SiteWeb.Layouts do
         current_scope={@current_scope}
         show_progress={@show_progress}
         progress_icon={@progress_icon}
+        is_home={@is_home}
       />
       <main class="relative flex-auto z-1">
         <.wrapper wide={@wide}>
@@ -42,44 +46,12 @@ defmodule SiteWeb.Layouts do
       </main>
 
       <.site_footer />
+
+      <.live_component id="finder" module={SiteWeb.FinderComponent} />
       <.flash_group flash={@flash} />
     </div>
     """
   end
-
-  @doc false
-
-  attr :flash, :map, required: true, doc: "the map of flash messages"
-
-  attr :current_scope, :map,
-    default: nil,
-    doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
-
-  attr :wide, :boolean, default: false, doc: "whether to use the wide wrapper"
-  attr :active_link, :atom, default: nil, doc: "the active link for the header"
-
-  slot :inner_block, required: true
-
-  def home(assigns) do
-    ~H"""
-    <div class="min-h-screen flex flex-col">
-      <.site_header active_link={@active_link} current_scope={@current_scope} home />
-      <main class="relative flex-auto bg-surface">
-        <.wrapper wide={@wide}>
-          {render_slot(@inner_block)}
-        </.wrapper>
-      </main>
-
-      <.site_footer />
-      <.flash_group flash={@flash} />
-    </div>
-    """
-  end
-
-  @doc """
-  Layout wrapper component that sets a maximum width for the content based on the
-  utility class `wrapper` or `wide-wrapper` if the `wide` assign is set to `true`.
-  """
 
   def wrapper(assigns) do
     assigns =
@@ -97,7 +69,7 @@ defmodule SiteWeb.Layouts do
 
   @doc false
 
-  attr :home, :boolean, default: false
+  attr :is_home, :boolean, default: false
 
   def site_logo(assigns) do
     ~H"""
@@ -114,8 +86,8 @@ defmodule SiteWeb.Layouts do
           class={[
             "font-mono text-2xl text-content-40 ml-0.5 transition",
             "group-hover:animate-none group-hover:opacity-0",
-            @home && "opacity-25",
-            !@home && "text-primary motion-safe:animate-blink"
+            @is_home && "opacity-25",
+            !@is_home && "text-primary motion-safe:animate-blink"
           ]}
         >
           _
@@ -135,7 +107,7 @@ defmodule SiteWeb.Layouts do
   attr :show_progress, :boolean, default: false
   attr :progress_icon, :string, default: nil
   attr :class, :string, default: nil
-  attr :home, :boolean, default: false
+  attr :is_home, :boolean, default: false
   attr :rest, :global
 
   def site_header(assigns) do
@@ -170,7 +142,7 @@ defmodule SiteWeb.Layouts do
 
       <div class="wrapper">
         <div class="flex items-center justify-between py-3">
-          <.site_logo home={@home} />
+          <.site_logo is_home={@is_home} />
           <.site_nav active_link={@active_link} current_scope={@current_scope} />
         </div>
       </div>
@@ -231,24 +203,9 @@ defmodule SiteWeb.Layouts do
 
       <%!-- Larger devices --%>
       <div id="menu" class="hidden sm:ml-6 sm:flex items-center">
-        <button
-          type="button"
-          class="group flex items-center gap-1 mr-4 px-2 py-1 rounded-full bg-surface-40/25
-            inset-ring inset-ring-surface-40/40 cursor-pointer hover:inset-ring-surface-40 transition"
-        >
-          <.icon
-            name="hero-magnifying-glass-mini"
-            class="size-4 text-content-40/90 group-hover:text-content-30"
-          />
-          <kbd class="hidden font-sans text-xs/4 text-content-20 macos:block group-hover:text-content-10">
-            ⌘K
-          </kbd>
-          <kbd class="hidden font-sans text-xs/4 text-content-20 not-macos:block group-hover:text-content-10">
-            Ctrl&nbsp;K
-          </kbd>
-        </button>
+        <.finder_trigger_button />
 
-        <div class="flex space-x-5">
+        <div class="flex space-x-4">
           <.navbar_item item={:home} href={~p"/"} active_link={@active_link}>
             {gettext("Home")}
           </.navbar_item>
@@ -289,10 +246,40 @@ defmodule SiteWeb.Layouts do
       navigate={@navigate}
       role="navigation"
       aria-current={if @item == @active_link, do: "true", else: "false"}
-      class="navbar-link lowercase"
+      class={[
+        "navbar-link lowercase px-1 rounded-full outline-none",
+        "focus-visible:border-ring focus-visible:ring-ring/90 focus-visible:ring-[2px]"
+      ]}
     >
       {render_slot(@inner_block)}
     </.link>
+    """
+  end
+
+  defp finder_trigger_button(assigns) do
+    ~H"""
+    <button
+      type="button"
+      class={[
+        "group flex items-center gap-1 mr-4 px-2 py-1 rounded-full bg-surface-40/25 inset-ring inset-ring-surface-40/40
+          outline-none cursor-pointer transition duration-200",
+        "hover:inset-ring-surface-40 hover:bg-surface-20",
+        "focus-visible:border-ring focus-visible:ring-ring/90 focus-visible:ring-[2px]"
+      ]}
+      aria-label="Open command finder (Cmd+K)"
+      phx-click={SiteWeb.Finder.toggle()}
+    >
+      <.icon
+        name="hero-magnifying-glass-mini"
+        class="size-4 text-content-40/90 group-hover:text-content-30"
+      />
+      <kbd class="hidden font-sans text-xs/4 text-content-20 macos:block group-hover:text-content-10">
+        ⌘K
+      </kbd>
+      <kbd class="hidden font-sans text-xs/4 text-content-20 not-macos:block group-hover:text-content-10">
+        Ctrl&nbsp;K
+      </kbd>
+    </button>
     """
   end
 
@@ -370,8 +357,10 @@ defmodule SiteWeb.Layouts do
   def theme_toggle(assigns) do
     ~H"""
     <div class="relative flex flex-row items-center border-1 border-surface-30 bg-surface-20 rounded-full">
-      <div class="absolute w-[33.33%] h-full rounded-full border-1 border-surface-30 bg-surface brightness-110 left-0
-      [[data-theme-mode=user][data-theme=light]_&]:left-[33.33%] [[data-theme-mode=user][data-theme=dark]_&]:left-[66.66%] transition-[left]" />
+      <div class={[
+        "absolute w-[33.33%] h-full rounded-full border-1 border-surface-30 bg-surface brightness-110 left-0",
+        "[[data-theme-mode=user][data-theme=light]_&]:left-[33.33%] [[data-theme-mode=user][data-theme=dark]_&]:left-[66.66%] transition-[left]"
+      ]} />
 
       <button phx-click={JS.dispatch("phx:set-theme", detail: %{theme: "system"})} class="flex p-2">
         <.icon name="hero-computer-desktop-micro" class="size-4 opacity-75 hover:opacity-100" />

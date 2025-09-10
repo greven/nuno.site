@@ -6,7 +6,11 @@ defmodule SiteWeb.AboutLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope} active_link={@active_link}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      active_link={@active_link}
+    >
       <Layouts.page_content class="flex flex-col gap-16 md:gap-24">
         <div class="about-intro">
           <div class="grid grid-cols-1 gap-y-12 lg:grid-cols-2 lg:grid-rows-[auto_1fr]">

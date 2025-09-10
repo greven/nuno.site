@@ -12,8 +12,9 @@
 }
 
 @theme {
-  --font-sans: 'Inter', 'Segoe UI', 'Noto Sans', Helvetica, Arial, ui-sans-serif, system-ui,
-    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans:
+    'Inter', 'Segoe UI', 'Noto Sans', Helvetica, Arial, ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-headings: 'Montserrat', Georgia, Cambria, 'Times New Roman', Times, ui-serif, serif;
 
   --animate-fade-in: fade-in 0.5s ease-out forwards;
@@ -29,6 +30,8 @@
   --radius-2xl: calc(var(--border-radius) + 8px);
   --radius-3xl: calc(var(--border-radius) + 16px);
   --radius-4xl: calc(var(--border-radius) + 24px);
+
+  --shadow-drop: 3px 3px 0 --alpha(var(--color-neutral-500) / 0.1);
 
   --color-neutral-*: initial;
   --color-neutral: var(--neutral);

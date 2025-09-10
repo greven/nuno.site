@@ -5,7 +5,11 @@ defmodule SiteWeb.AdminLive.Login do
 
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      active_link={@active_link}
+    >
       <Layouts.page_content class="mx-auto max-w-sm space-y-4">
         <.header class="text-center">Admin Login</.header>
 

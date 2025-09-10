@@ -5,7 +5,11 @@ defmodule SiteWeb.AdminLive.Confirmation do
 
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app
+      flash={@flash}
+      current_scope={@current_scope}
+      active_link={@active_link}
+    >
       <Layouts.page_content class="mx-auto max-w-sm space-y-4">
         <.header class="text-center">
           Welcome <span class="text-[0.75em] text-content-40">{@user.email}</span>
