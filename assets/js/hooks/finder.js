@@ -138,6 +138,8 @@ export const Finder = {
     // If no item is provided, set the first one as current
     if (!item) {
       const currentItems = this.getCurrentOptions();
+      if (currentItems.length === 0) return;
+
       item = currentItems[0];
     }
 
