@@ -42,7 +42,12 @@ defmodule SiteWeb.FinderComponent do
           </div>
 
           <%!-- Commands list --%>
-          <div class="max-h-[400px] scroll-py-1 overflow-y-auto" role="listbox" tabindex="-1">
+          <div
+            id="finder-commands"
+            class="max-h-[400px] scroll-py-1 overflow-y-auto"
+            data-part="items-container"
+            tabindex="-1"
+          >
             <%!-- Theme switcher --%>
             <section :if={@show_theme_switcher} id="theme-section">
               <h3 class="mt-4 mb-0.5 px-5 font-headings text-xs text-content-40/80">
@@ -122,7 +127,13 @@ defmodule SiteWeb.FinderComponent do
           </div>
 
           <%!-- Content search results --%>
-          <div id="finder-search-results" class="finder-search-results" role="listbox" hidden>
+          <div
+            id="finder-search-results"
+            class="max-h-[400px] scroll-py-1 overflow-y-auto"
+            data-part="items-container"
+            tabindex="-1"
+            hidden
+          >
             <ul id="finder-search-items" class="p-2 text-sm"></ul>
           </div>
 

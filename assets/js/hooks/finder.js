@@ -4,9 +4,10 @@ export const Finder = {
   mounted() {
     this.finderDialog = document.getElementById('finder-dialog');
     this.finderInput = document.getElementById('finder-input');
-    this.finderSections = this.el.querySelectorAll('section[id$="-section"]');
     this.finderItems = this.el.querySelectorAll('ul > li[role="option"]');
     this.finderEmpty = this.el.querySelector('#finder-no-results');
+    this.finderSections = this.el.querySelectorAll('section[id$="-section"]');
+    this.finderCommandsContainer = this.el.querySelector('#finder-commands');
     this.finderResultsContainer = this.el.querySelector('#finder-search-results');
     this.finderResultsList = this.el.querySelector('ul#finder-search-items');
 
@@ -14,7 +15,7 @@ export const Finder = {
     this.searchCache = [];
 
     this.addMountedEventListeners();
-    this.warmUpSearch();
+    this.warmUpSearchCache();
   },
 
   destroyed() {
@@ -95,8 +96,9 @@ export const Finder = {
 
   reset() {
     this.el.setAttribute('data-mode', 'default');
-    this.finderEmpty.hidden = true;
+    this.finderCommandsContainer.hidden = false;
     this.finderResultsContainer.hidden = true;
+    this.finderEmpty.hidden = true;
 
     this.finderInput.value = '';
 
@@ -113,7 +115,9 @@ export const Finder = {
   },
 
   getCurrentOptions() {
-    return this.el.querySelectorAll('ul > li[role="option"]:not([hidden])');
+    return this.el.querySelectorAll(
+      'div[data-part="items-container"]:not([hidden]) li[role="option"]:not([hidden])'
+    );
   },
 
   setCurrentItem(item) {
@@ -128,12 +132,14 @@ export const Finder = {
     item.current = true;
     item.setAttribute('aria-selected', 'true');
     item.tabIndex = 0;
+    item.scrollIntoView({ block: 'nearest' });
   },
 
   // Deselect all items
   clearCurrentItems() {
-    const currentItems = this.getCurrentOptions();
-    currentItems?.forEach((item) => {
+    const allItems = this.el.querySelectorAll('ul > li[role="option"]');
+
+    allItems?.forEach((item) => {
       item.current = false;
       item.setAttribute('aria-selected', 'false');
       item.tabIndex = -1;
@@ -151,7 +157,7 @@ export const Finder = {
   // Warm up the search by preloading any necessary data. Save the server content
   // to local storage if not already cached or if cache is stale (more than 24h old).
   // Content items to search against are articles where each item has an id, title and keywords.
-  warmUpSearch() {
+  warmUpSearchCache() {
     const cachedItems = localStorage.getItem('ns_search');
     const cacheTimestamp = localStorage.getItem('ns_search_timestamp');
 
@@ -203,9 +209,14 @@ export const Finder = {
 
     if (query.startsWith('>')) {
       // If query stats with ">" set data-mode to search and trigger a content search
+      this.finderCommandsContainer.hidden = true;
+      this.finderResultsContainer.hidden = false;
+      this.finderEmpty.hidden = true;
       this.el.setAttribute('data-mode', 'search');
       this.searchArticles(query.slice(1).trim());
     } else if (matchingItems.length > 0) {
+      this.finderCommandsContainer.hidden = false;
+      this.finderResultsContainer.hidden = true;
       this.finderEmpty.hidden = true;
 
       // Search the default items to filter results
@@ -239,14 +250,16 @@ export const Finder = {
   },
 
   searchArticles(query) {
-    if (query.length > 1 && this.searchCache.length > 0) {
+    const q = query?.toLowerCase();
+
+    if (q.length > 1 && this.searchCache.length > 0) {
       const searchResults = [];
 
       this.searchCache.forEach((item) => {
         let title = item?.title.toLowerCase();
         let keywords = item?.keywords.map((k) => k.toLowerCase()).join(' ');
 
-        if (title.includes(query) || keywords.includes(query)) {
+        if (title.includes(q) || keywords.includes(q)) {
           searchResults.push(item);
           return;
         }
@@ -278,6 +291,7 @@ export const Finder = {
       fragment.dataset.id = article.id;
       fragment.dataset.year = article.year;
       fragment.className = itemTemplate.className;
+      fragment.role = 'option';
       fragment.setAttribute('aria-selected', 'false');
 
       // Icon element
