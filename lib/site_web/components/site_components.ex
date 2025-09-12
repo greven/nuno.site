@@ -757,7 +757,7 @@ defmodule SiteWeb.SiteComponents do
       <.async_result :let={track} assign={@track}>
         <:loading>
           <div class="-mt-0.5 flex gap-4 items-center">
-            <.track_image loading={true} />
+            <.track_image loading={true} class="size-28 lg:size-36" />
             <div class="flex flex-col gap-1">
               <div class="flex flex-col gap-2">
                 <.playing_indicator loading />
@@ -771,7 +771,7 @@ defmodule SiteWeb.SiteComponents do
 
         <:failed :let={_failure}>
           <div class="flex gap-4 items-center">
-            <.track_image offline={true} />
+            <.track_image offline={true} class="size-28 lg:size-36" />
             <div class="flex flex-col gap-1">
               Failed to load track
             </div>
@@ -780,7 +780,7 @@ defmodule SiteWeb.SiteComponents do
 
         <%= if track.name do %>
           <div class="flex gap-4 items-center">
-            <.track_image src={track.image} />
+            <.track_image src={track.image} class="size-28 lg:size-36" />
             <div class="flex flex-col gap-1">
               <.playing_indicator is_playing={track.now_playing} last_played={track.played_at} />
               <div class="leading-5 line-clamp-1">
@@ -828,10 +828,11 @@ defmodule SiteWeb.SiteComponents do
   attr :wrapper_class, :string,
     default: "relative aspect-square shrink-0 flex items-center justify-center"
 
+  attr :image_width, :integer, default: 164
+  attr :image_height, :integer, default: 164
   attr :image_class, :string, default: "object-cover brightness-110"
 
-  attr :size_class, :string, default: "size-28 lg:size-36"
-  attr :padding_class, :string, default: "p-1"
+  attr :padding_class, :string, default: "p-0.5"
   attr :border_class, :string, default: "border-none"
   attr :shadow_class, :string, default: "shadow-md"
   attr :radius_class, :string, default: "rounded-md"
@@ -841,7 +842,7 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <div class={@class} {@rest}>
       <.box
-        class={[@wrapper_class, @size_class]}
+        class={@wrapper_class}
         padding={@padding_class}
         border={@border_class}
         shadow={@shadow_class}
@@ -849,11 +850,11 @@ defmodule SiteWeb.SiteComponents do
         <%= cond do %>
           <% @src -> %>
             <.image
-              class={[@radius_class, @image_class]}
+              class={["shrink-0", @radius_class, @image_class]}
               alt="Album cover"
               src={@src}
-              width={164}
-              height={164}
+              width={@image_width}
+              height={@image_height}
             />
           <% @loading -> %>
             <.icon name="lucide-loader-circle" class="size-10 bg-surface-30 animate-spin" />
@@ -951,18 +952,17 @@ defmodule SiteWeb.SiteComponents do
           >
             <li
               :for={{dom_id, track} <- @tracks}
-              class="flex items-center gap-6"
+              class="flex items-center gap-4 md:gap-6"
               id={dom_id}
             >
               <.track_image
                 src={track.image}
-                class="shrink-0"
-                size_class="size-10"
+                class="size-10"
                 padding_class="p-0"
                 radius_class="rounded-sm"
               />
-              <%!-- Track name --%>
-              <div class="items-center">
+              <div class="flex-1 flex flex-col md:gap-1 md:flex-row md:items-center">
+                <%!-- Track name --%>
                 <div class="flex items-center gap-3">
                   <div class="text-sm md:text-base text-content-20 whitespace-nowrap text-ellipsis line-clamp-1 shrink-0">
                     <a href={track.url} target="_blank" class="link-ghost">{track.name}</a>
@@ -973,13 +973,16 @@ defmodule SiteWeb.SiteComponents do
                     style="--playing-color: var(--color-surface-40)"
                   />
                 </div>
-              </div>
 
-              <hr class="hidden w-full border-0.5 border-surface-40 border-dashed opacity-70 md:flex" />
+                <hr class="hidden w-full border-0.5 border-surface-40 border-dashed opacity-70 md:flex" />
 
-              <%!-- Track artist --%>
-              <div class="ml-2 text-sm md:text-base text-right font-light text-content-40 whitespace-nowrap text-ellipsis line-clamp-1 shrink-0">
-                {track.artist}
+                <%!-- Track artist --%>
+                <div class={[
+                  "text-sm md:text-base font-light text-content-40 whitespace-nowrap text-ellipsis line-clamp-1 shrink-0",
+                  "md:ml-2 md:text-right"
+                ]}>
+                  {track.artist}
+                </div>
               </div>
             </li>
           </ul>
@@ -990,6 +993,91 @@ defmodule SiteWeb.SiteComponents do
         <% end %>
       </.async_result>
     </div>
+    """
+  end
+
+  @doc false
+
+  attr :id, :string, default: "spotify-playlists"
+  attr :async, AsyncResult, required: true
+  attr :playlists, :list, required: true
+  attr :rest, :global
+
+  def spotify_playlists(assigns) do
+    ~H"""
+    <div {@rest}>
+      <.async_result assign={@async}>
+        <:loading>
+          <ul class="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+            <%= for _ <- 1..6 do %>
+              <.card padding="p-1">
+                <div class="flex items-center gap-2 overflow-hidden">
+                  <.track_image
+                    loading={true}
+                    image_width={50}
+                    image_height={50}
+                    shadow_class="shadow-none"
+                    padding_class="p-0"
+                    class="size-12.5 flex items-center"
+                  />
+
+                  <div class="w-full flex flex-col gap-1.5 p-2">
+                    <.skeleton height="16px" width="70%" />
+                    <.skeleton height="14px" width="50%" />
+                  </div>
+                </div>
+              </.card>
+            <% end %>
+          </ul>
+        </:loading>
+
+        <ul class="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+          <.playlist_item :for={{dom_id, playlist} <- @playlists} playlist={playlist} />
+        </ul>
+      </.async_result>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :playlist, :map, required: true
+  attr :rest, :global
+
+  def playlist_item(assigns) do
+    ~H"""
+    <.card
+      tag="li"
+      class="group relative"
+      padding="p-1"
+    >
+      <div class="flex gap-2 overflow-hidden">
+        <.track_image
+          src={@playlist.image}
+          image_width={50}
+          image_height={50}
+          shadow_class="shadow-none"
+          padding_class="p-0"
+        />
+
+        <a
+          href={@playlist.url}
+          target="_blank"
+          class="p-1 flex flex-col justify-center"
+          {@rest}
+        >
+          <div class="absolute inset-0"></div>
+          <span class="font-headings font-medium text-xs sm:text-sm text-ellipsis line-clamp-1">
+            {@playlist.name}
+          </span>
+          <p class="text-xs text-content-40">{@playlist.songs} songs</p>
+        </a>
+      </div>
+      <.icon
+        name="lucide-arrow-up-right"
+        class="hidden md:block size-5 text-surface-40/80 absolute top-2 right-2 transition group-hover:text-emerald-600"
+      />
+    </.card>
     """
   end
 
@@ -1018,7 +1106,7 @@ defmodule SiteWeb.SiteComponents do
           >
             <li
               :for={{dom_id, item} <- @items}
-              class="group text-xl/9 font-light hover:marker:text-primary transition-colors"
+              class="group text-base/7 md:text-lg/8 lg:text-xl/9 font-light hover:marker:text-primary transition-colors"
               id={dom_id}
             >
               <a href={item.url} target="_blank" class="link-ghost">{item.name}</a>
@@ -1085,7 +1173,9 @@ defmodule SiteWeb.SiteComponents do
                   <div class="flex h-full items-end justify-start text-white transition-opacity opacity-0 group-hover:opacity-100 duration-300">
                     <div class="flex flex-col">
                       <div class="font-medium text-sm line-clamp-1 text-ellipsis">
-                        <a href={album.url} target="_blank" class="text-white">{album.name}</a>
+                        <a href={album.url} target="_blank" class="text-white" title={album.name}>
+                          {album.name}
+                        </a>
                       </div>
                       <div class="text-neutral-200 text-xs line-clamp-1 text-ellipsis">
                         {album.artist}

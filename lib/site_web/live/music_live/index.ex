@@ -17,23 +17,38 @@ defmodule SiteWeb.MusicLive.Index do
       current_scope={@current_scope}
       active_link={@active_link}
     >
-      <Layouts.page_content class="flex flex-col gap-16">
+      <Layouts.page_content class="flex flex-col gap-12 md:gap-16">
         <SiteComponents.now_playing track={@track} />
 
         <section>
           <.header tag="h3">
-            <.icon name="lucide-history" class="mr-2.5 text-content-40" /> Recently Played
+            <.icon name="lucide-list-music" class="hidden md:inline-block mr-2.5 text-content-40" />
+            Spotify Playlists
           </.header>
-          <SiteComponents.recent_tracks
-            async={@recent_tracks}
-            tracks={@streams.recent_tracks}
+
+          <SiteComponents.spotify_playlists
             class="mt-2"
+            async={@playlists}
+            playlists={@streams.playlists}
           />
         </section>
 
         <section>
           <.header tag="h3">
-            <.icon name="lucide-mic-vocal" class="mr-2.5 text-content-40" /> Top Artists
+            <.icon name="lucide-history" class="hidden md:inline-block mr-2.5 text-content-40" />
+            Recently Played
+          </.header>
+          <SiteComponents.recent_tracks
+            class="mt-2"
+            async={@recent_tracks}
+            tracks={@streams.recent_tracks}
+          />
+        </section>
+
+        <section>
+          <.header tag="h3">
+            <.icon name="lucide-mic-vocal" class="hidden md:inline-block mr-2.5 text-content-40" />
+            Top Artists
             <:actions>
               <.form for={@form} phx-change="change_top_artists_range">
                 <.input
@@ -56,7 +71,8 @@ defmodule SiteWeb.MusicLive.Index do
 
         <section>
           <.header tag="h3">
-            <.icon name="lucide-disc-album" class="mr-2.5 text-content-40" /> Top Albums
+            <.icon name="lucide-disc-album" class="hidden md:inline-block mr-2.5 text-content-40" />
+            Top Albums
             <:actions>
               <.form for={@form} phx-change="change_top_albums_range">
                 <.input
@@ -109,9 +125,11 @@ defmodule SiteWeb.MusicLive.Index do
       )
       |> stream_configure(:top_artists, dom_id: &"artist-#{&1.name}-#{&1.rank}")
       |> stream_configure(:top_albums, dom_id: &"album-#{&1.name}-#{&1.rank}")
+      |> stream_configure(:playlists, dom_id: &"playlist-#{&1.id}")
       |> stream_async(:recent_tracks, fn -> get_recent_tracks(limit: 10) end)
       |> stream_async(:top_artists, fn -> get_top_artists("overall", limit: 30) end)
       |> stream_async(:top_albums, fn -> get_top_albums("overall") end)
+      |> stream_async(:playlists, fn -> Services.get_spotify_playlists() end)
 
     {:ok, socket, temporary_assigns: [time_range_options: time_range_options]}
   end

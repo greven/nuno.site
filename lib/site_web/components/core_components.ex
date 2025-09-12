@@ -43,6 +43,11 @@ defmodule SiteWeb.CoreComponents do
 
   attr :tag, :string, default: "div"
   attr :class, :any, default: nil
+  attr :content_class, :any, default: "relative flex flex-col h-full"
+  attr :bg, :string, default: "bg-surface-10/80 hover:bg-surface-10"
+  attr :padding, :string, default: "p-4"
+  attr :border, :string, default: "border border-border border-dashed hover:border-solid"
+  attr :shadow, :string, default: "hover:shadow-drop"
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -56,22 +61,43 @@ defmodule SiteWeb.CoreComponents do
         ]}
         {@rest}
       >
-        <.card_box tag={@tag}>
+        <.card_box
+          tag={@tag}
+          bg={@bg}
+          border={@border}
+          padding={@padding}
+          shadow={@shadow}
+          class={@content_class}
+        >
           {render_slot(@inner_block)}
         </.card_box>
       </.link>
       """
     else
       ~H"""
-      <.card_box tag={@tag} {@rest}>
-        {render_slot(@inner_block)}
-      </.card_box>
+      <div class={@class} {@rest}>
+        <.card_box
+          tag={@tag}
+          bg={@bg}
+          border={@border}
+          padding={@padding}
+          shadow={@shadow}
+          class={@content_class}
+        >
+          {render_slot(@inner_block)}
+        </.card_box>
+      </div>
       """
     end
   end
 
   attr :tag, :string, required: true
+  attr :bg, :string, required: true
+  attr :border, :string, required: true
+  attr :padding, :string, required: true
+  attr :shadow, :string, required: true
   attr :rest, :global
+
   slot :inner_block, required: true
 
   # TODO: Add pattern effect!
@@ -108,10 +134,10 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <.box
       tag={@tag}
-      class="relative flex flex-col h-full"
-      bg="bg-surface-10/60 hover:bg-surface-10"
-      border="border border-border border-dashed hover:border-solid"
-      shadow="hover:shadow-drop"
+      bg={@bg}
+      border={@border}
+      padding={@padding}
+      shadow={@shadow}
       {@rest}
     >
       {render_slot(@inner_block)}
@@ -491,9 +517,9 @@ defmodule SiteWeb.CoreComponents do
   @doc """
   Renders a header with title.
   """
-  attr :class, :any, default: "flex flex-col"
-  attr :header_class, :string, default: nil
+  attr :header_class, :string
   attr :padding_class, :string, default: "pb-4"
+  attr :class, :any, default: "flex flex-col"
   attr :anchor, :string, default: nil
   attr :tag, :string, default: "h1"
   attr :rest, :global
@@ -509,7 +535,7 @@ defmodule SiteWeb.CoreComponents do
   def header(assigns) do
     assigns =
       assigns
-      |> assign(:default_header_class, ["font-medium", header_font_size(assigns.tag)])
+      |> assign_new(:header_class, fn -> ["font-medium", header_font_size(assigns.tag)] end)
 
     ~H"""
     <header
@@ -520,17 +546,19 @@ defmodule SiteWeb.CoreComponents do
         <.dynamic_tag
           tag_name={@tag}
           class={[
-            "flex items-center text-content-10",
-            if(@header_class, do: @header_class, else: @default_header_class)
+            if(@anchor,
+              do: "relative group hidden sm:flex items-center",
+              else: "flex items-center"
+            ),
+            "text-content-10",
+            @header_class
           ]}
         >
           <%= if @anchor do %>
-            <div class="relative group hidden sm:block">
-              <a id={@anchor} class="header-link" href={"##{@anchor}"}>
-                {@tag}
-              </a>
-              {render_slot(@inner_block)}
-            </div>
+            <a id={@anchor} class="header-link" href={"##{@anchor}"}>
+              {@tag}
+            </a>
+            {render_slot(@inner_block)}
           <% else %>
             {render_slot(@inner_block)}
           <% end %>

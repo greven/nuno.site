@@ -84,6 +84,9 @@ defmodule SiteWeb.Router do
     scope "/dev" do
       pipe_through :browser
 
+      get "/spotify", SiteWeb.SpotifyController, :index
+      get "/spotify/callback", SiteWeb.SpotifyController, :callback
+
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end

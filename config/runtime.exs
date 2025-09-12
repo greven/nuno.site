@@ -32,10 +32,15 @@ config :site, :bluesky,
   app_password: env!("BLUESKY_APP_PASSWORD", :string!)
 
 config :site, :lastfm,
-  api_key: env!("LASTFM_API_KEY"),
-  shared_secret: env!("LASTFM_SHARED_SECRET"),
-  username: env!("LASTFM_USERNAME"),
-  session_key: env!("LASTFM_SESSION_KEY")
+  api_key: env!("LASTFM_API_KEY", :string!),
+  shared_secret: env!("LASTFM_SHARED_SECRET", :string!),
+  username: env!("LASTFM_USERNAME", :string!),
+  session_key: env!("LASTFM_SESSION_KEY", :string!)
+
+config :site, :spotify,
+  client_id: env!("SPOTIFY_CLIENT_ID", :string!),
+  client_secret: env!("SPOTIFY_CLIENT_SECRET", :string!),
+  refresh_token: env!("SPOTIFY_REFRESH_TOKEN", :string!)
 
 if config_env() == :prod do
   database_path =

@@ -7,11 +7,20 @@ defmodule Site.Services do
 
   alias Site.Services.Lastfm
   alias Site.Services.Goodreads
-  # alias Site.Services.Steam
+  alias Site.Services.Steam
 
   @music_albums_limit 36
   @music_top_artists_limit 50
   @music_top_tracks_limit 50
+
+  @playlists [
+    {"Nuno FM", "38yrXszA90IS0092T8S6sU"},
+    {"Metal", "7EXeemOaoDUWZs8YAgUuFR"},
+    {"TOOLesque", "2MuGzA2IPWAWUlyon7XvBG"},
+    {"Post Metal", "6pwsY3Gkn19i9f7cxjs9yb"},
+    {"Post Rock", "5IkU9IYbSYiK31bjZJC4rm"},
+    {"Heartful", "6h9TQZwSrow8mdw5YZKYN8"}
+  ]
 
   ## Music
 
@@ -71,6 +80,26 @@ defmodule Site.Services do
     Lastfm.get_top_tracks(period, limit)
   end
 
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: :spotify_playlists,
+              opts: [ttl: :timer.hours(24)]
+            )
+  def get_spotify_playlists do
+    playlists =
+      @playlists
+      |> Task.async_stream(fn {_name, playlist_id} ->
+        Site.Services.Spotify.get_playlist(playlist_id)
+      end)
+      |> Enum.filter(fn
+        {:ok, {:ok, _playlist}} -> true
+        _ -> false
+      end)
+      |> Enum.map(fn {:ok, {:ok, playlist}} -> playlist end)
+
+    {:ok, playlists}
+  end
+
   ## Books
 
   @decorate cacheable(
@@ -78,22 +107,23 @@ defmodule Site.Services do
               key: :books,
               opts: [ttl: :timer.hours(12)]
             )
-  def get_currently_reading() do
-    Goodreads.get_currently_reading()
-  end
+  def get_currently_reading,
+    do: Goodreads.get_currently_reading()
 
   @decorate cacheable(
               cache: Site.Cache,
               key: :reading_stats,
               opts: [ttl: :timer.hours(12)]
             )
-  def get_reading_stats do
-    Goodreads.get_reading_stats()
-  end
+  def get_reading_stats,
+    do: Goodreads.get_reading_stats()
 
   ## Games
 
-  # def get_recently_played_games(opts \\ []) do
-  #   Steam.get_recently_played_games(opts)
-  # end
+  # @decorate cacheable(cache: Site.Cache, key: {:recently_played_games}, opts: [ttl: :timer.hours(1)])
+  def get_recently_played_games, do: Steam.get_recently_played_games()
+
+  def get_top_played_games do
+    # Steam.get_top_played_games()
+  end
 end
