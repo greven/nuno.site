@@ -1247,6 +1247,76 @@ defmodule SiteWeb.CoreComponents do
   end
 
   @doc """
+  Renders a spoiler component.
+  The spoiler component allows you to hide long sections of text until the user clicks to reveal them.
+  The cut-off point is determined by the `max_height` attribute.
+  """
+
+  attr :id, :string, required: true
+  attr :max_height, :string, default: "8rem", doc: "the maximum height of the spoiler content"
+  attr :open, :boolean, default: false, doc: "the initial state of the spoiler"
+
+  attr :transition_duration, :integer,
+    default: 300,
+    doc: "the duration of the expand/collapse transition in milliseconds"
+
+  attr :trigger_class, :string,
+    default: "text-sm font-medium text-primary text-center hover:underline hover:cursor-pointer"
+
+  attr :expand_label, :string,
+    default: gettext("Show more"),
+    doc: "the label for the expand button"
+
+  attr :collapse_label, :string,
+    default: gettext("Hide"),
+    doc: "the label for the collapse button"
+
+  attr :rest, :global
+
+  slot :inner_block, required: true
+
+  def spoiler(assigns) do
+    ~H"""
+    <div {@rest}>
+      <div id={"spoiler-#{@id}"} data-open={@open} data-max-height={@max_height} phx-hook="Spoiler">
+        <div
+          id={"spoiler-#{@id}-region"}
+          class="relative flex flex-col overflow-hidden transition-[max-height] ease-in-out"
+          style={"max-height: #{@max_height}; transition-duration: #{@transition_duration}ms;"}
+          data-part="spoiler-content"
+          role="region"
+        >
+          <div
+            class={[
+              "absolute bottom-0 left-0 right-0 h-6 z-1 bg-surface/85 mask-t-from-25%",
+              @open && "opacity-0"
+            ]}
+            data-part="spoiler-overlay"
+          >
+          </div>
+          {render_slot(@inner_block)}
+        </div>
+
+        <button
+          type="button"
+          class="group mt-2 text-sm font-medium text-primary hover:underline hover:cursor-pointer"
+          aria-expanded={@open}
+          aria-controls={"spoiler-#{@id}-region"}
+          data-part="spoiler-trigger"
+        >
+          <span class="group-aria-[expanded=true]:hidden">
+            {@expand_label}
+          </span>
+          <span class="hidden group-aria-[expanded=true]:inline-block">
+            {@collapse_label}
+          </span>
+        </button>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
   Renders an icon.
 
   Supports three icon libraries:

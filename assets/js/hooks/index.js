@@ -9,6 +9,7 @@ import { ProfileSlideshow } from './profile-slideshow';
 import { Resume } from './resume';
 import { SharePost } from './share-post';
 import { SiteHeader } from './site-header';
+import { Spoiler } from './spoiler';
 import { Tabs } from './tabs';
 import { TheEnd } from './the-end';
 import { TravelMap } from './travel-map';
@@ -24,6 +25,7 @@ export default {
   Resume,
   SharePost,
   SiteHeader,
+  Spoiler,
   TableOfContents,
   Tabs,
   TheEnd,

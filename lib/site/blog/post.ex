@@ -39,13 +39,6 @@ defmodule Site.Blog.Post do
   def categories, do: ~w(blog note)a
 
   @doc """
-  The color given to each post category.
-  """
-  def category_color(:blog), do: "sky"
-  def category_color(:note), do: "amber"
-  def category_color(_), do: "gray"
-
-  @doc """
   The NimblePublisher build callback function.
   """
   def build(filename, attrs, body) do

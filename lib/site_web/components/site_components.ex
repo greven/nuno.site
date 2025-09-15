@@ -42,7 +42,7 @@ defmodule SiteWeb.SiteComponents do
       <ol id="featured-posts" class="isolate flex flex-col justify-center gap-3">
         <%= for post <- @posts do %>
           <li class={[
-            "relative w-full px-2.5 lg:px-5 py-2.5 flex items-center justify-between gap-6 bg-surface-10/50 border border-border border-dashed rounded-lg overflow-hidden [counter-increment:item-counter]",
+            "group relative w-full px-2.5 lg:px-3 py-2.5 flex items-center justify-between gap-6 bg-surface-10/50 border border-border border-dashed rounded-lg overflow-hidden [counter-increment:item-counter]",
             "before:opacity-0 before:content-['#'_counter(item-counter)] before:absolute before:left-4 before:font-headings
               before:font-semibold before:text-content-10 md:before:opacity-10 before:text-xl
               before:pointer-events-none",
@@ -61,8 +61,10 @@ defmodule SiteWeb.SiteComponents do
 
             <div class="flex items-center shrink-0 gap-2">
               <div class="hidden md:flex items-center flex-nowrap shrink-0 text-sm line-clamp-1">
-                <span class="text-content-40/50 mr-1">#</span>
-                <span class="text-content-40">{List.first(post.tags)}</span>
+                <span class="text-content-40/40 mr-1">#</span>
+                <span class="text-content-40/50 group-hover:text-content-40">
+                  {List.first(post.tags)}
+                </span>
               </div>
 
               <span class="hidden opacity-10 md:flex">|</span>
@@ -756,8 +758,8 @@ defmodule SiteWeb.SiteComponents do
     <div class={["flex items-center gap-2", @class]} {@rest}>
       <.async_result :let={track} assign={@track}>
         <:loading>
-          <div class="-mt-0.5 flex gap-4 items-center">
-            <.track_image loading={true} class="size-28 lg:size-36" />
+          <div class="-mt-0.5 flex items-center gap-4">
+            <.track_image loading={true} class="size-30 md:size-32 lg:size-36" />
             <div class="flex flex-col gap-1">
               <div class="flex flex-col gap-2">
                 <.playing_indicator loading />
@@ -770,8 +772,8 @@ defmodule SiteWeb.SiteComponents do
         </:loading>
 
         <:failed :let={_failure}>
-          <div class="flex gap-4 items-center">
-            <.track_image offline={true} class="size-28 lg:size-36" />
+          <div class="flex items-center gap-4">
+            <.track_image offline={true} class="size-30 md:size-32 lg:size-36" />
             <div class="flex flex-col gap-1">
               Failed to load track
             </div>
@@ -779,11 +781,11 @@ defmodule SiteWeb.SiteComponents do
         </:failed>
 
         <%= if track.name do %>
-          <div class="flex gap-4 items-center">
-            <.track_image src={track.image} class="size-28 lg:size-36" />
-            <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-4">
+            <.track_image src={track.image} class="size-30 md:size-32 lg:size-36" />
+            <div class="flex flex-col justify-center gap-1">
               <.playing_indicator is_playing={track.now_playing} last_played={track.played_at} />
-              <div class="leading-5 line-clamp-1">
+              <div class="leading-5">
                 <a
                   href={track.url}
                   target="_blank"
@@ -800,9 +802,10 @@ defmodule SiteWeb.SiteComponents do
             </div>
           </div>
         <% else %>
-          <div class="flex gap-4 items-center">
-            <.track_image offline={true} />
-            <div class="flex flex-col gap-1">
+          <%!-- Offline --%>
+          <div class="flex items-center gap-4">
+            <.track_image offline={true} class="size-30 md:size-32 lg:size-36" />
+            <div class="flex flex-col justify-center gap-1">
               <.playing_indicator is_playing={track.now_playing} last_played={track.played_at} />
               <div class="leading-5 line-clamp-1 text-content-40/50">
                 n/a
@@ -826,7 +829,7 @@ defmodule SiteWeb.SiteComponents do
   attr :class, :string, default: nil
 
   attr :wrapper_class, :string,
-    default: "relative aspect-square shrink-0 flex items-center justify-center"
+    default: "w-full h-full relative aspect-square shrink-0 flex items-center justify-center"
 
   attr :image_width, :integer, default: 164
   attr :image_height, :integer, default: 164
@@ -840,12 +843,13 @@ defmodule SiteWeb.SiteComponents do
 
   def track_image(assigns) do
     ~H"""
-    <div class={@class} {@rest}>
+    <div class={["shrink-0", @class]} {@rest}>
       <.box
         class={@wrapper_class}
         padding={@padding_class}
         border={@border_class}
         shadow={@shadow_class}
+        bg="bg-surface-20/50"
       >
         <%= cond do %>
           <% @src -> %>
@@ -857,11 +861,11 @@ defmodule SiteWeb.SiteComponents do
               height={@image_height}
             />
           <% @loading -> %>
-            <.icon name="lucide-loader-circle" class="size-10 bg-surface-30 animate-spin" />
+            <.icon name="lucide-loader-circle" class="size-4/6 max-w-10 bg-surface-30 animate-spin" />
           <% @offline -> %>
-            <.icon name="lucide-volume-off" class="size-14 bg-surface-30" />
+            <.icon name="lucide-volume-off" class="size-4/6 max-w-10 bg-surface-30" />
           <% true -> %>
-            <.icon name="lucide-volume-off" class="size-14 bg-surface-30" />
+            <.icon name="lucide-volume-off" class="size-4/6 max-w-10 bg-surface-30" />
         <% end %>
       </.box>
     </div>
@@ -964,7 +968,7 @@ defmodule SiteWeb.SiteComponents do
               <div class="flex-1 flex flex-col md:gap-1 md:flex-row md:items-center">
                 <%!-- Track name --%>
                 <div class="flex items-center gap-3">
-                  <div class="text-sm md:text-base text-content-20 whitespace-nowrap text-ellipsis line-clamp-1 shrink-0">
+                  <div class="font-medium text-sm md:text-base md:font-normal text-content-20 whitespace-nowrap text-ellipsis line-clamp-1 shrink-0">
                     <a href={track.url} target="_blank" class="link-ghost">{track.name}</a>
                   </div>
                   <.playing_icon
@@ -1021,9 +1025,9 @@ defmodule SiteWeb.SiteComponents do
                     class="size-12.5 flex items-center"
                   />
 
-                  <div class="w-full flex flex-col gap-1.5 p-2">
-                    <.skeleton height="16px" width="70%" />
-                    <.skeleton height="14px" width="50%" />
+                  <div class="w-full flex flex-col gap-1.5">
+                    <.skeleton height="16px" width="60%" />
+                    <.skeleton height="14px" width="40%" />
                   </div>
                 </div>
               </.card>
@@ -1101,12 +1105,18 @@ defmodule SiteWeb.SiteComponents do
         <%= if @items != [] do %>
           <ol
             id={@id}
-            class="list-decimal list-inside marker:text-content-40/80 md:columns-2"
+            class={[
+              "list-[style:decimal-leading-zero] list-inside marker:text-content-40/80",
+              "grid grid-cols-1 md:grid-cols-2 gap-y-1 md:gap-x-16"
+            ]}
             phx-update={is_struct(@items, Phoenix.LiveView.LiveStream) && "stream"}
           >
             <li
               :for={{dom_id, item} <- @items}
-              class="group text-base/7 md:text-lg/8 lg:text-xl/9 font-light hover:marker:text-primary transition-colors"
+              class={[
+                "group text-base/7 font-light transition-colors border-b-1 border-border/25",
+                "md:text-lg/8 hover:marker:text-primary"
+              ]}
               id={dom_id}
             >
               <a href={item.url} target="_blank" class="link-ghost">{item.name}</a>
@@ -1221,7 +1231,7 @@ defmodule SiteWeb.SiteComponents do
             class="flex flex-col gap-4"
             phx-update={is_struct(@books, Phoenix.LiveView.LiveStream) && "stream"}
           >
-            <li :for={{dom_id, book} <- @books} class="flex flex-row gap-4" id={dom_id}>
+            <li :for={{dom_id, book} <- @books} id={dom_id} class="flex flex-row gap-4">
               <a
                 href={book.url}
                 target="_blank"
@@ -1276,6 +1286,163 @@ defmodule SiteWeb.SiteComponents do
                   <% end %>
                 </div>
               </div>
+            </li>
+          </ul>
+        <% else %>
+          <div class="flex items-center">
+            <.icon name="hero-bolt-slash-solid" class="mt-2 size-6 text-content-40/20" />
+          </div>
+        <% end %>
+      </.async_result>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :id, :string, default: "recent-games-list"
+  attr :async, AsyncResult, required: true
+  attr :games, :list, required: true
+  attr :img_width, :integer, default: 160
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def recent_games(assigns) do
+    ~H"""
+    <div class={@class} {@rest}>
+      <.async_result :let={_async} assign={@async}>
+        <:loading>
+          <div class="flex flex-col items-center gap-2">
+            <.icon name="lucide-loader-circle" class="mt-8 size-6 text-content-40/20 animate-spin" />
+            <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+          </div>
+        </:loading>
+
+        <:failed :let={_failure}>
+          <div class="flex flex-col items-center gap-2">
+            <.icon name="lucide-zap-off" class="mt-8 size-6 text-content-40/20" />
+            <span class="text-content-40/50">Failed to load favourite games</span>
+          </div>
+        </:failed>
+
+        <%= if @games != [] do %>
+          <ul
+            id={@id}
+            class="flex flex-wrap gap-4"
+            phx-update={is_struct(@games, Phoenix.LiveView.LiveStream) && "stream"}
+          >
+            <li
+              :for={{dom_id, game} <- @games}
+              id={dom_id}
+              class="w-full sm:w-auto flex flex-row gap-4"
+            >
+              <a
+                href={game.store_url}
+                target="_blank"
+                class="group relative w-full sm:w-auto sm:shrink-0 rounded-md border-2 border-transparent hover:border-secondary transition-border"
+              >
+                <div class={[
+                  "absolute inset-0 rounded-sm bg-secondary/25 opacity-0 transition-opacity",
+                  "group-hover:opacity-100"
+                ]}>
+                  <.icon
+                    name="hero-arrow-top-right-on-square"
+                    class="size-10 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90"
+                  />
+                </div>
+
+                <.image
+                  src={game.thumbnail_url}
+                  alt={"#{game.name} game cover"}
+                  class="hidden sm:block object-cover rounded-sm shadow-sm"
+                  width={@img_width}
+                  height={@img_width * 1.5}
+                  loading="lazy"
+                />
+
+                <.image
+                  src={game.header_url}
+                  alt={"#{game.name} game cover"}
+                  class="w-full sm:hidden object-cover rounded-sm shadow-sm"
+                  width={460}
+                  height={215}
+                  loading="lazy"
+                />
+              </a>
+            </li>
+          </ul>
+        <% else %>
+          <div class="flex items-center">
+            <.icon name="hero-bolt-slash-solid" class="mt-2 size-6 text-content-40/20" />
+          </div>
+        <% end %>
+      </.async_result>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :id, :string, default: "favourite-games-list"
+  attr :async, AsyncResult, required: true
+  attr :games, :list, required: true
+  attr :img_width, :integer, default: 160
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def favourite_games(assigns) do
+    ~H"""
+    <div class={@class} {@rest}>
+      <.async_result :let={_async} assign={@async}>
+        <:loading>
+          <div class="flex flex-col items-center gap-2">
+            <.icon name="lucide-loader-circle" class="mt-8 size-6 text-content-40/20 animate-spin" />
+            <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+          </div>
+        </:loading>
+
+        <:failed :let={_failure}>
+          <div class="flex flex-col items-center gap-2">
+            <.icon name="lucide-zap-off" class="mt-8 size-6 text-content-40/20" />
+            <span class="text-content-40/50">Failed to load favourite games</span>
+          </div>
+        </:failed>
+
+        <%= if @games != [] do %>
+          <ul
+            id={@id}
+            class="grid grid-cols1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+            phx-update={is_struct(@games, Phoenix.LiveView.LiveStream) && "stream"}
+          >
+            <li
+              :for={{dom_id, game} <- @games}
+              id={dom_id}
+              class="w-full md:w-auto flex flex-row gap-4"
+            >
+              <a
+                href={game.store_url}
+                target="_blank"
+                class="group relative w-full md:w-auto rounded-md border-2 border-transparent hover:border-secondary transition-border"
+              >
+                <div class={[
+                  "absolute inset-0 rounded-sm bg-secondary/25 opacity-0 transition-opacity",
+                  "group-hover:opacity-100"
+                ]}>
+                  <.icon
+                    name="hero-arrow-top-right-on-square"
+                    class="size-10 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90"
+                  />
+                </div>
+
+                <.image
+                  src={game.header_url}
+                  alt={"#{game.name} game cover"}
+                  class="w-full md:w-84 object-cover rounded-sm shadow-sm"
+                  width={460}
+                  height={215}
+                  loading="lazy"
+                />
+              </a>
             </li>
           </ul>
         <% else %>

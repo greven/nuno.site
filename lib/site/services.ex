@@ -120,10 +120,20 @@ defmodule Site.Services do
 
   ## Games
 
-  # @decorate cacheable(cache: Site.Cache, key: {:recently_played_games}, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: {:recently_played_games},
+              opts: [ttl: :timer.hours(1)]
+            )
   def get_recently_played_games, do: Steam.get_recently_played_games()
 
+  @decorate cacheable(cache: Site.Cache, key: {:top_played_games}, opts: [ttl: :timer.hours(1)])
   def get_top_played_games do
-    # Steam.get_top_played_games()
+    Steam.get_top_played_games()
+  end
+
+  @decorate cacheable(cache: Site.Cache, key: {:favourite_games}, opts: [ttl: :timer.hours(1)])
+  def get_favourite_games do
+    Steam.get_favourite_games()
   end
 end

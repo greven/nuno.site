@@ -36,11 +36,11 @@ defmodule SiteWeb.BlogComponents do
             class="link-subtle text-lg line-clamp-2"
           >
             <span class="absolute inset-0 z-10"></span>
-            <span>{@post.title}</span>
+            <span class="font-medium">{@post.title}</span>
           </.link>
         </.header>
 
-        <p class="text-sm/6 text-content-40 line-clamp-3 group-hover:text-content-30">
+        <p class="pr-2 text-sm/6 text-content-40 line-clamp-3 group-hover:text-content-30">
           {@post.excerpt}
         </p>
       </div>
@@ -335,7 +335,7 @@ defmodule SiteWeb.BlogComponents do
       <div class="text-center">
         <.link
           navigate={~p"/category/#{@post.category}"}
-          class="font-medium tracking-widest text-xs uppercase text-primary"
+          class={["font-medium tracking-widest text-xs uppercase", category_color(@post.category)]}
         >
           {@post.category}
         </.link>
@@ -947,6 +947,13 @@ defmodule SiteWeb.BlogComponents do
     </div>
     """
   end
+
+  ## Helpers
+
+  # The color given to each post category.
+  defp category_color(:blog), do: "text-primary"
+  defp category_color(:note), do: "text-amber-600"
+  defp category_color(_), do: "text-gray-600"
 
   defp post_path(%Blog.Post{} = post),
     do: ~p"/articles/#{post.year}/#{post}"

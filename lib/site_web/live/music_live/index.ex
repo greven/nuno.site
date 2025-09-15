@@ -61,12 +61,15 @@ defmodule SiteWeb.MusicLive.Index do
               </.form>
             </:actions>
           </.header>
-          <SiteComponents.top_artists_list
-            id="top-artists"
-            class="mt-2"
-            async={@top_artists}
-            items={@streams.top_artists}
-          />
+
+          <.spoiler id="top-artists-container" max_height="200px">
+            <SiteComponents.top_artists_list
+              id="top-artists"
+              class="mt-2"
+              async={@top_artists}
+              items={@streams.top_artists}
+            />
+          </.spoiler>
         </section>
 
         <section>
