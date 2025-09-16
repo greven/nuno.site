@@ -40,7 +40,7 @@ defmodule SiteWeb.BlogComponents do
           </.link>
         </.header>
 
-        <p class="pr-2 text-sm/6 text-content-40 line-clamp-3 group-hover:text-content-30">
+        <p class="-mt-2 pr-2 text-sm/6 text-content-40 line-clamp-3 group-hover:text-content-30 md:mt-0">
           {@post.excerpt}
         </p>
       </div>

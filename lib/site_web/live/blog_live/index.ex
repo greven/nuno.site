@@ -51,7 +51,7 @@ defmodule SiteWeb.BlogLive.Index do
         </div>
 
         <%!-- Posts --%>
-        <div id="articles" class="mt-8 flex flex-col gap-8" phx-update="stream">
+        <div id="articles" class="mt-8 flex flex-col gap-12 md:gap-8" phx-update="stream">
           <BlogComponents.article :for={{dom_id, post} <- @streams.posts} id={dom_id} post={post} />
         </div>
       </Layouts.page_content>

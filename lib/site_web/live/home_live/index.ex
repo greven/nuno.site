@@ -67,21 +67,42 @@ defmodule SiteWeb.HomeLive.Index do
 
         <div class="flex flex-col gap-28 last:mb-16">
           <SiteComponents.bento_grid id="links" class="scroll-my-24" data-grid>
-            <.card navigate={~p"/articles"} class="col-span-1 row-span-1">
+            <.card
+              navigate={~p"/articles"}
+              class="col-span-1 row-span-1"
+              border="border border-border hover:border-solid hover:border-primary transition duration-150"
+              shadow="hover:shadow-drop shadow-primary/10"
+              show_texture
+            >
               Articles
             </.card>
 
-            <.card navigate={~p"/music"} class="col-span-1 row-span-1">
+            <.card
+              navigate={~p"/music"}
+              class="col-span-1 row-span-1"
+              border="border border-border hover:border-solid hover:border-primary transition duration-150"
+              shadow="hover:shadow-drop shadow-primary/10"
+              show_texture
+            >
               Music
             </.card>
 
-            <.card navigate={~p"/books"} class="col-span-1 row-span-1">
+            <.card
+              navigate={~p"/books"}
+              class="col-span-1 row-span-1"
+              border="border border-border hover:border-solid hover:border-primary transition duration-150"
+              shadow="hover:shadow-drop shadow-primary/10"
+              show_texture
+            >
               Books
             </.card>
 
             <.card
               navigate={~p"/travel"}
               class="col-span-1 md:col-span-2 md:row-span-2"
+              border="border border-border hover:border-solid hover:border-primary transition duration-150"
+              shadow="hover:shadow-drop shadow-primary/10"
+              show_texture
             >
               Travel
             </.card>

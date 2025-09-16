@@ -43,11 +43,15 @@ defmodule SiteWeb.CoreComponents do
 
   attr :tag, :string, default: "div"
   attr :class, :any, default: nil
-  attr :content_class, :any, default: "relative flex flex-col h-full"
+  attr :content_class, :any, default: "group/card isolate relative flex flex-col h-full"
   attr :bg, :string, default: "bg-surface-10/80 hover:bg-surface-10"
   attr :padding, :string, default: "p-4"
+
   attr :border, :string, default: "border border-border border-dashed hover:border-solid"
+
+  attr :radius, :string, default: "rounded-lg"
   attr :shadow, :string, default: "hover:shadow-drop"
+  attr :show_texture, :boolean, default: false
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -57,7 +61,8 @@ defmodule SiteWeb.CoreComponents do
       <.link
         class={[
           @class,
-          "outline-none rounded-lg focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-2"
+          "relative outline-none rounded-lg",
+          "focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-2"
         ]}
         {@rest}
       >
@@ -65,9 +70,11 @@ defmodule SiteWeb.CoreComponents do
           tag={@tag}
           bg={@bg}
           border={@border}
+          radius={@radius}
           padding={@padding}
           shadow={@shadow}
           class={@content_class}
+          show_texture={@show_texture}
         >
           {render_slot(@inner_block)}
         </.card_box>
@@ -75,14 +82,16 @@ defmodule SiteWeb.CoreComponents do
       """
     else
       ~H"""
-      <div class={@class} {@rest}>
+      <div class={["relative", @class]} {@rest}>
         <.card_box
           tag={@tag}
           bg={@bg}
           border={@border}
+          radius={@radius}
           padding={@padding}
           shadow={@shadow}
           class={@content_class}
+          show_texture={@show_texture}
         >
           {render_slot(@inner_block)}
         </.card_box>
@@ -94,43 +103,19 @@ defmodule SiteWeb.CoreComponents do
   attr :tag, :string, required: true
   attr :bg, :string, required: true
   attr :border, :string, required: true
+  attr :radius, :string, required: true
   attr :padding, :string, required: true
   attr :shadow, :string, required: true
+  attr :show_texture, :boolean, default: false
   attr :rest, :global
 
   slot :inner_block, required: true
 
-  # TODO: Add pattern effect!
-  # .blog-article {
-  #   display: flex;
-  #   flex-direction: column;
-  #   isolation: isolate;
-
-  #   & .article-bg {
-  #     position: absolute;
-  #     inset: 3px;
-  #     border-radius: var(--radius-lg);
-  #     overflow: hidden;
-  #   }
-
-  #   /* Gradient */
-  #   &::after {
-  #     content: '';
-  #     position: absolute;
-  #     inset: 3px;
-  #   }
-
-  #   &:hover::after {
-  #     border-radius: var(--radius-lg);
-  #     background-image: linear-gradient(
-  #       30deg,
-  #       --alpha(var(--color-primary) / var(--bg-opacity, 3%)),
-  #       transparent 80%
-  #     );
-  #   }
-  # }
-
   defp card_box(assigns) do
+    assigns =
+      assigns
+      |> assign(:svg_id, SiteWeb.Helpers.use_id())
+
     ~H"""
     <.box
       tag={@tag}
@@ -140,6 +125,33 @@ defmodule SiteWeb.CoreComponents do
       shadow={@shadow}
       {@rest}
     >
+      <div
+        :if={@show_texture}
+        class={["absolute inset-0 border-1 border-surface-10 z-1", @radius]}
+      >
+      </div>
+      <svg
+        :if={@show_texture}
+        class={[
+          "absolute inset-0 size-full text-content-40/65 opacity-30 pointer-events-none select-none",
+          "[mask-image:linear-gradient(to_left,_#ffffffad,_transparent)]",
+          "group-hover/card:text-primary",
+          @radius
+        ]}
+      >
+        <defs>
+          <pattern
+            id={@svg_id}
+            width="4"
+            height="4"
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(45)"
+          >
+            <line x1="0" y1="0" x2="0" y2="4" stroke="currentColor" stroke-width="1.5"></line>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={"url(##{@svg_id})"}></rect>
+      </svg>
       {render_slot(@inner_block)}
     </.box>
     """
@@ -1440,23 +1452,6 @@ defmodule SiteWeb.CoreComponents do
     <time datetime={@date} class={@class}>{@date}</time>
     """
   end
-
-  # @doc """
-  # Renders a link with a preview image (Open Graph).
-  # If no image is available, it falls back to a default image with
-  # the first letter of the link text.
-  # """
-
-  # attr :url, :string, required: true
-  # attr :data, :map, default: nil
-  # attr :loading, :boolean, default: false
-  # attr :rest, :global
-
-  # def link_preview(assigns) do
-  #   ~H"""
-  #   <a {@rest}></a>
-  #   """
-  # end
 
   @doc """
   Renders a barebones dialog using the native HTML <dialog> element.
