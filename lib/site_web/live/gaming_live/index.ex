@@ -11,12 +11,12 @@ defmodule SiteWeb.GamingLive.Index do
       current_scope={@current_scope}
       active_link={@active_link}
     >
-      <Layouts.page_content class="flex flex-col gap-16">
+      <Layouts.page_content class="flex flex-col gap-20">
         <.header tag="h2">
           Games
           <:subtitle>
-            Games I 🎮 on <a
-            href="https://store.steampowered.com/" class="link-subtle" target="_blank">Steam</a>
+            Games I 🎮 on
+            <a href="https://store.steampowered.com/" class="link-subtle" target="_blank">Steam</a>
           </:subtitle>
         </.header>
 
@@ -32,7 +32,7 @@ defmodule SiteWeb.GamingLive.Index do
           <SiteComponents.recent_games
             async={@recent_games}
             games={@streams.recent_games}
-            class="mt-2"
+            class="mt-4"
           />
         </section>
 
@@ -48,7 +48,7 @@ defmodule SiteWeb.GamingLive.Index do
           <SiteComponents.favourite_games
             async={@favourite_games}
             games={@streams.favourite_games}
-            class="mt-2"
+            class="mt-4"
           />
         </section>
       </Layouts.page_content>

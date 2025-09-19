@@ -51,7 +51,6 @@ defmodule SiteWeb.CoreComponents do
 
   attr :radius, :string, default: "rounded-lg"
   attr :shadow, :string, default: "hover:shadow-drop"
-  attr :show_texture, :boolean, default: false
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -66,7 +65,7 @@ defmodule SiteWeb.CoreComponents do
         ]}
         {@rest}
       >
-        <.card_box
+        <.box
           tag={@tag}
           bg={@bg}
           border={@border}
@@ -74,16 +73,15 @@ defmodule SiteWeb.CoreComponents do
           padding={@padding}
           shadow={@shadow}
           class={@content_class}
-          show_texture={@show_texture}
         >
           {render_slot(@inner_block)}
-        </.card_box>
+        </.box>
       </.link>
       """
     else
       ~H"""
       <div class={["relative", @class]} {@rest}>
-        <.card_box
+        <.box
           tag={@tag}
           bg={@bg}
           border={@border}
@@ -91,70 +89,12 @@ defmodule SiteWeb.CoreComponents do
           padding={@padding}
           shadow={@shadow}
           class={@content_class}
-          show_texture={@show_texture}
         >
           {render_slot(@inner_block)}
-        </.card_box>
+        </.box>
       </div>
       """
     end
-  end
-
-  attr :tag, :string, required: true
-  attr :bg, :string, required: true
-  attr :border, :string, required: true
-  attr :radius, :string, required: true
-  attr :padding, :string, required: true
-  attr :shadow, :string, required: true
-  attr :show_texture, :boolean, default: false
-  attr :rest, :global
-
-  slot :inner_block, required: true
-
-  defp card_box(assigns) do
-    assigns =
-      assigns
-      |> assign(:svg_id, SiteWeb.Helpers.use_id())
-
-    ~H"""
-    <.box
-      tag={@tag}
-      bg={@bg}
-      border={@border}
-      padding={@padding}
-      shadow={@shadow}
-      {@rest}
-    >
-      <div
-        :if={@show_texture}
-        class={["absolute inset-0 border-1 border-surface-10 z-1", @radius]}
-      >
-      </div>
-      <svg
-        :if={@show_texture}
-        class={[
-          "absolute inset-0 size-full text-content-40/65 opacity-30 pointer-events-none select-none",
-          "[mask-image:linear-gradient(to_left,_#ffffffad,_transparent)]",
-          "group-hover/card:text-primary",
-          @radius
-        ]}
-      >
-        <defs>
-          <pattern
-            id={@svg_id}
-            width="4"
-            height="4"
-            patternUnits="userSpaceOnUse"
-            patternTransform="rotate(45)"
-          >
-            <line x1="0" y1="0" x2="0" y2="4" stroke="currentColor" stroke-width="1.5"></line>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill={"url(##{@svg_id})"}></rect>
-      </svg>
-      {render_slot(@inner_block)}
-    </.box>
-    """
   end
 
   @doc """
@@ -1458,9 +1398,9 @@ defmodule SiteWeb.CoreComponents do
   """
 
   attr :id, :string, required: true
-  attr :class, :any, default: nil
   attr :show, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
+  attr :class, :any, default: nil
   attr :rest, :global
   slot :inner_block, required: true
 

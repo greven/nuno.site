@@ -41,21 +41,21 @@ defmodule SiteWeb.SiteComponents do
     <div class={@class}>
       <ol id="featured-posts" class="isolate flex flex-col justify-center gap-3">
         <%= for post <- @posts do %>
-          <li class={[
-            "group relative w-full px-2.5 lg:px-3 py-2.5 flex items-center justify-between gap-6 bg-surface-10/50 border border-border border-dashed rounded-lg overflow-hidden [counter-increment:item-counter]",
-            "before:opacity-0 before:content-['#'_counter(item-counter)] before:absolute before:left-4 before:font-headings
-              before:font-semibold before:text-content-10 md:before:opacity-10 before:text-xl
-              before:pointer-events-none",
-            "hover:border-solid hover:bg-surface-10 hover:shadow-drop hover:cursor-pointer
-              hover:before:opacity-25"
-          ]}>
+          <.card
+            class={[
+              "relative group [counter-increment:item-counter]",
+              "before:opacity-0 before:content-['#'_counter(item-counter)] before:absolute before:left-4.5 before:top-2.5 before:font-headings before:font-semibold before:text-content-10 md:before:opacity-10 before:text-xl before:pointer-events-none",
+              "hover:before:opacity-25"
+            ]}
+            content_class="w-full px-2.5 lg:px-3 py-2.5 flex items-center justify-between gap-6"
+          >
             <div class="max-w-5/6 flex items-center gap-2">
               <.link
-                class="md:pl-12 link-subtle transition-none"
+                class="md:pl-12 link-subtle decoration-1 transition-none"
                 navigate={~p"/articles/#{post.year}/#{post}"}
               >
                 <span class="absolute inset-0 z-10"></span>
-                <h3 class="text-xs md:text-sm line-clamp-1">{post.title}</h3>
+                <h3 class="font-medium text-xs md:text-sm line-clamp-1">{post.title}</h3>
               </.link>
             </div>
 
@@ -76,7 +76,8 @@ defmodule SiteWeb.SiteComponents do
                 show_icon={false}
               />
             </div>
-          </li>
+            <%!-- </li> --%>
+          </.card>
         <% end %>
       </ol>
     </div>
@@ -85,16 +86,45 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
-  attr :rest, :global
+  attr :content_class, :any, default: "flex flex-col"
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
-  def bento_grid(assigns) do
+  def bento_card(assigns) do
+    assigns =
+      assigns
+      |> assign(:svg_id, SiteWeb.Helpers.use_id())
+
     ~H"""
-    <section {@rest}>
-      <div class="relative grid grid-cols-2 md:grid-cols-4 auto-rows-[minmax(0,2fr)] gap-4">
+    <.card
+      border="border border-border hover:border-solid hover:border-primary transition-colors duration-150"
+      shadow="hover:shadow-drop shadow-primary/10"
+      {@rest}
+    >
+      <div class={["absolute inset-0 border-1 border-surface-10 rounded-lg z-1"]}>
+        <svg class={[
+          "absolute inset-0 size-full text-content-40/70 rounded-lg opacity-20 pointer-events-none select-none transition-opacity duration-150z",
+          "[mask-image:linear-gradient(to_left,_#ffffffad,_transparent)]",
+          "group-hover/card:text-primary group-hover/card:opacity-40"
+        ]}>
+          <defs>
+            <pattern
+              id={@svg_id}
+              width="4"
+              height="4"
+              patternUnits="userSpaceOnUse"
+              patternTransform="rotate(45)"
+            >
+              <line x1="0" y1="0" x2="0" y2="4" stroke="currentColor" stroke-width="1.5"></line>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill={"url(##{@svg_id})"}></rect>
+        </svg>
+      </div>
+      <div class={["h-full p-1", @content_class]}>
         {render_slot(@inner_block)}
       </div>
-    </section>
+    </.card>
     """
   end
 
@@ -750,6 +780,7 @@ defmodule SiteWeb.SiteComponents do
   @doc false
 
   attr :track, AsyncResult, required: true
+  attr :show_artwork, :boolean, default: true
   attr :class, :string, default: nil
   attr :rest, :global
 
@@ -759,7 +790,7 @@ defmodule SiteWeb.SiteComponents do
       <.async_result :let={track} assign={@track}>
         <:loading>
           <div class="-mt-0.5 flex items-center gap-4">
-            <.track_image loading={true} class="size-30 md:size-32 lg:size-36" />
+            <.track_image :if={@show_artwork} loading={true} class="size-30 md:size-32 lg:size-36" />
             <div class="flex flex-col gap-1">
               <div class="flex flex-col gap-2">
                 <.playing_indicator loading />
@@ -773,7 +804,7 @@ defmodule SiteWeb.SiteComponents do
 
         <:failed :let={_failure}>
           <div class="flex items-center gap-4">
-            <.track_image offline={true} class="size-30 md:size-32 lg:size-36" />
+            <.track_image :if={@show_artwork} offline={true} class="size-30 md:size-32 lg:size-36" />
             <div class="flex flex-col gap-1">
               Failed to load track
             </div>
@@ -782,7 +813,7 @@ defmodule SiteWeb.SiteComponents do
 
         <%= if track.name do %>
           <div class="flex items-center gap-4">
-            <.track_image src={track.image} class="size-30 md:size-32 lg:size-36" />
+            <.track_image :if={@show_artwork} src={track.image} class="size-30 md:size-32 lg:size-36" />
             <div class="flex flex-col justify-center gap-1">
               <.playing_indicator is_playing={track.now_playing} last_played={track.played_at} />
               <div class="leading-5">
@@ -802,7 +833,7 @@ defmodule SiteWeb.SiteComponents do
             </div>
           </div>
         <% else %>
-          <%!-- Offline --%>
+          <%!-- Offline & Not Available --%>
           <div class="flex items-center gap-4">
             <.track_image offline={true} class="size-30 md:size-32 lg:size-36" />
             <div class="flex flex-col justify-center gap-1">
@@ -861,11 +892,14 @@ defmodule SiteWeb.SiteComponents do
               height={@image_height}
             />
           <% @loading -> %>
-            <.icon name="lucide-loader-circle" class="size-4/6 max-w-10 bg-surface-30 animate-spin" />
+            <.icon
+              name="lucide-loader-circle"
+              class="size-4/6 max-w-10 max-h-10 bg-surface-30 animate-spin"
+            />
           <% @offline -> %>
-            <.icon name="lucide-volume-off" class="size-4/6 max-w-10 bg-surface-30" />
+            <.icon name="lucide-volume-off" class="size-4/6 max-w-10 max-h-10 bg-surface-30" />
           <% true -> %>
-            <.icon name="lucide-volume-off" class="size-4/6 max-w-10 bg-surface-30" />
+            <.icon name="lucide-volume-off" class="size-4/6 max-w-10 max-h-10 bg-surface-30" />
         <% end %>
       </.box>
     </div>
@@ -967,13 +1001,13 @@ defmodule SiteWeb.SiteComponents do
               />
               <div class="flex-1 flex flex-col md:gap-1 md:flex-row md:items-center">
                 <%!-- Track name --%>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
                   <div class="font-medium text-sm md:text-base md:font-normal text-content-20 whitespace-nowrap text-ellipsis line-clamp-1 shrink-0">
                     <a href={track.url} target="_blank" class="link-ghost">{track.name}</a>
                   </div>
                   <.playing_icon
                     :if={track.now_playing}
-                    class="shrink-0"
+                    class="shrink-0 mr-1"
                     style="--playing-color: var(--color-surface-40)"
                   />
                 </div>
@@ -1160,7 +1194,7 @@ defmodule SiteWeb.SiteComponents do
           <div class="bg-surface-10 shadow-lg aspect-square">
             <ol
               id={@id}
-              class="grid grid-cols-6 p-1"
+              class="grid grid-cols-5 p-1"
               phx-update={is_struct(@albums, Phoenix.LiveView.LiveStream) && "stream"}
             >
               <li

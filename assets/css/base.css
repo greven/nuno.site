@@ -50,12 +50,18 @@
     border: none;
     margin: auto;
     outline: none;
-    opacity: 0;
     background-color: transparent;
-    transition-duration: 0.2s;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-property: opacity, overlay;
     transition-behavior: allow-discrete;
+    /* transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1); */
+  }
+
+  dialog:not([open]) {
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  dialog:open {
+    opacity: 1;
   }
 
   /* Disable dialog body scroll */
@@ -65,24 +71,20 @@
 
   dialog::backdrop {
     background-color: transparent;
-    backdrop-filter: blur(1px);
-    transition:
+    /* backdrop-filter: blur(1px); */
+    /* transition:
       overlay 0.2s allow-discrete,
-      background-color 0.2s;
+      background-color 0.2s; */
   }
 
-  dialog:open {
-    opacity: 1;
-  }
+  /* dialog:open::backdrop { */
+  /* background-color: --alpha(var(--color-neutral-900) / 0.6); */
+  /* } */
 
   @starting-style {
     dialog:open {
       opacity: 0;
     }
-  }
-
-  dialog:open::backdrop {
-    background-color: --alpha(var(--color-neutral-900) / 0.6);
   }
 
   @starting-style {
@@ -91,11 +93,11 @@
     }
   }
 
-  @variant dark {
+  /* @variant dark {
     dialog:open::backdrop {
       background-color: --alpha(var(--color-neutral-800) / 0.8);
     }
-  }
+  } */
 
   @keyframes fade-in {
     from {
@@ -122,15 +124,6 @@
     }
     50% {
       opacity: 0;
-    }
-  }
-
-  @keyframes circle-in {
-    from {
-      clip-path: circle(0% at 50% 50%);
-    }
-    to {
-      clip-path: circle(100% at 50% 50%);
     }
   }
 }

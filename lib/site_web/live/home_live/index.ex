@@ -2,7 +2,13 @@ defmodule SiteWeb.HomeLive.Index do
   use SiteWeb, :live_view
 
   alias Site.Blog
+  alias Site.Services
+  alias Site.Services.MusicTrack
+
   alias SiteWeb.SiteComponents
+  alias SiteWeb.HomeLive.Components
+
+  @refresh_interval 10_000
 
   @impl true
   def render(assigns) do
@@ -65,48 +71,39 @@ defmodule SiteWeb.HomeLive.Index do
           </div>
         </section>
 
+        <%!-- Bento Grid --%>
         <div class="flex flex-col gap-28 last:mb-16">
-          <SiteComponents.bento_grid id="links" class="scroll-my-24" data-grid>
-            <.card
+          <div
+            id="bento-grid"
+            class="relative grid grid-cols-2 md:grid-cols-4 auto-rows-[minmax(0,4fr)] gap-4 scroll-my-24"
+          >
+            <SiteComponents.bento_card
               navigate={~p"/articles"}
-              class="col-span-1 row-span-1"
-              border="border border-border hover:border-solid hover:border-primary transition duration-150"
-              shadow="hover:shadow-drop shadow-primary/10"
-              show_texture
+              class="col-span-1 row-span-1 aspect-square"
             >
               Articles
-            </.card>
+            </SiteComponents.bento_card>
 
-            <.card
+            <SiteComponents.bento_card
               navigate={~p"/music"}
               class="col-span-1 row-span-1"
-              border="border border-border hover:border-solid hover:border-primary transition duration-150"
-              shadow="hover:shadow-drop shadow-primary/10"
-              show_texture
+              content_class="h-full flex flex-col justify-between gap-2"
             >
-              Music
-            </.card>
+              <.icon name="lucide-music" class="size-6 text-primary" />
+              <Components.now_playing track={@track} />
+            </SiteComponents.bento_card>
 
-            <.card
-              navigate={~p"/books"}
-              class="col-span-1 row-span-1"
-              border="border border-border hover:border-solid hover:border-primary transition duration-150"
-              shadow="hover:shadow-drop shadow-primary/10"
-              show_texture
-            >
+            <SiteComponents.bento_card navigate={~p"/books"} class="col-span-1 row-span-1">
               Books
-            </.card>
+            </SiteComponents.bento_card>
 
-            <.card
+            <SiteComponents.bento_card
               navigate={~p"/travel"}
-              class="col-span-1 md:col-span-2 md:row-span-2"
-              border="border border-border hover:border-solid hover:border-primary transition duration-150"
-              shadow="hover:shadow-drop shadow-primary/10"
-              show_texture
+              class="col-span-1 row-span-1"
             >
               Travel
-            </.card>
-          </SiteComponents.bento_grid>
+            </SiteComponents.bento_card>
+          </div>
 
           <section :if={@posts != []}>
             <SiteComponents.home_section_title>
@@ -125,10 +122,32 @@ defmodule SiteWeb.HomeLive.Index do
   def mount(_params, _session, socket) do
     posts = Blog.list_featured_posts() |> Enum.take(3)
 
-    {
-      :ok,
-      socket,
-      temporary_assigns: [posts: posts]
-    }
+    if connected?(socket) do
+      Process.send_after(self(), :refresh_music, @refresh_interval)
+    end
+
+    socket =
+      socket
+      |> assign_async(:track, &get_currently_playing/0)
+
+    {:ok, socket, temporary_assigns: [posts: posts]}
+  end
+
+  @impl true
+  def handle_info(:refresh_music, socket) do
+    Process.send_after(self(), :refresh_music, @refresh_interval)
+
+    socket =
+      socket
+      |> assign_async(:track, &get_currently_playing/0)
+
+    {:noreply, socket}
+  end
+
+  defp get_currently_playing do
+    case Services.get_now_playing() do
+      {:ok, %MusicTrack{} = track} -> {:ok, %{track: track}}
+      error -> error
+    end
   end
 end

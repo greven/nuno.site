@@ -38,11 +38,14 @@ defmodule SiteWeb.MusicLive.Index do
             <.icon name="lucide-history" class="hidden md:inline-block mr-2.5 text-content-40" />
             Recently Played
           </.header>
-          <SiteComponents.recent_tracks
-            class="mt-2"
-            async={@recent_tracks}
-            tracks={@streams.recent_tracks}
-          />
+
+          <.spoiler id="recently-tracks-container" max_height="254px">
+            <SiteComponents.recent_tracks
+              class="mt-2"
+              async={@recent_tracks}
+              tracks={@streams.recent_tracks}
+            />
+          </.spoiler>
         </section>
 
         <section>
