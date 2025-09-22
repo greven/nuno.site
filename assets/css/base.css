@@ -46,58 +46,14 @@
     text-decoration-thickness: 2px;
   }
 
-  dialog {
-    border: none;
-    margin: auto;
-    outline: none;
-    background-color: transparent;
-    transition-behavior: allow-discrete;
-    /* transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1); */
-  }
-
   dialog:not([open]) {
     pointer-events: none;
-    opacity: 0;
-  }
-
-  dialog:open {
-    opacity: 1;
   }
 
   /* Disable dialog body scroll */
   html:has(dialog:open) {
     overflow: hidden;
   }
-
-  dialog::backdrop {
-    background-color: transparent;
-    /* backdrop-filter: blur(1px); */
-    /* transition:
-      overlay 0.2s allow-discrete,
-      background-color 0.2s; */
-  }
-
-  /* dialog:open::backdrop { */
-  /* background-color: --alpha(var(--color-neutral-900) / 0.6); */
-  /* } */
-
-  @starting-style {
-    dialog:open {
-      opacity: 0;
-    }
-  }
-
-  @starting-style {
-    dialog:open::backdrop {
-      background-color: transparent;
-    }
-  }
-
-  /* @variant dark {
-    dialog:open::backdrop {
-      background-color: --alpha(var(--color-neutral-800) / 0.8);
-    }
-  } */
 
   @keyframes fade-in {
     from {

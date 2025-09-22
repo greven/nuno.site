@@ -43,8 +43,10 @@ defmodule SiteWeb.HomeLive.Components do
               last_played={track.played_at}
             />
             <div class="leading-5">
-              <div class="text-sm font-medium text-content-30 line-clamp-1">{track.name}</div>
-              <div class="text-sm text-content-40 line-clamp-1">
+              <div class="text-sm md:text-base font-medium line-clamp-1">
+                {track.name}
+              </div>
+              <div class="text-sm md:text-base text-content-30 line-clamp-1">
                 {track.artist}
               </div>
             </div>
@@ -85,7 +87,7 @@ defmodule SiteWeb.HomeLive.Components do
           <div class="flex items-center gap-2">
             <.icon
               name="lucide-history"
-              class="size-4 text-content-40/60"
+              class="size-4 text-content-40/80"
             />
             <span :if={@last_played} class="font-medium text-content-40/80">Last Played</span>
           </div>
@@ -93,7 +95,7 @@ defmodule SiteWeb.HomeLive.Components do
           <div class="flex items-center gap-2">
             <.icon
               name="hero-bolt-slash-solid"
-              class="size-4 text-content-40/60"
+              class="size-4 text-content-40/80"
             />
             <span class="font-medium text-content-40">Offline</span>
           </div>

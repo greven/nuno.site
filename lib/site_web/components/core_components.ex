@@ -1036,6 +1036,34 @@ defmodule SiteWeb.CoreComponents do
   end
 
   @doc """
+  Renders a keyboard key.
+  """
+
+  attr :class, :any, default: nil
+  attr :text_class, :string, default: "text-sm text-content-20"
+  attr :surface_class, :string, default: "bg-surface-30"
+  attr :shadow_class, :string, default: "shadow-sm"
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def kbd(assigns) do
+    ~H"""
+    <kbd
+      class={[
+        "flex h-5 min-w-5 items-center justify-center rounded-sm border border-surface-40",
+        @surface_class,
+        @shadow_class,
+        @text_class,
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </kbd>
+    """
+  end
+
+  @doc """
   Renders a tabs component with a list of tabs and panels.
   """
 
@@ -1412,7 +1440,11 @@ defmodule SiteWeb.CoreComponents do
       phx-mounted={@show && show_dialog("##{@id}")}
       phx-remove={hide_dialog("##{@id}")}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
-      class={@class}
+      class={[
+        "starting:open:opacity-0 starting:open:backdrop:bg-transparent",
+        "border-none outline-none m-0 bg-transparent transition-discrete backdrop:transition-discrete",
+        @class
+      ]}
       {@rest}
     >
       {render_slot(@inner_block, JS.exec("data-cancel", to: "##{@id}"))}

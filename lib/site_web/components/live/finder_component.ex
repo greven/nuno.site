@@ -13,15 +13,16 @@ defmodule SiteWeb.FinderComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <%!-- "opacity-0 transition-opacity ease-out duration-300", --%>
-    <%!-- "open:opacity-100", --%>
-    <%!-- "backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px]", --%>
-    <%!-- "open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100" --%>
     <div id="finder-component" class="finder" phx-hook="Finder" data-mode="default">
       <.dialog
         id="finder-dialog"
         data-close={Finder.close()}
-        class={[]}
+        class={[
+          "opacity-0 transition ease-out duration-250",
+          "open:opacity-100",
+          "backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition",
+          "open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100"
+        ]}
       >
         <div class="fixed inset-0 w-screen overflow-y-auto p-4 focus:outline-none sm:p-6 md:p-20">
           <div class={[
@@ -153,24 +154,31 @@ defmodule SiteWeb.FinderComponent do
 
             <%!-- Footer --%>
             <div class="flex justify-between bg-surface-30/40 px-4 py-2.5 text-xs text-content-40">
-              <div class="flex flex-wrap items-center">
-                Type
-                <kbd class="mx-1 flex size-5 items-center justify-center rounded-sm border border-border bg-surface-30 font-medium text-content-30 sm:mx-2
-                in-data-[mode=search]:bg-secondary/5 in-data-[mode=search]:border-secondary in-data-[mode=search]:text-secondary">
-                  &gt;
-                </kbd>
-                to search content
+              <div class="flex items-center gap-8">
+                <div class="flex flex-wrap items-center gap-2">
+                  <.kbd><.icon name="lucide-arrow-up" class="size-3" /></.kbd>
+                  <.kbd><.icon name="lucide-arrow-down" class="size-3" /></.kbd>
+                  Move
+                </div>
+
+                <div class="flex flex-wrap items-center">
+                  <.kbd class={[
+                    "mx-2 sm:mx-2 px-1",
+                    "in-data-[mode=search]:bg-secondary/5 in-data-[mode=search]:border-secondary in-data-[mode=search]:text-secondary"
+                  ]}>
+                    &gt;
+                  </.kbd>
+                  Search
+                </div>
               </div>
 
               <div class="hidden sm:flex flex-wrap items-center">
-                <kbd class="mx-2 flex h-5 px-1 items-center justify-center rounded-sm border border-border bg-surface-30 font-medium text-content-30">
-                  esc
-                </kbd>
-                to dismiss <span class="ml-3 mr-1 text-content-40/30">|</span>
-                <kbd class="mx-2 flex h-5 px-1 items-center justify-center rounded-sm border border-border bg-surface-30 font-medium text-content-30">
-                  return
-                </kbd>
-                to select
+                <.kbd class="mx-2 sm:mx-2 px-1">esc</.kbd>
+                Clear <span class="ml-3 mr-1 text-content-40/30">|</span>
+                <.kbd class="mx-2 sm:mx-2 px-1">
+                  <.icon name="lucide-corner-down-left" class="size-3" />
+                </.kbd>
+                Select
               </div>
             </div>
           </div>

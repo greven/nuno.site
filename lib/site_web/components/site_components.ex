@@ -86,7 +86,9 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
-  attr :content_class, :any, default: "flex flex-col"
+  attr :icon, :string, default: "lucide-box"
+  attr :content_class, :any, default: "h-full flex flex-col justify-between gap-2"
+  attr :icon_class, :string, default: "size-8 text-primary"
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -98,7 +100,7 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <.card
       border="border border-border hover:border-solid hover:border-primary transition-colors duration-150"
-      shadow="hover:shadow-drop shadow-primary/10"
+      shadow="hover:shadow-drop shadow-primary/15 dark:shadow-primary/20"
       {@rest}
     >
       <div class={["absolute inset-0 border-1 border-surface-10 rounded-lg z-1"]}>
@@ -122,6 +124,7 @@ defmodule SiteWeb.SiteComponents do
         </svg>
       </div>
       <div class={["h-full p-1", @content_class]}>
+        <.icon name={@icon} class={@icon_class} />
         {render_slot(@inner_block)}
       </div>
     </.card>

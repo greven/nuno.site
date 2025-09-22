@@ -80,29 +80,44 @@ defmodule SiteWeb.HomeLive.Index do
             <SiteComponents.bento_card
               navigate={~p"/articles"}
               class="col-span-1 row-span-1 aspect-square"
+              icon="lucide-file-text"
             >
-              Articles
+              <div class="flex flex-col text-sm md:text-base">
+                <div class="text-content-40">Blog</div>
+                <div class="font-medium">
+                  {"#{@post_count} #{ngettext("Article", "Articles", @post_count)}"}
+                </div>
+              </div>
             </SiteComponents.bento_card>
 
             <SiteComponents.bento_card
               navigate={~p"/music"}
               class="col-span-1 row-span-1"
-              content_class="h-full flex flex-col justify-between gap-2"
+              icon="lucide-music"
             >
-              <.icon name="lucide-music" class="size-6 text-primary" />
               <Components.now_playing track={@track} />
             </SiteComponents.bento_card>
 
-            <SiteComponents.bento_card navigate={~p"/books"} class="col-span-1 row-span-1">
-              Books
+            <SiteComponents.bento_card
+              navigate={~p"/books"}
+              class="col-span-1 row-span-1"
+              icon="lucide-library"
+            >
+              <div class="flex flex-col text-sm md:text-base">
+                <div class="text-content-40">Reading</div>
+                <div class="font-medium">
+                  {"#{@reading_count} #{ngettext("Book", "Books", @reading_count)}"}
+                </div>
+              </div>
             </SiteComponents.bento_card>
 
-            <SiteComponents.bento_card
+            <%!-- <SiteComponents.bento_card
               navigate={~p"/travel"}
               class="col-span-1 row-span-1"
+              icon="lucide-map-pin"
             >
               Travel
-            </SiteComponents.bento_card>
+            </SiteComponents.bento_card> --%>
           </div>
 
           <section :if={@posts != []}>
@@ -121,6 +136,8 @@ defmodule SiteWeb.HomeLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     posts = Blog.list_featured_posts() |> Enum.take(3)
+    published_posts_count = Blog.list_published_posts() |> length()
+    reading_count = Services.get_reading_stats()[:currently_reading] || 0
 
     if connected?(socket) do
       Process.send_after(self(), :refresh_music, @refresh_interval)
@@ -128,6 +145,8 @@ defmodule SiteWeb.HomeLive.Index do
 
     socket =
       socket
+      |> assign(:post_count, published_posts_count)
+      |> assign(:reading_count, reading_count)
       |> assign_async(:track, &get_currently_playing/0)
 
     {:ok, socket, temporary_assigns: [posts: posts]}
