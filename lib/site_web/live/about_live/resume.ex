@@ -98,7 +98,13 @@ defmodule SiteWeb.AboutLive.Resume do
                 id="resume-summary"
                 class="col-span-1 lg:col-span-7 text-justify font-light text-lg/8 text-content-40"
               >
-                <p>{Helpers.render_markdown!(@resume["profile"]["summary"])}</p>
+                <.spoiler id="resume-container" class="lg:hidden" max_height="250px">
+                  {Helpers.render_markdown!(@resume["profile"]["summary"])}
+                </.spoiler>
+
+                <div class="hidden lg:block">
+                  {Helpers.render_markdown!(@resume["profile"]["summary"])}
+                </div>
               </div>
 
               <%!-- Skills (Mobile) --%>

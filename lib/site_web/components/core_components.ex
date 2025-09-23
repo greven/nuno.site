@@ -1427,6 +1427,7 @@ defmodule SiteWeb.CoreComponents do
 
   attr :id, :string, required: true
   attr :show, :boolean, default: false
+  attr :close_on_click_outside, :boolean, default: true
   attr :on_cancel, JS, default: %JS{}
   attr :class, :any, default: nil
   attr :rest, :global
@@ -1440,9 +1441,10 @@ defmodule SiteWeb.CoreComponents do
       phx-mounted={@show && show_dialog("##{@id}")}
       phx-remove={hide_dialog("##{@id}")}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
+      data-close-on-click-outside={@close_on_click_outside}
       class={[
-        "starting:open:opacity-0 starting:open:backdrop:bg-transparent",
-        "border-none outline-none m-0 bg-transparent transition-discrete backdrop:transition-discrete",
+        "starting:open:opacity-0 starting:open:backdrop:bg-transparent starting:open:backdrop:opacity-0",
+        "border-none outline-none bg-transparent transition-discrete backdrop:transition-discrete",
         @class
       ]}
       {@rest}

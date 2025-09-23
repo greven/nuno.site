@@ -46,6 +46,17 @@
     text-decoration-thickness: 2px;
   }
 
+  dialog {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    align-content: start;
+    margin: auto;
+    padding: 0;
+    overflow: hidden;
+    z-index: 1000000;
+  }
+
   dialog:not([open]) {
     pointer-events: none;
   }
@@ -69,6 +80,28 @@
       opacity: 1;
     }
     to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide-in-up {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-out-down {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(100%);
       opacity: 0;
     }
   }

@@ -10,6 +10,10 @@
 /* Aria variants */
 @custom-variant aria-current (&[aria-current="true"], &[aria-current]);
 
+/* Dialog variants */
+@custom-variant data-open (&:where(dialog[open], dialog[open] *));
+@custom-variant data-closed (&:where(dialog:not([open]), dialog:not([open]) *));
+
 /* OS-specific Variants */
 @custom-variant linux (&:where([data-os="linux"], [data-os="linux"] *));
 @custom-variant macos (&:where([data-os="macos"], [data-os="macos"] *));

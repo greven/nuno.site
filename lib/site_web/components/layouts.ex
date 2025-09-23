@@ -197,9 +197,15 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <nav class="flex items-center">
       <%!-- Small devices --%>
-      <div id="mobile-menu" class="flex sm:hidden" phx-click={}>
-        <.icon name="hero-bars-2" class="size-6" />
-      </div>
+      <button
+        type="button"
+        id="mobile-menu"
+        class="flex sm:hidden"
+        aria-label="Open command finder (Cmd+K)"
+        phx-click={SiteWeb.Finder.toggle()}
+      >
+        <.icon name="hero-bars-2" class="size-6 text-content-30" />
+      </button>
 
       <%!-- Larger devices --%>
       <div id="menu" class="hidden sm:ml-6 sm:flex items-center">

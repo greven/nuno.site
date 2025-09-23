@@ -19,41 +19,29 @@ defmodule SiteWeb.FinderComponent do
         data-close={Finder.close()}
         class={[
           "opacity-0 transition ease-out duration-250",
-          "open:opacity-100",
-          "backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition",
-          "open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100"
+          "backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-opacity backdrop:ease-out backdrop:duration-250",
+          "open:opacity-100 open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100"
         ]}
-        show
       >
         <div
           tabindex="0"
-          class="fixed bottom-0 md:inset-0 w-screen overflow-y-auto focus:outline-none sm:p-6 md:p-20"
+          class="fixed inset-0 w-screen p-0 sm:p-6 md:p-20 overflow-y-auto focus:outline-none"
+          data-part="dialog-container"
         >
-          <div class={[
-            "mx-auto block max-w-xl overflow-hidden rounded-lg bg-surface-10/95 shadow-2xl outline-1 outline-black/5 backdrop-blur-md backdrop-filter",
-            "divide-y divide-neutral-500/10 dark:divide-white/5",
-            "dark:-outline-offset-1 dark:outline-white/10"
-          ]}>
+          <.finder_panel>
             <%!-- Search input --%>
-            <.finder_search class="relative hidden sm:flex" />
+            <.finder_search class="relative hidden md:flex" />
 
-            <%!-- Commands list --%>
-            <div
-              id="finder-commands"
-              class={[
-                "max-h-[420px] scroll-py-1 overflow-y-auto",
-                "divide-y divide-neutral-500/10 dark:divide-white/5"
-              ]}
-              data-part="items-container"
-              tabindex="-1"
-            >
+            <%!-- Commands --%>
+            <.finder_commands class={[
+              "max-h-[400px] scroll-py-1 overflow-y-auto focus:outline-none",
+              "divide-y divide-neutral-500/10 dark:divide-white/5"
+            ]}>
               <%!-- Theme switcher --%>
-              <section :if={@show_theme_switcher} id="theme-section">
-                <h3 class="mt-4 mb-0.5 px-5 font-headings text-xs text-content-40/80">
-                  Theme Switcher
-                </h3>
+              <.finder_section :if={@show_theme_switcher} id="theme-section">
+                <.finder_section_title>Theme</.finder_section_title>
 
-                <ul id="finder-theme-switcher" class="p-2 text-sm">
+                <.finder_items_list id="finder-theme-switcher">
                   <.finder_item
                     id="set_theme_light"
                     type="command"
@@ -105,15 +93,14 @@ defmodule SiteWeb.FinderComponent do
                       class="hidden size-4.5 ml-1.5 text-secondary [[data-theme-mode=system]_&]:block"
                     />
                   </.finder_item>
-                </ul>
-              </section>
+                </.finder_items_list>
+              </.finder_section>
 
               <%!-- Commands --%>
-              <section :for={section <- @commands} id={"#{section.id}-section"}>
-                <h3 class="mt-4 mb-0.5 px-5 font-headings text-xs text-content-40/80">
-                  {section.title}
-                </h3>
-                <ul id={"finder-#{section.id}"} class="p-2 text-sm">
+              <.finder_section :for={section <- @commands} id={"#{section.id}-section"}>
+                <.finder_section_title>{section.title}</.finder_section_title>
+
+                <.finder_items_list id={"finder-#{section.id}"}>
                   <.finder_item
                     :for={{id, opts} <- section.commands}
                     id={id}
@@ -124,9 +111,9 @@ defmodule SiteWeb.FinderComponent do
                   >
                     {opts[:name]}
                   </.finder_item>
-                </ul>
-              </section>
-            </div>
+                </.finder_items_list>
+              </.finder_section>
+            </.finder_commands>
 
             <%!-- Content search results --%>
             <div
@@ -148,7 +135,7 @@ defmodule SiteWeb.FinderComponent do
             </.finder_no_results>
 
             <%!-- Footer --%>
-            <.finder_footer class="hidden sm:flex justify-between bg-surface-30/40 px-4 py-2.5 text-xs text-content-40">
+            <.finder_footer class="hidden md:flex justify-between bg-surface-30/40 px-4 py-2.5 text-xs text-content-40">
               <div class="flex items-center gap-8">
                 <div class="flex flex-wrap items-center gap-2">
                   <.kbd><.icon name="hero-arrow-up" class="size-3" /></.kbd>
@@ -176,7 +163,7 @@ defmodule SiteWeb.FinderComponent do
                 Select
               </div>
             </.finder_footer>
-          </div>
+          </.finder_panel>
         </div>
       </.dialog>
     </div>
@@ -217,6 +204,45 @@ defmodule SiteWeb.FinderComponent do
   def handle_event("finder:" <> _event, _params, socket), do: {:noreply, socket}
 
   ## Components
+
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  defp finder_panel(assigns) do
+    ~H"""
+    <div
+      class={[
+        "fixed -bottom-px left-1 right-1 md:max-w-xl md:relative md:mx-auto rounded-t-lg md:rounded-lg bg-surface-10/95 shadow-2xl overflow-hidden",
+        "animate-slide-out-down data-open:animate-slide-in-up md:animate-none md:data-open:animate-none",
+        "outline-1 outline-black/5 backdrop-blur-md backdrop-filter",
+        "divide-y divide-neutral-500/10 dark:divide-white/5",
+        "dark:-outline-offset-1 dark:outline-white/10",
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  attr :id, :string, default: "finder-commands"
+  attr :class, :any, default: nil
+  slot :inner_block, required: true
+
+  defp finder_commands(assigns) do
+    ~H"""
+    <div
+      id={@id}
+      class={@class}
+      data-part="items-container"
+      tabindex="-1"
+    >
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
 
   attr :class, :string,
     default: "hidden sm:flex justify-between bg-surface-30/40 px-4 py-2.5 text-xs text-content-40"
@@ -281,6 +307,41 @@ defmodule SiteWeb.FinderComponent do
   end
 
   attr :id, :string, required: true
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  defp finder_section(assigns) do
+    ~H"""
+    <section id={@id} {@rest}>
+      {render_slot(@inner_block)}
+    </section>
+    """
+  end
+
+  attr :class, :any, default: nil
+  slot :inner_block, required: true
+
+  defp finder_section_title(assigns) do
+    ~H"""
+    <h3 class={["mt-4 mb-0.5 px-5 font-headings text-xs text-content-40/80", @class]}>
+      {render_slot(@inner_block)}
+    </h3>
+    """
+  end
+
+  attr :id, :string, required: true
+  attr :class, :any, default: nil
+  slot :inner_block, required: true
+
+  defp finder_items_list(assigns) do
+    ~H"""
+    <ul id={@id} class={["p-2 text-sm", @class]}>
+      {render_slot(@inner_block)}
+    </ul>
+    """
+  end
+
+  attr :id, :string, required: true
   attr :class, :string, default: nil
   attr :description, :string, default: nil
   attr :selected, :boolean, default: false
@@ -324,7 +385,7 @@ defmodule SiteWeb.FinderComponent do
       <.icon
         :if={@type == "nav"}
         name="hero-chevron-right"
-        class="md:hidden size-4 flex-none text-secondary"
+        class="md:hidden size-4 flex-none text-secondary/90"
       />
     </li>
     """

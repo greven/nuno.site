@@ -12,7 +12,7 @@ export const Finder = {
     this.finderResultsList = this.el.querySelector('ul#finder-search-items');
 
     // Search content cache
-    this.searchCache = [];
+    this.searchIndex = [];
 
     // Prevent mouse hover from interfering with keyboard navigation
     this.ignoreHover = false;
@@ -172,29 +172,29 @@ export const Finder = {
   // to local storage if not already cached or if cache is stale (more than 24h old).
   // Content items to search against are articles where each item has an id, title and keywords.
   warmUpSearchCache() {
-    const cachedItems = localStorage.getItem('ns_search');
+    const cachedIndex = localStorage.getItem('ns_search');
     const cacheTimestamp = localStorage.getItem('ns_search_timestamp');
 
     // If cache is fresh, use it
-    if (cachedItems && cacheTimestamp) {
+    if (cachedIndex && cacheTimestamp) {
       const age = Date.now() - cacheTimestamp;
 
       if (age < DAY_IN_MILLISECONDS) {
         // Cache is fresh, use it
-        this.searchCache = JSON.parse(cachedItems);
+        this.searchIndex = JSON.parse(cachedIndex);
       } else {
         // Cache is stale, update it
-        this.updateSearchCache();
+        this.updateSearchIndex();
       }
     } else {
       // Cache is empty, fetch new data
-      this.updateSearchCache();
+      this.updateSearchIndex();
     }
   },
 
-  updateSearchCache() {
+  updateSearchIndex() {
     // Clear the search cache
-    this.searchCache = [];
+    this.searchIndex = [];
 
     // Clear the local storage
     localStorage.removeItem('ns_search');
@@ -205,10 +205,10 @@ export const Finder = {
       if (reply.status === 'ok') {
         localStorage.setItem('ns_search', JSON.stringify(reply.data));
         localStorage.setItem('ns_search_timestamp', Date.now());
-        this.searchCache = reply.data;
+        this.searchIndex = reply.data;
       } else {
         console.error('NS: Failed to update search cache');
-        this.searchCache = [];
+        this.searchIndex = [];
       }
     });
   },
@@ -266,10 +266,10 @@ export const Finder = {
   searchArticles(query) {
     const q = query?.toLowerCase();
 
-    if (q.length > 1 && this.searchCache.length > 0) {
+    if (q.length > 1 && this.searchIndex.length > 0) {
       const searchResults = [];
 
-      this.searchCache.forEach((item) => {
+      this.searchIndex.forEach((item) => {
         let title = item?.title.toLowerCase();
         let keywords = item?.keywords.map((k) => k.toLowerCase()).join(' ');
 
@@ -308,16 +308,20 @@ export const Finder = {
       fragment.role = 'option';
       fragment.setAttribute('aria-selected', 'false');
 
+      const itemContainer = document.createElement('div');
+      itemContainer.className = 'flex items-center';
+
       // Icon element
       const iconClassName = iconTemplate.className.replace('lucide-sun', 'lucide-file-text');
-      fragment.appendChild(document.createElement('span')).className = iconClassName;
+      itemContainer.appendChild(document.createElement('span')).className = iconClassName;
 
       // Text element
       const textElement = document.createElement('span');
       textElement.className = textTemplate.className;
       textElement.textContent = article.title;
-      fragment.appendChild(textElement);
+      itemContainer.appendChild(textElement);
 
+      fragment.appendChild(itemContainer);
       this.finderResultsList.appendChild(fragment);
     });
 
