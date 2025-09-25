@@ -99,7 +99,7 @@ defmodule SiteWeb.AboutLive.Index do
 
           <SiteWeb.SiteComponents.work_experience_list class="mt-4 max-w-xl" items={@experience} />
 
-          <.button href={~p"/resume"} variant="light" class="group mt-8">
+          <.button navigate={~p"/resume"} variant="light" class="group mt-8">
             Full Resume
             <.icon
               name="hero-arrow-right-mini"

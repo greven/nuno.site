@@ -14,16 +14,14 @@ defmodule SiteWeb.HomeLive.Components do
 
   def now_playing(assigns) do
     ~H"""
-    <div class={["flex items-center gap-2", @class]} {@rest}>
+    <div class={["flex items-center", @class]} {@rest}>
       <.async_result :let={track} assign={@track}>
         <:loading>
-          <div class="-mt-0.5 flex items-center gap-4">
-            <div class="flex flex-col gap-1">
-              <div class="flex flex-col gap-2">
-                <.playing_indicator loading />
-                <.skeleton height="16px" width="120px" />
-                <.skeleton height="14px" width="60%" />
-              </div>
+          <div class="flex flex-col justify-center gap-0.5">
+            <.playing_indicator loading />
+            <div class="mt-1 flex flex-col gap-2">
+              <.skeleton height="20px" width="120px" />
+              <.skeleton height="18px" width="60%" />
             </div>
           </div>
         </:loading>
@@ -37,12 +35,12 @@ defmodule SiteWeb.HomeLive.Components do
         </:failed>
 
         <%= if track.name do %>
-          <div class="flex flex-col justify-center gap-1">
+          <div class="flex flex-col justify-center">
             <.playing_indicator
               is_playing={track.now_playing}
               last_played={track.played_at}
             />
-            <div class="leading-5">
+            <div class="mt-0.5 leading-5">
               <div class="text-sm md:text-base font-medium line-clamp-1">
                 {track.name}
               </div>

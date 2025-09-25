@@ -1,7 +1,7 @@
 const DESKTOP_OFFSET_X = 999;
 const MOBILE_OFFSET_Y = 999;
 
-export const TableOfContents = {
+export const ArticleTableOfContents = {
   mounted() {
     // TOC list items
     this.tocItems = Array.from(this.el.querySelectorAll('ol li a'));

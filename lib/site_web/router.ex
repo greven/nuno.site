@@ -47,9 +47,9 @@ defmodule SiteWeb.Router do
       ] do
       live "/", HomeLive.Index, :index
       live "/updates", UpdatesLive.Index, :index
-      live "/updates/year/:year", UpdatesLive.Show, :show
       live "/articles", BlogLive.Index, :index
       live "/articles/:year/:slug", BlogLive.Show, :show
+      live "/archive/year/:year", ArchiveLive.Index, :index
       live "/categories", CategoriesLive.Index, :index
       live "/category/:category", CategoriesLive.Show, :show
       live "/tags", TagsLive.Index, :index

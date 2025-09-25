@@ -1,4 +1,5 @@
-import { TableOfContents } from './article-toc';
+import { ArticleTableOfContents } from './article-toc';
+import { CardStack } from './card-stack';
 import { Dialog } from './dialog';
 import { Finder } from './finder';
 import { Hello } from './hello';
@@ -15,6 +16,8 @@ import { TheEnd } from './the-end';
 import { TravelMap } from './travel-map';
 
 export default {
+  ArticleTableOfContents,
+  CardStack,
   Dialog,
   Finder,
   Hello,
@@ -26,7 +29,6 @@ export default {
   SharePost,
   SiteHeader,
   Spoiler,
-  TableOfContents,
   Tabs,
   TheEnd,
   TravelMap,

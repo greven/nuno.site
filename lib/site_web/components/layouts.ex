@@ -73,7 +73,7 @@ defmodule SiteWeb.Layouts do
 
   def site_logo(assigns) do
     ~H"""
-    <.link id="site-logo" href={~p"/"} class="relative group flex items-center">
+    <.link id="site-logo" navigate={~p"/"} class="relative group flex items-center">
       <span class="flex items-baseline gap-0.5 font-headings font-medium">
         <span class="text-2xl text-content-10">nuno</span>
         <span class="font-semibold text-xl text-content-40/60
@@ -212,11 +212,11 @@ defmodule SiteWeb.Layouts do
         <.finder_trigger_button />
 
         <div class="flex space-x-4">
-          <.navbar_item item={:home} href={~p"/"} active_link={@active_link}>
+          <.navbar_item item={:home} navigate={~p"/"} active_link={@active_link}>
             {gettext("Home")}
           </.navbar_item>
 
-          <.navbar_item item={:about} href={~p"/about"} active_link={@active_link}>
+          <.navbar_item item={:about} navigate={~p"/about"} active_link={@active_link}>
             {gettext("About")}
           </.navbar_item>
 

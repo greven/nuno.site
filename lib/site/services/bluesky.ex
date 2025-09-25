@@ -8,26 +8,43 @@ defmodule Site.Services.Bluesky do
   require Logger
   use Nebulex.Caching
 
+  @default_limit 20
   @base_url "https://bsky.social/xrpc"
-  @refresh_interval :timer.minutes(10)
-  @default_limit 100
 
   @type post :: %{
+          cid: String.t(),
           text: String.t(),
           created_at: DateTime.t(),
+          like_count: non_neg_integer(),
+          repostCount: non_neg_integer(),
+          replyCount: non_neg_integer(),
+          author_handle: String.t(),
+          author_name: String.t(),
+          avatar_url: String.t() | nil,
           uri: String.t(),
-          cid: String.t()
+          url: String.t()
         }
+
+  defmodule Post do
+    defstruct [
+      :cid,
+      :text,
+      :created_at,
+      :like_count,
+      :repostCount,
+      :replyCount,
+      :author_handle,
+      :author_name,
+      :avatar_url,
+      :uri,
+      :url
+    ]
+  end
 
   @doc """
   Fetches the latest `n` posts from any BlueSky handle, excluding replies.
   """
   @spec get_latest_posts(String.t(), pos_integer()) :: {:ok, [post()]} | {:error, term()}
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: {:bluesky_posts, handle},
-              opts: [ttl: @refresh_interval]
-            )
   def get_latest_posts(handle, limit \\ @default_limit) do
     with {:ok, config} <- get_config(),
          {:ok, session} <- create_session(config),
@@ -42,12 +59,45 @@ defmodule Site.Services.Bluesky do
   @spec format_post(map()) :: post()
   defp format_post(%{"post" => post}) do
     %{
+      cid: post["cid"] || "",
       text: get_in(post, ["record", "text"]) || "",
       created_at: parse_datetime(get_in(post, ["record", "createdAt"])),
+      like_count: post["likeCount"] || 0,
+      repostCount: post["repostCount"] || 0,
+      replyCount: post["replyCount"] || 0,
+      author_handle: get_in(post, ["author", "handle"]) || "",
+      author_name: get_in(post, ["author", "displayName"]) || "",
+      avatar_url: get_in(post, ["author", "avatar"]) || nil,
       uri: post["uri"] || "",
-      cid: post["cid"] || ""
+      url: post_url(post) || ""
     }
   end
+
+  @doc """
+  Constructs the Bluesky post URL from a post record
+  """
+  def post_url(%{"uri" => uri, "author" => %{"handle" => handle}}) do
+    case extract_rkey_from_uri(uri) do
+      {:ok, rkey} -> "https://bsky.app/profile/#{handle}/post/#{rkey}"
+      :error -> nil
+    end
+  end
+
+  def post_url(_), do: nil
+
+  # Extracts the record key (rkey) from a Bluesky AT URI
+  # Example: "at://did:plc:abc123/app.bsky.feed.post/3k44dkosfji2y" -> "3k44dkosfji2y"
+  defp extract_rkey_from_uri(uri) when is_binary(uri) do
+    case String.split(uri, "/") do
+      ["at:", "", _did, "app.bsky.feed.post", rkey] when rkey != "" ->
+        {:ok, rkey}
+
+      _ ->
+        :error
+    end
+  end
+
+  defp extract_rkey_from_uri(_), do: :error
 
   @spec parse_datetime(String.t() | nil) :: DateTime.t()
   defp parse_datetime(nil), do: DateTime.utc_now()

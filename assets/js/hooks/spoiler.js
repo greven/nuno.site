@@ -10,7 +10,11 @@ export const Spoiler = {
       const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
       trigger.setAttribute('aria-expanded', !isExpanded);
 
-      this.js().toggleClass(overlay, 'opacity-0');
+      if (isExpanded) {
+        this.js().removeClass(overlay, 'opacity-0');
+      } else {
+        this.js().addClass(overlay, 'opacity-0');
+      }
 
       content.style.maxHeight = isExpanded
         ? this.el.dataset.maxHeight

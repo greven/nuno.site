@@ -57,14 +57,14 @@ defmodule SiteWeb.HomeLive.Index do
             </h1>
 
             <div class="text-md md:text-2xl text-content-40">
-              A <.link href="/about" class="link">Software Engineer</.link> from Lisbon.
+              A <.link navigate="/about" class="link">Software Engineer</.link> from Lisbon.
             </div>
 
             <p class="mt-8 max-w-3xl font-light text-base/7 md:text-xl/8 text-content-30 text-balance">
               This site is where I share my knowledge and ideas with others. Here you'll find a
-              <.link href="/updates" class="link-subtle">collection</.link>
-              of my <.link href="/articles?category=blog" class="link-subtle">articles</.link>, <.link
-                href="/articles?category=note"
+              <.link navigate="/updates" class="link-subtle">collection</.link>
+              of my <.link navigate="/articles?category=blog" class="link-subtle">articles</.link>, <.link
+                navigate="/articles?category=note"
                 class="link-subtle"
               >notes</.link>, and experiments.
             </p>
@@ -111,21 +111,57 @@ defmodule SiteWeb.HomeLive.Index do
               </div>
             </SiteComponents.bento_card>
 
-            <%!-- <SiteComponents.bento_card
-              navigate={~p"/travel"}
+            <SiteComponents.bento_card
+              navigate={~p"/updates"}
               class="col-span-1 row-span-1"
-              icon="lucide-map-pin"
+              icon="lucide-history"
             >
-              Travel
-            </SiteComponents.bento_card> --%>
+              <div class="flex flex-col text-sm md:text-base">
+                <div class="text-content-40">Recent</div>
+                <div class="font-medium">
+                  <%= if @recent_updates && @recent_updates > 0 do %>
+                    {@recent_updates} {ngettext("Update", "Updates", @recent_updates)}
+                  <% else %>
+                    <div class="flex items-center gap-1 text-content-40">
+                      {Enum.random([
+                        "Nada",
+                        "Zilch",
+                        "Zero",
+                        "None",
+                        "Nichts",
+                        "Rien",
+                        "Void",
+                        "Nil",
+                        "Null"
+                      ])}
+                      <.icon name="lucide-frown" class="size-4" />
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </SiteComponents.bento_card>
           </div>
 
           <section :if={@posts != []}>
-            <SiteComponents.home_section_title>
+            <SiteComponents.home_section_title
+              icon="lucide-newspaper"
+              highlight
+              highlight_class="bg-primary"
+            >
               Featured Articles
-              <:addon><.link href="/articles" class="link">See all articles</.link></:addon>
             </SiteComponents.home_section_title>
             <SiteComponents.featured_posts posts={@posts} />
+          </section>
+
+          <section :if={@skeets != []}>
+            <SiteComponents.home_section_title
+              icon="lucide-origami"
+              highlight
+              highlight_class="bg-secondary"
+            >
+              Bluesky Updates
+            </SiteComponents.home_section_title>
+            <SiteComponents.social_feed_posts posts={@skeets} />
           </section>
         </div>
       </Layouts.page_content>
@@ -138,6 +174,8 @@ defmodule SiteWeb.HomeLive.Index do
     posts = Blog.list_featured_posts() |> Enum.take(3)
     published_posts_count = Blog.list_published_posts() |> length()
     reading_count = Services.get_reading_stats()[:currently_reading] || 0
+    recent_updates = Site.Updates.recent_updates_count()
+    skeets = get_bluesky_posts() |> Enum.take(5)
 
     if connected?(socket) do
       Process.send_after(self(), :refresh_music, @refresh_interval)
@@ -147,9 +185,10 @@ defmodule SiteWeb.HomeLive.Index do
       socket
       |> assign(:post_count, published_posts_count)
       |> assign(:reading_count, reading_count)
+      |> assign(:recent_updates, recent_updates)
       |> assign_async(:track, &get_currently_playing/0)
 
-    {:ok, socket, temporary_assigns: [posts: posts]}
+    {:ok, socket, temporary_assigns: [posts: posts, skeets: skeets]}
   end
 
   @impl true
@@ -167,6 +206,13 @@ defmodule SiteWeb.HomeLive.Index do
     case Services.get_now_playing() do
       {:ok, %MusicTrack{} = track} -> {:ok, %{track: track}}
       error -> error
+    end
+  end
+
+  def get_bluesky_posts do
+    case Services.get_latest_skeets("nuno.site") do
+      {:ok, skeets} -> skeets
+      _error -> []
     end
   end
 end

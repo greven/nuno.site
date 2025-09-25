@@ -31,7 +31,7 @@ defmodule SiteWeb.TagsLive.Show do
 
         <BlogComponents.archive class="mt-8" articles={@posts} sticky_header>
           <:header :let={year}>
-            <.link navigate={~p"/updates/year/#{year}"}>
+            <.link navigate={~p"/archive/year/#{year}"}>
               {year}
             </.link>
           </:header>

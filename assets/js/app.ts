@@ -21,8 +21,43 @@ topbar.config({
   shadowBlur: 4,
 });
 
-window.addEventListener('phx:page-loading-start', (_info) => topbar.show(300));
-window.addEventListener('phx:page-loading-stop', (_info) => topbar.hide());
+// View Transition API integration
+function supportsViewTransitions(): boolean {
+  return 'startViewTransition' in document;
+}
+
+function startViewTransition(): void {
+  if (!supportsViewTransitions()) return;
+  document.startViewTransition(() => pageLoadingDone);
+}
+
+let onPageLoaded = () => {
+  topbar.hide();
+};
+
+let pageLoadingDone = new Promise<void>((resolve) => {
+  window.addEventListener(
+    'phx:page-loading-stop',
+    (_info) => {
+      onPageLoaded();
+      resolve();
+    },
+    { once: true }
+  );
+});
+
+window.addEventListener('phx:page-loading-start', (info) => {
+  const event = info as CustomEvent;
+
+  // Only start view transition for navigation events, not form submissions
+  if (event.detail?.kind === 'redirect') {
+    startViewTransition();
+  }
+
+  topbar.show(300);
+});
+
+window.addEventListener('phx:page-loading-stop', (_info) => onPageLoaded());
 
 // connect if there are any LiveViews on the page
 liveSocket.connect();

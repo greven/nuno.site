@@ -5,6 +5,7 @@ defmodule Site.Services do
 
   use Nebulex.Caching
 
+  alias Site.Services.Bluesky
   alias Site.Services.Lastfm
   alias Site.Services.Goodreads
   alias Site.Services.Steam
@@ -21,6 +22,18 @@ defmodule Site.Services do
     {"Post Rock", "5IkU9IYbSYiK31bjZJC4rm"},
     {"Heartful", "6h9TQZwSrow8mdw5YZKYN8"}
   ]
+
+  ## Bluesky
+
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: {:bluesky_posts, handle},
+              opts: [ttl: :timer.minutes(10)]
+            )
+  def get_latest_skeets(handle, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 10)
+    Bluesky.get_latest_posts(handle, limit)
+  end
 
   ## Music
 

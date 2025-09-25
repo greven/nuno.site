@@ -1,4 +1,4 @@
-defmodule SiteWeb.UpdatesLive.Show do
+defmodule SiteWeb.ArchiveLive.Index do
   use SiteWeb, :live_view
 
   @impl true

@@ -165,27 +165,29 @@ defmodule SiteWeb.BlogComponents do
   def archive_item(assigns) do
     ~H"""
     <.card tag="article" class={["text-center md:text-left", @class]} {@rest}>
-      <div class="flex items-center justify-center md:justify-start gap-1 text-sm font-headings text-content-40">
-        <.post_publication_date
-          class="text-content-40"
-          show_icon={false}
-          format="%b %-d, %Y"
-          post={@post}
-        />
-        <span class="opacity-70">in</span><span class="text-content-20 uppercase">{@post.category}</span>
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-center md:justify-start gap-1 text-sm font-headings text-content-40">
+          <.post_publication_date
+            class="text-content-40"
+            show_icon={false}
+            format="%b %-d, %Y"
+            post={@post}
+          />
+          <span class="opacity-70">in</span><span class="text-content-20 uppercase">{@post.category}</span>
+        </div>
+
+        <h2 class="col-start-3 col-span-1">
+          <.link
+            navigate={~p"/articles/#{@post.year}/#{@post}"}
+            class="link-subtle font-medium text-lg line-clamp-2 text-pretty"
+          >
+            <span class="absolute inset-0"></span>
+            {@post.title}
+          </.link>
+        </h2>
       </div>
 
-      <h2 class="mt-1 col-start-3 col-span-1">
-        <.link
-          navigate={~p"/articles/#{@post.year}/#{@post}"}
-          class="link-subtle font-medium text-lg line-clamp-2 text-pretty"
-        >
-          <span class="absolute inset-0"></span>
-          {@post.title}
-        </.link>
-      </h2>
-
-      <p class="mt-4 font-light text-content-40 text-sm md:text-base text-balance line-clamp-3">
+      <p class="mt-2 font-light text-sm md:text-base text-content-40 text-balance line-clamp-3">
         {@post.excerpt}
       </p>
     </.card>
@@ -266,8 +268,8 @@ defmodule SiteWeb.BlogComponents do
   def post_meta(assigns) do
     ~H"""
     <div id="post-meta" class={@class} phx-hook="PostMeta">
-      <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
-        <.post_publication_date post={@post} show_icon={@show_icon} class="text-content-20" />
+      <div class="flex flex-wrap items-center justify-center gap-3 text-sm text-content-20">
+        <.post_publication_date post={@post} show_icon={@show_icon} />
         <span :if={@post.category == :blog} class="font-sans text-xs text-primary">&bull;</span>
         <.post_reading_time
           :if={@post.category == :blog}
@@ -496,9 +498,9 @@ defmodule SiteWeb.BlogComponents do
   def post_author(assigns) do
     ~H"""
     <div class={["flex items-center justify-start gap-2.5", @class]} {@rest}>
-      <SiteComponents.avatar_picture size={28} href={~p"/about"} />
+      <SiteComponents.avatar_picture size={28} navigate={~p"/about"} />
       <div class="group flex items-center justify-start gap-1">
-        <.link href={~p"/about"} class="font-headings text-base link-subtle">
+        <.link navigate={~p"/about"} class="font-headings text-base link-subtle">
           Nuno Moço
         </.link>
 
@@ -549,61 +551,66 @@ defmodule SiteWeb.BlogComponents do
 
   defp post_pager(%{link: link} = assigns) when not is_nil(link) do
     ~H"""
-    <.link navigate={@link} {@rest}>
-      <.box
-        class="group hover:border-primary"
-        border="border border-neutral-200 dark:border-neutral-800"
-      >
-        <div class={["w-full flex flex-col gap-0.5", @dir == :next && "text-right"]}>
-          <div class={["flex items-center gap-1", @dir == :next && "justify-end"]}>
-            <.icon
-              name={if @dir == :prev, do: "lucide-arrow-left", else: "lucide-arrow-right"}
-              class={[
-                "size-4 shrink-0 text-content-40/80 transition-transform",
-                @dir == :prev && "group-hover:-translate-x-0.5",
-                @dir == :next && "group-hover:translate-x-0.5"
-              ]}
-            />
-            <div :if={@dir == :prev} class="text-content-40 text-xs tracking-wider font-sans">
-              Previous
-            </div>
-            <div
-              :if={@dir == :next}
-              class={[
-                "text-content-40 text-xs tracking-wider font-sans",
-                @dir == :next && "order-first"
-              ]}
-            >
-              Next
-            </div>
-          </div>
+    <.card
+      navigate={@link}
+      border="border border-neutral-200 dark:border-neutral-800 hover:border-primary"
+      shadow="shadow-xs"
+      {@rest}
+    >
+      <SiteComponents.card_pattern hover_transition={false} />
 
-          <div class="font-headings font-medium text-sm md:text-base line-clamp-1">{@title}</div>
+      <div class={["w-full flex flex-col gap-0.5", @dir == :next && "text-right"]}>
+        <div class={["flex items-center gap-1", @dir == :next && "justify-end"]}>
+          <.icon
+            name={if @dir == :prev, do: "lucide-arrow-left", else: "lucide-arrow-right"}
+            class={[
+              "size-4 shrink-0 text-content-40/80 transition-transform",
+              @dir == :prev && "group-hover:-translate-x-0.5",
+              @dir == :next && "group-hover:translate-x-0.5"
+            ]}
+          />
+          <div :if={@dir == :prev} class="text-content-40 text-xs tracking-wider font-sans">
+            Previous
+          </div>
+          <div
+            :if={@dir == :next}
+            class={[
+              "text-content-40 text-xs tracking-wider font-sans",
+              @dir == :next && "order-first"
+            ]}
+          >
+            Next
+          </div>
         </div>
-      </.box>
-    </.link>
+
+        <div class="font-headings font-medium text-sm md:text-base line-clamp-1">{@title}</div>
+      </div>
+    </.card>
     """
   end
 
   defp post_pager(assigns) do
     ~H"""
-    <div class="min-h-[72px] relative border border-surface-30 rounded-lg p-4 flex items-center
-        justify-center text-content-30 opacity-40 select-none cursor-not-allowed">
-      <div
-        class="absolute inset-0 opacity-20 -z-10"
-        style="background-image: repeating-linear-gradient(135deg, var(--color-content-40), var(--color-content-40) 1px, transparent 1px, transparent 6px);"
-      >
+    <.card
+      class="select-none cursor-not-allowed"
+      content_class="relative isolate h-full min-h-[72px] flex flex-col items-center justify-center"
+      border="border border-neutral-200 dark:border-neutral-900"
+      shadow="shadow-none"
+      bg="bg-surface-10/50"
+    >
+      <SiteComponents.card_pattern hover_transition={false} />
+      <div class="flex items-center justify-center text-content-40/50">
+        <%= if @dir == :prev do %>
+          <div class="font-headings font-medium text-sm md:text-base line-clamp-1">
+            End of Time!
+          </div>
+        <% else %>
+          <div class="font-headings font-medium text-sm md:text-base line-clamp-1">
+            Start of Time!
+          </div>
+        <% end %>
       </div>
-      <%= if @dir == :prev do %>
-        <div class="font-headings font-medium text-sm md:text-base line-clamp-1">
-          End of Time!
-        </div>
-      <% else %>
-        <div class="font-headings font-medium text-sm md:text-base line-clamp-1">
-          Start of Time!
-        </div>
-      <% end %>
-    </div>
+    </.card>
     """
   end
 
@@ -614,16 +621,15 @@ defmodule SiteWeb.BlogComponents do
 
   attr :post, Blog.Post, required: true
   attr :format, :string, default: "%B %-d, %Y"
-  attr :label, :string, default: nil
   attr :class, :string, default: nil
 
   def post_card_meta(assigns) do
     ~H"""
     <div class={@class}>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 text-content-40">
         <.post_publication_date post={@post} show_icon={false} format={@format} />
         <span class="font-sans text-sm text-primary">&bull;</span>
-        <span class="font-normal tracking-widest uppercase">{@post.category}</span>
+        <.post_reading_time post={@post} show_icon={false} />
       </div>
     </div>
     """
@@ -633,7 +639,11 @@ defmodule SiteWeb.BlogComponents do
 
   attr :tag, :string, default: "div"
   attr :value, :string, default: nil
+  attr :unit, :string, default: nil
   attr :icon, :string, default: nil
+  attr :value_class, :string, default: nil
+  attr :unit_class, :string, default: "ml-px"
+  attr :content_class, :string, default: "not-first:ml-1.5"
   attr :icon_class, :string, default: "size-5 text-content-40"
   attr :class, :string, default: nil
   attr :rest, :global
@@ -645,9 +655,10 @@ defmodule SiteWeb.BlogComponents do
     <.dynamic_tag tag_name={@tag} class={@class}>
       <div class="flex items-center gap-2">
         <.icon :if={@icon} name={@icon} class={@icon_class} />
-        <div class="flex items-center gap-1.5">
-          <span :if={@value} class="font-mono" {@rest}>{@value}</span>
-          {render_slot(@inner_block)}
+        <div class="flex items-center">
+          <span :if={@value} class={@value_class} {@rest}>{@value}</span>
+          <span :if={@unit} class={@unit_class}>{@unit}</span>
+          <span class={@content_class}>{render_slot(@inner_block)}</span>
         </div>
       </div>
     </.dynamic_tag>
@@ -725,7 +736,8 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <.post_meta_item
       icon={@show_icon && "lucide-clock"}
-      value={"#{@duration}#{@unit}"}
+      value={@duration}
+      unit={@unit}
       icon_class={@icon_class}
       class={@class}
     >
@@ -792,7 +804,7 @@ defmodule SiteWeb.BlogComponents do
         "sm:top-[calc(var(--page-gap)+var(--article-gap))] sm:bottom-auto sm:left-auto sm:right-4",
         @class
       ]}
-      phx-hook="TableOfContents"
+      phx-hook="ArticleTableOfContents"
       {@rest}
     >
       <div class="relative flex justify-end isolate">

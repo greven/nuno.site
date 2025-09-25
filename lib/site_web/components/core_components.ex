@@ -43,7 +43,7 @@ defmodule SiteWeb.CoreComponents do
 
   attr :tag, :string, default: "div"
   attr :class, :any, default: nil
-  attr :content_class, :any, default: "group/card isolate relative flex flex-col h-full"
+  attr :content_class, :any, default: "group/card isolate relative h-full flex flex-col gap-3"
   attr :bg, :string, default: "bg-surface-10/80 hover:bg-surface-10"
   attr :padding, :string, default: "p-4"
 
@@ -57,16 +57,8 @@ defmodule SiteWeb.CoreComponents do
   def card(%{rest: rest} = assigns) do
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
-      <.link
-        class={[
-          @class,
-          "relative outline-none rounded-lg",
-          "focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-2"
-        ]}
-        {@rest}
-      >
+      <.dynamic_tag tag_name={@tag} class={["isolate", @class]}>
         <.box
-          tag={@tag}
           bg={@bg}
           border={@border}
           radius={@radius}
@@ -74,15 +66,15 @@ defmodule SiteWeb.CoreComponents do
           shadow={@shadow}
           class={@content_class}
         >
+          <.link class={["absolute inset-0 z-10", @radius]} {@rest}></.link>
           {render_slot(@inner_block)}
         </.box>
-      </.link>
+      </.dynamic_tag>
       """
     else
       ~H"""
-      <div class={["relative", @class]} {@rest}>
+      <.dynamic_tag tag_name={@tag} class={@class} {@rest}>
         <.box
-          tag={@tag}
           bg={@bg}
           border={@border}
           radius={@radius}
@@ -92,9 +84,41 @@ defmodule SiteWeb.CoreComponents do
         >
           {render_slot(@inner_block)}
         </.box>
-      </div>
+      </.dynamic_tag>
       """
     end
+  end
+
+  @doc """
+  Renders a card stack container that stacks cards on top of each other.
+  It is possible to swipe through the cards using touch gestures, mouse drag,
+  keyboard arrow keys or the provided navigation buttons.
+  """
+
+  attr :class, :any, default: nil
+
+  attr :container_class, :string,
+    default: "w-full h-[148px] md:w-[512px] md:h-[196px] lg:w-[600px] lg:h-[200px]"
+
+  attr :max_stack, :integer, default: 3
+  attr :show_nav, :boolean, default: false
+  attr :cycle, :boolean, default: false
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def card_stack(assigns) do
+    ~H"""
+    <div class={@class} phx-hook="CardStack" {@rest} data-show-nav={@show_nav} data-cycle={@cycle}>
+      <div class="flex flex-col items-center justify-center gap-8">
+        <div
+          class={["relative isolate will-change-transform", @container_class]}
+          data-part="card-container"
+        >
+          {render_slot(@inner_block)}
+        </div>
+      </div>
+    </div>
+    """
   end
 
   @doc """
@@ -837,6 +861,7 @@ defmodule SiteWeb.CoreComponents do
         "aria-invalid:ring-danger aria-invalid:border-danger",
         "active:shadow-none",
         "[&_svg]:pointer-events-none [&_[data-slot=icon]]:pointer-events-none [&_svg]:shrink-0 [&_[data-slot=icon]]:shrink-0 [&_svg:not([class*='size-'])]:size-4! [&_[data-slot=icon]:not([class*='size-'])]:size-4!",
+        "[&:disabled_svg]:opacity-50 [&:disabled_[data-slot=icon]]:opacity-50",
         "[--button-shadow:var(--shadow-xs)]",
         if(wide, do: "block w-full", else: "inline-block"),
         radius_class(radius),

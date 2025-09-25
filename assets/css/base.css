@@ -117,6 +117,12 @@
   }
 }
 
+/* Basic view transition styles */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 300;
+}
+
 @media screen and (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;

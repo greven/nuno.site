@@ -15,16 +15,28 @@ defmodule SiteWeb.SiteComponents do
   @doc false
 
   attr :class, :string, default: nil
+  attr :icon, :string, default: nil
+  attr :highlight, :boolean, default: false
+  attr :highlight_class, :string, default: "bg-content-30"
   slot :inner_block, required: true
   slot :subtitle
-  slot :addon
 
   def home_section_title(assigns) do
     ~H"""
     <header class={[@class, "flex flex-col items-center pb-6"]}>
       <div class="w-full flex items-center justify-center gap-2.5">
-        <.icon name="lucide-newspaper" class="size-6.5 text-content-40/80" />
-        <h2 class="font-medium text-3xl text-content-10">{render_slot(@inner_block)}</h2>
+        <.icon :if={@icon} name={@icon} class="size-6.5 text-content-40/80" />
+        <div class="relative">
+          <div
+            :if={@highlight}
+            class={[
+              "absolute inset-0 w-full opacity-10",
+              @highlight_class
+            ]}
+          >
+          </div>
+          <h2 class="font-medium text-3xl text-content-10">{render_slot(@inner_block)}</h2>
+        </div>
       </div>
       <p :if={@subtitle != []} class="font-light text-content-40">{render_slot(@subtitle)}</p>
     </header>
@@ -39,9 +51,10 @@ defmodule SiteWeb.SiteComponents do
   def featured_posts(assigns) do
     ~H"""
     <div class={@class}>
-      <ol id="featured-posts" class="isolate flex flex-col justify-center gap-3">
+      <ol id="featured-posts" class="max-w-3xl mx-auto flex flex-col justify-center gap-3">
         <%= for post <- @posts do %>
           <.card
+            tag="li"
             class={[
               "relative group [counter-increment:item-counter]",
               "before:opacity-0 before:content-['#'_counter(item-counter)] before:absolute before:left-4.5 before:top-2.5 before:font-headings before:font-semibold before:text-content-10 md:before:opacity-10 before:text-xl before:pointer-events-none",
@@ -76,10 +89,43 @@ defmodule SiteWeb.SiteComponents do
                 show_icon={false}
               />
             </div>
-            <%!-- </li> --%>
           </.card>
         <% end %>
       </ol>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :posts, :list, default: []
+  attr :class, :string, default: nil
+
+  def social_feed_posts(assigns) do
+    ~H"""
+    <div class={@class}>
+      <.card_stack id="social-feed-stack" class="w-full">
+        <%!-- shadow-custom absolute top-2 left-1/2 z-10 flex h-[148px] w-[284px] -translate-x-1/2 items-center justify-center gap-4 rounded-xl border border-white bg-gray-100 p-1 sm:h-[196px] sm:w-[480px] dark:border-gray-300 dark:bg-gray-100 --%>
+        <.card
+          :for={post <- @posts}
+          class="absolute inset-0"
+          bg="bg-surface-10"
+          border="border border-surface-30 border-solid hover:border-surface-40 transition-colors"
+          shadow="shadow-sm"
+        >
+          <div class="flex items-center gap-3">
+            <.image
+              src={post.avatar_url}
+              width={40}
+              height={40}
+              alt="Bluesky Profile Picture"
+              class="bg-white/80 p-[1px] rounded-full shadow-sm shadow-neutral-800/10 dark:bg-neutral-800/90"
+            />
+            <a href={post.url} class="text-sm md:text-base">{post.created_at}</a>
+          </div>
+          <div class="text-sm md:text-base text-content-40 line-clamp-4">{post.text}</div>
+        </.card>
+      </.card_stack>
     </div>
     """
   end
@@ -93,41 +139,54 @@ defmodule SiteWeb.SiteComponents do
   slot :inner_block, required: true
 
   def bento_card(assigns) do
-    assigns =
-      assigns
-      |> assign(:svg_id, SiteWeb.Helpers.use_id())
-
     ~H"""
     <.card
       border="border border-border hover:border-solid hover:border-primary transition-colors duration-150"
       shadow="hover:shadow-drop shadow-primary/15 dark:shadow-primary/20"
       {@rest}
     >
-      <div class={["absolute inset-0 border-1 border-surface-10 rounded-lg z-1"]}>
-        <svg class={[
-          "absolute inset-0 size-full text-content-40/70 rounded-lg opacity-20 pointer-events-none select-none transition-opacity duration-150z",
-          "[mask-image:linear-gradient(to_left,_#ffffffad,_transparent)]",
-          "group-hover/card:text-primary group-hover/card:opacity-40"
-        ]}>
-          <defs>
-            <pattern
-              id={@svg_id}
-              width="4"
-              height="4"
-              patternUnits="userSpaceOnUse"
-              patternTransform="rotate(45)"
-            >
-              <line x1="0" y1="0" x2="0" y2="4" stroke="currentColor" stroke-width="1.5"></line>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill={"url(##{@svg_id})"}></rect>
-        </svg>
-      </div>
+      <.card_pattern />
+
       <div class={["h-full p-1", @content_class]}>
         <.icon name={@icon} class={@icon_class} />
         {render_slot(@inner_block)}
       </div>
     </.card>
+    """
+  end
+
+  @doc """
+  Render a patterned background for cards.
+  """
+
+  attr :hover_transition, :boolean, default: true
+
+  def card_pattern(assigns) do
+    assigns =
+      assigns
+      |> assign(:svg_id, SiteWeb.Helpers.use_id())
+
+    ~H"""
+    <div class={["absolute inset-0 border-1 border-surface-10 rounded-lg z-1"]}>
+      <svg class={[
+        "absolute inset-0 size-full text-content-40/70 rounded-lg opacity-20 pointer-events-none select-none transition-opacity duration-150z",
+        "[mask-image:linear-gradient(to_left,_#ffffffad,_transparent)]",
+        @hover_transition && "group-hover/card:text-primary group-hover/card:opacity-40"
+      ]}>
+        <defs>
+          <pattern
+            id={@svg_id}
+            width="4"
+            height="4"
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(45)"
+          >
+            <line x1="0" y1="0" x2="0" y2="4" stroke="currentColor" stroke-width="1.5"></line>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={"url(##{@svg_id})"}></rect>
+      </svg>
+    </div>
     """
   end
 
