@@ -750,26 +750,19 @@ defmodule SiteWeb.BlogComponents do
 
   attr :post, Blog.Post, required: true
   attr :show_icon, :boolean, default: true
-  attr :format, :string, default: "%B %o, %Y"
+  attr :format, :string, default: "%b %o, %Y"
   attr :class, :string, default: nil
 
   def post_publication_date(assigns) do
     assigns =
       assigns
-      |> assign(:date, post_date(assigns.post.date, assigns.format))
+      |> assign(:date, Support.format_date(assigns.post.date, format: assigns.format))
 
     ~H"""
     <.post_meta_item tag="time" icon={@show_icon && "lucide-calendar-fold"} class={@class}>
       {@date}
     </.post_meta_item>
     """
-  end
-
-  defp post_date(date, format) do
-    case Support.time_ago(date) do
-      %NaiveDateTime{} = datetime -> Support.format_date_with_ordinal(datetime, format)
-      relative_date -> relative_date
-    end
   end
 
   defp post_updated_date(%Blog.Post{updated: %Date{} = date}, format) do

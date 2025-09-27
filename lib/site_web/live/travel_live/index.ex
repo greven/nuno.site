@@ -1,9 +1,10 @@
 defmodule SiteWeb.TravelLive.Index do
   use SiteWeb, :live_view
 
-  alias SiteWeb.SiteComponents
   alias Site.Support
   alias Site.Travel
+
+  alias SiteWeb.TravelLive.Components
 
   @impl true
   def render(assigns) do
@@ -32,19 +33,19 @@ defmodule SiteWeb.TravelLive.Index do
         </div>
 
         <dl class="mt-8 hidden md:grid grid-cols-2 gap-8 md:grid-cols-3 sm:mt-12">
-          <SiteComponents.travel_stat label="Countries Visited" value={@stats.countries_visited} />
-          <SiteComponents.travel_stat label="Cities Visited" value={@stats.cities_visited} />
-          <SiteComponents.travel_stat
+          <Components.travel_stat label="Countries Visited" value={@stats.countries_visited} />
+          <Components.travel_stat label="Cities Visited" value={@stats.cities_visited} />
+          <Components.travel_stat
             label="Distance (km)"
             value={Support.format_number(@stats.distance, 0)}
           />
-          <SiteComponents.travel_stat label="Flights" value={@stats.flights} />
-          <SiteComponents.travel_stat label="Airlines Flown" value={@stats.airlines_flown} />
+          <Components.travel_stat label="Flights" value={@stats.flights} />
+          <Components.travel_stat label="Airlines Flown" value={@stats.airlines_flown} />
         </dl>
 
         <div class="relative h-full flex flex-col isolate">
-          <SiteComponents.travel_map trips={@trips} />
-          <SiteComponents.travel_list trips_timeline={@grouped_trips} />
+          <Components.travel_map trips={@trips} />
+          <Components.travel_list trips_timeline={@grouped_trips} />
         </div>
       </Layouts.page_content>
     </Layouts.app>

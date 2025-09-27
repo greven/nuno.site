@@ -93,6 +93,38 @@ defmodule Site.Support do
   ## Calendar, Dates and Time
 
   @doc """
+  Format a given `Date`, `DateTime` or `NaiveDateTime` to a string using the specified format.
+  By default, it uses the format "%B %d, %Y" (e.g., "January 01, 2023") but the ouput
+  can be customized by passing different options:
+
+  ## Options
+
+  - `:format` - The format string to use (default: "%B %d, %Y"). If the format string
+    contains `%o`, it will be replaced with the day of the month with an ordinal suffix
+    (e.g., "1st", "2nd", "3rd", "4th").
+  - `:relative` - If true, returns a relative time string (e.g., "5 minutes ago")
+    instead of a formatted date string.
+  - `:cutoff_in_days` - If provided, and the option `relative` is true, the relative time
+    string will only be returned if the difference is within this number of days.
+    Otherwise, the original date will be formatted and returned.
+  - `short` - If true and the option `relative` is true, use a shorter format
+    for the relative time string. E.g., "5m ago" instead of "5 minutes ago", "1d ago".
+    It is ignored if `relative` is false.
+  """
+  def format_date(date, opts \\ []) do
+    format = Keyword.get(opts, :format, "%B %d, %Y")
+    relative = Keyword.get(opts, :relative, false)
+    cutoff = Keyword.get(opts, :cutoff_in_days, nil)
+    short = Keyword.get(opts, :short, false)
+
+    if relative do
+      time_ago(date, cutoff_in_days: cutoff, short: short, format: format)
+    else
+      format_date_with_ordinal(date, format)
+    end
+  end
+
+  @doc """
   Calendar.strftime with support for custom %o format for ordinal day.
   This function formats a date according to the given format string, allowing
   for a custom %o format that returns the day of the month with an ordinal suffix
@@ -156,6 +188,7 @@ defmodule Site.Support do
   | 365 days and above            | "1 year ago" ... "N years ago"
 
   ## Options
+
   - `:cutoff_in_days` - If provided, and the difference exceeds this number of days,
     the original datetime will be returned instead of a relative time string.
   - `short` - If true, use a shorter format for the relative time string. E.g.,

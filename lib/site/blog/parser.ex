@@ -7,7 +7,7 @@ defmodule Site.Blog.Parser do
     {%{} = attrs, _} = Code.eval_string(header, [])
 
     options = [
-      # syntax_highlight: [formatter: {:html_inline, theme: SyntaxTheme.umbra_theme()}],
+      syntax_highlight: [formatter: {:html_inline, theme: "neovim_dark"}],
       render: [
         unsafe: true,
         escape: false,

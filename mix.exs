@@ -36,8 +36,8 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.0"},
-      {:phoenix_live_view, "~> 1.1.8"},
+      {:phoenix, "~> 1.8.1"},
+      {:phoenix_live_view, "~> 1.1.13"},
       {:phoenix_ecto, "~> 4.6"},
       {:phoenix_html, "~> 4.2"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
@@ -59,7 +59,7 @@ defmodule Site.MixProject do
       {:telemetry_poller, "~> 1.1"},
 
       # i18n
-      {:gettext, "~> 0.26"},
+      {:gettext, "~> 1.0"},
 
       # Caching
       {:nebulex, "~> 2.6"},
@@ -78,7 +78,7 @@ defmodule Site.MixProject do
       # {:image, "~> 0.56"},
 
       # Content
-      {:mdex, "~> 0.8"},
+      {:mdex, "~> 0.9"},
       {:nimble_publisher, "~> 1.1"},
       # {:phoenix_seo, "~> 0.1"},
       # {:atomex, "~> 0.5"},
@@ -87,21 +87,21 @@ defmodule Site.MixProject do
       {:bun, "~> 1.5", runtime: Mix.env() == :dev},
       {:heroicons,
        github: "tailwindlabs/heroicons",
-       tag: "v2.1.5",
+       tag: "v2.2.0",
        sparse: "optimized",
        app: false,
        compile: false,
        depth: 1},
       {:lucide_icons,
        github: "lucide-icons/lucide",
-       tag: "0.487.0",
+       tag: "0.544.0",
        sparse: "icons",
        app: false,
        compile: false,
        depth: 1},
       {:simple_icons,
        github: "simple-icons/simple-icons",
-       tag: "14.12.1",
+       tag: "15.16.0",
        sparse: "icons",
        app: false,
        compile: false,

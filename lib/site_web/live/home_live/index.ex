@@ -5,7 +5,6 @@ defmodule SiteWeb.HomeLive.Index do
   alias Site.Services
   alias Site.Services.MusicTrack
 
-  alias SiteWeb.SiteComponents
   alias SiteWeb.HomeLive.Components
 
   @refresh_interval 10_000
@@ -77,7 +76,7 @@ defmodule SiteWeb.HomeLive.Index do
             id="bento-grid"
             class="relative grid grid-cols-2 md:grid-cols-4 auto-rows-[minmax(0,4fr)] gap-4 scroll-my-24"
           >
-            <SiteComponents.bento_card
+            <Components.bento_card
               navigate={~p"/articles"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-file-text"
@@ -88,17 +87,17 @@ defmodule SiteWeb.HomeLive.Index do
                   {"#{@post_count} #{ngettext("Article", "Articles", @post_count)}"}
                 </div>
               </div>
-            </SiteComponents.bento_card>
+            </Components.bento_card>
 
-            <SiteComponents.bento_card
+            <Components.bento_card
               navigate={~p"/music"}
               class="col-span-1 row-span-1"
               icon="lucide-music"
             >
               <Components.now_playing track={@track} />
-            </SiteComponents.bento_card>
+            </Components.bento_card>
 
-            <SiteComponents.bento_card
+            <Components.bento_card
               navigate={~p"/books"}
               class="col-span-1 row-span-1"
               icon="lucide-library"
@@ -109,9 +108,9 @@ defmodule SiteWeb.HomeLive.Index do
                   {"#{@reading_count} #{ngettext("Book", "Books", @reading_count)}"}
                 </div>
               </div>
-            </SiteComponents.bento_card>
+            </Components.bento_card>
 
-            <SiteComponents.bento_card
+            <Components.bento_card
               navigate={~p"/updates"}
               class="col-span-1 row-span-1"
               icon="lucide-history"
@@ -139,29 +138,29 @@ defmodule SiteWeb.HomeLive.Index do
                   <% end %>
                 </div>
               </div>
-            </SiteComponents.bento_card>
+            </Components.bento_card>
           </div>
 
           <section :if={@posts != []}>
-            <SiteComponents.home_section_title
+            <Components.home_section_title
               icon="lucide-newspaper"
               highlight
               highlight_class="bg-primary"
             >
               Featured Articles
-            </SiteComponents.home_section_title>
-            <SiteComponents.featured_posts posts={@posts} />
+            </Components.home_section_title>
+            <Components.featured_posts posts={@posts} />
           </section>
 
           <section :if={@skeets != []}>
-            <SiteComponents.home_section_title
+            <Components.home_section_title
               icon="lucide-origami"
               highlight
               highlight_class="bg-secondary"
             >
               Bluesky Updates
-            </SiteComponents.home_section_title>
-            <SiteComponents.social_feed_posts posts={@skeets} />
+            </Components.home_section_title>
+            <Components.social_feed_posts posts={@skeets} />
           </section>
         </div>
       </Layouts.page_content>

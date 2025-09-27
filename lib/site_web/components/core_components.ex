@@ -99,6 +99,8 @@ defmodule SiteWeb.CoreComponents do
   It is possible to swipe through the cards using the navigation buttons.
   """
 
+  # TODO: Add autoplay functionality
+
   attr :items, :list, default: []
   attr :class, :any, default: nil
 
@@ -1456,6 +1458,27 @@ defmodule SiteWeb.CoreComponents do
   end
 
   defp picture_srcset(srcset, _src, _ext), do: srcset
+
+  @doc """
+  Renders a date/datetime as a formatted string.
+  """
+
+  attr :date, :string, required: true
+  attr :format, :string, default: "%B %o, %Y"
+  attr :class, :any, default: nil
+
+  def date(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :formatted_date,
+        Support.format_date_with_ordinal(assigns.date, assigns.format)
+      )
+
+    ~H"""
+    <time datetime={@date} class={@class}>{@formatted_date}</time>
+    """
+  end
 
   @doc """
   Renders a date as a relative time string.

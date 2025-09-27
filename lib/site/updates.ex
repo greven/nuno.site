@@ -6,9 +6,7 @@ defmodule Site.Updates do
 
   use Nebulex.Caching
 
-  # TODO: Change back to 15 days
-  # @recent_threshold_days 15
-  @recent_threshold_days 365
+  @recent_threshold_days 30
   @recent_date_threshold_ms :timer.hours(24) * @recent_threshold_days
 
   @bluesky_handle "nuno.site"
