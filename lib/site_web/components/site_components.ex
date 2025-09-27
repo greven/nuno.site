@@ -30,7 +30,7 @@ defmodule SiteWeb.SiteComponents do
           <div
             :if={@highlight}
             class={[
-              "absolute inset-0 w-full opacity-10",
+              "absolute bottom-1 left-0 right-0 top-2/3 opacity-15 dark:opacity-25 -z-1",
               @highlight_class
             ]}
           >
@@ -104,8 +104,14 @@ defmodule SiteWeb.SiteComponents do
   def social_feed_posts(assigns) do
     ~H"""
     <div class={@class}>
-      <.card_stack id="social-feed-stack" class="w-full">
-        <%!-- shadow-custom absolute top-2 left-1/2 z-10 flex h-[148px] w-[284px] -translate-x-1/2 items-center justify-center gap-4 rounded-xl border border-white bg-gray-100 p-1 sm:h-[196px] sm:w-[480px] dark:border-gray-300 dark:bg-gray-100 --%>
+      <.card_stack
+        id="social-feed-stack"
+        class="w-full"
+        items={@posts}
+        container_class="w-full h-[196px] md:w-[512px] lg:w-[564px] lg:h-[200px]"
+        show_nav
+        autoplay
+      >
         <.card
           :for={post <- @posts}
           class="absolute inset-0"
@@ -113,17 +119,50 @@ defmodule SiteWeb.SiteComponents do
           border="border border-surface-30 border-solid hover:border-surface-40 transition-colors"
           shadow="shadow-sm"
         >
-          <div class="flex items-center gap-3">
+          <div class="h-full flex items-start gap-3">
             <.image
               src={post.avatar_url}
-              width={40}
-              height={40}
+              width={38}
+              height={38}
               alt="Bluesky Profile Picture"
-              class="bg-white/80 p-[1px] rounded-full shadow-sm shadow-neutral-800/10 dark:bg-neutral-800/90"
+              class="border border-border rounded-full shadow-sm shadow-neutral-800/10"
             />
-            <a href={post.url} class="text-sm md:text-base">{post.created_at}</a>
+
+            <div class="h-full flex flex-col gap-1.5">
+              <%!-- Meta --%>
+              <a href={post.url} class="text-sm">
+                <span class="text-content-10 font-medium">{post.author_name}</span>
+                <span class="hidden md:inline-block text-content-40">@{post.author_handle}</span>
+                <span class="mx-0.5 text-content-40/50">·</span>
+                <.relative_time date={post.created_at} class="text-content-40" />
+              </a>
+
+              <%!-- Body --%>
+              <div class="h-full flex flex-col justify-between">
+                <div class="text-sm/6 text-content-40 line-clamp-4 lg:line-clamp-5">
+                  {post.text}
+                </div>
+
+                <%!-- Footer --%>
+                <div class="mt-1 flex gap-8 text-xs text-content-40/80">
+                  <span class="flex items-center gap-1.5">
+                    <.icon name="lucide-message-square" class="size-4 text-content-40/70" />
+                    <span class="">{post.reply_count}</span>
+                  </span>
+
+                  <span class="flex items-center gap-1.5">
+                    <.icon name="lucide-repeat" class="size-4 text-content-40/70" />
+                    <span class="">{post.repost_count}</span>
+                  </span>
+
+                  <span class="flex items-center gap-1.5">
+                    <.icon name="lucide-heart" class="size-4 text-content-40/70" />
+                    <span class="">{post.like_count}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="text-sm md:text-base text-content-40 line-clamp-4">{post.text}</div>
         </.card>
       </.card_stack>
     </div>

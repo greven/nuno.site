@@ -43,7 +43,10 @@ defmodule SiteWeb.CoreComponents do
 
   attr :tag, :string, default: "div"
   attr :class, :any, default: nil
-  attr :content_class, :any, default: "group/card isolate relative h-full flex flex-col gap-3"
+
+  attr :content_class, :any,
+    default: "group/card isolate relative h-full flex flex-col gap-3 overflow-hidden"
+
   attr :bg, :string, default: "bg-surface-10/80 hover:bg-surface-10"
   attr :padding, :string, default: "p-4"
 
@@ -65,6 +68,7 @@ defmodule SiteWeb.CoreComponents do
           padding={@padding}
           shadow={@shadow}
           class={@content_class}
+          data-part="card"
         >
           <.link class={["absolute inset-0 z-10", @radius]} {@rest}></.link>
           {render_slot(@inner_block)}
@@ -81,6 +85,7 @@ defmodule SiteWeb.CoreComponents do
           padding={@padding}
           shadow={@shadow}
           class={@content_class}
+          data-part="card"
         >
           {render_slot(@inner_block)}
         </.box>
@@ -91,10 +96,10 @@ defmodule SiteWeb.CoreComponents do
 
   @doc """
   Renders a card stack container that stacks cards on top of each other.
-  It is possible to swipe through the cards using touch gestures, mouse drag,
-  keyboard arrow keys or the provided navigation buttons.
+  It is possible to swipe through the cards using the navigation buttons.
   """
 
+  attr :items, :list, default: []
   attr :class, :any, default: nil
 
   attr :container_class, :string,
@@ -102,19 +107,49 @@ defmodule SiteWeb.CoreComponents do
 
   attr :max_stack, :integer, default: 3
   attr :show_nav, :boolean, default: false
-  attr :cycle, :boolean, default: false
+  attr :autoplay, :boolean, default: false
+  attr :duration, :integer, default: 5_000
   attr :rest, :global
+
   slot :inner_block, required: true
 
   def card_stack(assigns) do
     ~H"""
-    <div class={@class} phx-hook="CardStack" {@rest} data-show-nav={@show_nav} data-cycle={@cycle}>
-      <div class="flex flex-col items-center justify-center gap-8">
+    <div
+      class={@class}
+      phx-hook="CardStack"
+      {@rest}
+      data-max-stack={@max_stack}
+      data-show-nav={@show_nav}
+      data-autoplay={@autoplay}
+      data-duration={@duration}
+      data-part="card-stack"
+    >
+      <div class="flex flex-col items-center justify-center gap-10">
         <div
           class={["relative isolate will-change-transform", @container_class]}
           data-part="card-container"
         >
           {render_slot(@inner_block)}
+        </div>
+
+        <%!-- Nav Buttons --%>
+        <div :if={@show_nav} class="flex gap-2">
+          <button
+            :for={index <- 1..min(length(@items), @max_stack)}
+            type="button"
+            data-part="nav-button"
+            data-index={index - 1}
+            aria-currrent={index == 1}
+            aria-label={"View Card #{index}"}
+            class="group relative h-4 w-6 cursor-pointer"
+          >
+            <div class={[
+              "h-1 w-6 overflow-hidden rounded-full bg-surface-40 transition-colors duration-150 ease-out",
+              "group-hover:bg-content-10 group-aria-[current]:bg-content-20"
+            ]}>
+            </div>
+          </button>
         </div>
       </div>
     </div>
@@ -1427,15 +1462,19 @@ defmodule SiteWeb.CoreComponents do
   """
 
   attr :date, :string, required: true
+  attr :cutoff_in_days, :integer, default: nil
+  attr :short, :boolean, default: false
   attr :format, :string, default: "%B %o, %Y"
   attr :class, :any, default: nil
 
-  def relative_time(%{date: date, format: format} = assigns) do
+  def relative_time(assigns) do
+    %{date: date, cutoff_in_days: cutoff, short: short, format: format} = assigns
+
     assigns =
       assign(
         assigns,
         :date,
-        case Support.time_ago(date) do
+        case Support.time_ago(date, cutoff_in_days: cutoff, short: short) do
           %NaiveDateTime{} = datetime -> Support.format_date_with_ordinal(datetime, format)
           relative_date -> relative_date
         end

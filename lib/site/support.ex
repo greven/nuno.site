@@ -3,6 +3,8 @@ defmodule Site.Support do
   General utilities and helper functions.
   """
 
+  use Gettext, backend: SiteWeb.Gettext
+
   ## Strings
 
   @doc """
@@ -90,10 +92,6 @@ defmodule Site.Support do
 
   ## Calendar, Dates and Time
 
-  @min_in_seconds 60
-  @hour_in_seconds 3600
-  @day_in_seconds 86400
-
   @doc """
   Calendar.strftime with support for custom %o format for ordinal day.
   This function formats a date according to the given format string, allowing
@@ -135,84 +133,152 @@ defmodule Site.Support do
   end
 
   @doc """
+  Relative time humanized text format given a `Date`, `DateTime` or `NaiveDateTime`.
+
   Returns the time difference in words between the current time and the given datetime
-  in text format, e.g. "5 minutes ago", "1 day ago", "3 hours ago", etc. The cutoff
-  is 2 days, so anything older than that will just return the datetime.
+  in text format, e.g. "5 minutes ago", "1 day ago", "3 hours ago", etc.
 
-  ## Examples
+  If a Date is provided, it is assumed to be at midnight UTC of that date.
 
-      iex> Site.Support.time_ago(~U[2025-04-12 17:58:46.503610Z])
-      "3 minutes ago"
+  | Range                         | Output
+  ------------------------------------------------------------------------------
+  | 0 seconds                     | "now"
+  | 1 to 59 seconds               | "1 second ago" ... "59 seconds ago"
+  | 60 to 119 seconds             | "1 minute ago"
+  | 120 seconds to 59 minutes     | "2 minutes ago" ... "59 minutes ago"
+  | 60 to 119 minutes             | "1 hour ago"
+  | 120 minutes to 23 hours       | "2 hours ago" ... "23 hours ago"
+  | 24 to 47 hours                | "1 day ago"
+  | 48 hours to 6 days            | "2 days ago" ... "6 days ago"
+  | 7 to 13 days                  | "1 week ago"
+  | 14 to 27 days                 | "2 weeks ago" ... "3 weeks ago"
+  | 28 days to 364 days           | "1 month ago" ... "11 months ago"
+  | 365 days and above            | "1 year ago" ... "N years ago"
 
-      iex> Site.Support.time_ago(~U[2025-04-11 17:58:46.503610Z])
-      "1 day ago"
+  ## Options
+  - `:cutoff_in_days` - If provided, and the difference exceeds this number of days,
+    the original datetime will be returned instead of a relative time string.
+  - `short` - If true, use a shorter format for the relative time string. E.g.,
+    "5m ago" instead of "5 minutes ago", "1d ago" instead of "1 day ago", etc.
+  - `format` - The format to use when returning the original datetime.
   """
 
-  def time_ago(%Date{} = date) do
+  @min_in_seconds 60
+  @hour_in_seconds 60 * @min_in_seconds
+  @day_in_seconds 24 * @hour_in_seconds
+  @week_in_seconds 7 * @day_in_seconds
+  @month_in_seconds 30 * @day_in_seconds
+  @year_in_seconds 365 * @day_in_seconds
+
+  def time_ago(date, options \\ [])
+
+  def time_ago(%Date{} = date, options) do
     date
     |> NaiveDateTime.new!(~T[00:00:00])
-    |> time_ago()
+    |> time_ago(options)
   end
 
-  def time_ago(%DateTime{} = datetime) do
-    datetime
-    |> DateTime.to_naive()
-    |> time_ago()
-  end
+  def time_ago(%DateTime{} = datetime, options) do
+    cutoff = Keyword.get(options, :cutoff_in_days, nil)
+    format = Keyword.get(options, :format, "%b %d, %Y")
 
-  def time_ago(%NaiveDateTime{} = datetime) do
-    diff = NaiveDateTime.diff(NaiveDateTime.utc_now(), datetime, :second)
-
-    cond do
-      diff < @min_in_seconds -> seconds_ago(diff)
-      diff < @hour_in_seconds -> minutes_ago(diff)
-      diff < @day_in_seconds -> hours_ago(diff)
-      diff < 2 * @day_in_seconds -> days_ago(diff)
-      diff < 14 * @day_in_seconds -> weeks_ago(diff)
-      true -> datetime
+    if cutoff && DateTime.diff(DateTime.utc_now(), datetime, :day) >= cutoff do
+      Calendar.strftime(datetime, format)
+    else
+      datetime
+      |> DateTime.to_naive()
+      |> time_ago(options)
     end
   end
 
-  defp seconds_ago(seconds) do
-    case seconds do
-      1 -> "1 second ago"
-      _ -> "#{seconds} seconds ago"
+  def time_ago(%NaiveDateTime{} = datetime, options) do
+    cutoff = Keyword.get(options, :cutoff_in_days, nil)
+    format = Keyword.get(options, :format, "%b %d, %Y")
+    short = Keyword.get(options, :short, false)
+
+    if cutoff && NaiveDateTime.diff(NaiveDateTime.utc_now(), datetime, :day) >= cutoff do
+      Calendar.strftime(datetime, format)
+    else
+      diff = NaiveDateTime.diff(NaiveDateTime.utc_now(), datetime, :second)
+
+      cond do
+        diff <= 0 -> "now"
+        diff < @min_in_seconds -> seconds_ago(diff, short)
+        diff < @hour_in_seconds -> minutes_ago(diff, short)
+        diff < @day_in_seconds -> hours_ago(diff, short)
+        diff < @week_in_seconds -> days_ago(diff, short)
+        diff < @month_in_seconds -> weeks_ago(diff, short)
+        diff < @year_in_seconds -> months_ago(diff, short)
+        true -> years_ago(diff, short)
+      end
     end
   end
 
-  defp minutes_ago(seconds) do
+  defp seconds_ago(seconds, true) do
+    ngettext("%{seconds}s ago", "%{seconds}s ago", seconds, seconds: seconds)
+  end
+
+  defp seconds_ago(seconds, false) do
+    ngettext("%{seconds} second ago", "%{seconds} seconds ago", seconds, seconds: seconds)
+  end
+
+  defp minutes_ago(seconds, true) do
     minutes = div(seconds, @min_in_seconds)
-
-    case minutes do
-      1 -> "1 minute ago"
-      _ -> "#{minutes} minutes ago"
-    end
+    ngettext("%{minutes}m ago", "%{minutes}m ago", minutes, minutes: minutes)
   end
 
-  defp hours_ago(seconds) do
+  defp minutes_ago(seconds, false) do
+    minutes = div(seconds, @min_in_seconds)
+    ngettext("%{minutes} minute ago", "%{minutes} minutes ago", minutes, minutes: minutes)
+  end
+
+  defp hours_ago(seconds, true) do
     hours = div(seconds, @hour_in_seconds)
-
-    case hours do
-      1 -> "1 hour ago"
-      _ -> "#{hours} hours ago"
-    end
+    ngettext("%{hours}h ago", "%{hours}h ago", hours, hours: hours)
   end
 
-  defp days_ago(seconds) do
+  defp hours_ago(seconds, false) do
+    hours = div(seconds, @hour_in_seconds)
+    ngettext("%{hours} hour ago", "%{hours} hours ago", hours, hours: hours)
+  end
+
+  defp days_ago(seconds, true) do
     days = div(seconds, @day_in_seconds)
-
-    case days do
-      1 -> "1 day ago"
-      _ -> "#{days} days ago"
-    end
+    ngettext("%{days}d ago", "%{days}d ago", days, days: days)
   end
 
-  defp weeks_ago(seconds) do
-    weeks = div(seconds, 7 * @day_in_seconds)
+  defp days_ago(seconds, false) do
+    days = div(seconds, @day_in_seconds)
+    ngettext("%{days} day ago", "%{days} days ago", days, days: days)
+  end
 
-    case weeks do
-      1 -> "1 week ago"
-      _ -> "#{weeks} weeks ago"
-    end
+  defp weeks_ago(seconds, true) do
+    weeks = div(seconds, @week_in_seconds)
+    ngettext("%{weeks}w ago", "%{weeks}w ago", weeks, weeks: weeks)
+  end
+
+  defp weeks_ago(seconds, false) do
+    weeks = div(seconds, @week_in_seconds)
+    ngettext("%{weeks} week ago", "%{weeks} weeks ago", weeks, weeks: weeks)
+  end
+
+  defp months_ago(seconds, true) do
+    months = div(seconds, @day_in_seconds * 30)
+    ngettext("%{months}mo ago", "%{months}mo ago", months, months: months)
+  end
+
+  defp months_ago(seconds, false) do
+    months = div(seconds, @day_in_seconds * 30)
+    ngettext("%{months} month ago", "%{months} months ago", months, months: months)
+  end
+
+  defp years_ago(seconds, true) do
+    years = div(seconds, @day_in_seconds * 365)
+    ngettext("%{years}y ago", "%{years}y ago", years, years: years)
+  end
+
+  defp years_ago(seconds, false) do
+    years = div(seconds, @day_in_seconds * 365)
+    ngettext("%{years} year ago", "%{years} years ago", years, years: years)
   end
 end
