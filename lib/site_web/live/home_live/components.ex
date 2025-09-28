@@ -21,7 +21,7 @@ defmodule SiteWeb.HomeLive.Components do
       shadow="hover:shadow-drop shadow-primary/15 dark:shadow-primary/20"
       {@rest}
     >
-      <SiteComponents.card_pattern />
+      <.diagonal_pattern />
 
       <div class={["h-full p-1", @content_class]}>
         <.icon name={@icon} class={@icon_class} />

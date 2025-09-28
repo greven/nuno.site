@@ -9,41 +9,6 @@ defmodule SiteWeb.SiteComponents do
 
   alias Site.Support
 
-  @doc """
-  Render a patterned background for cards.
-  """
-
-  attr :hover_transition, :boolean, default: true
-
-  def card_pattern(assigns) do
-    assigns =
-      assigns
-      |> assign(:svg_id, SiteWeb.Helpers.use_id())
-
-    ~H"""
-    <div class={["absolute inset-0 border-1 border-surface-10 rounded-lg z-1"]}>
-      <svg class={[
-        "absolute inset-0 size-full text-content-40/70 rounded-lg opacity-20 pointer-events-none select-none transition-opacity duration-150z",
-        "[mask-image:linear-gradient(to_left,_#ffffffad,_transparent)]",
-        @hover_transition && "group-hover/card:text-primary group-hover/card:opacity-40"
-      ]}>
-        <defs>
-          <pattern
-            id={@svg_id}
-            width="4"
-            height="4"
-            patternUnits="userSpaceOnUse"
-            patternTransform="rotate(45)"
-          >
-            <line x1="0" y1="0" x2="0" y2="4" stroke="currentColor" stroke-width="1.5"></line>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill={"url(##{@svg_id})"}></rect>
-      </svg>
-    </div>
-    """
-  end
-
   @doc false
 
   attr :class, :string, default: nil

@@ -557,7 +557,7 @@ defmodule SiteWeb.BlogComponents do
       shadow="shadow-xs"
       {@rest}
     >
-      <SiteComponents.card_pattern hover_transition={false} />
+      <.diagonal_pattern hover_transition={false} />
 
       <div class={["w-full flex flex-col gap-0.5", @dir == :next && "text-right"]}>
         <div class={["flex items-center gap-1", @dir == :next && "justify-end"]}>
@@ -598,7 +598,7 @@ defmodule SiteWeb.BlogComponents do
       shadow="shadow-none"
       bg="bg-surface-10/50"
     >
-      <SiteComponents.card_pattern hover_transition={false} />
+      <.diagonal_pattern hover_transition={false} />
       <div class="flex items-center justify-center text-content-40/50">
         <%= if @dir == :prev do %>
           <div class="font-headings font-medium text-sm md:text-base line-clamp-1">
