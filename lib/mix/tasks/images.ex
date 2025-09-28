@@ -43,7 +43,9 @@ defmodule Mix.Tasks.Images do
   end
 
   defp create_blur_placeholder(image) do
-    blur_cmd = "magick #{image} -resize 20x20 -blur 0x8 #{Path.rootname(image)}_blur.jpg"
+    blur_cmd =
+      "magick #{image} -resize 1% -gaussian-blur 0.05 -resize 1000% -quality 10 #{Path.rootname(image)}_blur.jpg"
+
     System.cmd("sh", ["-c", blur_cmd])
   end
 end
