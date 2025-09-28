@@ -24,9 +24,10 @@ defmodule Mix.Tasks.Images do
     # Get all images in the directory
     images = Path.wildcard("#{directory}/**/*.{jpg,jpeg,png,gif}")
 
-    # Optimize each image
+    # Process each image
     Enum.each(images, fn image ->
       optimize_image(image)
+      create_blur_placeholder(image)
     end)
 
     Mix.shell().info("Images optimized successfully.")
@@ -39,5 +40,10 @@ defmodule Mix.Tasks.Images do
 
     System.cmd("sh", ["-c", pngquant_cmd])
     System.cmd("sh", ["-c", webp_cmd])
+  end
+
+  defp create_blur_placeholder(image) do
+    blur_cmd = "magick #{image} -resize 20x20 -blur 0x8 #{Path.rootname(image)}_blur.jpg"
+    System.cmd("sh", ["-c", blur_cmd])
   end
 end
