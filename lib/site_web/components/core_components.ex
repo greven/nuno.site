@@ -7,7 +7,7 @@ defmodule SiteWeb.CoreComponents do
   alias Phoenix.LiveView.JS
 
   alias Site.Support
-
+  alias SiteWeb.Helpers
   alias SiteWeb.Components.Theming
 
   @button_radius "lg"
@@ -1162,6 +1162,7 @@ defmodule SiteWeb.CoreComponents do
   attr :sizes, :string, default: nil, doc: "list of sizes for the <source> tag
     if :use_picture is true and no :source slots are provided"
 
+  attr :id, :string
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(loading)
 
@@ -1171,33 +1172,40 @@ defmodule SiteWeb.CoreComponents do
     attr :sizes, :string
   end
 
-  def image(assigns) do
+  def image(%{src: src} = assigns) do
+    assigns =
+      assigns
+      |> assign_new(:id, fn -> Helpers.use_id() end)
+      |> assign_new(:blur_path, fn %{use_blur: use_blur?} ->
+        has_blur? = Site.Media.image_blur_exists?(src)
+        use_blur? && has_blur? && Site.Media.image_blur_path(src)
+      end)
+
     ~H"""
-    <%= cond do %>
-      <% @use_picture && @source != []  -> %>
-        <%= for source <- @source do %>
-          <source type={source.type} srcset={source.srcset} sizes={source.sizes} />
-          <img class={@class} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
-        <% end %>
-      <% @use_picture && @source_ext != [] -> %>
+    <%= if @use_picture && @source != [] do %>
+      <%= for source <- @source do %>
+        <source type={source.type} srcset={source.srcset} sizes={source.sizes} />
+      <% end %>
+    <% else %>
+      <%= if @use_picture && @source_ext != [] do %>
         <%= for ext <- @source_ext do %>
           <source type={"image/#{ext}"} srcset={picture_srcset(@srcset, @src, ext)} sizes={@sizes} />
-          <img class={@class} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
         <% end %>
-      <% true -> %>
-        <img
-          src={@src}
-          width={@width}
-          height={@height}
-          class={@class}
-          alt={@alt}
-          style={
-            @use_blur &&
-              "background-image: url(#{Path.rootname(@src)}_blur.jpg); background-repeat: no-repeat; background-size: cover;"
-          }
-          {@rest}
-        />
+      <% end %>
     <% end %>
+
+    <img
+      src={@src}
+      width={@width}
+      height={@height}
+      alt={@alt}
+      id={@id}
+      class={@class}
+      phx-hook="Image"
+      data-src-blur={@blur_path}
+      style="font-size: 0;"
+      {@rest}
+    />
     """
   end
 

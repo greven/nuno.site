@@ -147,7 +147,15 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <div class="slide" data-active={@active}>
       <div class="relative">
-        <.image src={@src} alt={@alt} width={@size} height={@size} data-title={@title} use_picture />
+        <.image
+          src={@src}
+          alt={@alt}
+          width={@size}
+          height={@size}
+          data-title={@title}
+          use_picture
+          use_blur
+        />
 
         <div :if={@title} class="absolute bottom-4 w-full flex items-center justify-center">
           <span class={[

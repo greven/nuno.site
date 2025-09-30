@@ -3,6 +3,7 @@ import { CardStack } from './card-stack';
 import { Dialog } from './dialog';
 import { Finder } from './finder';
 import { Hello } from './hello';
+import { Image } from './image';
 import { Layout } from './layout';
 import { PostLike } from './post-like';
 import { PostMeta } from './post-meta';
@@ -21,6 +22,7 @@ export default {
   Dialog,
   Finder,
   Hello,
+  Image,
   Layout,
   PostLike,
   PostMeta,
