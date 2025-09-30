@@ -21,14 +21,20 @@ defmodule Mix.Tasks.Images do
   end
 
   defp optimize_images(directory) do
-    # Get all images in the directory
-    images = Path.wildcard("#{directory}/**/*.{jpg,jpeg,png,gif}")
+    # Get all images in the directory (recursively)
+    images =
+      Path.wildcard("#{directory}/**/*.{jpg,jpeg,png,gif}")
+      |> Enum.reject(fn image -> Regex.match?(~r/(_blur|\.webp|\.svg)/, image) end)
 
-    # Process each image
-    Enum.each(images, fn image ->
-      optimize_image(image)
-      create_blur_placeholder(image)
-    end)
+    # Process each image (concurrently... because BEAM!!)
+    Task.async_stream(
+      images,
+      fn image ->
+        optimize_image(image)
+        create_blur_placeholder(image)
+      end
+    )
+    |> Stream.run()
 
     Mix.shell().info("Images optimized successfully.")
   end

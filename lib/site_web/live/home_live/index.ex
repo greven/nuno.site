@@ -81,12 +81,12 @@ defmodule SiteWeb.HomeLive.Index do
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-file-text"
             >
-              <div class="flex flex-col text-sm md:text-base">
-                <div class="text-content-40">Blog</div>
-                <div class="font-medium">
-                  {"#{@post_count} #{ngettext("Article", "Articles", @post_count)}"}
-                </div>
-              </div>
+              <Components.card_content loading={is_nil(@post_count)}>
+                <:label>Blog</:label>
+                <:result>
+                  {@post_count} {ngettext("Article", "Articles", @post_count)}
+                </:result>
+              </Components.card_content>
             </Components.bento_card>
 
             <Components.bento_card
@@ -102,12 +102,12 @@ defmodule SiteWeb.HomeLive.Index do
               class="col-span-1 row-span-1"
               icon="lucide-library"
             >
-              <div class="flex flex-col text-sm md:text-base">
-                <div class="text-content-40">Reading</div>
-                <div class="font-medium">
-                  {"#{@reading_count} #{ngettext("Book", "Books", @reading_count)}"}
-                </div>
-              </div>
+              <Components.async_card_content async_result={@reading_stats}>
+                <:label>Reading</:label>
+                <:result :let={result}>
+                  {result[:currently_reading]} {ngettext("Book", "Books", result[:currently_reading])}
+                </:result>
+              </Components.async_card_content>
             </Components.bento_card>
 
             <Components.bento_card
@@ -115,11 +115,11 @@ defmodule SiteWeb.HomeLive.Index do
               class="col-span-1 row-span-1"
               icon="lucide-history"
             >
-              <div class="flex flex-col text-sm md:text-base">
-                <div class="text-content-40">Recent</div>
-                <div class="font-medium">
-                  <%= if @recent_updates && @recent_updates > 0 do %>
-                    {@recent_updates} {ngettext("Update", "Updates", @recent_updates)}
+              <Components.async_card_content async_result={@recent_updates}>
+                <:label>Recent</:label>
+                <:result :let={result}>
+                  <%= if result && result > 0 do %>
+                    {result} {ngettext("Update", "Updates", result)}
                   <% else %>
                     <div class="flex items-center gap-1 text-content-40">
                       {Enum.random([
@@ -136,31 +136,23 @@ defmodule SiteWeb.HomeLive.Index do
                       <.icon name="lucide-frown" class="size-4" />
                     </div>
                   <% end %>
-                </div>
-              </div>
+                </:result>
+              </Components.async_card_content>
             </Components.bento_card>
           </div>
 
           <section :if={@posts != []}>
-            <Components.home_section_title
-              icon="lucide-newspaper"
-              highlight
-              highlight_class="bg-primary"
-            >
+            <Components.home_section_title icon="lucide-newspaper" highlight="bg-primary">
               Featured Articles
             </Components.home_section_title>
             <Components.featured_posts posts={@posts} />
           </section>
 
-          <section :if={@skeets != []}>
-            <Components.home_section_title
-              icon="lucide-origami"
-              highlight
-              highlight_class="bg-secondary"
-            >
+          <section>
+            <Components.home_section_title icon="lucide-origami" highlight="bg-secondary">
               Bluesky Updates
             </Components.home_section_title>
-            <Components.social_feed_posts posts={@skeets} />
+            <Components.social_feed_posts async={@skeets} posts={@streams.skeets} />
           </section>
         </div>
       </Layouts.page_content>
@@ -172,9 +164,6 @@ defmodule SiteWeb.HomeLive.Index do
   def mount(_params, _session, socket) do
     posts = Blog.list_featured_posts() |> Enum.take(3)
     published_posts_count = Blog.list_published_posts() |> length()
-    reading_count = Services.get_reading_stats()[:currently_reading] || 0
-    recent_updates = Site.Updates.recent_updates_count()
-    skeets = get_bluesky_posts() |> Enum.take(5)
 
     if connected?(socket) do
       Process.send_after(self(), :refresh_music, @refresh_interval)
@@ -183,11 +172,17 @@ defmodule SiteWeb.HomeLive.Index do
     socket =
       socket
       |> assign(:post_count, published_posts_count)
-      |> assign(:reading_count, reading_count)
-      |> assign(:recent_updates, recent_updates)
+      |> assign_async(:recent_updates, fn ->
+        {:ok, %{recent_updates: Site.Updates.recent_updates_count()}}
+      end)
+      |> assign_async(:reading_stats, fn ->
+        {:ok, %{reading_stats: get_reading_stats()}}
+      end)
       |> assign_async(:track, &get_currently_playing/0)
+      |> stream_configure(:skeets, dom_id: & &1.cid)
+      |> stream_async(:skeets, fn -> {:ok, get_bluesky_posts(), limit: 5} end)
 
-    {:ok, socket, temporary_assigns: [posts: posts, skeets: skeets]}
+    {:ok, socket, temporary_assigns: [posts: posts]}
   end
 
   @impl true
@@ -208,10 +203,17 @@ defmodule SiteWeb.HomeLive.Index do
     end
   end
 
-  def get_bluesky_posts do
+  defp get_bluesky_posts do
     case Services.get_latest_skeets("nuno.site") do
-      {:ok, skeets} -> skeets
-      _error -> []
+      {:ok, skeets} -> skeets |> Enum.take(5)
+      error -> error
+    end
+  end
+
+  defp get_reading_stats do
+    case Services.get_reading_stats() do
+      {:ok, stats} -> stats
+      error -> error
     end
   end
 end

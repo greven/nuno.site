@@ -13,7 +13,7 @@ defmodule SiteWeb.UpdatesLive.Index do
         <.header>
           Recent Updates
           <:subtitle>
-            Latest updates from me, articles, social media, and more.
+            Latest updates from me, articles, social media, etc.
           </:subtitle>
         </.header>
       </Layouts.page_content>

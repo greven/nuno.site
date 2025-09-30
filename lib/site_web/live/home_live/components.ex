@@ -33,14 +33,79 @@ defmodule SiteWeb.HomeLive.Components do
 
   @doc false
 
+  attr :loading, :boolean, default: false
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :label, required: true
+  slot :result, required: true
+
+  def card_content(assigns) do
+    ~H"""
+    <div class={["flex flex-col text-sm md:text-base", @class]} {@rest}>
+      <%= if @loading do %>
+        <div class="mt-1 flex flex-col gap-2">
+          <.skeleton height="20px" width="120px" />
+          <.skeleton height="18px" width="60%" />
+        </div>
+      <% else %>
+        <div class="text-content-40">{render_slot(@label)}</div>
+        <div class="font-medium">
+          {render_slot(@result)}
+        </div>
+      <% end %>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :async_result, AsyncResult, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :label, required: true
+  slot :result, required: true
+
+  def async_card_content(assigns) do
+    ~H"""
+    <div class={["flex flex-col text-sm md:text-base", @class]} {@rest}>
+      <.async_result :let={result} assign={@async_result}>
+        <:loading>
+          <div class="mt-1 flex flex-col gap-2">
+            <.skeleton height="20px" width="120px" />
+            <.skeleton height="18px" width="60%" />
+          </div>
+        </:loading>
+
+        <:failed :let={_failure}>
+          <div class="text-content-40"></div>
+          <div class="text-content-40/60">Not Available</div>
+        </:failed>
+
+        <div class="text-content-40">{render_slot(@label)}</div>
+        <div class="font-medium">
+          {render_slot(@result, result)}
+        </div>
+      </.async_result>
+    </div>
+    """
+  end
+
+  @doc false
+
   attr :class, :string, default: nil
   attr :icon, :string, default: nil
-  attr :highlight, :boolean, default: false
-  attr :highlight_class, :string, default: "bg-content-30"
+  attr :highlight, :string
   slot :inner_block, required: true
   slot :subtitle
 
   def home_section_title(assigns) do
+    assigns =
+      assign_new(assigns, :highlight_class, fn ->
+        if assigns[:highlight], do: assigns[:highlight], else: "bg-content-30"
+      end)
+
     ~H"""
     <header class={[@class, "flex flex-col items-center pb-6"]}>
       <div class="w-full flex items-center justify-center gap-2.5">
@@ -161,73 +226,111 @@ defmodule SiteWeb.HomeLive.Components do
 
   @doc false
 
-  attr :posts, :list, default: []
+  attr :async, AsyncResult, required: true
+  attr :posts, :list, required: true
   attr :class, :string, default: nil
+  attr :rest, :global
 
   def social_feed_posts(assigns) do
     ~H"""
-    <div class={@class}>
-      <.card_stack
-        id="social-feed-stack"
-        class="w-full"
-        items={@posts}
-        container_class="w-full h-[196px] md:w-[512px] lg:w-[564px] lg:h-[208px]"
-        show_nav
-        autoplay
-      >
-        <.card
-          :for={post <- @posts}
-          class="absolute inset-0"
-          bg="bg-surface-10"
-          border="border border-surface-30 border-solid hover:border-surface-40 transition-colors"
-          shadow="shadow-sm"
-        >
-          <div class="h-full flex items-start gap-3">
-            <.image
-              src={post.avatar_url}
-              width={38}
-              height={38}
-              alt="Bluesky Profile Picture"
-              class="border border-border rounded-full shadow-sm shadow-neutral-800/10"
-            />
+    <div class={@class} {@rest}>
+      <.async_result assign={@async}>
+        <:loading>
+          <div class="flex items-center justify-center">
+            <.card class="w-full h-[196px] md:w-[512px] lg:w-[564px] lg:h-[208px] animate-pulse">
+              <div class="h-full flex items-start gap-3">
+                <.skeleton height="38px" width="38px" class="rounded-full bg-surface-30" />
 
-            <div class="h-full flex flex-col gap-1.5">
-              <%!-- Meta --%>
-              <a href={post.url} class="text-sm">
-                <span class="text-content-10 font-medium">{post.author_name}</span>
-                <span class="hidden md:inline-block text-content-40">@{post.author_handle}</span>
-                <span class="mx-0.5 text-content-40/50">·</span>
-                <.relative_time date={post.created_at} class="text-content-40" />
-              </a>
+                <div class="w-full h-full flex flex-col justify-between">
+                  <div class="flex flex-col gap-2.5">
+                    <.skeleton height="16px" width="50%" />
+                    <.skeleton height="14px" width="80%" class="mt-2 bg-surface-30 rounded-xs" />
+                    <.skeleton height="14px" width="90%" />
+                    <.skeleton height="14px" width="60%" />
+                  </div>
 
-              <%!-- Body --%>
-              <div class="h-full flex flex-col justify-between">
-                <div class="text-sm/6 text-content-40 line-clamp-4 lg:line-clamp-5">
-                  {post.text}
-                </div>
-
-                <%!-- Footer --%>
-                <div class="mt-1 flex gap-8 text-xs text-content-40/80">
-                  <span class="flex items-center gap-1.5">
-                    <.icon name="lucide-message-square" class="size-4 text-content-40/70" />
-                    <span class="">{post.reply_count}</span>
-                  </span>
-
-                  <span class="flex items-center gap-1.5">
-                    <.icon name="lucide-repeat" class="size-4 text-content-40/70" />
-                    <span class="">{post.repost_count}</span>
-                  </span>
-
-                  <span class="flex items-center gap-1.5">
-                    <.icon name="lucide-heart" class="size-4 text-content-40/70" />
-                    <span class="">{post.like_count}</span>
-                  </span>
+                  <div class="flex gap-8 text-xs text-content-40/80">
+                    <.skeleton height="12px" width="20%" />
+                    <.skeleton height="12px" width="20%" />
+                    <.skeleton height="12px" width="20%" />
+                  </div>
                 </div>
               </div>
-            </div>
+            </.card>
           </div>
-        </.card>
-      </.card_stack>
+        </:loading>
+
+        <:failed :let={_failure}>
+          <div class="flex flex-col items-center justify-center h-48 md:h-52 lg:h-56 bg-surface-10 text-content-40/60">
+            <.icon name="lucide-wifi-off" class="size-6 mb-2" /> Unable to load posts
+          </div>
+        </:failed>
+
+        <%= if @posts != [] do %>
+          <.card_stack
+            id="social-feed-stack"
+            class="w-full"
+            items={@posts.inserts}
+            container_class="w-full h-[196px] md:w-[512px] lg:w-[564px] lg:h-[208px]"
+            phx-update={is_struct(@posts, Phoenix.LiveView.LiveStream) && "stream"}
+            show_nav
+            autoplay
+          >
+            <.card
+              :for={{dom_id, post} <- @posts}
+              class="absolute inset-0"
+              bg="bg-surface-10"
+              border="border border-surface-30 border-solid hover:border-surface-40 transition-colors"
+              shadow="shadow-sm"
+            >
+              <div class="h-full flex items-start gap-3">
+                <.image
+                  src={post.avatar_url}
+                  width={38}
+                  height={38}
+                  alt="Bluesky Profile Picture"
+                  class="border border-border rounded-full shadow-sm shadow-neutral-800/10"
+                />
+
+                <div class="h-full flex flex-col gap-1.5">
+                  <%!-- Meta --%>
+                  <a href={post.url} class="text-sm">
+                    <span class="text-content-10 font-medium">{post.author_name}</span>
+                    <span class="hidden md:inline-block text-content-40">@{post.author_handle}</span>
+                    <span class="mx-0.5 text-content-40/50">·</span>
+                    <.relative_time date={post.created_at} class="text-content-40" />
+                  </a>
+
+                  <%!-- Body --%>
+                  <div class="h-full flex flex-col justify-between">
+                    <div class="text-sm/6 text-content-40 line-clamp-4 lg:line-clamp-5">
+                      {post.text}
+                    </div>
+                  </div>
+
+                  <%!-- Footer --%>
+                  <div class="mt-1 flex gap-8 text-xs text-content-40/80">
+                    <span class="flex items-center gap-1.5">
+                      <.icon name="lucide-message-square" class="size-4 text-content-40/70" />
+                      <span class="">{post.reply_count}</span>
+                    </span>
+
+                    <span class="flex items-center gap-1.5">
+                      <.icon name="lucide-repeat" class="size-4 text-content-40/70" />
+                      <span class="">{post.repost_count}</span>
+                    </span>
+
+                    <span class="flex items-center gap-1.5">
+                      <.icon name="lucide-heart" class="size-4 text-content-40/70" />
+                      <span class="">{post.like_count}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </.card>
+          </.card_stack>
+        <% end %>
+      </.async_result>
     </div>
     """
   end

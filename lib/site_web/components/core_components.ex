@@ -1143,6 +1143,10 @@ defmodule SiteWeb.CoreComponents do
   attr :width, :integer, required: true
   attr :height, :integer, required: true
   # attr :use_loader, :boolean, default: true
+  attr :use_blur, :boolean,
+    default: false,
+    doc: "whether to use a blurred placeholder if available"
+
   attr :use_picture, :boolean, default: false
 
   attr :srcset, :string,
@@ -1181,7 +1185,18 @@ defmodule SiteWeb.CoreComponents do
           <img class={@class} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
         <% end %>
       <% true -> %>
-        <img class={@class} src={@src} width={@width} height={@height} alt={@alt} {@rest} />
+        <img
+          src={@src}
+          width={@width}
+          height={@height}
+          class={@class}
+          alt={@alt}
+          style={
+            @use_blur &&
+              "background-image: url(#{Path.rootname(@src)}_blur.jpg); background-repeat: no-repeat; background-size: cover;"
+          }
+          {@rest}
+        />
     <% end %>
     """
   end

@@ -72,7 +72,7 @@ defmodule SiteWeb.BooksLive.Index do
     socket =
       socket
       |> assign(:page_title, "Books")
-      |> assign_async(:stats, fn -> {:ok, %{stats: Site.Services.get_reading_stats()}} end)
+      |> assign_async(:stats, fn -> {:ok, %{stats: get_reading_stats()}} end)
       |> stream_async(:books, fn -> get_currently_reading() end)
 
     {:ok, socket}
@@ -81,6 +81,13 @@ defmodule SiteWeb.BooksLive.Index do
   defp get_currently_reading(opts \\ []) do
     case Site.Services.get_currently_reading() do
       {:ok, books} -> {:ok, Enum.sort_by(books, & &1.started_date, {:desc, Date}), opts}
+      error -> error
+    end
+  end
+
+  defp get_reading_stats do
+    case Site.Services.get_reading_stats() do
+      {:ok, stats} -> stats
       error -> error
     end
   end

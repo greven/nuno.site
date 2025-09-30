@@ -10,7 +10,7 @@ defmodule SiteWeb.ArchiveLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="flex flex-col gap-16">
-        <h2 class="text-3xl font-semibold">🚧 Work in Progress 🚧</h2>
+        <h2 class="text-3xl font-semibold">🚧 Work in Progress</h2>
         Updates per year
       </Layouts.page_content>
     </Layouts.app>

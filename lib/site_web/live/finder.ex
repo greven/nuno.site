@@ -47,7 +47,10 @@ defmodule SiteWeb.Finder do
          name: "Travel", description: "Travel log", icon: "lucide-map-pinned", push: true},
         {:nav_bookmarks,
          name: "Bookmarks", description: "My bookmarks", icon: "lucide-bookmark", push: true},
-        {:nav_stack, name: "Stack", description: "My stack", icon: "lucide-layers", push: true}
+        {:nav_stack,
+         name: "Stack", description: "My stack / tools I use", icon: "lucide-layers", push: true},
+        {:nav_updates,
+         name: "Updates", description: "My updates", icon: "lucide-history", push: true}
       ]
     }
   end
@@ -73,4 +76,5 @@ defmodule SiteWeb.Finder do
   def handle_command(:nav_travel, socket), do: push_navigate(socket, to: ~p"/travel")
   def handle_command(:nav_bookmarks, socket), do: push_navigate(socket, to: ~p"/bookmarks")
   def handle_command(:nav_stack, socket), do: push_navigate(socket, to: ~p"/stack")
+  def handle_command(:nav_updates, socket), do: push_navigate(socket, to: ~p"/updates")
 end

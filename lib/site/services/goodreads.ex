@@ -75,10 +75,12 @@ defmodule Site.Services.Goodreads do
   defp parse_reading_stats_response({:ok, body}) do
     document = LazyHTML.from_document(body)
 
-    %{
+    stats = %{
       currently_reading: parse_currently_reading(document),
       total_read: parse_total_read(document)
     }
+
+    {:ok, stats}
   end
 
   defp parse_reading_stats_response({:error, _} = error), do: error

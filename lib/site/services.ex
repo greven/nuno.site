@@ -120,16 +120,14 @@ defmodule Site.Services do
               key: :books,
               opts: [ttl: :timer.hours(12)]
             )
-  def get_currently_reading,
-    do: Goodreads.get_currently_reading()
+  def get_currently_reading, do: Goodreads.get_currently_reading()
 
   @decorate cacheable(
               cache: Site.Cache,
               key: :reading_stats,
               opts: [ttl: :timer.hours(12)]
             )
-  def get_reading_stats,
-    do: Goodreads.get_reading_stats()
+  def get_reading_stats, do: Goodreads.get_reading_stats()
 
   ## Games
 
