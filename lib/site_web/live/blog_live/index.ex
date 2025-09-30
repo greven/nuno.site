@@ -4,6 +4,7 @@ defmodule SiteWeb.BlogLive.Index do
   alias Site.Blog
 
   alias SiteWeb.BlogComponents
+  alias SiteWeb.BlogLive.Category
 
   @impl true
   def render(assigns) do
@@ -29,13 +30,15 @@ defmodule SiteWeb.BlogLive.Index do
             value={@filter_category}
           >
             <:item
-              :for={{category, icon, enabled?} <- @filter_categories}
-              value={category}
+              :for={
+                %Category{id: id, name: name, icon: icon, enabled?: enabled?} <- @filter_categories
+              }
+              value={id}
               disabled={!enabled?}
               icon={icon.name}
             >
               <div class="flex items-center gap-2">
-                <div class="capitalize">{category}</div>
+                <div class="capitalize">{name}</div>
               </div>
             </:item>
           </.segmented_control>
@@ -108,9 +111,21 @@ defmodule SiteWeb.BlogLive.Index do
 
   defp filter_categories do
     [
-      {"all", %{name: "hero-rectangle-stack", class: "text-current"}, true},
-      {"blog", %{name: "hero-newspaper", class: "text-cyan-600"}, true},
-      {"note", %{name: "hero-chat-bubble-bottom-center-text", class: "text-amber-600"}, true}
+      %Category{
+        id: "all",
+        name: "all",
+        icon: %{name: "hero-rectangle-stack", class: "text-current"}
+      },
+      %Category{
+        id: "blog",
+        name: "blog",
+        icon: %{name: "hero-newspaper", class: "text-cyan-600"}
+      },
+      %Category{
+        id: "note",
+        name: "notes",
+        icon: %{name: "hero-chat-bubble-bottom-center-text", class: "text-amber-600"}
+      }
     ]
   end
 end

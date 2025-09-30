@@ -31,7 +31,7 @@ defmodule SiteWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <div class="min-h-screen flex flex-col">
+    <div class="min-h-screen flex flex-col bg-dots">
       <.site_header
         active_link={@active_link}
         current_scope={@current_scope}
@@ -117,9 +117,8 @@ defmodule SiteWeb.Layouts do
       phx-hook="SiteHeader"
       class={[
         "relative top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
-        "bg-surface/95 border-b border-dashed border-transparent shadow-gray-900/5",
-        "supports-backdrop-filter:bg-surface/85 backdrop-blur-sm supports-backdrop-filter:blur(0)",
-        "data-scrolled:border-surface-40 data-scrolled:shadow-sm",
+        "bg-surface/40 border-b border-dashed border-transparent shadow-gray-900/5 supports-backdrop-filter:blur(0)",
+        "data-scrolled:bg-surface/95 data-scrolled:supports-backdrop-filter:bg-surface/80 data-scrolled:border-surface-40 data-scrolled:shadow-sm data-scrolled:backdrop-blur-sm",
         "print:hidden"
       ]}
       style="position:var(--header-position);height:var(--header-height);margin-bottom:var(--header-mb)"

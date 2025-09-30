@@ -59,9 +59,9 @@ export const CardStack = {
       if (offset === 0) {
         card.style.transform = 'translateY(0px) scale(1)';
         card.style.zIndex = this.totalItems;
-        card.style.opacity = '1';
         card.style.pointerEvents = 'auto';
         card.style.filter = 'brightness(100%)';
+        card.style.opacity = '1';
         return;
       }
 
@@ -70,12 +70,12 @@ export const CardStack = {
       const translateY = offset * 14;
       const zIndex = this.totalItems - offset;
       const brightness =
-        this.theme === 'light' ? Math.max(90, 100 - offset * 2) : Math.max(125, 100 + offset * 5);
+        this.theme === 'light' ? Math.max(90, 100 - offset * 2.5) : Math.max(40, 100 - offset * 5);
 
       card.style.transform = `translateY(${translateY}px) scale(${scale})`;
       card.style.zIndex = zIndex;
-      card.style.opacity = '1';
       card.style.pointerEvents = 'none';
+      card.style.opacity = '0.9';
       card.style.filter = `brightness(${brightness}%)`;
     });
   },

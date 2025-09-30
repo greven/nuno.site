@@ -23,7 +23,7 @@ defmodule SiteWeb.BlogComponents do
       class={[
         "group relative isolate flex flex-col gap-4 rounded-xl border border-transparent border-dashed md:flex-row",
         "md:gap-8 md:p-2",
-        "hover:bg-surface-20/60 hover:border-border/80"
+        "hover:bg-surface-20/60 hover:border-border/80 hover:backdrop-blur-xs"
       ]}
       {@rest}
     >

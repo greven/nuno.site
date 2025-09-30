@@ -1,17 +1,17 @@
 /* Colors */
 
 @utility text-tint-* {
-  color: color-mix(in oklch, --value(--color- *, [ *]), white calc(--modifier(integer) * 1%));
+  color: color-mix(in oklch, --value(--color-*, [*]), white calc(--modifier(integer) * 1%));
 }
 
 @utility text-shade-* {
-  color: color-mix(in oklch, --value(--color- *, [ *]), black calc(--modifier(integer) * 1%));
+  color: color-mix(in oklch, --value(--color-*, [*]), black calc(--modifier(integer) * 1%));
 }
 
 @utility bg-tint-* {
   background-color: color-mix(
     in oklch,
-    --value(--color- *, [ *]),
+    --value(--color-*, [*]),
     white calc(--modifier(integer) * 1%)
   );
 }
@@ -19,25 +19,35 @@
 @utility bg-shade-* {
   background-color: color-mix(
     in oklch,
-    --value(--color- *, [ *]),
+    --value(--color-*, [*]),
     black calc(--modifier(integer) * 1%)
   );
 }
 
 @utility border-tint-* {
-  border-color: color-mix(
-    in oklch,
-    --value(--color- *, [ *]),
-    white calc(--modifier(integer) * 1%)
-  );
+  border-color: color-mix(in oklch, --value(--color-*, [*]), white calc(--modifier(integer) * 1%));
 }
 
 @utility border-shade-* {
-  border-color: color-mix(
-    in oklch,
-    --value(--color- *, [ *]),
-    black calc(--modifier(integer) * 1%)
-  );
+  border-color: color-mix(in oklch, --value(--color-*, [*]), black calc(--modifier(integer) * 1%));
+}
+
+/* Patterns */
+
+@utility bg-dots {
+  background:
+    linear-gradient(90deg, var(--color-surface) 15px, transparent 1%) 50%,
+    linear-gradient(var(--color-surface) 15px, transparent 1%) 50%,
+    --alpha(var(--color-surface-40) / 0.95);
+  background-size: 16px 16px;
+
+  @variant dark {
+    background:
+      linear-gradient(90deg, var(--color-surface) 15px, transparent 1%) 50%,
+      linear-gradient(var(--color-surface) 15px, transparent 1%) 50%,
+      --alpha(var(--color-surface-40) / 0.6);
+    background-size: 16px 16px;
+  }
 }
 
 /* Layout */
