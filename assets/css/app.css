@@ -12,7 +12,7 @@
 @import './theme.css';
 @import './utilities.css';
 @import './prose.css';
-@import './pages.css';
+@import './custom.css';
 
 /* Plugins */
 @plugin "../vendor/heroicons";

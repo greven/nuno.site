@@ -32,7 +32,7 @@ export const Resume = {
 
   // Let's rotate the arrow based on percentage
   rotateArrow(percent) {
-    const rotation = percent * 90;
+    const rotation = percent * 120;
     this.arrow.style.transform = `rotate(${rotation}deg)`;
   },
 };

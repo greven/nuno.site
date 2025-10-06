@@ -825,6 +825,13 @@ defmodule SiteWeb.SiteComponents do
           </ul>
         </:loading>
 
+        <:failed :let={_failure}>
+          <div class="flex items-center gap-2">
+            <.icon name="hero-bolt-slash-solid" class="text-content-40/20" />
+            <div class="text-content-40/50">Failed to load playlists</div>
+          </div>
+        </:failed>
+
         <ul class="grid grid-cols-2 md:grid-cols-3 gap-2.5">
           <.playlist_item :for={{dom_id, playlist} <- @playlists} playlist={playlist} />
         </ul>
@@ -904,7 +911,7 @@ defmodule SiteWeb.SiteComponents do
             <li
               :for={{dom_id, item} <- @items}
               class={[
-                "group text-base/7 font-light transition-colors border-b-1 border-border/25",
+                "group max-h-[34px] text-base/7 font-light transition-colors border-b-1 border-border/40 overflow-hidden",
                 "md:text-lg/8 hover:marker:text-primary"
               ]}
               id={dom_id}

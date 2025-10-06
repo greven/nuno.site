@@ -62,6 +62,7 @@ export const CardStack = {
         card.style.pointerEvents = 'auto';
         card.style.filter = 'brightness(100%)';
         card.style.opacity = '1';
+        card.inert = false;
         return;
       }
 
@@ -77,6 +78,7 @@ export const CardStack = {
       card.style.pointerEvents = 'none';
       card.style.opacity = '0.9';
       card.style.filter = `brightness(${brightness}%)`;
+      card.inert = true;
     });
   },
 

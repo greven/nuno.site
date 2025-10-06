@@ -66,6 +66,10 @@
     overflow: hidden;
   }
 
+  html[data-dialog-open] body {
+    overflow: hidden;
+  }
+
   @keyframes fade-in {
     from {
       opacity: 0;
@@ -118,9 +122,13 @@
 }
 
 /* Basic view transition styles */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 300;
+::view-transition-group(root) {
+  animation-duration: 300ms;
+}
+
+/* Disable animations when theme is transitioning */
+:root[data-theme-transitioning]::view-transition-group(root) {
+  animation: none;
 }
 
 @media screen and (prefers-reduced-motion: no-preference) {

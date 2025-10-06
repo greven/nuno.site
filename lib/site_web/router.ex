@@ -64,6 +64,7 @@ defmodule SiteWeb.Router do
       live "/stack", StackLive.Index, :index
       live "/about", AboutLive.Index, :index
       live "/resume", AboutLive.Resume, :show
+      live "/startpage", StartpageLive.Index, :index
       live "/sitemap", SitemapLive.Index, :index
       live "/sink", KitchenSinkLive.Index, :index
     end

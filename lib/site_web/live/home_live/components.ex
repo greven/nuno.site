@@ -8,23 +8,59 @@ defmodule SiteWeb.HomeLive.Components do
 
   @doc false
 
-  attr :icon, :string, default: "lucide-box"
+  attr :icon, :string, default: nil
+  attr :variant, :atom, values: ~w(default static subtle)a, default: :default
+  attr :size, :atom, values: ~w(small medium)a, default: :medium
   attr :content_class, :any, default: "h-full flex flex-col justify-between gap-2"
   attr :icon_class, :string, default: "size-8 text-primary"
+  attr :class, :string, default: nil
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
   def bento_card(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:bg, fn ->
+        case assigns[:variant] do
+          :default -> "bg-surface-10/80 hover:bg-surface-10"
+          :static -> "bg-surface-10/80"
+          :subtle -> "bg-surface-10/20 hover:bg-surface-10/30"
+        end
+      end)
+      |> assign_new(:border, fn ->
+        case assigns[:variant] do
+          :default ->
+            "border border-border hover:border-solid hover:border-primary transition-colors duration-150"
+
+          :static ->
+            "border border-border"
+
+          :subtle ->
+            "border border-dashed border-border/80 hover:border-border hover:border-solid transition-colors duration-150"
+        end
+      end)
+      |> assign_new(:shadow, fn ->
+        case assigns[:variant] do
+          :default -> "hover:shadow-drop shadow-primary/15 dark:shadow-primary/20"
+          :static -> nil
+          :subtle -> "hover:shadow-xs"
+        end
+      end)
+
     ~H"""
     <.card
-      border="border border-border hover:border-solid hover:border-primary transition-colors duration-150"
-      shadow="hover:shadow-drop shadow-primary/15 dark:shadow-primary/20"
+      border={@border}
+      shadow={@shadow}
+      class={@class}
       {@rest}
     >
-      <.diagonal_pattern />
+      <.diagonal_pattern :if={@variant == :default} />
 
-      <div class={["h-full p-1", @content_class]}>
-        <.icon name={@icon} class={@icon_class} />
+      <div class={[
+        "h-full p-1",
+        if(@size == :small, do: "flex items-center justify-center gap-3", else: @content_class)
+      ]}>
+        <.icon :if={@icon} name={@icon} class={@icon_class} />
         {render_slot(@inner_block)}
       </div>
     </.card>
@@ -38,7 +74,7 @@ defmodule SiteWeb.HomeLive.Components do
   attr :rest, :global
 
   slot :label, required: true
-  slot :result, required: true
+  slot :value
 
   def card_content(assigns) do
     ~H"""
@@ -51,7 +87,7 @@ defmodule SiteWeb.HomeLive.Components do
       <% else %>
         <div class="text-content-40">{render_slot(@label)}</div>
         <div class="font-medium">
-          {render_slot(@result)}
+          {render_slot(@value)}
         </div>
       <% end %>
     </div>
@@ -205,10 +241,6 @@ defmodule SiteWeb.HomeLive.Components do
           </div>
         <% @last_played -> %>
           <div class="flex items-center gap-2">
-            <.icon
-              name="lucide-history"
-              class="size-4 text-content-40/80"
-            />
             <span :if={@last_played} class="font-medium text-content-40/80">Last Played</span>
           </div>
         <% true -> %>
@@ -384,6 +416,83 @@ defmodule SiteWeb.HomeLive.Components do
           </.card>
         <% end %>
       </ol>
+
+      <div class="mt-4 md:mt-6 text-center">
+        <.link
+          navigate={~p"/articles"}
+          class="group inline-block text-sm md:text-base font-medium link-subtle decoration-1"
+        >
+          View all articles
+          <.icon
+            name="lucide-arrow-right"
+            class="size-4 ml-1 inline-block text-primary duration-200 group-hover:transform group-hover:translate-x-0.5 transition-transform"
+          />
+        </.link>
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  def theme_switcher(assigns) do
+    ~H"""
+    <button
+      id="theme-switcher"
+      class="theme-switcher"
+      type="button"
+      title="Toggle theme"
+      aria-label="Toggle theme"
+      phx-hook="ThemeSwitcher"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle id="theme-switcher-sun" cx="12" cy="12" r="4" fill="currentColor" />
+        <g id="theme-switcher-rays" stroke="currentColor">
+          <path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+        </g>
+
+        <path
+          id="theme-switcher-moon"
+          fill="currentColor"
+          d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"
+        />
+      </svg>
+
+      <div class="theme-switcher-led"></div>
+    </button>
+    """
+  end
+
+  @doc """
+  A mini calendar a la iOS calendar icon.
+  """
+
+  attr :date, Date, default: Date.utc_today()
+
+  def mini_calendar(assigns) do
+    day_of_week = Date.day_of_week(assigns.date)
+    day_of_week = Enum.at(Site.Support.days_of_week_names(:en), day_of_week - 1)
+
+    assigns =
+      assigns
+      |> assign(:day, Date.utc_today().day)
+      |> assign(:day_of_week, String.slice(day_of_week, 0..2))
+
+    ~H"""
+    <div class="flex flex-col items-center">
+      <div class="font-mono text-primary">{@day_of_week}</div>
+      <div class="font-medium text-content-10 text-4xl">
+        {@day}
+      </div>
     </div>
     """
   end

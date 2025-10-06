@@ -165,6 +165,35 @@ defmodule Site.Support do
   end
 
   @doc """
+  List days of week names in a given locale.
+  """
+  def days_of_week_names(locale \\ :en)
+
+  def days_of_week_names(:en) do
+    [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ]
+  end
+
+  def days_of_week_names(:pt) do
+    [
+      "Segunda-Feira",
+      "Terça-Feira",
+      "Quarta-Feira",
+      "Quinta-Feira",
+      "Sexta-Feira",
+      "Sábado",
+      "Domingo"
+    ]
+  end
+
+  @doc """
   Relative time humanized text format given a `Date`, `DateTime` or `NaiveDateTime`.
 
   Returns the time difference in words between the current time and the given datetime

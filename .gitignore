@@ -64,6 +64,7 @@ $RECYCLE.BIN/
 *.code-workspace
 
 # Elixir language server
+.expert
 .elixir_ls
 .elixir-tools
 .lexical

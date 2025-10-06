@@ -23,7 +23,7 @@ topbar.config({
 
 // View Transition API integration
 function supportsViewTransitions(): boolean {
-  return 'startViewTransition' in document;
+  return typeof document.startViewTransition === 'function';
 }
 
 function startViewTransition(): void {

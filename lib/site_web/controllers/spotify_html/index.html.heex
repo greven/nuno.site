@@ -4,9 +4,9 @@
   </a>
 
   <div class="mt-8 flex flex-col gap-4">
-    <a href={Site.Services.Spotify.request_authorization_url()} class="self-start btn btn-sm">
+    <.button href={Site.Services.Spotify.request_authorization_url()} class="self-start">
       Connect to Spotify
-    </a>
+    </.button>
 
     <div :if={@status} class="mt-4">
       <span class="text-lg">

@@ -15,7 +15,7 @@ defmodule SiteWeb.TravelLive.Components do
   def travel_map(assigns) do
     ~H"""
     <div class="sticky top-0 z-10">
-      <div class="breakout py-12 bg-surface"></div>
+      <div class="breakout py-12 bg-surface bg-dots"></div>
       <div
         id="travel-map"
         class="travel-map"
@@ -38,9 +38,7 @@ defmodule SiteWeb.TravelLive.Components do
           </.icon_button>
         </div>
       </div>
-      <div class="breakout py-4 md:py-8 h-full bg-linear-to-b
-            from-surface from-60% to-transparent">
-      </div>
+      <div class="py-4 md:py-6 h-full bg-linear-to-b from-surface from-60% to-transparent"></div>
     </div>
     """
   end

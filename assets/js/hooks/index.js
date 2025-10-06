@@ -14,6 +14,7 @@ import { SiteHeader } from './site-header';
 import { Spoiler } from './spoiler';
 import { Tabs } from './tabs';
 import { TheEnd } from './the-end';
+import { ThemeSwitcher } from './theme-switcher';
 import { TravelMap } from './travel-map';
 
 export default {
@@ -33,5 +34,6 @@ export default {
   Spoiler,
   Tabs,
   TheEnd,
+  ThemeSwitcher,
   TravelMap,
 };

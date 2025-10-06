@@ -1,5 +1,5 @@
 export const morphdomOptions = {
-  onBeforeElUpdated(from: HTMLElement, to: HTMLElement) {
+  onBeforeElUpdated(from: Element, to: Element) {
     // Keep element attributes starting with data-js-* which we set on the client.
     for (const attr of from.attributes) {
       if (attr.name.startsWith('data-js-')) {

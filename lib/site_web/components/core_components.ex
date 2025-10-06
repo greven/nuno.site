@@ -31,12 +31,22 @@ defmodule SiteWeb.CoreComponents do
   attr :shadow, :string, default: "shadow-xs", doc: "the shadow class of the box"
   attr :radius, :string, default: "rounded-lg", doc: "the border radius of the box"
   attr :padding, :string, default: "p-4", doc: "the padding of the box"
+
+  attr :focus, :string,
+    default:
+      "has-focus-visible:outline-1 has-focus-visible:-outline-offset-1 has-focus-visible:outline-primary **:outline-none",
+    doc: "the focus classes to apply to the box element"
+
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the box"
   slot :inner_block, required: true
 
   def box(assigns) do
     ~H"""
-    <.dynamic_tag tag_name={@tag} class={[@class, @bg, @border, @shadow, @radius, @padding]} {@rest}>
+    <.dynamic_tag
+      tag_name={@tag}
+      class={[@class, @bg, @border, @shadow, @radius, @padding, @focus]}
+      {@rest}
+    >
       {render_slot(@inner_block)}
     </.dynamic_tag>
     """
@@ -63,7 +73,7 @@ defmodule SiteWeb.CoreComponents do
   def card(%{rest: rest} = assigns) do
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
-      <.dynamic_tag tag_name={@tag} class={["isolate", @class]}>
+      <.dynamic_tag tag_name={@tag} class={["isolate", @class, @radius]}>
         <.box
           bg={@bg}
           border={@border}
@@ -73,7 +83,11 @@ defmodule SiteWeb.CoreComponents do
           class={@content_class}
           data-part="card"
         >
-          <.link class={["absolute inset-0 z-10", @radius]} {@rest}></.link>
+          <.link
+            class={["absolute inset-0 z-10 outline-none", @radius]}
+            {@rest}
+          >
+          </.link>
           {render_slot(@inner_block)}
         </.box>
       </.dynamic_tag>
@@ -1064,8 +1078,8 @@ defmodule SiteWeb.CoreComponents do
         >
           <div
             class={[
-              "absolute bottom-0 left-0 right-0 h-6 z-1 bg-surface/85 mask-t-from-25%",
-              @open && "opacity-0"
+              "absolute bottom-0 left-0 right-0 h-7 z-1 bg-surface/85 mask-t-from-50%",
+              @open && "hidden"
             ]}
             data-part="spoiler-overlay"
           >

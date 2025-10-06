@@ -14,7 +14,7 @@
     <script type="text/javascript">
       // System theme
       (() => {
-        const storageKey = "phx:theme";
+        const THEME_KEY = "phx:theme";
         const getSystemTheme = () => {
           return window.matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
@@ -22,39 +22,32 @@
         };
         const setTheme = (theme) => {
           if (theme === "system") {
-            localStorage.removeItem(storageKey);
+            localStorage.removeItem(THEME_KEY);
             document.documentElement.setAttribute("data-theme", getSystemTheme());
             document.documentElement.setAttribute("data-theme-mode", "system");
           } else {
-            localStorage.setItem(storageKey, theme);
+            localStorage.setItem(THEME_KEY, theme);
             document.documentElement.setAttribute("data-theme", theme);
             document.documentElement.setAttribute("data-theme-mode", "user");
           }
         };
+        const supportsViewTransitions = () => {
+          return typeof document.startViewTransition === "function";
+        }
 
-        setTheme(localStorage.getItem(storageKey) || "system");
+        setTheme(localStorage.getItem(THEME_KEY) || "system");
 
-        window.addEventListener(
-          "storage",
-          (e) => e.key === storageKey && document.startViewTransition(() => {
-            setTheme(e.newValue || "system");
-          }));
-
+        window.addEventListener("storage", (e) => { e.key === THEME_KEY && setTheme(e.newValue || "system"); });
         window.addEventListener("phx:set-theme", ({ detail: { theme } }) => {
-          document.startViewTransition(() => {
+          if (supportsViewTransitions()) {
+            document.startViewTransition(() => {
+              setTheme(theme);
+            });
+          } else {
             setTheme(theme);
-          });
+          }
         });
 
-        window
-          .matchMedia("(prefers-color-scheme: dark)")
-          .addEventListener("change", (e) => {
-            if (!localStorage.getItem(storageKey)) {
-              document.startViewTransition(() => {
-                setTheme("system");
-              });
-            }
-          });
       })();
 
       // OS Detection

@@ -102,8 +102,8 @@ defmodule SiteWeb.AboutLive.Index do
           <.button navigate={~p"/resume"} variant="light" class="group mt-8">
             Full Resume
             <.icon
-              name="hero-arrow-right-mini"
-              class="size-5 text-primary duration-200 group-hover:transform group-hover:translate-x-0.5 transition-transform"
+              name="lucide-arrow-right"
+              class="size-4 inline-block text-primary duration-200 group-hover:transform group-hover:translate-x-0.5 transition-transform"
             />
           </.button>
         </div>

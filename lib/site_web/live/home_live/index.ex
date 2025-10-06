@@ -38,7 +38,7 @@ defmodule SiteWeb.HomeLive.Index do
                   >
                     <.icon name="lucide-chevron-right" class="size-5 text-content-40/60 mr-0.5" />
                     <span
-                      class="text-neutral-500 hover:text-neutral-600 transition-colors dark:text-neutral-400 hover:dark:text-neutral-300"
+                      class="text-neutral-600 hover:text-neutral-700 transition-colors dark:text-neutral-500 hover:dark:text-neutral-400"
                       data-text="h3ll0, fr13nd!"
                     >
                     </span>
@@ -72,12 +72,10 @@ defmodule SiteWeb.HomeLive.Index do
           </div>
         </section>
 
-        <%!-- Bento Grid --%>
+        <%!-- Content --%>
         <div class="flex flex-col gap-28 last:mb-16">
-          <div
-            id="bento-grid"
-            class="relative grid grid-cols-2 md:grid-cols-4 auto-rows-[minmax(0,4fr)] gap-4 scroll-my-24"
-          >
+          <%!-- Bento Grid --%>
+          <div class="relative grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <Components.bento_card
               navigate={~p"/articles"}
               class="col-span-1 row-span-1 aspect-square"
@@ -85,61 +83,106 @@ defmodule SiteWeb.HomeLive.Index do
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>Blog</:label>
-                <:result>
+                <:value>
                   {@post_count} {ngettext("Article", "Articles", @post_count)}
-                </:result>
+                </:value>
               </Components.card_content>
             </Components.bento_card>
 
             <Components.bento_card
               navigate={~p"/music"}
-              class="col-span-1 row-span-1"
+              class="col-span-1 row-span-1 aspect-square"
               icon="lucide-music"
             >
               <Components.now_playing track={@track} />
             </Components.bento_card>
 
+            <%!-- Multi-card --%>
+            <div class="hidden col-span-1 row-span-1 aspect-square lg:grid grid-cols-2 grid-rows-2 gap-4">
+              <Components.bento_card
+                navigate={~p"/startpage"}
+                class="col-span-1 row-span-1 aspect-square"
+                size={:small}
+              >
+                <Components.mini_calendar date={@today} />
+              </Components.bento_card>
+
+              <Components.bento_card
+                class="hidden lg:block col-span-1 row-span-1 aspect-square"
+                variant={:subtle}
+                size={:small}
+              >
+                <Components.theme_switcher />
+              </Components.bento_card>
+
+              <Components.bento_card
+                navigate={~p"/updates"}
+                class="col-span-2 row-span-1"
+                icon="lucide-history"
+                size={:small}
+              >
+                <Components.card_content>
+                  <:label>Updates</:label>
+                </Components.card_content>
+              </Components.bento_card>
+            </div>
+
+            <div class="hidden lg:block col-span-1 row-span-1 aspect-square"></div>
+
             <Components.bento_card
               navigate={~p"/books"}
-              class="col-span-1 row-span-1"
+              class="col-span-1 row-span-1 aspect-square"
               icon="lucide-library"
             >
               <Components.async_card_content async_result={@reading_stats}>
                 <:label>Reading</:label>
                 <:result :let={result}>
-                  {result[:currently_reading]} {ngettext("Book", "Books", result[:currently_reading])}
+                  {result[:currently_reading]} {ngettext(
+                    "Book",
+                    "Books",
+                    result[:currently_reading]
+                  )}
                 </:result>
               </Components.async_card_content>
             </Components.bento_card>
 
             <Components.bento_card
-              navigate={~p"/updates"}
-              class="col-span-1 row-span-1"
-              icon="lucide-history"
+              navigate={~p"/photos"}
+              class="col-span-1 row-span-1 aspect-square"
+              icon="lucide-image"
             >
-              <Components.async_card_content async_result={@recent_updates}>
-                <:label>Recent</:label>
-                <:result :let={result}>
-                  <%= if result && result > 0 do %>
-                    {result} {ngettext("Update", "Updates", result)}
-                  <% else %>
-                    <div class="flex items-center gap-1 text-content-40">
-                      {Enum.random([
-                        "Nada",
-                        "Zilch",
-                        "Zero",
-                        "None",
-                        "Nichts",
-                        "Rien",
-                        "Void",
-                        "Nil",
-                        "Null"
-                      ])}
-                      <.icon name="lucide-frown" class="size-4" />
-                    </div>
-                  <% end %>
-                </:result>
-              </Components.async_card_content>
+              <Components.card_content loading={is_nil(@post_count)}>
+                <:label>Photography</:label>
+                <:value>
+                  {@photos_count} {ngettext("Photo", "Photos", @photos_count)}
+                </:value>
+              </Components.card_content>
+            </Components.bento_card>
+
+            <Components.bento_card
+              navigate={~p"/travel"}
+              class="col-span-1 row-span-1 aspect-square"
+              icon="lucide-map"
+            >
+              <Components.card_content loading={is_nil(@post_count)}>
+                <:label>Travel</:label>
+                <:value>
+                  {@trips_count} {ngettext("Trip", "Trips", @trips_count)}
+                </:value>
+              </Components.card_content>
+            </Components.bento_card>
+
+            <Components.bento_card
+              navigate={~p"/bookmarks"}
+              class="col-span-1 row-span-1 aspect-square"
+              icon="lucide-bookmark"
+            >
+              <Components.card_content loading={is_nil(@post_count)}>
+                <:label>Bookmarks</:label>
+                <:value>
+                  {@bookmarks_count} {gettext("Saved")}
+                </:value>
+              </Components.card_content>
             </Components.bento_card>
           </div>
 
@@ -169,18 +212,20 @@ defmodule SiteWeb.HomeLive.Index do
 
     if connected?(socket) do
       Process.send_after(self(), :refresh_music, @refresh_interval)
+      Process.send_after(self(), :refresh_date, :timer.hours(1))
     end
 
     socket =
       socket
+      |> assign(:today, Date.utc_today())
       |> assign(:post_count, published_posts_count)
-      |> assign_async(:recent_updates, fn ->
-        {:ok, %{recent_updates: Site.Updates.recent_updates_count()}}
-      end)
+      |> assign(:bookmarks_count, 0)
+      |> assign(:photos_count, 0)
+      |> assign(:trips_count, Site.Travel.list_trips() |> length())
+      |> assign_async(:track, &get_currently_playing/0)
       |> assign_async(:reading_stats, fn ->
         {:ok, %{reading_stats: get_reading_stats()}}
       end)
-      |> assign_async(:track, &get_currently_playing/0)
       |> stream_configure(:skeets, dom_id: & &1.cid)
       |> stream_async(:skeets, fn -> {:ok, get_bluesky_posts(), limit: 5} end)
 
@@ -196,6 +241,11 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign_async(:track, &get_currently_playing/0)
 
     {:noreply, socket}
+  end
+
+  def handle_info(:refresh_date, socket) do
+    Process.send_after(self(), :refresh_date, :timer.hours(1))
+    {:noreply, assign(socket, :today, Date.utc_today())}
   end
 
   defp get_currently_playing do
