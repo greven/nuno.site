@@ -190,8 +190,8 @@ defmodule SiteWeb.FinderComponent do
     {:noreply, socket}
   end
 
-  def handle_event("finder:navigate", %{"year" => year, "id" => id}, socket) do
-    post = Site.Blog.get_post_by_year_and_id!(year, id)
+  def handle_event("finder:navigate", %{"id" => id}, socket) do
+    post = Site.Blog.get_post_by_id!(id)
     {:noreply, push_navigate(socket, to: ~p"/articles/#{post.year}/#{post}")}
   end
 

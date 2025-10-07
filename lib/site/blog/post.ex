@@ -46,12 +46,12 @@ defmodule Site.Blog.Post do
 
     fields =
       [
-        id: id,
-        body: body,
-        year: String.to_integer(year),
+        id: "#{year}_#{id}",
         slug: Support.slugify(attrs.title),
+        year: String.to_integer(year),
         date: post_date(year, month, day),
-        reading_time: reading_time_in_minutes(body)
+        reading_time: reading_time_in_minutes(body),
+        body: body
       ] ++ Map.to_list(attrs)
 
     struct!(__MODULE__, fields)

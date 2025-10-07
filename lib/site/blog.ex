@@ -149,8 +149,7 @@ defmodule Site.Blog do
   articles where each item has the following shape:
 
   `%{
-    id: "post-id",
-    year: 2025,
+    id: "2005_post_id",
     title: "Post Title",
     keywords: ["tag1", "tag2"]
   }`.
@@ -160,7 +159,6 @@ defmodule Site.Blog do
     |> Enum.map(fn post ->
       %{
         id: post.id,
-        year: post.year,
         title: post.title,
         keywords: post.tags
       }
@@ -169,22 +167,23 @@ defmodule Site.Blog do
 
   @doc """
   Get the post by id.
+  The post `id` is a string with the format `"{year}-{post_id}"`.
 
   Examples:
 
-      iex> get_post_by_year_and_id!(2025, "hello_world")
+      iex> get_post_by_id!(2025, "hello_world")
       %Post{}
 
-      iex> get_post_by_year_and_id!(2025, "i-do-not-exist")
+      iex> get_post_by_id!(2025, "i-do-not-exist")
       ** (Site.Blog.NotFoundError) post with year=2025 and id=i-do-not-exist not found
   """
-  def get_post_by_year_and_id!(year, id) do
-    Enum.find(all_posts(), &(&1.id == id and &1.year == String.to_integer(year))) ||
-      raise NotFoundError, "post with year=#{year} and id=#{id} not found"
+  def get_post_by_id!(id) do
+    Enum.find(all_posts(), &(&1.id == id)) || raise NotFoundError, "post id=#{id} not found"
   end
 
   @doc """
-  Similar to `get_post_by_year_and_id!/2`, but retrieves the post by slug.
+  Similar to `get_post_by_id!/2`, where the year is part of the identifier but retrieves
+  the post by slug. This is generally used for fetching posts from the URL params.
   """
   def get_post_by_year_and_slug!(year, slug) do
     Enum.find(all_posts(), &(&1.slug == slug and &1.year == String.to_integer(year))) ||

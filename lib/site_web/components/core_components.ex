@@ -1006,8 +1006,7 @@ defmodule SiteWeb.CoreComponents do
             phx-click={JS.push(@on_change, value: %{value: item[:value]})}
             class={[
               item[:class],
-              "group relative h-10 px-4 inline-flex flex-nowrap flex-shrink-0 items-center justify-center text-sm rounded-full overflow-hidden
-                whitespace-nowrap transition cursor-pointer align-middle text-center text-content-40 border border-surface-30 bg-surface-10/40
+              "group relative h-10 px-4 inline-flex flex-nowrap flex-shrink-0 items-center justify-center text-sm rounded-full overflow-hidden whitespace-nowrap transition cursor-pointer align-middle text-center text-content-40 border border-surface-30 bg-surface-10/50
                 active:shadow-none",
               "aria-current:text-content aria-current:bg-surface-10 aria-current:border-primary aria-current:shadow-sm",
               "hover:not-aria-current:bg-surface-10 hover:not-aria-current:text-content-10",

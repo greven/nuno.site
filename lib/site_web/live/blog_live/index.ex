@@ -4,7 +4,10 @@ defmodule SiteWeb.BlogLive.Index do
   alias Site.Blog
 
   alias SiteWeb.BlogComponents
-  alias SiteWeb.BlogLive.Category
+
+  defmodule Category do
+    defstruct id: nil, name: nil, icon: nil, enabled?: true
+  end
 
   @impl true
   def render(assigns) do
@@ -35,7 +38,7 @@ defmodule SiteWeb.BlogLive.Index do
               }
               value={id}
               disabled={!enabled?}
-              icon={icon.name}
+              icon={icon}
             >
               <div class="flex items-center gap-2">
                 <div class="capitalize">{name}</div>
@@ -114,17 +117,17 @@ defmodule SiteWeb.BlogLive.Index do
       %Category{
         id: "all",
         name: "all",
-        icon: %{name: "hero-rectangle-stack", class: "text-current"}
+        icon: "hero-rectangle-stack"
       },
       %Category{
         id: "blog",
         name: "blog",
-        icon: %{name: "hero-newspaper", class: "text-cyan-600"}
+        icon: "hero-newspaper"
       },
       %Category{
         id: "note",
         name: "notes",
-        icon: %{name: "hero-chat-bubble-bottom-center-text", class: "text-amber-600"}
+        icon: "hero-chat-bubble-bottom-center-text"
       }
     ]
   end

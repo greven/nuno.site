@@ -303,7 +303,6 @@ export const Finder = {
 
       const fragment = document.createElement('li');
       fragment.dataset.id = article.id;
-      fragment.dataset.year = article.year;
       fragment.className = itemTemplate.className;
       fragment.role = 'option';
       fragment.setAttribute('aria-selected', 'false');
@@ -330,7 +329,7 @@ export const Finder = {
       item.addEventListener('click', () =>
         this.js().push(this.el, 'finder:navigate', {
           target: this.el,
-          value: { year: item.dataset.year, id: item.dataset.id },
+          value: { id: item.dataset.id },
         })
       );
       item.addEventListener('mouseenter', this.handleItemMouseEnter.bind(this));

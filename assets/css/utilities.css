@@ -38,14 +38,14 @@
   background:
     linear-gradient(90deg, var(--color-surface) 15px, transparent 1%) 50%,
     linear-gradient(var(--color-surface) 15px, transparent 1%) 50%,
-    --alpha(var(--color-content-40) / 0.25);
+    --alpha(var(--color-content-40) / 0.15);
   background-size: 16px 16px;
 
   @variant dark {
     background:
       linear-gradient(90deg, var(--color-surface) 15px, transparent 1%) 50%,
       linear-gradient(var(--color-surface) 15px, transparent 1%) 50%,
-      --alpha(var(--color-content-40) / 0.15);
+      --alpha(var(--color-content-40) / 0.1);
     background-size: 16px 16px;
   }
 }
