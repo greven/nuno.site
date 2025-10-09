@@ -363,7 +363,7 @@ defmodule SiteWeb.Layouts do
     ~H"""
     <div class="relative flex flex-row items-center border-1 border-surface-30 bg-surface-20 rounded-full">
       <div class={[
-        "absolute w-[33.33%] h-full rounded-full border-1 border-surface-30 bg-surface brightness-110 left-0",
+        "absolute w-[33.33%] h-full rounded-full border-1 border-surface-40 bg-surface left-0",
         "[[data-theme-mode=user][data-theme=light]_&]:left-[33.33%] [[data-theme-mode=user][data-theme=dark]_&]:left-[66.66%] transition-[left]"
       ]} />
 

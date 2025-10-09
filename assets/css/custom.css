@@ -91,6 +91,26 @@
     }
   }
 
+  /* Tooltip */
+
+  /* .tooltip-anchor { */
+  /* anchor-name: var(--tooltip-id); */
+  /* } */
+
+  .tooltip {
+    @supports (position-anchor: auto) {
+      /* position: fixed; */
+      /* position-anchor: var(--tooltip-id); */
+      /* position-area: var(--tooltip-position, top); */
+      /* z-index: 50; */
+      /* top: calc(anchor(bottom) + 5px); */
+    }
+
+    @supports not (position-anchor: auto) {
+      display: none;
+    }
+  }
+
   /* Navbar */
 
   .navbar-link {

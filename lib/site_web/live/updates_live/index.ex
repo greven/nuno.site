@@ -21,9 +21,7 @@ defmodule SiteWeb.UpdatesLive.Index do
           </:subtitle>
         </.header>
 
-        <div class="mt-8 flex justify-between items-center">
-
-        </div>
+        <div class="mt-8 flex justify-between items-center"></div>
       </Layouts.page_content>
     </Layouts.app>
     """

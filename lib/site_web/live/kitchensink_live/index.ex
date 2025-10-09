@@ -313,6 +313,23 @@ defmodule SiteWeb.KitchenSinkLive.Index do
 
           <.divider />
         </div>
+
+        <%!-- Tooltips --%>
+        <div class="flex flex-col gap-6">
+          <h2 class="flex items-center gap-1 text-2xl font-medium ">
+            <a name="tooltips" href="#tooltips" class="text-content-40 scroll-my-(--header-height)">#</a>Tooltips
+          </h2>
+
+          <div class="flex gap-4">
+            <.tooltip label="This is a tooltip" position="top">
+              <.button variant="solid">Hover for tooltip</.button>
+            </.tooltip>
+
+            <.tooltip label="Another tooltip" position="bottom">
+              <.button variant="solid">Hover for tooltip</.button>
+            </.tooltip>
+          </div>
+        </div>
       </Layouts.page_content>
     </Layouts.app>
     """

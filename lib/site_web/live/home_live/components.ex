@@ -375,27 +375,33 @@ defmodule SiteWeb.HomeLive.Components do
   def featured_posts(assigns) do
     ~H"""
     <div class={@class}>
-      <ol id="featured-posts" class="max-w-3xl mx-auto flex flex-col justify-center gap-3">
+      <ol id="featured-posts" class="mx-auto flex flex-col justify-center gap-0.5">
         <%= for post <- @posts do %>
           <.card
             tag="li"
-            class={[
-              "relative group [counter-increment:item-counter]",
-              "before:opacity-0 before:content-['#'_counter(item-counter)] before:absolute before:left-4.5 before:top-2.5 before:font-headings before:font-semibold before:text-content-10 md:before:opacity-10 before:text-xl before:pointer-events-none",
-              "hover:before:opacity-25"
-            ]}
-            content_class="w-full px-2.5 lg:px-3 py-2.5 flex items-center justify-between gap-6"
+            class="relative"
+            content_class="w-full h-full px-2.5 lg:px-3 py-2.5 flex items-center justify-between gap-6"
+            border="border border-transparent border-dashed hover:border-solid hover:border-border"
+            bg="bg-transparent hover:bg-surface-10"
           >
+            <.diagonal_pattern use_transition={false} class="opacity-0 group-hover/card:opacity-60" />
+
+            <%!-- Title --%>
             <div class="max-w-5/6 flex items-center gap-2">
               <.link
-                class="md:pl-12 link-subtle decoration-1 transition-none"
+                class="link-subtle decoration-1 transition-none"
                 navigate={~p"/articles/#{post.year}/#{post}"}
               >
                 <span class="absolute inset-0 z-10"></span>
-                <h3 class="font-medium text-xs md:text-sm line-clamp-1">{post.title}</h3>
+                <h3 class="font-medium text-xs md:text-sm line-clamp-1 text-content-40 group-hover/card:text-content-10">
+                  {post.title}
+                </h3>
               </.link>
             </div>
 
+            <hr class="hidden flex-1 border-0.5 border-surface-40 border-dashed opacity-50 md:flex group-hover/card:opacity-0" />
+
+            <%!-- Meta --%>
             <div class="flex items-center shrink-0 gap-2">
               <div class="hidden md:flex items-center flex-nowrap shrink-0 text-sm line-clamp-1">
                 <span class="text-content-40/40 mr-1">#</span>

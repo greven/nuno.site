@@ -56,10 +56,7 @@ defmodule SiteWeb.CoreComponents do
 
   attr :tag, :string, default: "div"
   attr :class, :any, default: nil
-
-  attr :content_class, :any,
-    default: "group/card isolate relative h-full flex flex-col gap-3 overflow-hidden"
-
+  attr :content_class, :any, default: "h-full flex flex-col gap-3"
   attr :bg, :string, default: "bg-surface-10/80 hover:bg-surface-10"
   attr :padding, :string, default: "p-4"
 
@@ -80,7 +77,7 @@ defmodule SiteWeb.CoreComponents do
           radius={@radius}
           padding={@padding}
           shadow={@shadow}
-          class={@content_class}
+          class={["group/card isolate relative overflow-hidden", @content_class]}
           data-part="card"
         >
           <.link
@@ -101,7 +98,7 @@ defmodule SiteWeb.CoreComponents do
           radius={@radius}
           padding={@padding}
           shadow={@shadow}
-          class={@content_class}
+          class={["group/card isolate relative overflow-hidden", @content_class]}
           data-part="card"
         >
           {render_slot(@inner_block)}
@@ -778,7 +775,7 @@ defmodule SiteWeb.CoreComponents do
   attr :wide, :boolean, default: false
   attr :loading, :boolean, default: false
   attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: @button_radius
-  attr :rest, :global, include: ~w(href navigate patch method disabled name value)
+  attr :rest, :global, include: ~w(href navigate patch method disabled name value popovertarget)
   slot :inner_block, required: true
 
   def button(%{rest: rest} = assigns) do
@@ -1311,6 +1308,110 @@ defmodule SiteWeb.CoreComponents do
     """
   end
 
+  @doc """
+  Renders a tooltip component.
+
+  The tooltip component displays a small popup with additional information when hovering over an element.
+  Tooltip requires an HTML element or component as its child. The Anchor Positioning API is
+  used to position the tooltip relative to the target element.
+
+  The placement of the tooltip can set using the `position` attribute. If set to `auto`, the tooltip will
+  automatically adjust its position to fit within the viewport.
+
+  The appearance of the tooltip can be customized using the `tooltip_class` attribute.
+  If no content slot is provided, the `label` attribute will be used as the tooltip text.
+  """
+
+  attr :label, :string,
+    default: nil,
+    doc: "the text label for the tooltip, if not using the content slot"
+
+  attr :position, :string,
+    values: [
+      "top",
+      "bottom",
+      "left",
+      "right",
+      "start",
+      "end",
+      "top left",
+      "top right",
+      "bottom left",
+      "bottom right",
+      "top span-left",
+      "bottom span-right",
+      "start span-start",
+      "end span-end",
+      "center",
+      "center span-all",
+      "bottom center",
+      "end span-all"
+    ],
+    default: "top"
+
+  attr :class, :any, default: nil
+
+  attr :tooltip_class, :any,
+    default:
+      "px-3 py-1.5 bg-surface-20/75 border-1 border-border text-content-20 text-sm rounded shadow-md backdrop-blur-xs"
+
+  attr :rest, :global
+
+  slot :inner_block, required: true
+
+  slot :content do
+    attr :class, :string
+  end
+
+  def tooltip(assigns) do
+    # assigns =
+    # assigns
+    # |> assign_new(:id, fn -> Helpers.use_id() end)
+    # |> assign_new(:style, fn %{id: id, position: position} ->
+    # "--tooltip-id: #{id}; --tooltip-position: #{position};"
+    # end)
+
+    ~H"""
+    <div class={@class} {@rest}>
+      <div data-part="tooltip-anchor">
+        {render_slot(@inner_block)}
+      </div>
+
+      <div class={["tooltip", @tooltip_class]}>
+        <%= if @content != [] do %>
+          {render_slot(@content)}
+        <% else %>
+          {@label}
+        <% end %>
+      </div>
+    </div>
+
+    <%!-- <div id={@id} class={@class} {@rest}>
+      <div
+        style={@style}
+        class="tooltip-anchor"
+      >
+        {render_slot(@inner_block)}
+      </div>
+
+      <.portal id={"tooltip-portal-#{@id}"} target="body">
+        <div
+          role="tooltip"
+          tabindex="-1"
+          style={@style}
+          class={["tooltip", @tooltip_class]}
+        >
+          <%= if @content != [] do %>
+            {render_slot(@content)}
+          <% else %>
+            {@label}
+          <% end %>
+        </div>
+      </.portal>
+    </div> --%>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do
@@ -1346,7 +1447,12 @@ defmodule SiteWeb.CoreComponents do
   Render an svg diagonal pattern.
   """
 
-  attr :hover_transition, :boolean, default: true
+  attr :class, :string, default: "border-1 border-surface-10 rounded-lg z-1"
+  attr :use_transition, :boolean, default: true
+
+  attr :hover_transition, :string,
+    default:
+      "group-hover/card:text-primary group-hover/card:opacity-40 transition-opacity duration-150"
 
   def diagonal_pattern(assigns) do
     assigns =
@@ -1354,11 +1460,11 @@ defmodule SiteWeb.CoreComponents do
       |> assign(:svg_id, SiteWeb.Helpers.use_id())
 
     ~H"""
-    <div class={["absolute inset-0 border-1 border-surface-10 rounded-lg z-1"]}>
+    <div class={["absolute inset-0", @class]}>
       <svg class={[
-        "absolute inset-0 size-full text-content-40/70 rounded-lg opacity-20 pointer-events-none select-none transition-opacity duration-150z",
+        "absolute inset-0 size-full text-content-40/70 rounded-lg opacity-20 pointer-events-none select-none",
         "[mask-image:linear-gradient(to_left,_#ffffffad,_transparent)]",
-        @hover_transition && "group-hover/card:text-primary group-hover/card:opacity-40"
+        @use_transition && @hover_transition
       ]}>
         <defs>
           <pattern
