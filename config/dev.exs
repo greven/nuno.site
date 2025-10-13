@@ -77,6 +77,7 @@ config :phoenix, :plug_init_mode, :runtime
 config :phoenix_live_view,
   debug_heex_annotations: true,
   enable_expensive_runtime_checks: true,
+  debug_attributes: true,
   debug_tags_location: true
 
 # Disable swoosh api client as it is only required for production adapters.

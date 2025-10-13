@@ -380,20 +380,21 @@ defmodule SiteWeb.HomeLive.Components do
           <.card
             tag="li"
             class="relative"
-            content_class="w-full h-full px-2.5 lg:px-3 py-2.5 flex items-center justify-between gap-6"
+            content_class="w-full h-full px-0 sm:px-2.5 lg:px-3 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-6"
+            padding="p-0"
             border="border border-transparent border-dashed hover:border-solid hover:border-border"
             bg="bg-transparent hover:bg-surface-10"
           >
             <.diagonal_pattern use_transition={false} class="opacity-0 group-hover/card:opacity-60" />
 
             <%!-- Title --%>
-            <div class="max-w-5/6 flex items-center gap-2">
+            <div class="flex items-center gap-2 md:max-w-5/6">
               <.link
                 class="link-subtle decoration-1 transition-none"
                 navigate={~p"/articles/#{post.year}/#{post}"}
               >
                 <span class="absolute inset-0 z-10"></span>
-                <h3 class="font-medium text-xs md:text-sm line-clamp-1 text-content-40 group-hover/card:text-content-10">
+                <h3 class="font-medium text-content-20 group-hover/card:text-content-10 line-clamp-2 md:line-clamp-1">
                   {post.title}
                 </h3>
               </.link>
@@ -402,22 +403,23 @@ defmodule SiteWeb.HomeLive.Components do
             <hr class="hidden flex-1 border-0.5 border-surface-40 border-dashed opacity-50 md:flex group-hover/card:opacity-0" />
 
             <%!-- Meta --%>
-            <div class="flex items-center shrink-0 gap-2">
-              <div class="hidden md:flex items-center flex-nowrap shrink-0 text-sm line-clamp-1">
+            <div class="flex items-center shrink-0 gap-2 text-sm md:justify-between">
+              <BlogComponents.post_publication_date
+                class="shrink-0 text-content-40  md:order-3"
+                format="%b %d, %Y"
+                show_icon={false}
+                post={post}
+              />
+
+              <span class="opacity-10 md:flex md:order-2">|</span>
+
+              <%!-- Tags --%>
+              <div class="flex items-center flex-nowrap shrink-0 line-clamp-1 md:order-1">
                 <span class="text-content-40/40 mr-1">#</span>
                 <span class="text-content-40/50 group-hover:text-content-40">
                   {List.first(post.tags)}
                 </span>
               </div>
-
-              <span class="hidden opacity-10 md:flex">|</span>
-
-              <BlogComponents.post_publication_date
-                post={post}
-                format="%b %d, %Y"
-                class="shrink-0 text-xs text-content-40"
-                show_icon={false}
-              />
             </div>
           </.card>
         <% end %>
@@ -447,7 +449,6 @@ defmodule SiteWeb.HomeLive.Components do
       id="theme-switcher"
       class="theme-switcher"
       type="button"
-      title="Toggle theme"
       aria-label="Toggle theme"
       phx-hook="ThemeSwitcher"
     >

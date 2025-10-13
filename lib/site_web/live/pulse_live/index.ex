@@ -1,4 +1,4 @@
-defmodule SiteWeb.StartpageLive.Index do
+defmodule SiteWeb.PulseLive.Index do
   use SiteWeb, :live_view
 
   @impl true

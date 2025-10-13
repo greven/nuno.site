@@ -14,7 +14,7 @@ defmodule SiteWeb.Components.Theming do
         "focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-[3px]",
         "aria-invalid:ring-danger aria-invalid:border-danger",
         "active:shadow-none",
-        "[&_svg]:pointer-events-none [&_[data-slot=icon]]:pointer-events-none [&_svg]:shrink-0 [&_[data-slot=icon]]:shrink-0 [&_svg:not([class*='size-'])]:size-4! [&_[data-slot=icon]:not([class*='size-'])]:size-4!",
+        "[&_svg]:pointer-events-none [&_[data-slot=icon]]:pointer-events-none [&_svg]:shrink-0 [&_[data-slot=icon]]:shrink-0 [&_svg:not([class*='size-'])]:size-5! [&_[data-slot=icon]:not([class*='size-'])]:size-5!",
         "[&:disabled_svg]:opacity-50 [&:disabled_[data-slot=icon]]:opacity-50",
         "[--button-shadow:var(--shadow-xs)]",
         if(wide, do: "block w-full", else: "inline-block"),
@@ -34,7 +34,7 @@ defmodule SiteWeb.Components.Theming do
       "sm" ->
         %{
           root: [
-            "[--button-height:--spacing(9)] [--button-padding:--spacing(3)] [--button-gap:--spacing(1.5)] h-(--button-height)"
+            "[--button-height:--spacing(9)] [--button-padding:--spacing(3)] [--button-gap:--spacing(2)] h-(--button-height)"
           ],
           inner:
             "gap-x-(--button-gap) px-(--button-padding) has-[>svg]:px-2.5 has-[>[data-slot=icon]]:px-2.5"

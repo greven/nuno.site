@@ -99,21 +99,25 @@ defmodule SiteWeb.HomeLive.Index do
 
             <%!-- Multi-card --%>
             <div class="hidden col-span-1 row-span-1 aspect-square lg:grid grid-cols-2 grid-rows-2 gap-4">
-              <Components.bento_card
-                navigate={~p"/startpage"}
-                class="col-span-1 row-span-1 aspect-square"
-                size={:small}
-              >
-                <Components.mini_calendar date={@today} />
-              </Components.bento_card>
+              <.tooltip label="Daily Pulse">
+                <Components.bento_card
+                  navigate={~p"/pulse"}
+                  class="col-span-1 row-span-1 aspect-square"
+                  size={:small}
+                >
+                  <Components.mini_calendar date={@today} />
+                </Components.bento_card>
+              </.tooltip>
 
-              <Components.bento_card
-                class="hidden lg:block col-span-1 row-span-1 aspect-square"
-                variant={:subtle}
-                size={:small}
-              >
-                <Components.theme_switcher />
-              </Components.bento_card>
+              <.tooltip label="Toggle Theme">
+                <Components.bento_card
+                  class="hidden lg:block col-span-1 row-span-1 aspect-square"
+                  variant={:subtle}
+                  size={:small}
+                >
+                  <Components.theme_switcher />
+                </Components.bento_card>
+              </.tooltip>
 
               <Components.bento_card
                 navigate={~p"/updates"}

@@ -15,6 +15,7 @@ import { Spoiler } from './spoiler';
 import { Tabs } from './tabs';
 import { TheEnd } from './the-end';
 import { ThemeSwitcher } from './theme-switcher';
+import { Tooltip } from './tooltip';
 import { TravelMap } from './travel-map';
 
 export default {
@@ -35,5 +36,6 @@ export default {
   Tabs,
   TheEnd,
   ThemeSwitcher,
+  Tooltip,
   TravelMap,
 };

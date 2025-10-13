@@ -13,57 +13,42 @@ defmodule SiteWeb.AboutLive.Index do
     >
       <Layouts.page_content class="flex flex-col gap-16 md:gap-24">
         <div class="about-intro">
-          <div class="grid grid-cols-1 gap-y-12 lg:grid-cols-2 lg:grid-rows-[auto_1fr]">
-            <div class="row-span-2 w-full flex flex-col items-center justify-center lg:flex-row">
-              <SiteComponents.profile_picture size={300} class="lg:-mt-16" />
-            </div>
+          <%!-- Intro --%>
+          <div class="w-full text-center md:text-left lg:order-first lg:row-span-2">
+            <h1 class="text-3xl md:text-4xl font-headings font-light tracking-tight">
+              HEY! My name is <em class="font-medium underline not-italic decoration-4 decoration-primary underline-offset-4 text-content-10">Nuno</em>.
+            </h1>
 
-            <%!-- Intro --%>
-            <div class="w-full text-center lg:text-left lg:order-first lg:row-span-2">
-              <h1 class="text-3xl md:text-4xl font-headings font-light tracking-tight">
-                HEY! My name is <em class="font-medium underline not-italic decoration-4 decoration-primary underline-offset-4 text-content-10">Nuno</em>.
-              </h1>
+            <p class="mt-2 text-lg md:text-xl font-light">
+              I'm a <span class="font-semibold">Software Engineer</span>
+              from <span class="font-normal uppercase">
+              <.icon
+                  name="lucide-map-pin"
+                  class="size-5 mr-1 mb-1.5 hidden md:inline-block"
+                />Lisbon</span>.
+            </p>
 
-              <p class="mt-2 text-lg md:text-xl font-light">
-                I'm a <span class="font-semibold">Software Engineer</span>
-                from <span class="font-normal uppercase">
-            <.icon
-                    name="lucide-map-pin"
-                    class="size-5 mr-1 mb-1.5 hidden md:inline-block"
-                  />Lisbon</span>.
+            <div class="mt-8 space-y-4 text-base text-content-20">
+              <SiteComponents.profile_picture
+                size={300}
+                class="w-full flex justify-center md:w-auto md:block md:ml-8 md:float-right [shape-outside:circle(50%)]"
+              />
+
+              <p class="mt-12 font-light text-base md:text-lg text-pretty">
+                Hello fellow visitor! I'm Nuno Moço, a seasoned software developer focused on web technologies.
+                I love crafting web applications with a focus on <span class="font-medium">User Experience</span>.
               </p>
 
-              <div class="mt-8 space-y-8 text-base text-content-20">
-                <p class="font-light text-lg md:text-xl">
-                  Hello fellow visitor! I'm Nuno Moço, a seasoned software developer focused on web technologies.
-                  I love crafting web applications with a focus on <span class="font-medium">User Experience</span>.
-                </p>
+              <p class="font-light text-base md:text-lg text-pretty">
+                I've always been passionate about design and user experience, so the web was a natural fit for me. I've been building web applications before they were called applications 🧙‍♂️.
+              </p>
 
-                <p class="font-light text-base md:text-lg">
-                  I've always been passionate about design and user experience, so the web was a natural fit for me. I've been building web applications before they were called applications 🧙‍♂️.
-                </p>
-
-                <p class="font-light text-base md:text-lg">
-                  As a full-stack developer I enjoy working with various technologies. My main toolkit includes <span class="font-medium">Elixir</span>, <span class="font-medium">Phoenix</span>, <span class="font-medium">CSS</span>, <span class="font-medium">SQL</span>, <span class="font-medium">JavaScript</span>, and <span class="font-medium">React</span>.
-                </p>
-
-                <div class="mt-12">
-                  <div class="mb-4 ml-1">
-                    <div class="relative inline-block">
-                      <em class="py-0.5 px-1 not-italic text-secondary dark:text-tint-secondary/25 bg-secondary/10 dark:bg-secondary/15">
-                        Stay in contact
-                      </em>
-                      <.icon
-                        name="lucide-corner-right-down"
-                        class="absolute top-2 -right-6 size-5 text-secondary"
-                      />
-                    </div>
-                  </div>
-
-                  <SiteComponents.contact_links />
-                </div>
-              </div>
+              <p class="font-light text-base md:text-lg text-pretty">
+                As a full-stack developer I enjoy working with various technologies. My main toolkit includes <span class="font-medium">Elixir</span>, <span class="font-medium">Phoenix</span>, <span class="font-medium">CSS</span>, <span class="font-medium">SQL</span>, <span class="font-medium">JavaScript</span>, and <span class="font-medium">React</span>.
+              </p>
             </div>
+
+            <SiteComponents.contact_links class="mt-10 flex flex-col items-center justify-center md:items-start gap-1" />
           </div>
         </div>
 

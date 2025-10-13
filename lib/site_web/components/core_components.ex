@@ -1318,7 +1318,8 @@ defmodule SiteWeb.CoreComponents do
   The placement of the tooltip can set using the `position` attribute. If set to `auto`, the tooltip will
   automatically adjust its position to fit within the viewport.
 
-  The appearance of the tooltip can be customized using the `tooltip_class` attribute.
+  The appearance of the tooltip can be customized using the `bg_class`, `border_class`,
+  `shadow_class` `radius_class` and `class` (content styling by default) attributes.
   If no content slot is provided, the `label` attribute will be used as the tooltip text.
   """
 
@@ -1331,29 +1332,39 @@ defmodule SiteWeb.CoreComponents do
       "top",
       "bottom",
       "left",
-      "right",
-      "start",
-      "end",
-      "top left",
-      "top right",
-      "bottom left",
-      "bottom right",
-      "top span-left",
-      "bottom span-right",
-      "start span-start",
-      "end span-end",
-      "center",
-      "center span-all",
-      "bottom center",
-      "end span-all"
+      "right"
     ],
     default: "top"
 
-  attr :class, :any, default: nil
+  attr :default_opened, :boolean, default: false, doc: "tooltip initial opened state"
+  attr :offset, :string, default: "1ch", doc: "the offset (CSS unit) from the anchor element"
 
-  attr :tooltip_class, :any,
-    default:
-      "px-3 py-1.5 bg-surface-20/75 border-1 border-border text-content-20 text-sm rounded shadow-md backdrop-blur-xs"
+  attr :open_delay, :integer,
+    default: 50,
+    doc: "the delay in milliseconds before showing the tooltip"
+
+  attr :close_delay, :integer,
+    default: 0,
+    doc: "the delay in milliseconds before hiding the tooltip"
+
+  attr :show_arrow, :boolean,
+    default: true,
+    doc: "whether to show an arrow pointing to the anchor element"
+
+  attr :multiline, :boolean,
+    default: false,
+    doc: "whether to allow multiline text in the tooltip"
+
+  attr :max_width, :string,
+    default: "auto",
+    doc: "the maximum width of the tooltip content when using multiline"
+
+  attr :bg_class, :string, default: "bg-neutral-800/90 dark:bg-neutral-950/90 backdrop-blur-xs"
+  attr :border_class, :string, default: "border-1 border-neutral-950 dark:border-neutral-800"
+  attr :radius_class, :string, default: "rounded"
+  attr :shadow_class, :string, default: "shadow-md"
+
+  attr :class, :any, default: "px-3 py-1.5 text-neutral-300 text-sm"
 
   attr :rest, :global
 
@@ -1364,51 +1375,53 @@ defmodule SiteWeb.CoreComponents do
   end
 
   def tooltip(assigns) do
-    # assigns =
-    # assigns
-    # |> assign_new(:id, fn -> Helpers.use_id() end)
-    # |> assign_new(:style, fn %{id: id, position: position} ->
-    # "--tooltip-id: #{id}; --tooltip-position: #{position};"
-    # end)
+    assigns = assign_new(assigns, :id, fn -> Helpers.use_id() end)
 
     ~H"""
-    <div class={@class} {@rest}>
-      <div data-part="tooltip-anchor">
+    <div
+      id={@id}
+      data-open-delay={@open_delay}
+      data-close-delay={@close_delay}
+      data-default-opened={@default_opened}
+      phx-hook="Tooltip"
+      style={"--tooltip-position: #{@position}; --tooltip-max-width: #{@max_width}; --tooltip-offset: #{@offset};"}
+      {@rest}
+    >
+      <div data-part="tooltip-anchor" style={"anchor-name: --#{@id};"}>
         {render_slot(@inner_block)}
       </div>
 
-      <div class={["tooltip", @tooltip_class]}>
+      <div
+        popover
+        role="tooltip"
+        data-popover={@id}
+        data-position={@position}
+        data-multiline={@multiline}
+        style={"position-anchor: --#{@id};"}
+        class={[
+          "tooltip",
+          @bg_class,
+          @border_class,
+          @shadow_class,
+          @radius_class,
+          @class
+        ]}
+      >
         <%= if @content != [] do %>
           {render_slot(@content)}
         <% else %>
           {@label}
         <% end %>
+
+        <%!-- <div
+          :if={@show_arrow}
+          data-part="tooltip-arrow"
+          class="absolute w-4 h-4 bg-inherit rounded-xs rotate-45 transform -z-1"
+          style="left: 21px; bottom: -2px;"
+        >
+        </div> --%>
       </div>
     </div>
-
-    <%!-- <div id={@id} class={@class} {@rest}>
-      <div
-        style={@style}
-        class="tooltip-anchor"
-      >
-        {render_slot(@inner_block)}
-      </div>
-
-      <.portal id={"tooltip-portal-#{@id}"} target="body">
-        <div
-          role="tooltip"
-          tabindex="-1"
-          style={@style}
-          class={["tooltip", @tooltip_class]}
-        >
-          <%= if @content != [] do %>
-            {render_slot(@content)}
-          <% else %>
-            {@label}
-          <% end %>
-        </div>
-      </.portal>
-    </div> --%>
     """
   end
 

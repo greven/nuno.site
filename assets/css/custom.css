@@ -91,23 +91,49 @@
     }
   }
 
-  /* Tooltip */
-
-  /* .tooltip-anchor { */
-  /* anchor-name: var(--tooltip-id); */
-  /* } */
-
   .tooltip {
-    @supports (position-anchor: auto) {
-      /* position: fixed; */
-      /* position-anchor: var(--tooltip-id); */
-      /* position-area: var(--tooltip-position, top); */
-      /* z-index: 50; */
-      /* top: calc(anchor(bottom) + 5px); */
+    max-width: var(--tooltip-max-width, 300px);
+    position-area: var(--tooltip-position, top);
+    position-try-fallbacks: flip-block flip-inline;
+    white-space: nowrap;
+
+    opacity: 0;
+    transition:
+      opacity 0.2s,
+      display 0.2s allow-discrete;
+
+    &:popover-open {
+      opacity: 1;
+
+      @starting-style {
+        & {
+          opacity: 0;
+        }
+      }
     }
 
-    @supports not (position-anchor: auto) {
-      display: none;
+    &[data-position='top'] {
+      margin-block: var(--tooltip-offset);
+      margin-inline: 0;
+    }
+
+    &[data-position='bottom'] {
+      margin-block: var(--tooltip-offset);
+      margin-inline: 0;
+    }
+
+    &[data-position='left'] {
+      margin-block: 0;
+      margin-inline: var(--tooltip-offset);
+    }
+
+    &[data-position='right'] {
+      margin-block: 0;
+      margin-inline: var(--tooltip-offset);
+    }
+
+    &[data-multiline] {
+      white-space: normal;
     }
   }
 
@@ -205,6 +231,8 @@
 
   .profile-picture {
     position: relative;
+    width: fit-content;
+    height: fit-content;
 
     /* Backdrop */
     &::before {
@@ -246,14 +274,10 @@
 
     & .slideshow-container {
       position: relative;
-      max-width: 232px;
+      max-width: 280px;
       aspect-ratio: 1/1;
       border-radius: 100%;
       overflow: hidden;
-
-      @variant md {
-        max-width: 280px;
-      }
     }
 
     & .slideshow-container > .slide {

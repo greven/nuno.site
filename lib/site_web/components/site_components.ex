@@ -68,67 +68,69 @@ defmodule SiteWeb.SiteComponents do
 
   def profile_picture(assigns) do
     ~H"""
-    <div
-      id="profile-picture"
-      class={["profile-picture", @class]}
-      phx-hook="ProfileSlideshow"
-      data-duration={@duration}
-    >
-      <div class="slideshow-container" style={"width:#{@size}px;"}>
-        <.slide
-          src="/images/profile.png"
-          size={@size}
-          alt="Nuno's portrait"
-          title="It's a me!"
-          contrast
-          active
-        />
-        <.slide
-          src="/images/tram.png"
-          size={@size}
-          alt="A picture of a Lisbon's yellow tram"
-          title="Lisbon"
-        />
-        <.slide
-          src="/images/british.png"
-          size={@size}
-          alt="Picture of the London's British Museum"
-          title="London!"
-        />
-        <.slide
-          src="/images/leeds.png"
-          size={@size}
-          alt="Photo of Leeds, UK at night"
-          title="Leeds <3"
-        />
-        <.slide
-          src="/images/corn.png"
-          size={@size}
-          alt="Photo of Leeds' Corn Exchange"
-          title="Leeds <3"
-        />
-        <.slide
-          src="/images/beach.png"
-          size={@size}
-          alt="Picture of Nuno"
-          title="It's a me again!"
-          contrast
-        />
-        <.slide
-          src="/images/lisbon.png"
-          size={@size}
-          alt="Photo of traditional Lisbon buildings"
-          title="Lisbon"
-        />
+    <div class={@class}>
+      <div
+        id="profile-picture"
+        class="profile-picture"
+        phx-hook="ProfileSlideshow"
+        data-duration={@duration}
+      >
+        <div class="slideshow-container" style={"width:#{@size}px;"}>
+          <.slide
+            src="/images/profile.png"
+            size={@size}
+            alt="Nuno's portrait"
+            title="It's a me!"
+            contrast
+            active
+          />
+          <.slide
+            src="/images/tram.png"
+            size={@size}
+            alt="A picture of a Lisbon's yellow tram"
+            title="Lisbon"
+          />
+          <.slide
+            src="/images/british.png"
+            size={@size}
+            alt="Picture of the London's British Museum"
+            title="London!"
+          />
+          <.slide
+            src="/images/leeds.png"
+            size={@size}
+            alt="Photo of Leeds, UK at night"
+            title="Leeds <3"
+          />
+          <.slide
+            src="/images/corn.png"
+            size={@size}
+            alt="Photo of Leeds' Corn Exchange"
+            title="Leeds <3"
+          />
+          <.slide
+            src="/images/beach.png"
+            size={@size}
+            alt="Picture of Nuno"
+            title="It's a me again!"
+            contrast
+          />
+          <.slide
+            src="/images/lisbon.png"
+            size={@size}
+            alt="Photo of traditional Lisbon buildings"
+            title="Lisbon"
+          />
 
-        <%!-- Navigation Buttons --%>
-        <button :if={@show_nav} type="button" class="slideshow-nav-prev" aria-label="Previous image">
-          <.icon name="hero-chevron-left-mini" class="size-6" />
-        </button>
+          <%!-- Navigation Buttons --%>
+          <button :if={@show_nav} type="button" class="slideshow-nav-prev" aria-label="Previous image">
+            <.icon name="hero-chevron-left-mini" class="size-6" />
+          </button>
 
-        <button :if={@show_nav} type="button" class="slideshow-nav-next" aria-label="Next image">
-          <.icon name="hero-chevron-right-mini" class="size-6" />
-        </button>
+          <button :if={@show_nav} type="button" class="slideshow-nav-next" aria-label="Next image">
+            <.icon name="hero-chevron-right-mini" class="size-6" />
+          </button>
+        </div>
       </div>
     </div>
     """
@@ -180,7 +182,23 @@ defmodule SiteWeb.SiteComponents do
   def contact_links(assigns) do
     ~H"""
     <div {@rest}>
-      <ul class="flex flex-wrap justify-center items-center gap-2.5">
+      <%!-- Text --%>
+      <div class="-ml-2">
+        <div class="w-full mb-4 ml-1 flex items-center">
+          <div class="relative inline-block">
+            <em class="py-0.5 px-1 not-italic text-secondary dark:text-tint-secondary/25 bg-secondary/10 dark:bg-secondary/15">
+              Stay in contact
+            </em>
+            <.icon
+              name="lucide-corner-right-down"
+              class="absolute top-2 -right-6 size-5 text-secondary"
+            />
+          </div>
+        </div>
+      </div>
+
+      <%!-- Main Links --%>
+      <ul class="flex flex-wrap items-center gap-2.5">
         <.contact_link href="mailto:hello@nuno.site" icon="hero-envelope" class="hidden md:block">
           Email
         </.contact_link>
@@ -194,7 +212,8 @@ defmodule SiteWeb.SiteComponents do
         </.contact_link>
       </ul>
 
-      <ul class="mt-2 flex flex-wrap justify-center items-center gap-1">
+      <%!-- Secondary Links --%>
+      <ul class="mt-2 flex flex-wrap items-center gap-1">
         <.secondary_contact_link href="mailto:hello@nuno.site" class="md:hidden">
           Email
         </.secondary_contact_link>
@@ -222,7 +241,7 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <li {@rest}>
       <.button href={@href} size="sm" class="group">
-        <.icon name={@icon} class="size-5" />
+        <.icon name={@icon} class="size-4 text-content-40" />
         {render_slot(@inner_block)}
         <.icon
           name="lucide-arrow-up-right"
@@ -341,7 +360,7 @@ defmodule SiteWeb.SiteComponents do
       </div>
       <div class="text-content-20">
         <%= if @url do %>
-          <.link href={@url} target="_blank" rel="noopener noreferrer" class="link-ghost">
+          <.link href={@url} target="_blank" rel="noopener noreferrer" class="link-subtle">
             {@company}
           </.link>
         <% else %>
