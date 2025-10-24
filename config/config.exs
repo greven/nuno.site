@@ -45,7 +45,7 @@ config :site, SiteWeb.Endpoint,
 config :site, Site.Mailer, adapter: Swoosh.Adapters.Local
 
 config :bun,
-  version: "1.2.18",
+  version: "1.3.1",
   assets: [args: [], cd: Path.expand("../assets", __DIR__)],
   js: [
     args:
@@ -70,6 +70,10 @@ config :site, Site.Cache,
   max_size: 1_000_000,
   allocated_memory: 100 * 1_000_000,
   gc_interval: :timer.hours(48)
+
+config :site, Oban,
+  repo: Site.Repo,
+  queues: [misc: 10]
 
 # Inject the environment into the config
 config :site, :env, config_env()

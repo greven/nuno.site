@@ -63,9 +63,9 @@ defmodule SiteWeb.HomeLive.Index do
 
             <p class="mt-8 max-w-3xl font-light text-base/7 md:text-xl/8 text-content-30 text-balance">
               This site is where I share my knowledge and ideas with others. Here you'll find a
-              <.link navigate="/updates" class="link-subtle">collection</.link>
-              of my <.link navigate="/articles?category=blog" class="link-subtle">articles</.link>, <.link
-                navigate="/articles?category=note"
+              <.link navigate="/changelog" class="link-subtle">collection</.link>
+              of my <.link navigate="/blog?category=blog" class="link-subtle">articles</.link>, <.link
+                navigate="/blog?category=note"
                 class="link-subtle"
               >notes</.link>, and experiments.
             </p>
@@ -77,12 +77,12 @@ defmodule SiteWeb.HomeLive.Index do
           <%!-- Bento Grid --%>
           <div class="relative grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <Components.bento_card
-              navigate={~p"/articles"}
+              navigate={~p"/blog"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-file-text"
             >
               <Components.card_content loading={is_nil(@post_count)}>
-                <:label>Blog</:label>
+                <:label>The Blog</:label>
                 <:value>
                   {@post_count} {ngettext("Article", "Articles", @post_count)}
                 </:value>
@@ -120,13 +120,13 @@ defmodule SiteWeb.HomeLive.Index do
               </.tooltip>
 
               <Components.bento_card
-                navigate={~p"/updates"}
+                navigate={~p"/changelog"}
                 class="col-span-2 row-span-1"
                 icon="lucide-history"
                 size={:small}
               >
                 <Components.card_content>
-                  <:label>Updates</:label>
+                  <:label>Changelog</:label>
                 </Components.card_content>
               </Components.bento_card>
             </div>
@@ -164,14 +164,14 @@ defmodule SiteWeb.HomeLive.Index do
             </Components.bento_card>
 
             <Components.bento_card
-              navigate={~p"/travel"}
+              navigate={~p"/stack"}
               class="col-span-1 row-span-1 aspect-square"
-              icon="lucide-map"
+              icon="lucide-layers"
             >
               <Components.card_content loading={is_nil(@post_count)}>
-                <:label>Travel</:label>
+                <:label>Stack</:label>
                 <:value>
-                  {@trips_count} {ngettext("Trip", "Trips", @trips_count)}
+                  What I use
                 </:value>
               </Components.card_content>
             </Components.bento_card>
@@ -197,13 +197,27 @@ defmodule SiteWeb.HomeLive.Index do
             <Components.featured_posts posts={@posts} />
           </section>
 
-          <section>
+          <%!-- <section>
             <Components.home_section_title icon="lucide-origami" highlight="bg-secondary">
               Bluesky Updates
             </Components.home_section_title>
             <Components.social_feed_posts async={@skeets} posts={@streams.skeets} />
-          </section>
+          </section> --%>
         </div>
+
+        <%!-- #TODO: Debug for tooltip anchoring, DO REMOVE --%>
+        <%!-- <div class="">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum porro, sit quae error, vero provident, qui alias cum molestias suscipit sequi eos vitae minima doloremque maxime dolorum vel quasi id.
+          Nesciunt eaque labore id assumenda ipsum ea culpa necessitatibus nobis magnam dolorem modi laborum fugiat quaerat deleniti veniam sapiente reprehenderit quia, suscipit consequatur repellendus. Nobis ab ex delectus voluptate fugiat.
+          Corporis consequatur a perspiciatis aut hic mollitia suscipit voluptate recusandae explicabo voluptas molestiae nobis ex officiis fugit deleniti ipsum eius fuga repellendus, cumque itaque! Quis cupiditate dicta eveniet dolorem at.
+          Adipisci, et harum. Iure modi dolor eum, eveniet ipsum officiis doloremque commodi quos. Exercitationem, corporis consequatur. Fuga consequatur veritatis distinctio qui inventore possimus iusto quod tenetur repellendus, dolore consequuntur esse.
+          Repudiandae iusto nihil dolore error necessitatibus possimus quae architecto dicta beatae atque incidunt accusantium assumenda aliquam eveniet adipisci sint, corrupti reiciendis! Doloremque libero sequi mollitia. Corrupti ratione rerum molestiae minima.
+          Officia eaque sunt rerum facere, inventore commodi nulla enim optio iusto aliquam vero magni, soluta saepe reiciendis autem perspiciatis distinctio, hic unde. Ipsa esse non deserunt facere neque, perferendis praesentium?
+          Optio officia doloribus at obcaecati distinctio modi repellat sequi! A cupiditate nemo iste iusto, minima, quia ea mollitia exercitationem similique quasi distinctio officia repellat totam corrupti voluptates cum deserunt consequatur.
+          Necessitatibus exercitationem dolorem laborum fugit saepe rerum cum iste excepturi provident, quod nam placeat consectetur quos, blanditiis, nesciunt architecto sapiente repudiandae molestias earum corrupti illo a quae praesentium. Delectus, praesentium!
+          Fugiat praesentium voluptate dolor vero optio sint enim dolorum, ratione incidunt cumque eveniet corrupti doloribus id officia culpa maxime quod quos tenetur voluptatum maiores numquam autem repudiandae, magni dolorem? Repellendus.
+          Quia recusandae, architecto neque molestias, cumque dolorum quod error accusantium ratione sunt velit vitae. Beatae, voluptatum. Ea deserunt assumenda porro, consequatur quos ullam obcaecati nobis aliquid alias libero. Praesentium, placeat!
+        </div> --%>
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -225,13 +239,13 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign(:post_count, published_posts_count)
       |> assign(:bookmarks_count, 0)
       |> assign(:photos_count, 0)
-      |> assign(:trips_count, Site.Travel.list_trips() |> length())
       |> assign_async(:track, &get_currently_playing/0)
       |> assign_async(:reading_stats, fn ->
         {:ok, %{reading_stats: get_reading_stats()}}
       end)
-      |> stream_configure(:skeets, dom_id: & &1.cid)
-      |> stream_async(:skeets, fn -> {:ok, get_bluesky_posts(), limit: 5} end)
+
+    # |> stream_configure(:skeets, dom_id: & &1.cid)
+    # |> stream_async(:skeets, fn -> get_bluesky_posts() end)
 
     {:ok, socket, temporary_assigns: [posts: posts]}
   end
@@ -259,12 +273,12 @@ defmodule SiteWeb.HomeLive.Index do
     end
   end
 
-  defp get_bluesky_posts do
-    case Services.get_latest_skeets("nuno.site") do
-      {:ok, skeets} -> skeets |> Enum.take(5)
-      error -> error
-    end
-  end
+  # defp get_bluesky_posts do
+  #   case Services.get_latest_skeets("nuno.site") do
+  #     {:ok, skeets} -> {:ok, Enum.take(skeets, 5), limit: 5}
+  #     error -> error
+  #   end
+  # end
 
   defp get_reading_stats do
     case Services.get_reading_stats() do

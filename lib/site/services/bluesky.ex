@@ -6,76 +6,290 @@ defmodule Site.Services.Bluesky do
   """
 
   require Logger
+  import Ecto.Query
   use Nebulex.Caching
 
-  @default_limit 20
+  alias Site.Repo
+  alias Site.Services.Bluesky.Post
+
   @base_url "https://bsky.social/xrpc"
 
-  @type post :: %{
-          cid: String.t(),
-          text: String.t(),
-          created_at: DateTime.t(),
-          like_count: non_neg_integer(),
-          repost_count: non_neg_integer(),
-          reply_count: non_neg_integer(),
-          author_handle: String.t(),
-          author_name: String.t(),
-          avatar_url: String.t() | nil,
-          uri: String.t(),
-          url: String.t()
-        }
+  @doc """
+  Lists recent BlueSky posts from the database optionally filtered by
+  actor (handle or DID) and limited to a given number of posts.
+  """
+  def list_recent_posts(opts \\ []) do
+    limit = Keyword.get(opts, :limit, 100)
+    actor_or_did = Keyword.get(opts, :actor, nil)
 
-  defmodule Post do
-    defstruct [
-      :cid,
-      :text,
-      :created_at,
-      :like_count,
-      :repost_count,
-      :reply_count,
-      :author_handle,
-      :author_name,
-      :avatar_url,
-      :uri,
-      :url
-    ]
+    base_query =
+      from p in Post,
+        where: is_nil(p.deleted_at),
+        order_by: [desc: p.created_at],
+        limit: ^limit
+
+    query =
+      if actor_or_did,
+        do:
+          from(p in base_query,
+            where: p.author_handle == ^actor_or_did or p.did == ^actor_or_did
+          ),
+        else: base_query
+
+    Repo.all(query)
+  end
+
+  def count_posts do
+    Repo.aggregate(from(p in Post, where: is_nil(p.deleted_at)), :count, :id)
   end
 
   @doc """
-  Fetches the latest `n` posts from any BlueSky handle, excluding replies.
+  Get the author feed for a given BlueSky actor (handle or DID).
+  Returns a list of `%Post{}` structs.
   """
-  @spec get_latest_posts(String.t(), pos_integer()) :: {:ok, [post()]} | {:error, term()}
-  def get_latest_posts(handle, limit \\ @default_limit) do
-    with {:ok, config} <- get_config(),
-         {:ok, session} <- create_session(config),
-         {:ok, posts} <- fetch_author_feed(handle, session.access_jwt, limit) do
-      formatted_posts = Enum.map(posts, &format_post/1)
-      {:ok, formatted_posts}
+  def get_author_feed(actor, opts \\ []) do
+    case fetch_author_feed(actor, opts) do
+      {:ok, %{"feed" => feed}} -> {:ok, Enum.map(feed, &map_author_post/1)}
+      {:error, reason} -> {:error, reason}
     end
   end
 
-  ## Private functions
+  @doc """
+  Incrementally sync Bluesky posts for the given handle into the database.
 
-  @spec format_post(map()) :: post()
-  defp format_post(%{"post" => post}) do
-    %{
-      cid: post["cid"] || "",
-      text: get_in(post, ["record", "text"]) || "",
+  The options are the same that `Site.Services.Bluesky.list_author_feed/2` accepts
+  plus an additional `cutoff_date` option to stop fetching posts older than the given date.
+  The `cutoff_date` should be a `DateTime` struct and it defaults to the last 7 days.
+  """
+  def sync_posts(handle, opts \\ []) do
+    cutoff_date = Keyword.get(opts, :cutoff_date, DateTime.shift(DateTime.utc_now(), day: -7))
+
+    new_posts =
+      stream_author_feed(handle, opts)
+      |> Stream.flat_map(& &1)
+      |> Stream.take_while(fn %Post{} = post ->
+        case post.created_at do
+          %DateTime{} = dt -> DateTime.compare(dt, cutoff_date) == :gt
+          _ -> false
+        end
+      end)
+      |> Enum.to_list()
+
+    upsert_posts!(new_posts)
+    {:ok, length(new_posts)}
+  end
+
+  def upsert_posts!(posts) when is_list(posts) do
+    placeholders = %{now: DateTime.truncate(DateTime.utc_now(), :second)}
+
+    entries =
+      Enum.map(posts, fn %Post{} = post ->
+        %{
+          did: post.did,
+          rkey: post.rkey,
+          cid: post.cid,
+          uri: post.uri,
+          url: post.url,
+          text: post.text,
+          created_at: DateTime.truncate(post.created_at, :second),
+          like_count: post.like_count,
+          repost_count: post.repost_count,
+          reply_count: post.reply_count,
+          author_handle: post.author_handle,
+          author_name: post.author_name,
+          avatar_url: post.avatar_url,
+          inserted_at: {:placeholder, :now},
+          updated_at: {:placeholder, :now}
+        }
+      end)
+
+    Repo.insert_all(Post, entries,
+      conflict_target: [:did, :rkey],
+      on_conflict: {:replace, [:cid, :url, :text, :created_at, :updated_at]},
+      placeholders: placeholders
+    )
+  end
+
+  defp stream_author_feed(actor, opts) do
+    Stream.unfold(
+      nil,
+      fn
+        -1 ->
+          nil
+
+        cursor ->
+          case fetch_author_feed(actor, Keyword.put(opts, :cursor, cursor)) do
+            {:ok, %{"feed" => feed} = resp} ->
+              posts = Enum.map(feed, &map_author_post/1)
+              next = resp["cursor"]
+
+              # We return -1 as the next cursor since nil would
+              # be ambiguous as it's the initial cursor value.
+              cond do
+                posts == [] -> nil
+                is_nil(next) -> {posts, -1}
+                next -> {posts, next}
+                true -> {posts, nil}
+              end
+
+            _ ->
+              nil
+          end
+      end
+    )
+  end
+
+  defp map_author_post(%{"post" => post}) do
+    %Post{
+      did: get_in(post, ["author", "did"]),
+      rkey: extract_rkey_from_uri!(post["uri"]),
+      cid: post["cid"],
+      uri: post["uri"],
+      url: post_url(post),
+      text: get_in(post, ["record", "text"]),
       created_at: parse_datetime(get_in(post, ["record", "createdAt"])),
-      like_count: post["likeCount"] || 0,
-      repost_count: post["repostCount"] || 0,
-      reply_count: post["replyCount"] || 0,
-      author_handle: get_in(post, ["author", "handle"]) || "",
-      author_name: get_in(post, ["author", "displayName"]) || "",
-      avatar_url: get_in(post, ["author", "avatar"]) || nil,
-      uri: post["uri"] || "",
-      url: post_url(post) || ""
+      like_count: post["likeCount"],
+      repost_count: post["repostCount"],
+      reply_count: post["replyCount"],
+      author_handle: get_in(post, ["author", "handle"]),
+      author_name: get_in(post, ["author", "displayName"]),
+      avatar_url: get_in(post, ["author", "avatar"])
     }
+  end
+
+  defp map_author_post(_), do: nil
+
+  @doc """
+  Fetches the author feed for a given BlueSky actor (handle or DID).
+  The options are:
+    - `:limit` - number of posts to fetch (default: 100)
+    - `:reverse` - whether to fetch in reverse chronological order (default: true)
+    - `:cursor` - pagination cursor (default: nil)
+  """
+  def fetch_author_feed(actor, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 100)
+    reverse = Keyword.get(opts, :reverse, true)
+    cursor = Keyword.get(opts, :cursor, nil)
+
+    with {:ok, config} <- get_config(),
+         {:ok, session} <- create_session(config) do
+      req = Req.new(base_url: @base_url)
+
+      headers = [
+        {"Authorization", "Bearer #{session.access_jwt}"},
+        {"Content-Type", "application/json"}
+      ]
+
+      params =
+        [
+          actor: actor,
+          filter: "posts_and_author_threads",
+          reverse: reverse,
+          limit: limit
+        ] ++ if cursor, do: [cursor: cursor], else: []
+
+      case Req.get(req, url: "/app.bsky.feed.getAuthorFeed", headers: headers, params: params) do
+        {:ok, %{status: 200, body: body}} ->
+          {:ok, body}
+
+        {:ok, %{status: status, body: body}} ->
+          Logger.error("Author feed failed with status: #{status} - #{inspect(body)}")
+          {:error, {:fetch_failed, status, body}}
+
+        {:error, reason} ->
+          Logger.error("Author feed failed: #{inspect(reason)}")
+          {:error, {:request_failed, reason}}
+      end
+    end
+  end
+
+  @doc """
+  Fetches records for a given BlueSky actor (handle or DID).
+  The options are:
+    - `:limit` - number of records to fetch (default: 100)
+    - `:reverse` - whether to fetch in reverse chronological order (default: true)
+    - `:cursor` - pagination cursor (default: nil)
+  """
+  def fetch_records(actor, opts \\ []) do
+    limit = Keyword.get(opts, :limit, 100)
+    reverse = Keyword.get(opts, :reverse, true)
+    cursor = Keyword.get(opts, :cursor, nil)
+
+    with {:ok, config} <- get_config(),
+         {:ok, session} <- create_session(config),
+         {:ok, did} <- resolve_did(actor) do
+      req = Req.new(base_url: @base_url)
+
+      headers = [
+        {"Authorization", "Bearer #{session.access_jwt}"},
+        {"Content-Type", "application/json"}
+      ]
+
+      params =
+        [
+          repo: did,
+          collection: "app.bsky.feed.post",
+          reverse: reverse,
+          limit: limit
+        ] ++ if cursor, do: [cursor: cursor], else: []
+
+      case Req.get(req, url: "/com.atproto.repo.listRecords", headers: headers, params: params) do
+        {:ok, %{status: 200, body: %{"records" => records}}} ->
+          {:ok, records}
+
+        {:ok, %{status: status, body: body}} ->
+          Logger.error("List records failed with status: #{status} - #{inspect(body)}")
+          {:error, {:fetch_failed, status, body}}
+
+        {:error, reason} ->
+          Logger.error("List records request failed: #{inspect(reason)}")
+          {:error, {:request_failed, reason}}
+      end
+    end
+  end
+
+  @doc """
+  Resolves a BlueSky handle to its corresponding DID given an actor string.
+  The actor can be either a handle (e.g., "nuno.site") or a DID (e.g., "did:plc:...").
+  Returns the DID as a string.
+  """
+
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: {:resolve_did, actor_or_did},
+              opts: [ttl: :timer.hours(12)]
+            )
+
+  def resolve_did("did:plc:" <> _ = actor_or_did),
+    do: {:ok, actor_or_did}
+
+  def resolve_did(actor_or_did) when is_binary(actor_or_did) do
+    req = Req.new(base_url: @base_url)
+
+    case Req.get(req,
+           url: "/com.atproto.identity.resolveHandle",
+           params: [handle: actor_or_did]
+         ) do
+      {:ok, %{status: 200, body: %{"did" => did}}} ->
+        {:ok, did}
+
+      {:ok, %{status: status, body: body}} ->
+        Logger.error("Failed to resolve BlueSky handle: #{status} - #{inspect(body)}")
+        {:error, {:resolve_failed, status, body}}
+
+      {:error, reason} ->
+        Logger.error("BlueSky handle resolution request failed: #{inspect(reason)}")
+        {:error, {:request_failed, reason}}
+    end
   end
 
   @doc """
   Constructs the Bluesky post URL from a post record
   """
+  def post_url(%Post{rkey: rkey, author_handle: handle}) when not is_nil(handle) do
+    "https://bsky.app/profile/#{handle}/post/#{rkey}"
+  end
+
   def post_url(%{"uri" => uri, "author" => %{"handle" => handle}}) do
     case extract_rkey_from_uri(uri) do
       {:ok, rkey} -> "https://bsky.app/profile/#{handle}/post/#{rkey}"
@@ -84,6 +298,8 @@ defmodule Site.Services.Bluesky do
   end
 
   def post_url(_), do: nil
+
+  ## Private functions
 
   # Extracts the record key (rkey) from a Bluesky AT URI
   # Example: "at://did:plc:abc123/app.bsky.feed.post/3k44dkosfji2y" -> "3k44dkosfji2y"
@@ -99,56 +315,23 @@ defmodule Site.Services.Bluesky do
 
   defp extract_rkey_from_uri(_), do: :error
 
-  @spec parse_datetime(String.t() | nil) :: DateTime.t()
-  defp parse_datetime(nil), do: DateTime.utc_now()
-
-  defp parse_datetime(datetime_string) do
-    case DateTime.from_iso8601(datetime_string) do
-      {:ok, datetime, _} -> datetime
-      {:error, _} -> DateTime.utc_now()
-    end
-  end
-
-  @spec fetch_author_feed(String.t(), String.t(), pos_integer()) ::
-          {:ok, [map()]} | {:error, term()}
-  defp fetch_author_feed(actor, access_jwt, limit) do
-    url = "#{@base_url}/app.bsky.feed.getAuthorFeed"
-
-    headers = [
-      {"Authorization", "Bearer #{access_jwt}"},
-      {"Content-Type", "application/json"}
-    ]
-
-    params = [
-      actor: actor,
-      filter: "posts_and_author_threads",
-      limit: limit
-    ]
-
-    case Req.get(url, headers: headers, params: params) do
-      {:ok, %{status: 200, body: %{"feed" => feed}}} ->
-        {:ok, feed}
-
-      {:ok, %{status: status, body: body}} ->
-        Logger.error("Failed to fetch BlueSky feed: #{status} - #{inspect(body)}")
-        {:error, {:fetch_failed, status, body}}
-
-      {:error, reason} ->
-        Logger.error("BlueSky feed request failed: #{inspect(reason)}")
-        {:error, {:request_failed, reason}}
+  defp extract_rkey_from_uri!(uri) do
+    case extract_rkey_from_uri(uri) do
+      {:ok, rkey} -> rkey
+      :error -> raise "Invalid Bluesky URI: #{uri}"
     end
   end
 
   @spec create_session(map()) :: {:ok, %{access_jwt: String.t()}} | {:error, term()}
   defp create_session(%{handle: handle, app_password: app_password}) do
-    url = "#{@base_url}/com.atproto.server.createSession"
+    req = Req.new(base_url: @base_url)
 
     body = %{
       identifier: handle,
       password: app_password
     }
 
-    case Req.post(url, json: body) do
+    case Req.post(req, url: "/com.atproto.server.createSession", json: body) do
       {:ok, %{status: 200, body: response}} ->
         {:ok, %{access_jwt: response["accessJwt"]}}
 
@@ -179,6 +362,16 @@ defmodule Site.Services.Bluesky do
 
       {handle, app_password} ->
         {:ok, %{handle: handle, app_password: app_password}}
+    end
+  end
+
+  @spec parse_datetime(String.t() | nil) :: DateTime.t()
+  defp parse_datetime(nil), do: DateTime.utc_now()
+
+  defp parse_datetime(datetime_string) do
+    case DateTime.from_iso8601(datetime_string) do
+      {:ok, datetime, _} -> datetime
+      {:error, _} -> DateTime.utc_now()
     end
   end
 end

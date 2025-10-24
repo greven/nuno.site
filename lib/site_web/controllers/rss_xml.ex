@@ -6,7 +6,7 @@ defmodule SiteWeb.RssXML do
   embed_templates "rss_xml/*"
 
   def site_url, do: "https://nuno.site"
-  def post_url(%Blog.Post{} = post), do: ~p"/articles/#{post.year}/#{post}"
+  def post_url(%Blog.Post{} = post), do: ~p"/blog/#{post.year}/#{post}"
 
   def post_date(nil), do: ""
   def post_date(articles) when is_list(articles), do: post_date(List.first(articles))

@@ -26,38 +26,27 @@ function supportsViewTransitions(): boolean {
   return typeof document.startViewTransition === 'function';
 }
 
-function startViewTransition(): void {
-  if (!supportsViewTransitions()) return;
-  document.startViewTransition(() => pageLoadingDone);
-}
-
-let onPageLoaded = () => {
-  topbar.hide();
-};
-
-let pageLoadingDone = new Promise<void>((resolve) => {
-  window.addEventListener(
-    'phx:page-loading-stop',
-    (_info) => {
-      onPageLoaded();
-      resolve();
-    },
-    { once: true }
-  );
-});
-
 window.addEventListener('phx:page-loading-start', (info) => {
   const event = info as CustomEvent;
 
-  // Only start view transition for navigation events, not form submissions
-  if (event.detail?.kind === 'redirect') {
-    startViewTransition();
+  // Note: View transitions (this is hacky so remove once LiveView supports this natively)
+  if (event.detail?.kind === 'initial') {
+    if (!supportsViewTransitions()) return;
+    document.startViewTransition(() => {
+      return new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 50);
+      });
+    });
   }
 
   topbar.show(300);
 });
 
-window.addEventListener('phx:page-loading-stop', (_info) => onPageLoaded());
+window.addEventListener('phx:page-loading-stop', (_info) => {
+  topbar.hide();
+});
 
 // connect if there are any LiveViews on the page
 liveSocket.connect();

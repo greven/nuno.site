@@ -321,24 +321,13 @@ defmodule SiteWeb.KitchenSinkLive.Index do
           </h2>
 
           <div class="flex items-center gap-4">
-            <.tooltip label="This is a tooltip" default_opened={true}>
-              <.button variant="solid">Hover for tooltip</.button>
+            <.tooltip label="This is a tooltip">
+              <.button variant="solid">Tooltip</.button>
             </.tooltip>
 
-            <.tooltip label="Another tooltip">
-              <.button variant="solid">Hover for tooltip</.button>
-            </.tooltip>
-
-            <.tooltip label="Yet Another tooltip" position="bottom">
-              <.button variant="solid">Hover for tooltip</.button>
-            </.tooltip>
-
-            <.tooltip label="To the Right!" position="right">
-              <.button variant="solid">Hover for tooltip</.button>
-            </.tooltip>
-
-            <.tooltip label="To the Left!" position="left">
-              <.button variant="solid">Hover for tooltip</.button>
+            <.tooltip position="bottom">
+              <.button variant="solid">Bottom</.button>
+              <:content>This is the tooltip content slot!</:content>
             </.tooltip>
           </div>
         </div>

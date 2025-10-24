@@ -31,11 +31,8 @@ defmodule SiteWeb.Finder do
         {:nav_home, name: "Home", description: "Go Home", icon: "lucide-house", push: true},
         {:nav_about,
          name: "About", description: "About me", icon: "lucide-fingerprint", push: true},
-        {:nav_articles,
-         name: "Articles",
-         description: "Blog articles and notes",
-         icon: "lucide-notebook-pen",
-         push: true},
+        {:nav_blog,
+         name: "Blog", description: "Articles and notes", icon: "lucide-notebook-pen", push: true},
         {:nav_music,
          name: "Music", description: "Recent music", icon: "lucide-music-4", push: true},
         {:nav_books,
@@ -49,8 +46,8 @@ defmodule SiteWeb.Finder do
          name: "Stack", description: "My stack / tools I use", icon: "lucide-layers", push: true},
         {:nav_bookmarks,
          name: "Bookmarks", description: "My bookmarks", icon: "lucide-bookmark", push: true},
-        {:nav_updates,
-         name: "Updates", description: "My updates", icon: "lucide-history", push: true}
+        {:nav_changelog,
+         name: "Changelog", description: "Site updates", icon: "lucide-history", push: true}
       ]
     }
   end
@@ -68,7 +65,7 @@ defmodule SiteWeb.Finder do
   ## Handle commands
   def handle_command(:nav_home, socket), do: push_navigate(socket, to: ~p"/")
   def handle_command(:nav_about, socket), do: push_navigate(socket, to: ~p"/about")
-  def handle_command(:nav_articles, socket), do: push_navigate(socket, to: ~p"/articles")
+  def handle_command(:nav_blog, socket), do: push_navigate(socket, to: ~p"/blog")
   def handle_command(:nav_music, socket), do: push_navigate(socket, to: ~p"/music")
   def handle_command(:nav_books, socket), do: push_navigate(socket, to: ~p"/books")
   def handle_command(:nav_gaming, socket), do: push_navigate(socket, to: ~p"/gaming")
@@ -76,5 +73,5 @@ defmodule SiteWeb.Finder do
   def handle_command(:nav_travel, socket), do: push_navigate(socket, to: ~p"/travel")
   def handle_command(:nav_stack, socket), do: push_navigate(socket, to: ~p"/stack")
   def handle_command(:nav_bookmarks, socket), do: push_navigate(socket, to: ~p"/bookmarks")
-  def handle_command(:nav_updates, socket), do: push_navigate(socket, to: ~p"/updates")
+  def handle_command(:nav_changelog, socket), do: push_navigate(socket, to: ~p"/changelog")
 end

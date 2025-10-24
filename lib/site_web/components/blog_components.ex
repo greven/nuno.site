@@ -32,7 +32,7 @@ defmodule SiteWeb.BlogComponents do
         <.post_card_meta post={@post} format="%b %-d, %Y" class="font-light text-content-30 text-sm" />
         <.header tag="h2" class="mt-1" header_class="flex justify-between gap-8">
           <.link
-            navigate={~p"/articles/#{@post.year}/#{@post}"}
+            navigate={~p"/blog/#{@post.year}/#{@post}"}
             class="link-subtle text-lg line-clamp-2"
           >
             <span class="absolute inset-0 z-10"></span>
@@ -67,7 +67,7 @@ defmodule SiteWeb.BlogComponents do
       |> assign(
         :fallback_image,
         case assigns.post.category do
-          :blog -> "icons.svg"
+          :article -> "icons.svg"
           :note -> "note.svg"
           _ -> "icons.svg"
         end
@@ -129,7 +129,7 @@ defmodule SiteWeb.BlogComponents do
         <section :for={{key, articles} <- @articles} class="group">
           <.header
             tag="h2"
-            class={@sticky_header && "sticky top-(--header-height) bg-surface z-1"}
+            class={@sticky_header && "sticky top-(--header-height) z-1"}
             header_class="text-content-20 text-3xl font-medium md:font-normal"
           >
             <div class={@header_container_class}>
@@ -178,7 +178,7 @@ defmodule SiteWeb.BlogComponents do
 
         <h2 class="col-start-3 col-span-1">
           <.link
-            navigate={~p"/articles/#{@post.year}/#{@post}"}
+            navigate={~p"/blog/#{@post.year}/#{@post}"}
             class="link-subtle font-medium text-lg line-clamp-2 text-pretty"
           >
             <span class="absolute inset-0"></span>
@@ -270,9 +270,9 @@ defmodule SiteWeb.BlogComponents do
     <div id="post-meta" class={@class} phx-hook="PostMeta">
       <div class="flex flex-wrap items-center justify-center gap-3 text-sm text-content-20">
         <.post_publication_date post={@post} show_icon={@show_icon} />
-        <span :if={@post.category == :blog} class="font-sans text-xs text-primary">&bull;</span>
+        <span :if={@post.category == :article} class="font-sans text-xs text-primary">&bull;</span>
         <.post_reading_time
-          :if={@post.category == :blog}
+          :if={@post.category == :article}
           post={@post}
           label="read"
           show_icon={@show_icon}
@@ -956,15 +956,15 @@ defmodule SiteWeb.BlogComponents do
   ## Helpers
 
   # The color given to each post category.
-  defp category_color(:blog), do: "text-primary"
-  defp category_color(:note), do: "text-amber-600"
+  defp category_color(:article), do: "text-primary"
+  defp category_color(:note), do: "text-amber-500"
   defp category_color(_), do: "text-gray-600"
 
   defp post_path(%Blog.Post{} = post),
-    do: ~p"/articles/#{post.year}/#{post}"
+    do: ~p"/blog/#{post.year}/#{post}"
 
   defp post_path(_), do: nil
 
   defp post_url(%Blog.Post{} = post),
-    do: url(~p"/articles/#{post.year}/#{post}")
+    do: url(~p"/blog/#{post.year}/#{post}")
 end

@@ -1,17 +1,14 @@
-function supportsPopover() {
-  return Object.hasOwn(HTMLElement.prototype, 'popover');
-}
-
 export const Tooltip = {
   mounted() {
-    this.anchor = this.el.querySelector('[data-part="tooltip-anchor"]');
+    this.anchor = document.getElementById(`${this.el.id}-anchor`);
     this.tooltip = document.querySelector(`[data-popover=${this.el.id}]`);
 
-    this.defaultOpened = this.el.hasAttribute('data-default-opened');
     this.openDelay = this.el.dataset.openDelay || 200;
     this.closeDelay = this.el.dataset.closeDelay;
 
-    if (!supportsPopover()) {
+    const supportsPopover = Object.hasOwn(HTMLElement.prototype, 'popover');
+
+    if (!supportsPopover) {
       this.js().hide(this.tooltip);
       return;
     }
@@ -19,9 +16,8 @@ export const Tooltip = {
     this.anchor.addEventListener('mouseenter', this.handleEnter.bind(this));
     this.anchor.addEventListener('mouseleave', this.handleLeave.bind(this));
 
-    if (this.defaultOpened) {
-      this.tooltip.showPopover();
-    }
+    // DEBUG: REMOVE
+    this.tooltip.showPopover();
   },
 
   destroyed() {

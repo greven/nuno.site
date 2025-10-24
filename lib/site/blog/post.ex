@@ -20,7 +20,7 @@ defmodule Site.Blog.Post do
             year: nil,
             date: nil,
             updated: nil,
-            category: :blog,
+            category: :article,
             tags: []
 
   @doc """
@@ -33,10 +33,10 @@ defmodule Site.Blog.Post do
 
   @doc """
   The categories of a post/article:
-  - `:blog` - A blog post
+  - `:article` - An article post
   - `:note` - A note (e.g. a short post, a thought, etc.).
   """
-  def categories, do: ~w(blog note)a
+  def categories, do: ~w(article note)a
 
   @doc """
   The NimblePublisher build callback function.

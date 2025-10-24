@@ -1,5 +1,8 @@
-defmodule SiteWeb.UpdatesLive.Index do
+defmodule SiteWeb.ChangelogLive.Index do
   use SiteWeb, :live_view
+
+  alias Site.Changelog
+  alias SiteWeb.ChangelogLive.Components
 
   defmodule Category do
     defstruct id: nil, name: nil, icon: nil, enabled?: true
@@ -15,13 +18,15 @@ defmodule SiteWeb.UpdatesLive.Index do
     >
       <Layouts.page_content class="flex flex-col gap-12 md:gap-16">
         <.header>
-          Latest Updates
+          Changelog
           <:subtitle>
-            Last year's blog posts and social activity in one place
+            Site changes and other updates
           </:subtitle>
         </.header>
 
-        <div class="mt-8 flex justify-between items-center"></div>
+        <div class="mt-8 flex justify-between items-center">
+          <Components.timeline_nav counts={@streams.counts} />
+        </div>
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -32,7 +37,9 @@ defmodule SiteWeb.UpdatesLive.Index do
     socket =
       socket
       |> assign(:page_title, "Updates")
-      |> stream(:updates, Site.Updates.list_latest_updates(), reset: true)
+      |> stream(:counts, Changelog.updates_grouped_by_date())
+
+    # |> stream(:updates, Changelog.list_latest_updates())
 
     {:ok, socket}
   end

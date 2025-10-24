@@ -37,7 +37,7 @@ defmodule Site.MixProject do
     [
       # Phoenix Framework
       {:phoenix, "~> 1.8.1"},
-      {:phoenix_live_view, "~> 1.1.14"},
+      {:phoenix_live_view, "~> 1.1.15"},
       {:phoenix_ecto, "~> 4.6"},
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
@@ -67,6 +67,7 @@ defmodule Site.MixProject do
 
       # Utils
       {:req, "~> 0.5"},
+      {:oban, "~> 2.20"},
       {:bcrypt_elixir, "~> 3.3"},
       {:dns_cluster, "~> 0.2"},
       {:lazy_html, "~> 0.1"},
@@ -81,7 +82,6 @@ defmodule Site.MixProject do
       {:mdex, "~> 0.9"},
       {:nimble_publisher, "~> 1.1"},
       # {:phoenix_seo, "~> 0.1"},
-      # {:atomex, "~> 0.5"},
 
       # Assets
       {:bun, "~> 1.5", runtime: Mix.env() == :dev},
@@ -108,6 +108,7 @@ defmodule Site.MixProject do
        depth: 1},
 
       # Development
+      {:igniter, "~> 0.6", only: [:dev]},
       {:credo, "~> 1.7", only: :dev, runtime: false},
       {:tidewave, "~> 0.5", only: [:dev]}
       # {:live_debugger, "~> 0.2.2", only: :dev},

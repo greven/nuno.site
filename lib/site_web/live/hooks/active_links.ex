@@ -17,8 +17,8 @@ defmodule SiteWeb.Hooks.ActiveLinks do
     active_link =
       case {socket.view, socket.assigns.live_action} do
         {SiteWeb.HomeLive.Index, _} -> :home
-        {SiteWeb.BlogLive.Index, _} -> :articles
-        {SiteWeb.BlogLive.Show, _} -> :articles
+        {SiteWeb.BlogLive.Index, _} -> :blog
+        {SiteWeb.BlogLive.Show, _} -> :blog
         {SiteWeb.AboutLive.Index, _} -> :about
         {SiteWeb.AdminLive.Index, _} -> :admin
         {_, _} -> nil

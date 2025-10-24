@@ -215,7 +215,7 @@ export const Finder = {
 
   // Search items by query, items to search depend on the current mode,
   // by `default` we search the default items (navigation / commands), if the
-  // query starts with ">" we search content/articles (`search` mode).
+  // query starts with ">" we search content/blog (`search` mode).
   searchItems(query) {
     // Search the default items to filter results
     const matchingItems = this.filterItemsByQuery(query);

@@ -293,7 +293,7 @@ defmodule SiteWeb.HomeLive.Components do
         </:loading>
 
         <:failed :let={_failure}>
-          <div class="flex flex-col items-center justify-center h-48 md:h-52 lg:h-56 bg-surface-10 text-content-40/60">
+          <div class="max-w-lg mx-auto flex flex-col items-center justify-center h-48 md:h-52 lg:h-56 bg-surface-10/40 rounded-lg text-content-40/60">
             <.icon name="lucide-wifi-off" class="size-6 mb-2" /> Unable to load posts
           </div>
         </:failed>
@@ -391,7 +391,7 @@ defmodule SiteWeb.HomeLive.Components do
             <div class="flex items-center gap-2 md:max-w-5/6">
               <.link
                 class="link-subtle decoration-1 transition-none"
-                navigate={~p"/articles/#{post.year}/#{post}"}
+                navigate={~p"/blog/#{post.year}/#{post}"}
               >
                 <span class="absolute inset-0 z-10"></span>
                 <h3 class="font-medium text-content-20 group-hover/card:text-content-10 line-clamp-2 md:line-clamp-1">
@@ -405,7 +405,7 @@ defmodule SiteWeb.HomeLive.Components do
             <%!-- Meta --%>
             <div class="flex items-center shrink-0 gap-2 text-sm md:justify-between">
               <BlogComponents.post_publication_date
-                class="shrink-0 text-content-40  md:order-3"
+                class="shrink-0 text-content-40  md:order-3 font-mono"
                 format="%b %d, %Y"
                 show_icon={false}
                 post={post}
@@ -416,7 +416,7 @@ defmodule SiteWeb.HomeLive.Components do
               <%!-- Tags --%>
               <div class="flex items-center flex-nowrap shrink-0 line-clamp-1 md:order-1">
                 <span class="text-content-40/40 mr-1">#</span>
-                <span class="text-content-40/50 group-hover:text-content-40">
+                <span class="text-content-40/50 group-hover/card:text-content-40">
                   {List.first(post.tags)}
                 </span>
               </div>
@@ -427,7 +427,7 @@ defmodule SiteWeb.HomeLive.Components do
 
       <div class="mt-4 md:mt-6 text-center">
         <.link
-          navigate={~p"/articles"}
+          navigate={~p"/blog"}
           class="group inline-block text-sm md:text-base font-medium link-subtle decoration-1"
         >
           View all articles

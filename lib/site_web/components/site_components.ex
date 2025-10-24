@@ -1155,7 +1155,10 @@ defmodule SiteWeb.SiteComponents do
               <a
                 href={game.store_url}
                 target="_blank"
-                class="group relative w-full sm:w-auto sm:shrink-0 rounded-md border-2 border-transparent hover:border-secondary transition-border"
+                class={[
+                  "group relative w-full sm:w-auto sm:shrink-0 rounded-md border-2 border-transparent hover:border-secondary transition-border",
+                  "has-data-[error='true']:hidden"
+                ]}
               >
                 <div class={[
                   "absolute inset-0 rounded-sm bg-secondary/25 opacity-0 transition-opacity",

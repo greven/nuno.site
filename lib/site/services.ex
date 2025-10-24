@@ -25,14 +25,41 @@ defmodule Site.Services do
 
   ## Bluesky
 
+  @doc """
+  Get the latest BlueSky posts from the given actor (handle or DID).
+  """
+
   @decorate cacheable(
               cache: Site.Cache,
-              key: {:bluesky_posts, handle},
-              opts: [ttl: :timer.minutes(10)]
+              key: {:get_latest_skeets, opts},
+              opts: [ttl: :timer.minutes(30)]
             )
-  def get_latest_skeets(handle, opts \\ []) do
+  def get_recent_bluesky_posts(opts \\ []) do
     limit = Keyword.get(opts, :limit, 10)
-    Bluesky.get_latest_posts(handle, limit)
+    actor_or_did = Keyword.get(opts, :actor, nil)
+
+    Bluesky.list_recent_posts(limit: limit, actor: actor_or_did)
+  end
+
+  @doc """
+  Incrementally sync BlueSky posts for the given handle into the database
+  till a given cutoff date (defaults to 7 days ago) unless the "caching" database
+  table is empty, so we override the cutoff date in that case to fetch all posts.
+  """
+
+  def sync_bluesky_posts(handle, opts \\ []) do
+    post_count = Bluesky.count_posts()
+
+    case post_count do
+      0 ->
+        Bluesky.sync_posts(
+          handle,
+          Keyword.put(opts, :cutoff_date, ~U[1970-01-01 00:00:00Z])
+        )
+
+      _ ->
+        Bluesky.sync_posts(handle, opts)
+    end
   end
 
   ## Music

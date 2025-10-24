@@ -1,6 +1,20 @@
 defmodule SiteWeb.Helpers do
-  def use_id(prefix \\ "ns"),
-    do: "#{prefix}-" <> Uniq.UUID.uuid4()
+  def use_id(prefix \\ "ns") do
+    "#{prefix}-"
+    |> Kernel.<>(random_encoded_bytes())
+    |> String.replace(["/", "+"], "-")
+  end
+
+  # Taken from Phoenix LiveView
+  defp random_encoded_bytes do
+    binary = <<
+      System.system_time(:nanosecond)::64,
+      :erlang.phash2({node(), self()})::16,
+      :erlang.unique_integer()::16
+    >>
+
+    Base.url_encode64(binary)
+  end
 
   def render_markdown!(text) do
     text

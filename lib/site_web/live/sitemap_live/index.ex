@@ -39,7 +39,7 @@ defmodule SiteWeb.SitemapLive.Index do
           <h2>Posts</h2>
           <ul class="font-normal">
             <li :for={post <- @posts}>
-              <.link href={~p"/articles/#{post.year}/#{post}"}>
+              <.link href={~p"/blog/#{post.year}/#{post}"}>
                 {post.title}
               </.link>
             </li>

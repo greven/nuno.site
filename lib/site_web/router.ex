@@ -46,14 +46,14 @@ defmodule SiteWeb.Router do
         Hooks.Metrics
       ] do
       live "/", HomeLive.Index, :index
-      live "/updates", UpdatesLive.Index, :index
-      live "/articles", BlogLive.Index, :index
-      live "/articles/:year/:slug", BlogLive.Show, :show
+      live "/blog", BlogLive.Index, :index
+      live "/blog/:year/:slug", BlogLive.Show, :show
       live "/archive/year/:year", ArchiveLive.Index, :index
       live "/categories", CategoriesLive.Index, :index
       live "/category/:category", CategoriesLive.Show, :show
       live "/tags", TagsLive.Index, :index
       live "/tag/:tag", TagsLive.Show, :show
+      live "/changelog", ChangelogLive.Index, :index
       live "/analytics", AnalyticsLive.Index, :index
       live "/travel", TravelLive.Index, :index
       live "/music", MusicLive.Index, :index

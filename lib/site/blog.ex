@@ -62,7 +62,7 @@ defmodule Site.Blog do
   def list_featured_posts(opts \\ []) do
     list_published_posts(opts)
     |> Stream.filter(& &1.featured)
-    |> Enum.filter(&(&1.category == :blog))
+    |> Enum.filter(&(&1.category == :article))
   end
 
   @doc """

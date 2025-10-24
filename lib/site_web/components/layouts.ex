@@ -219,8 +219,8 @@ defmodule SiteWeb.Layouts do
             {gettext("About")}
           </.navbar_item>
 
-          <.navbar_item item={:articles} navigate={~p"/articles"} active_link={@active_link}>
-            {gettext("Articles")}
+          <.navbar_item item={:blog} navigate={~p"/blog"} active_link={@active_link}>
+            {gettext("Blog")}
           </.navbar_item>
 
           <.navbar_item
@@ -278,7 +278,7 @@ defmodule SiteWeb.Layouts do
         name="hero-magnifying-glass-mini"
         class="size-4 text-content-40/90 group-hover:text-content-30"
       />
-      <kbd class="hidden font-sans text-xs/4 text-content-20 macos:block group-hover:text-content-10">
+      <kbd class="hidden font-sans text-xs/4 text-content-20 macos:block group-hover:text-content-10 mr-0.5">
         ⌘K
       </kbd>
       <kbd class="hidden font-sans text-xs/4 text-content-20 not-macos:block group-hover:text-content-10">

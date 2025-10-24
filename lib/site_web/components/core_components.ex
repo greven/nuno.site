@@ -1210,7 +1210,7 @@ defmodule SiteWeb.CoreComponents do
       height={@height}
       alt={@alt}
       id={@id}
-      class={@class}
+      class={["image", @class]}
       phx-hook="Image"
       data-src-blur={@blur_path}
       style="font-size: 0;"
@@ -1327,17 +1327,8 @@ defmodule SiteWeb.CoreComponents do
     default: nil,
     doc: "the text label for the tooltip, if not using the content slot"
 
-  attr :position, :string,
-    values: [
-      "top",
-      "bottom",
-      "left",
-      "right"
-    ],
-    default: "top"
-
-  attr :default_opened, :boolean, default: false, doc: "tooltip initial opened state"
-  attr :offset, :string, default: "1ch", doc: "the offset (CSS unit) from the anchor element"
+  attr :position, :string, values: ["top", "bottom"], default: "top"
+  attr :gap, :string, default: "1ch", doc: "the gap/offset (CSS unit) to the anchor element"
 
   attr :open_delay, :integer,
     default: 50,
@@ -1359,7 +1350,7 @@ defmodule SiteWeb.CoreComponents do
     default: "auto",
     doc: "the maximum width of the tooltip content when using multiline"
 
-  attr :bg_class, :string, default: "bg-neutral-800/90 dark:bg-neutral-950/90 backdrop-blur-xs"
+  attr :bg_class, :string, default: "bg-neutral-800 dark:bg-neutral-950"
   attr :border_class, :string, default: "border-1 border-neutral-950 dark:border-neutral-800"
   attr :radius_class, :string, default: "rounded"
   attr :shadow_class, :string, default: "shadow-md"
@@ -1375,55 +1366,54 @@ defmodule SiteWeb.CoreComponents do
   end
 
   def tooltip(assigns) do
-    assigns = assign_new(assigns, :id, fn -> Helpers.use_id() end)
+    assigns =
+      assigns
+      |> assign_new(:id, fn -> Helpers.use_id() end)
+      |> assign(:area, tooltip_area(assigns[:position]))
 
     ~H"""
     <div
       id={@id}
+      phx-hook="Tooltip"
+      class="tooltip-container"
+      style={"--tooltip-position: #{@position}; --tooltip-max-width: #{@max_width}; --tooltip-gap: #{@gap};"}
       data-open-delay={@open_delay}
       data-close-delay={@close_delay}
-      data-default-opened={@default_opened}
-      phx-hook="Tooltip"
-      style={"--tooltip-position: #{@position}; --tooltip-max-width: #{@max_width}; --tooltip-offset: #{@offset};"}
       {@rest}
     >
-      <div data-part="tooltip-anchor" style={"anchor-name: --#{@id};"}>
+      <div
+        id={"#{@id}-anchor"}
+        class="tooltip-anchor"
+        style={"anchor-name: --#{@id}-anchor;"}
+      >
         {render_slot(@inner_block)}
       </div>
 
+      <%!-- anchor-name: --#{@id}-tooltip; --%>
       <div
-        popover
+        id={"#{@id}-tooltip"}
+        class={["tooltip", @bg_class, @border_class, @shadow_class, @radius_class, @class]}
+        style={"position-anchor: --#{@id}-anchor;"}
         role="tooltip"
+        popover="hint"
         data-popover={@id}
-        data-position={@position}
+        data-tooltip-area={@area}
         data-multiline={@multiline}
-        style={"position-anchor: --#{@id};"}
-        class={[
-          "tooltip",
-          @bg_class,
-          @border_class,
-          @shadow_class,
-          @radius_class,
-          @class
-        ]}
+        data-show-arrow={@show_arrow}
       >
         <%= if @content != [] do %>
           {render_slot(@content)}
         <% else %>
           {@label}
         <% end %>
-
-        <%!-- <div
-          :if={@show_arrow}
-          data-part="tooltip-arrow"
-          class="absolute w-4 h-4 bg-inherit rounded-xs rotate-45 transform -z-1"
-          style="left: 21px; bottom: -2px;"
-        >
-        </div> --%>
       </div>
     </div>
     """
   end
+
+  defp tooltip_area("top" <> _), do: "block"
+  defp tooltip_area("bottom" <> _), do: "block"
+  defp tooltip_area(_position), do: "inline"
 
   ## JS Commands
 

@@ -5,12 +5,9 @@ export const Image = {
 
     this.setImageBlur();
 
-    // Loading image event listener
-    this.el.addEventListener('load', () => {
-      if (this.useBlur) {
-        this.removeImageBlur();
-      }
-    });
+    // Load and error events
+    this.el.addEventListener('load', this.onLoad.bind(this), { once: true });
+    this.el.addEventListener('error', this.onError.bind(this), { once: true });
   },
 
   // If the image has a blur path, set it as background as a placeholder
@@ -27,5 +24,22 @@ export const Image = {
 
   removeImageBlur() {
     this.el.style.backgroundImage = 'none';
+  },
+
+  onError() {
+    if (this.useBlur) {
+      this.removeImageBlur();
+    }
+
+    // Fallback placeholder
+    this.el.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
+    this.el.setAttribute('alt', 'Image not found');
+    this.el.setAttribute('data-error', true);
+  },
+
+  onLoad() {
+    if (this.useBlur) {
+      this.removeImageBlur();
+    }
   },
 };

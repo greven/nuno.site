@@ -3,7 +3,7 @@ defmodule Site.Sitemap do
     [
       {"Home", "/"},
       {"About", "/about"},
-      {"Articles", "/articles"},
+      {"Articles", "/blog"},
       {"Resume", "/resume"}
     ]
   end
@@ -14,7 +14,7 @@ defmodule Site.Sitemap do
       {"Books", "/books"},
       {"Gaming", "/gaming"},
       {"Travel", "/travel"},
-      {"Updates", "/updates"},
+      {"Changelog", "/changelog"},
       {"Photography", "/photos"},
       {"Bookmarks", "/bookmarks"},
       {"Categories", "/categories"},

@@ -19,7 +19,7 @@ defmodule SiteWeb.BlogLive.Index do
     >
       <Layouts.page_content class="blog">
         <.header>
-          Articles
+          The Blog
           <:subtitle>
             Long-form <s>writing</s> ramblings (mostly) about web dev and programming.
           </:subtitle>
@@ -95,20 +95,20 @@ defmodule SiteWeb.BlogLive.Index do
 
   @impl true
   def handle_event("article_filter_changed", %{"value" => value}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/articles?category=#{value}")}
+    {:noreply, push_patch(socket, to: ~p"/blog?category=#{value}")}
   end
 
   defp get_params_category(params) do
     category = Map.get(params, "category", "all")
 
     cond do
-      category in ~w(all blog note) -> category
+      category in ~w(all article note) -> category
       true -> "all"
     end
   end
 
   defp filter_posts_by_category("all"), do: fn _post -> true end
-  defp filter_posts_by_category("blog"), do: &(&1.category == :blog)
+  defp filter_posts_by_category("article"), do: &(&1.category == :article)
   defp filter_posts_by_category("note"), do: &(&1.category == :note)
   defp filter_posts_by_category(_), do: fn _post -> true end
 
@@ -120,8 +120,8 @@ defmodule SiteWeb.BlogLive.Index do
         icon: "hero-rectangle-stack"
       },
       %Category{
-        id: "blog",
-        name: "blog",
+        id: "article",
+        name: "articles",
         icon: "hero-newspaper"
       },
       %Category{

@@ -91,11 +91,35 @@
     }
   }
 
+  /* Images */
+
+  .image {
+    background-color: var(--color-surface-20);
+
+    &[data-error='true'] {
+      object-fit: contain;
+      background: var(--color-surface-20) url('/images/icons/image-off.svg') center;
+      background-repeat: no-repeat;
+      background-size: 20%;
+      filter: opacity(0.6);
+    }
+  }
+
+  /* Tooltip */
+
+  .tooltip-container {
+    --tooltip-offset: var(--tooltip-gap);
+    --tooltip-arrow-size: 10px;
+    --tooltip-border-width: 1px;
+  }
+
   .tooltip {
+    width: fit-content;
     max-width: var(--tooltip-max-width, 300px);
     position-area: var(--tooltip-position, top);
-    position-try-fallbacks: flip-block flip-inline;
+    position-try-fallbacks: flip-block;
     white-space: nowrap;
+    overflow: visible;
 
     opacity: 0;
     transition:
@@ -112,29 +136,47 @@
       }
     }
 
-    &[data-position='top'] {
+    &[data-show-arrow] {
+      --tooltip-offset: calc(
+        var(--tooltip-gap) + (var(--tooltip-arrow-size) * 0.25) + var(--tooltip-border-width)
+      );
+    }
+
+    &[data-tooltip-area='block'] {
       margin-block: var(--tooltip-offset);
       margin-inline: 0;
     }
 
-    &[data-position='bottom'] {
+    &[data-tooltip-area='inline'] {
       margin-block: var(--tooltip-offset);
       margin-inline: 0;
-    }
-
-    &[data-position='left'] {
-      margin-block: 0;
-      margin-inline: var(--tooltip-offset);
-    }
-
-    &[data-position='right'] {
-      margin-block: 0;
-      margin-inline: var(--tooltip-offset);
     }
 
     &[data-multiline] {
       white-space: normal;
     }
+  }
+
+  /* Tooltip Arrow */
+
+  /* bottom: calc(-1 * (var(--tooltip-arrow-size) / 2 + var(--tooltip-border-width))); */
+  /* bottom: calc(anchor(start) + 10px); */
+  .tooltip::before {
+    content: '';
+    /* width: var(--tooltip-arrow-size); */
+    /* height: var(--tooltip-arrow-size); */
+    position: absolute;
+    inset: 0;
+
+    /* left: calc(anchor(right) + 10px); */
+    /* bottom: calc(anchor(start) + 10px); */
+    background-color: olive;
+
+    /* background: inherit; */
+    /* border-color: inherit; */
+    /* border-style: solid; */
+    /* transform: rotate(45deg); */
+    /* z-index: -1; */
   }
 
   /* Navbar */
