@@ -6,9 +6,11 @@ defmodule Site.Media do
   @doc """
   Given an image src path, return the corresponding blurred image path.
   """
-  def image_blur_path(src) do
+  def image_blur_path(src) when is_binary(src) do
     String.replace(src, ~r/\.(jpg|jpeg|png|gif)$/, "_blur.jpg")
   end
+
+  def image_blur_path(_), do: nil
 
   @doc """
   Check if a blurred version of an image src path exists in the static assets

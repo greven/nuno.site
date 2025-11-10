@@ -5,7 +5,8 @@ defmodule SiteWeb.MusicLive.Index do
 
   alias Site.Services
   alias Site.Services.MusicTrack
-  alias SiteWeb.SiteComponents
+
+  alias SiteWeb.MusicLive.Components
 
   @refresh_interval 10_000
 
@@ -18,7 +19,7 @@ defmodule SiteWeb.MusicLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="flex flex-col gap-12 md:gap-16">
-        <SiteComponents.now_playing track={@track} />
+        <Components.now_playing track={@track} />
 
         <section>
           <.header tag="h3">
@@ -26,7 +27,7 @@ defmodule SiteWeb.MusicLive.Index do
             Spotify Playlists
           </.header>
 
-          <SiteComponents.spotify_playlists
+          <Components.spotify_playlists
             class="mt-2"
             async={@playlists}
             playlists={@streams.playlists}
@@ -39,8 +40,8 @@ defmodule SiteWeb.MusicLive.Index do
             Recently Played
           </.header>
 
-          <.spoiler id="recently-tracks-container" max_height="254px">
-            <SiteComponents.recent_tracks
+          <.spoiler id="recently-tracks-container" max_height="254px" loading={@recent_tracks.loading}>
+            <Components.recent_tracks
               class="mt-2"
               async={@recent_tracks}
               tracks={@streams.recent_tracks}
@@ -65,8 +66,8 @@ defmodule SiteWeb.MusicLive.Index do
             </:actions>
           </.header>
 
-          <.spoiler id="top-artists-container" max_height="200px">
-            <SiteComponents.top_artists_list
+          <.spoiler id="top-artists-container" max_height="200px" loading={@top_artists.loading}>
+            <Components.top_artists_list
               id="top-artists"
               class="mt-2"
               async={@top_artists}
@@ -92,7 +93,7 @@ defmodule SiteWeb.MusicLive.Index do
             </:actions>
           </.header>
 
-          <SiteComponents.albums_grid
+          <Components.albums_grid
             id="top-albums"
             class="mt-2"
             async={@top_albums}

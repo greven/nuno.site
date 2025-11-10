@@ -73,7 +73,16 @@ config :site, Site.Cache,
 
 config :site, Oban,
   repo: Site.Repo,
-  queues: [misc: 10]
+  engine: Oban.Engines.Lite,
+  queues: [default: 10, scheduled: 10],
+  plugins: [
+    Oban.Plugins.Pruner,
+    {Oban.Plugins.Cron,
+     crontab: [
+       {"@reboot", Site.Workers.BlueskySyncWorker},
+       {"@hourly", Site.Workers.BlueskySyncWorker}
+     ]}
+  ]
 
 # Inject the environment into the config
 config :site, :env, config_env()

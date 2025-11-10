@@ -38,15 +38,41 @@
   background:
     linear-gradient(90deg, var(--color-surface) 15px, transparent 1%) 50%,
     linear-gradient(var(--color-surface) 15px, transparent 1%) 50%,
-    --alpha(var(--color-content-40) / 0.15);
+    --alpha(var(--color-content-40) / 0.25);
   background-size: 16px 16px;
 
   @variant dark {
     background:
       linear-gradient(90deg, var(--color-surface) 15px, transparent 1%) 50%,
       linear-gradient(var(--color-surface) 15px, transparent 1%) 50%,
-      --alpha(var(--color-content-40) / 0.1);
+      --alpha(var(--color-content-40) / 0.15);
     background-size: 16px 16px;
+  }
+}
+
+@utility bg-dots-fade {
+  background:
+    linear-gradient(to bottom, transparent 0%, transparent 20%, var(--color-surface) 60%),
+    linear-gradient(90deg, var(--color-surface) 15px, transparent 1%) 50%,
+    linear-gradient(var(--color-surface) 15px, transparent 1%) 50%,
+    --alpha(var(--color-content-40) / 0.25);
+  background-size:
+    100% 100%,
+    16px 16px,
+    16px 16px,
+    16px 16px;
+
+  @variant dark {
+    background:
+      linear-gradient(to bottom, transparent 0%, transparent 20%, var(--color-surface) 60%),
+      linear-gradient(90deg, var(--color-surface) 15px, transparent 1%) 50%,
+      linear-gradient(var(--color-surface) 15px, transparent 1%) 50%,
+      --alpha(var(--color-content-40) / 0.15);
+    background-size:
+      100% 100%,
+      16px 16px,
+      16px 16px,
+      16px 16px;
   }
 }
 

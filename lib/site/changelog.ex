@@ -6,9 +6,7 @@ defmodule Site.Changelog do
 
   use Nebulex.Caching
 
-  @recent_threshold_days 365
-
-  @bluesky_handle "nuno.site"
+  @start_year 2020
 
   defguard is_date_struct(date)
            when is_struct(date, Date) or
@@ -20,77 +18,108 @@ defmodule Site.Changelog do
     defstruct [:type, :id, :date, :title, :text, :uri]
   end
 
-  # TODO: Instead of list_latest_updates, implement pagination by date ranges.
-  # TODO: Date ranges being: last week, last month, last year and per specific year.
-  # TODO: We need a new Bluesky API function to support streaming the author feed by date ranges?
-  # TODO: We will also need to create pagination in the LiveView.
-
   defp sources do
     [
-      {:posts, {Site.Blog, :list_published_posts, []}},
-      {:bluesky, {Site.Services, :get_latest_skeets, [@bluesky_handle]}}
+      {:posts, {Site.Blog, :list_published_posts_by_date_range}},
+      {:bluesky, {Site.Services, :list_bluesky_posts_by_date_range}}
     ]
   end
 
-  # @doc """
-  # List the latest updates from all sources.
-  # """
-  # @decorate cacheable(
-  #             cache: Site.Cache,
-  #             key: {:list_latest_updates},
-  #             opts: [ttl: :timer.minutes(5)]
-  #           )
-  # def list_latest_updates do
-  #   @sources
-  #   |> Enum.flat_map(fn {type, {mod, fun, args}} ->
-  #     case apply(mod, fun, args) do
-  #       {:ok, items} when is_list(items) -> process_updates(items, type)
-  #       items when is_list(items) -> process_updates(items, type)
-  #       _ -> []
-  #     end
-  #   end)
-  #   |> Enum.sort_by(& &1.date, {:desc, NaiveDateTime})
-  # end
-
-  # defp process_updates(items, type) do
-  # items
-  # |> map_item(type)
-  # |> filter_updates()
-  # end
-
-  # defp filter_updates(items) do
-  #   Enum.filter(items, &recent_update?(&1.date))
-  # end
-
   @doc """
+  List all updates from all sources grouped by period, where the period can be:
+  :week, :month, or a specific year as integer (e.g., 2024). The result is a map
+  where the keys are the periods and the values are lists of updates.
+  Note that periods with no updates will have an empty list.
   """
-
-  # TODO: In order to implement this efficiently we can't rely on fetching all updates
-  # TODO: from all sources and then grouping them by date. We need to implement
-  # TODO: counts per source by date ranges and caching those results.
-  # TODO: When we query external services (e.g., Bluesky) for updates, we need to
-  # TODO: also update the counts per date range if there are new updates and if it can affect the count
-  # TODO: for the given date range.
-
-  def updates_grouped_by_date() do
-    []
+  def list_updates_grouped_by_period do
+    list_periods()
+    |> Enum.reduce(%{}, fn period, acc ->
+      {from_date, to_date} = date_range_for_period(period)
+      updates = list_updates_by_date_range(from_date, to_date)
+      Map.put(acc, period, updates)
+    end)
   end
 
   @doc """
-  Check if the given `date` is considered recent based on the defined threshold.
+  List updates given a date period where the period can be:
+  :week, :month, or a specific year as integer (e.g., 2024).
   """
-
-  def recent_update?(date) when is_date_struct(date) do
-    Date.diff(Date.utc_today(), date) <= @recent_threshold_days
+  def list_updates_by_period(:week) do
+    {from_date, to_date} = date_range_for_period(:week)
+    list_updates_by_date_range(from_date, to_date)
   end
 
-  def recent_update?(_), do: false
+  def list_updates_by_period(:month) do
+    {from_date, to_date} = date_range_for_period(:month)
+    list_updates_by_date_range(from_date, to_date)
+  end
 
-  # def latest_updates_count do
-  # list_latest_updates()
-  # |> Enum.map(fn {_type, items} -> length(items) end)
-  # |> Enum.sum()
-  # end
+  def list_updates_by_period(year) when is_integer(year) do
+    {from_date, to_date} = date_range_for_period(year)
+    list_updates_by_date_range(from_date, to_date)
+  end
+
+  defp list_updates_by_date_range(from_date, to_date)
+       when is_date_struct(from_date) and is_date_struct(to_date) do
+    sources()
+    |> Enum.flat_map(fn {type, {mod, fun}} ->
+      case apply(mod, fun, [from_date, to_date]) do
+        {:ok, items} when is_list(items) -> map_item(items, type)
+        items when is_list(items) -> map_item(items, type)
+        _ -> []
+      end
+    end)
+    |> Enum.sort_by(& &1.date, {:desc, NaiveDateTime})
+  end
+
+  @doc """
+  Return a list of periods for which (possibly) there are updates.
+  The periods can be :week, :month, or specific years as integers.
+  The list is ordered starting with :week, :month, then the most recent
+  year down to the first year with updates (`@start_year`).
+  """
+  def list_periods do
+    current_year = Date.utc_today().year
+    [:week, :month] ++ Enum.to_list(current_year..@start_year//-1)
+  end
+
+  @doc """
+  """
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: :count_updates_by_period,
+              opts: [ttl: :timer.minutes(60)]
+            )
+  def count_updates_by_period do
+    list_periods()
+    |> Enum.map(fn period ->
+      count = list_updates_by_period(period) |> length()
+      {period, count}
+    end)
+  end
+
+  @doc """
+  Date range helpers for periods, returning a tuple of {from_date, to_date}
+  where both are `Date` structs and where `from_date` is older than or equal to `to_date`.
+
+  For the :year range it returns the the tuple for the full year,
+  e.g., {2024-01-01, 2024-12-31}.
+  """
+  def date_range_for_period(:week) do
+    to_date = Date.utc_today()
+    from_date = Date.shift(to_date, week: -1)
+    {from_date, to_date}
+  end
+
+  def date_range_for_period(:month) do
+    to_date = Date.utc_today()
+    from_date = Date.shift(to_date, month: -1)
+    {from_date, to_date}
+  end
+
+  def date_range_for_period(year) when is_integer(year) do
+    {Date.new!(year, 1, 1), Date.new!(year, 12, 31)}
+  end
 
   defp map_item(items, type) do
     Enum.map(items, fn item ->

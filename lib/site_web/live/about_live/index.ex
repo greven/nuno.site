@@ -2,6 +2,7 @@ defmodule SiteWeb.AboutLive.Index do
   use SiteWeb, :live_view
 
   alias SiteWeb.SiteComponents
+  alias SiteWeb.AboutLive.Components
 
   @impl true
   def render(assigns) do
@@ -48,7 +49,7 @@ defmodule SiteWeb.AboutLive.Index do
               </p>
             </div>
 
-            <SiteComponents.contact_links class="mt-10 flex flex-col items-center justify-center md:items-start gap-1" />
+            <Components.contact_links class="mt-10 flex flex-col items-center justify-center md:items-start gap-1" />
           </div>
         </div>
 
@@ -82,7 +83,7 @@ defmodule SiteWeb.AboutLive.Index do
             <:subtitle>Recent work experience</:subtitle>
           </.header>
 
-          <SiteWeb.SiteComponents.work_experience_list class="mt-4 max-w-xl" items={@experience} />
+          <Components.work_experience_list class="mt-4 max-w-xl" items={@experience} />
 
           <.button navigate={~p"/resume"} variant="light" class="group mt-8">
             Full Resume

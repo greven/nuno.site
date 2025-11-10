@@ -21,8 +21,8 @@ defmodule SiteWeb.Layouts do
 
   attr :finder_commands, :list, default: [], doc: "the list of finder commands"
 
-  attr :wide, :boolean, default: false, doc: "whether to use the wide wrapper"
   attr :active_link, :atom, default: nil, doc: "the active link for the header"
+  attr :wide, :boolean, default: false, doc: "whether to use the wide wrapper"
   attr :show_progress, :boolean, default: false, doc: "whether to show the page progress bar"
   attr :progress_icon, :string, default: nil, doc: "the icon to show in the progress bar (if any)"
   attr :is_home, :boolean, default: false, doc: "whether the page is the home page"
@@ -31,7 +31,7 @@ defmodule SiteWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <div class="min-h-screen flex flex-col bg-dots">
+    <div class="min-h-screen flex flex-col bg-dots-fade">
       <.site_header
         active_link={@active_link}
         current_scope={@current_scope}
@@ -128,7 +128,7 @@ defmodule SiteWeb.Layouts do
       <div
         :if={@show_progress}
         id="page-progress"
-        class="absolute -bottom-[1.5px] left-0 h-[1.5px] w-[var(--page-progress)] bg-primary shadow-gray-900/10 select-none"
+        class="absolute -bottom-[1.5px] left-0 h-[1.5px] w-(--page-progress) bg-primary shadow-gray-900/10 select-none"
       >
       </div>
 
@@ -136,7 +136,7 @@ defmodule SiteWeb.Layouts do
         :if={@show_progress and @progress_icon}
         id="page-progress-icon"
         name={@progress_icon}
-        class="hidden absolute -bottom-2.5 left-[var(--page-progress)] size-5 bg-content-40"
+        class="hidden absolute -bottom-2.5 left-(--page-progress) size-5 bg-content-40"
       />
 
       <div class="wrapper">
@@ -252,8 +252,8 @@ defmodule SiteWeb.Layouts do
       role="navigation"
       aria-current={if @item == @active_link, do: "true", else: "false"}
       class={[
-        "navbar-link lowercase px-1 rounded-full outline-none",
-        "focus-visible:border-ring focus-visible:ring-ring/90 focus-visible:ring-[2px]"
+        "navbar-link lowercase px-1 rounded-full",
+        "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-primary"
       ]}
     >
       {render_slot(@inner_block)}
@@ -269,7 +269,7 @@ defmodule SiteWeb.Layouts do
         "group flex items-center gap-1 mr-4 px-2 py-1 rounded-full bg-surface-40/25 inset-ring inset-ring-surface-40/40
           outline-none cursor-pointer transition duration-200",
         "hover:inset-ring-surface-40 hover:bg-surface-20",
-        "focus-visible:border-ring focus-visible:ring-ring/90 focus-visible:ring-[2px]"
+        "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-primary"
       ]}
       aria-label="Open command finder (Cmd+K)"
       phx-click={SiteWeb.Finder.toggle()}
@@ -361,9 +361,9 @@ defmodule SiteWeb.Layouts do
   """
   def theme_toggle(assigns) do
     ~H"""
-    <div class="relative flex flex-row items-center border-1 border-surface-30 bg-surface-20 rounded-full">
+    <div class="relative flex flex-row items-center border border-surface-30 bg-surface-20 rounded-full">
       <div class={[
-        "absolute w-[33.33%] h-full rounded-full border-1 border-surface-40 bg-surface left-0",
+        "absolute w-[33.33%] h-full rounded-full border border-surface-40 bg-surface left-0",
         "[[data-theme-mode=user][data-theme=light]_&]:left-[33.33%] [[data-theme-mode=user][data-theme=dark]_&]:left-[66.66%] transition-[left]"
       ]} />
 

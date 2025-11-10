@@ -3,38 +3,18 @@ defmodule Site.Services.Steam do
   Steam API service module.
   """
 
+  # TODO: Rework how we fetch Steam images as the CDN URLs can change and right now some images URLs are broken.
+
+  use Nebulex.Caching
   require Logger
 
-  @my_steam_id "76561197997074383"
-
-  @favourite_games [
-    {"Baldurs Gate 3", 1_086_940},
-    {"Elden Ring", 1_245_620},
-    {"Terraria", 105_600},
-    {"Marvel's Midnight Suns", 368_260},
-    {"XCOM: Enemy Unknown", 200_510},
-    {"XCOM 2", 268_500},
-    {"Hollow Knight", 367_520},
-    {"Hollow Knight: Silksong", 1_030_300},
-    {"Cyberpunk 2077", 109_150},
-    {"Divinity: Original Sin 2", 435_150},
-    {"The Elder Scrolls V: Skyrim", 728_50},
-    {"Portal", 400},
-    {"Portal 2", 620},
-    {"Deep Rock Galactic", 548_430},
-    {"Slay the Spire", 646_570},
-    {"Civilization VI", 289_070},
-    {"Path of Exile 2", 2_694_490},
-    {"Hades", 1_145_360},
-    {"Half Life 2", 220}
-  ]
-
   defp api_endpoint, do: "http://api.steampowered.com"
-  defp steam_cdn_url, do: "https://steamcdn-a.akamaihd.net"
+  defp steam_cdn_url, do: "https://cdn.cloudflare.steamstatic.com"
 
   def get_user_info do
-    "#{api_endpoint()}/ISteamUser/GetPlayerSummaries/v2/?key=#{api_key()}&steamids=#{@my_steam_id}"
-    |> Req.get()
+    Req.get("#{api_endpoint()}/ISteamUser/GetPlayerSummaries/v2",
+      params: [key: api_key(), steamids: steam_id()]
+    )
     |> case do
       {:ok, %{status: 200} = %{body: body}} -> {:ok, List.first(body["response"]["players"])}
       {:ok, resp} -> {:error, resp.status}
@@ -42,9 +22,21 @@ defmodule Site.Services.Steam do
     end
   end
 
+  def get_app_details(app_id) do
+    Req.get("https://store.steampowered.com/api/appdetails",
+      params: [appids: app_id, cc: "us", l: "en"]
+    )
+    |> case do
+      {:ok, %{status: 200} = %{body: body}} -> {:ok, body[to_string(app_id)]["data"]}
+      {:ok, resp} -> {:error, resp.status}
+      {:error, _} = error -> error
+    end
+  end
+
   def get_recently_played_games do
-    "#{api_endpoint()}/IPlayerService/GetRecentlyPlayedGames/v1/?key=#{api_key()}&steamid=#{@my_steam_id}"
-    |> Req.get()
+    Req.get("#{api_endpoint()}/IPlayerService/GetRecentlyPlayedGames/v1",
+      params: [key: api_key(), steamid: steam_id()]
+    )
     |> case do
       {:ok, %{status: 200} = %{body: body}} ->
         {:ok, Enum.map(body["response"]["games"], &map_game/1)}
@@ -58,8 +50,14 @@ defmodule Site.Services.Steam do
   end
 
   def get_top_played_games do
-    "#{api_endpoint()}/IPlayerService/GetOwnedGames/v1/?key=#{api_key()}&steamid=#{@my_steam_id}&include_appinfo=true&include_played_free_games=true"
-    |> Req.get()
+    Req.get("#{api_endpoint()}/IPlayerService/GetOwnedGames/v1/",
+      params: [
+        key: api_key(),
+        steamid: steam_id(),
+        include_appinfo: true,
+        include_played_free_games: true
+      ]
+    )
     |> case do
       {:ok, %{status: 200} = %{body: body}} ->
         {:ok,
@@ -77,9 +75,12 @@ defmodule Site.Services.Steam do
   end
 
   def get_favourite_games do
-    game_ids = Enum.map(@favourite_games, fn {_name, app_id} -> app_id end)
+    game_ids =
+      games_lists()
+      |> Map.get("favourites", [])
+      |> Enum.map(&hd(&1))
 
-    "#{api_endpoint()}/IPlayerService/GetOwnedGames/v1/?key=#{api_key()}&steamid=#{@my_steam_id}&include_appinfo=true&include_played_free_games=true"
+    "#{api_endpoint()}/IPlayerService/GetOwnedGames/v1/?key=#{api_key()}&steamid=#{steam_id()}&include_appinfo=true&include_played_free_games=true"
     |> Req.get()
     |> case do
       {:ok, %{status: 200} = %{body: body}} ->
@@ -105,25 +106,28 @@ defmodule Site.Services.Steam do
       name: game["name"],
       playtime_2weeks: game["playtime_2weeks"],
       playtime_forever: game["playtime_forever"],
-      thumbnail_url: game_thumbnail_url(game["appid"]),
-      header_url: game_header_url(game["appid"]),
-      store_url: game_store_url(game["appid"])
+      store_url: "https://store.steampowered.com/app/#{game["appid"]}",
+      thumbnail_url: game_images(game["appid"])[:thumbnail],
+      header_url: game_images(game["appid"])[:header]
     }
   end
 
-  ## Game URLs
-
-  defp game_store_url(game_id), do: "https://store.steampowered.com/app/#{game_id}"
-
-  defp game_thumbnail_url(game_id) do
-    "#{steam_cdn_url()}/steam/apps/#{game_id}/library_600x900.jpg"
+  defp game_images(game_id) do
+    %{
+      thumbnail: "#{steam_cdn_url()}/steam/apps/#{game_id}/library_600x900.jpg",
+      header: "#{steam_cdn_url()}/steam/apps/#{game_id}/header.jpg"
+    }
   end
 
-  defp game_header_url(game_id) do
-    "#{steam_cdn_url()}/steam/apps/#{game_id}/header.jpg"
+  @decorate cacheable(cache: Site.Cache, key: {:steam_lists}, opts: [ttl: :timer.hours(24)])
+  def games_lists do
+    Path.join([:code.priv_dir(:site), "content/games.json"])
+    |> File.read!()
+    |> JSON.decode!()
   end
 
   ##  Credentials
 
+  defp steam_id, do: Application.get_env(:site, :steam)[:steam_id]
   defp api_key, do: Application.get_env(:site, :steam)[:api_key]
 end

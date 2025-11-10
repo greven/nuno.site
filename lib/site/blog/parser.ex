@@ -3,8 +3,8 @@ defmodule Site.Blog.Parser do
   # alias Site.Blog.SyntaxTheme
 
   def parse(_path, contents) do
-    [header, markdown_body] = String.split(contents, "---\n", trim: true, parts: 2)
-    {%{} = attrs, _} = Code.eval_string(header, [])
+    [markdown_header, markdown_body] = String.split(contents, "---\n", trim: true, parts: 2)
+    {%{} = attrs, _} = Code.eval_string(markdown_header, [])
 
     options = [
       syntax_highlight: [formatter: {:html_inline, theme: "neovim_dark"}],

@@ -8,17 +8,16 @@ export const Spoiler = {
 
     trigger.addEventListener('click', () => {
       const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
-      trigger.setAttribute('aria-expanded', !isExpanded);
+
+      this.js().setAttribute(this.el, 'data-open', !isExpanded);
+      this.js().setAttribute(content, 'aria-expanded', !isExpanded);
+      this.js().setAttribute(trigger, 'aria-expanded', !isExpanded);
 
       if (isExpanded) {
-        this.js().removeClass(overlay, 'hidden');
+        this.js().removeClass(overlay, 'opacity-0');
       } else {
-        this.js().addClass(overlay, 'hidden');
+        this.js().addClass(overlay, 'opacity-0');
       }
-
-      content.style.maxHeight = isExpanded
-        ? this.el.dataset.maxHeight
-        : content.scrollHeight + 'px';
     });
   },
 };

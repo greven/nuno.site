@@ -196,13 +196,6 @@ defmodule SiteWeb.HomeLive.Index do
             </Components.home_section_title>
             <Components.featured_posts posts={@posts} />
           </section>
-
-          <%!-- <section>
-            <Components.home_section_title icon="lucide-origami" highlight="bg-secondary">
-              Bluesky Updates
-            </Components.home_section_title>
-            <Components.social_feed_posts async={@skeets} posts={@streams.skeets} />
-          </section> --%>
         </div>
 
         <%!-- #TODO: Debug for tooltip anchoring, DO REMOVE --%>
@@ -244,9 +237,6 @@ defmodule SiteWeb.HomeLive.Index do
         {:ok, %{reading_stats: get_reading_stats()}}
       end)
 
-    # |> stream_configure(:skeets, dom_id: & &1.cid)
-    # |> stream_async(:skeets, fn -> get_bluesky_posts() end)
-
     {:ok, socket, temporary_assigns: [posts: posts]}
   end
 
@@ -272,13 +262,6 @@ defmodule SiteWeb.HomeLive.Index do
       error -> error
     end
   end
-
-  # defp get_bluesky_posts do
-  #   case Services.get_latest_skeets("nuno.site") do
-  #     {:ok, skeets} -> {:ok, Enum.take(skeets, 5), limit: 5}
-  #     error -> error
-  #   end
-  # end
 
   defp get_reading_stats do
     case Services.get_reading_stats() do

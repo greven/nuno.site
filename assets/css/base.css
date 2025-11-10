@@ -134,5 +134,6 @@
 @media screen and (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
+    types: page;
   }
 }

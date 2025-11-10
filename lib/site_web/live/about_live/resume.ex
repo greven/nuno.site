@@ -2,6 +2,7 @@ defmodule SiteWeb.AboutLive.Resume do
   use SiteWeb, :live_view
 
   alias Site.Resume
+  alias SiteWeb.AboutLive.Components
 
   @impl true
   def render(assigns) do
@@ -143,13 +144,13 @@ defmodule SiteWeb.AboutLive.Resume do
 
           <%!-- Experience --%>
           <section class="py-12 border-t border-surface-40 border-dashed">
-            <SiteWeb.SiteComponents.resume_section_header
+            <Components.resume_section_header
               title="Career"
               subtitle="Recent work experience"
               icon="hero-briefcase"
             />
 
-            <SiteWeb.SiteComponents.work_experience_list
+            <Components.work_experience_list
               class="mt-12"
               items={@resume["work"]}
               show_summary
@@ -158,13 +159,13 @@ defmodule SiteWeb.AboutLive.Resume do
 
           <%!-- Education --%>
           <section class="py-12 border-t border-surface-40">
-            <SiteWeb.SiteComponents.resume_section_header
+            <Components.resume_section_header
               title="Education"
               subtitle="Relevant education"
               icon="hero-academic-cap"
             />
 
-            <SiteWeb.SiteComponents.education_list
+            <Components.education_list
               class="mt-12"
               items={@resume["education"]}
             />
@@ -172,13 +173,13 @@ defmodule SiteWeb.AboutLive.Resume do
 
           <%!-- Projects --%>
           <section class="py-12 border-t border-surface-40">
-            <SiteWeb.SiteComponents.resume_section_header
+            <Components.resume_section_header
               title="Projects"
               subtitle="Some projects I have worked on"
               icon="hero-clipboard-document-check"
             />
 
-            <SiteWeb.SiteComponents.project_list
+            <Components.project_list
               class="mt-12"
               items={@resume["projects"]}
             />

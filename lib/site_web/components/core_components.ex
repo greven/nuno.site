@@ -241,7 +241,7 @@ defmodule SiteWeb.CoreComponents do
 
         <div class="flex-1 min-w-0">
           <p :if={@title} class="font-semibold mb-1">{@title}</p>
-          <p class="text-wrap break-words">{msg}</p>
+          <p class="text-wrap wrap-break-words">{msg}</p>
         </div>
       </div>
     </div>
@@ -703,8 +703,9 @@ defmodule SiteWeb.CoreComponents do
   Badges are small, compact labels that can be used to display
   contextual information, such as status or categories.
   """
-  attr :variant, :string, values: ~w(default dot), default: "default"
+  attr :variant, :string, values: ~w(default solid dot), default: "default"
   attr :color, :string, values: @tailwind_colors
+  attr :circle, :boolean, default: false
   attr :class, :string, default: nil
   attr :badge_class, :any, default: "text-sm"
   attr :rounded_class, :string, default: "rounded-full"
@@ -924,8 +925,8 @@ defmodule SiteWeb.CoreComponents do
           data-name={tab[:name]}
           disabled={tab[:disabled]}
           class={[
-            "relative flex flex-shrink-0 items-center justify-center gap-x-2 px-4 py-2 border-b-2 border-transparent whitespace-nowrap select-none cursor-pointer text-content-40 text-sm font-medium transition-colors",
-            "[&>svg]:pointer-events-none [&>[data-slot=icon]]:pointer-events-none [&>svg]:shrink-0 [&>[data-slot=icon]]:shrink-0 [&>svg:not([class*='size-'])]:[1.25em] [&>[data-slot=icon]:not([class*='size-'])]:[1.25em]",
+            "relative flex shrink-0 items-center justify-center gap-x-2 px-4 py-2 border-b-2 border-transparent whitespace-nowrap select-none cursor-pointer text-content-40 text-sm font-medium transition-colors",
+            "[&>svg]:pointer-events-none *:data-[slot=icon]:pointer-events-none [&>svg]:shrink-0 *:data-[slot=icon]:shrink-0 [&>svg:not([class*='size-'])]:[1.25em] [&>[data-slot=icon]:not([class*='size-'])]:[1.25em]",
             "aria-[selected]:border-content aria-[selected]:text-zinc-800",
             "hover:not-aria-[selected]:text-content-10",
             @grow && "flex-1",
@@ -968,6 +969,14 @@ defmodule SiteWeb.CoreComponents do
   attr :value, :any, required: true, doc: "the current value of the segmented control"
   attr :on_change, :string, required: true, doc: "the event to trigger on value change"
   attr :aria_label, :string, required: true, doc: "the aria-label for the segmented control"
+  attr :orientation, :atom, values: ~w(horizontal vertical class)a, default: :horizontal
+
+  attr :scrollable, :boolean,
+    default: false,
+    doc:
+      "whether the segmented control is scrollable when overflowing and orientation is horizontal"
+
+  attr :root_tag, :string, default: "div"
 
   attr :show_backdrop, :boolean, default: false
   attr :size, :string, values: ~w(sm md), default: "md"
@@ -976,26 +985,56 @@ defmodule SiteWeb.CoreComponents do
   attr :backdrop_class, :string,
     default: "p-1 bg-surface-20 border border-surface-30 rounded-full"
 
+  attr :items_gap_class, :string,
+    default: "gap-3",
+    doc: "the gap class to apply between items"
+
+  attr :orientation_class, :string,
+    default: "flex-row",
+    doc: "the flex direction class to apply when orientation is :class"
+
   attr :rest, :global
 
   slot :item do
     attr :value, :any, required: true
-    attr :disabled, :boolean
-    attr :class, :any
+    attr :id, :string
     attr :icon, :string
+    attr :class, :any
     attr :icon_base_class, :string
     attr :icon_color_class, :string
+    attr :disabled, :boolean
   end
 
   def segmented_control(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :orientation_class,
+        case assigns.orientation do
+          :horizontal -> "flex-row"
+          :vertical -> "flex-col"
+          :class -> assigns.orientation_class
+        end
+      )
+      |> assign(
+        :scrollable_class,
+        "bg-emerald-300 overflow-hidden overflow-x-auto"
+      )
+
     ~H"""
-    <div class={@class}>
+    <.dynamic_tag tag_name={@root_tag} class={@class}>
       <ul
-        class={["w-full inline-flex gap-3", @show_backdrop && @backdrop_class]}
+        class={[
+          "w-full inline-flex",
+          @items_gap_class,
+          @orientation_class,
+          @scrollable && @scrollable_class,
+          @show_backdrop && @backdrop_class
+        ]}
         aria-label={@aria_label}
         {@rest}
       >
-        <li :for={item <- @item}>
+        <li :for={item <- @item} id={item[:id]}>
           <button
             type="button"
             disabled={item[:disabled]}
@@ -1003,11 +1042,12 @@ defmodule SiteWeb.CoreComponents do
             phx-click={JS.push(@on_change, value: %{value: item[:value]})}
             class={[
               item[:class],
-              "group relative h-10 px-4 inline-flex flex-nowrap flex-shrink-0 items-center justify-center text-sm rounded-full overflow-hidden whitespace-nowrap transition cursor-pointer align-middle text-center text-content-40 border border-surface-30 bg-surface-10/50
-                active:shadow-none",
-              "aria-current:text-content aria-current:bg-surface-10 aria-current:border-primary aria-current:shadow-sm",
-              "hover:not-aria-current:bg-surface-10 hover:not-aria-current:text-content-10",
-              "outline-none focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-[3px]"
+              "group relative w-full h-10 px-4 inline-flex flex-nowrap shrink-0 items-center justify-center",
+              "text-sm rounded-full overflow-hidden whitespace-nowrap cursor-pointer align-middle text-center",
+              "text-content-40 border border-surface-30/50 bg-surface-20/50 transition-colors duration-150",
+              "hover:not-aria-current:bg-surface-10/25 hover:not-aria-current:text-content-10  hover:not-aria-current:border-surface-40",
+              "aria-current:text-content aria-current:bg-surface-10 aria-current:border-primary aria-current:shadow-sm active:shadow-none",
+              "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-primary"
             ]}
           >
             <%= if item[:icon] do %>
@@ -1028,7 +1068,7 @@ defmodule SiteWeb.CoreComponents do
           </button>
         </li>
       </ul>
-    </div>
+    </.dynamic_tag>
     """
   end
 
@@ -1041,6 +1081,7 @@ defmodule SiteWeb.CoreComponents do
   attr :id, :string, required: true
   attr :max_height, :string, default: "8rem", doc: "the maximum height of the spoiler content"
   attr :open, :boolean, default: false, doc: "the initial state of the spoiler"
+  attr :loading, :boolean, default: false
 
   attr :transition_duration, :integer,
     default: 300,
@@ -1064,18 +1105,24 @@ defmodule SiteWeb.CoreComponents do
   def spoiler(assigns) do
     ~H"""
     <div {@rest}>
-      <div id={"spoiler-#{@id}"} data-open={@open} data-max-height={@max_height} phx-hook="Spoiler">
+      <div id={"spoiler-#{@id}"} data-open={@open} phx-hook="Spoiler">
         <div
           id={"spoiler-#{@id}-region"}
-          class="relative flex flex-col overflow-hidden transition-[max-height] ease-in-out"
-          style={"max-height: #{@max_height}; transition-duration: #{@transition_duration}ms;"}
+          style={"--spoiler-max-height: #{@max_height}; interpolate-size: allow-keywords;
+            will-change: max-height; transition: max-height #{@transition_duration}ms ease-in-out;"}
+          class={[
+            "relative flex flex-col overflow-hidden",
+            "max-h-(--spoiler-max-height) aria-expanded:max-h-min",
+            @open && "max-h-min"
+          ]}
+          aria-expanded={@open}
           data-part="spoiler-content"
           role="region"
         >
           <div
             class={[
-              "absolute bottom-0 left-0 right-0 h-7 z-1 bg-surface/85 mask-t-from-50%",
-              @open && "hidden"
+              "absolute bottom-0 left-0 right-0 h-7 z-1 bg-surface/85 mask-t-from-50% transition-opacity duration-150",
+              @open && "opacity-0"
             ]}
             data-part="spoiler-overlay"
           >
@@ -1085,15 +1132,20 @@ defmodule SiteWeb.CoreComponents do
 
         <button
           type="button"
-          class="group mt-2 text-sm font-medium text-primary hover:underline hover:cursor-pointer"
+          class={[
+            "group mt-2 text-sm font-medium text-primary",
+            "hover:underline hover:cursor-pointer",
+            "disabled:opacity-50 disabled:text-content-10/50 disabled:cursor-not-allowed"
+          ]}
           aria-expanded={@open}
           aria-controls={"spoiler-#{@id}-region"}
           data-part="spoiler-trigger"
+          disabled={@loading}
         >
-          <span class="group-aria-[expanded=true]:hidden">
+          <span class="group-aria-expanded:hidden">
             {@expand_label}
           </span>
-          <span class="hidden group-aria-[expanded=true]:inline-block">
+          <span class="hidden group-aria-expanded:inline-block">
             {@collapse_label}
           </span>
         </button>
@@ -1186,9 +1238,9 @@ defmodule SiteWeb.CoreComponents do
     assigns =
       assigns
       |> assign_new(:id, fn -> Helpers.use_id() end)
-      |> assign_new(:blur_path, fn %{use_blur: use_blur?} ->
-        has_blur? = Site.Media.image_blur_exists?(src)
-        use_blur? && has_blur? && Site.Media.image_blur_path(src)
+      |> assign_new(:blur_path, fn
+        %{use_blur: true} -> Site.Media.image_blur_exists?(src) && Site.Media.image_blur_path(src)
+        _ -> nil
       end)
 
     ~H"""
@@ -1466,7 +1518,7 @@ defmodule SiteWeb.CoreComponents do
     <div class={["absolute inset-0", @class]}>
       <svg class={[
         "absolute inset-0 size-full text-content-40/70 rounded-lg opacity-20 pointer-events-none select-none",
-        "[mask-image:linear-gradient(to_left,_#ffffffad,_transparent)]",
+        "mask-[linear-gradient(to_left,#ffffffad,transparent)]",
         @use_transition && @hover_transition
       ]}>
         <defs>

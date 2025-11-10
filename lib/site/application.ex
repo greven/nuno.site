@@ -12,6 +12,7 @@ defmodule Site.Application do
       Site.Repo,
       {Ecto.Migrator,
        repos: Application.fetch_env!(:site, :ecto_repos), skip: skip_migrations?()},
+      {Oban, Application.fetch_env!(:site, Oban)},
       {DNSCluster, query: Application.get_env(:site, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Site.PubSub},
       # Start Phoenix Presence

@@ -57,7 +57,7 @@ defmodule SiteWeb.BlogLive.Index do
         </div>
 
         <%!-- Posts --%>
-        <div id="articles" class="mt-8 flex flex-col gap-12 md:gap-8" phx-update="stream">
+        <div id="articles" class="mt-8 flex flex-col gap-12 md:gap-6" phx-update="stream">
           <BlogComponents.article :for={{dom_id, post} <- @streams.posts} id={dom_id} post={post} />
         </div>
       </Layouts.page_content>
@@ -95,7 +95,7 @@ defmodule SiteWeb.BlogLive.Index do
 
   @impl true
   def handle_event("article_filter_changed", %{"value" => value}, socket) do
-    {:noreply, push_patch(socket, to: ~p"/blog?category=#{value}")}
+    {:noreply, push_patch(socket, to: ~p"/blog?category=#{value}", replace: true)}
   end
 
   defp get_params_category(params) do

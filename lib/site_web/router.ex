@@ -100,7 +100,7 @@ defmodule SiteWeb.Router do
     pipe_through [:browser_admin, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{SiteWeb.UserAuth, :require_authenticated}] do
+      on_mount: [{SiteWeb.UserAuth, :require_authenticated}, Hooks.ActiveLinks] do
       live "/", AdminLive.Index, :index
     end
 
@@ -113,7 +113,7 @@ defmodule SiteWeb.Router do
     pipe_through [:browser_admin]
 
     live_session :current_user,
-      on_mount: [{SiteWeb.UserAuth, :mount_current_scope}] do
+      on_mount: [{SiteWeb.UserAuth, :mount_current_scope}, Hooks.ActiveLinks] do
       live "/log-in", AdminLive.Login, :new
       live "/log-in/:token", AdminLive.Confirmation, :new
     end

@@ -1,4 +1,10 @@
 defmodule SiteWeb.Helpers do
+  @moduledoc """
+  A collection of helper functions for use throughout the site.
+  """
+
+  ## Utils
+
   def use_id(prefix \\ "ns") do
     "#{prefix}-"
     |> Kernel.<>(random_encoded_bytes())
@@ -16,9 +22,21 @@ defmodule SiteWeb.Helpers do
     Base.url_encode64(binary)
   end
 
+  ## Markdown
+
   def render_markdown!(text) do
     text
     |> MDEx.to_html!()
     |> Phoenix.HTML.raw()
+  end
+
+  ## Dates1
+
+  def format_date(date, format)
+
+  def format_date(nil, _), do: nil
+
+  def format_date(%Date{} = date, format) do
+    Calendar.strftime(date, format)
   end
 end

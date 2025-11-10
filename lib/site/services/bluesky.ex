@@ -7,6 +7,7 @@ defmodule Site.Services.Bluesky do
 
   require Logger
   import Ecto.Query
+
   use Nebulex.Caching
 
   alias Site.Repo
@@ -15,32 +16,52 @@ defmodule Site.Services.Bluesky do
   @base_url "https://bsky.social/xrpc"
 
   @doc """
-  Lists recent BlueSky posts from the database optionally filtered by
-  actor (handle or DID) and limited to a given number of posts.
+  Lists BlueSky posts from the database.
+  Optionally filter by actor (handle or DID).
   """
-  def list_recent_posts(opts \\ []) do
-    limit = Keyword.get(opts, :limit, 100)
-    actor_or_did = Keyword.get(opts, :actor, nil)
+  def list_posts(opts \\ []) do
+    actor_or_did = Keyword.get(opts, :actor, Application.get_env(:site, :bluesky)[:handle])
 
-    base_query =
-      from p in Post,
-        where: is_nil(p.deleted_at),
-        order_by: [desc: p.created_at],
-        limit: ^limit
+    actor_or_did
+    |> posts_query()
+    |> Repo.all()
+  end
 
-    query =
-      if actor_or_did,
-        do:
-          from(p in base_query,
-            where: p.author_handle == ^actor_or_did or p.did == ^actor_or_did
-          ),
-        else: base_query
+  @doc """
+  Lists BlueSky posts from the database within a given date range (inclusive).
+  The `from_date` should be older than or equal to the `to_date`.
+  Optionally filter by actor (handle or DID).
+  """
+  def list_posts_by_date_range(from_date, to_date, opts \\ []) do
+    actor_or_did = Keyword.get(opts, :actor, Application.get_env(:site, :bluesky)[:handle])
+    from_datetime = DateTime.new!(from_date, ~T[00:00:00])
+    to_datetime = DateTime.new!(to_date, ~T[23:59:59])
 
-    Repo.all(query)
+    actor_or_did
+    |> posts_query()
+    |> where([p], p.created_at >= ^from_datetime and p.created_at <= ^to_datetime)
+    |> Repo.all()
+  end
+
+  defp posts_query(nil),
+    do: from(p in base_posts_query())
+
+  defp posts_query(actor_or_did) do
+    from(
+      from p in base_posts_query(),
+        where: p.author_handle == ^actor_or_did or p.did == ^actor_or_did
+    )
+  end
+
+  defp base_posts_query do
+    from p in Post,
+      where: is_nil(p.deleted_at),
+      order_by: [desc: p.created_at]
   end
 
   def count_posts do
-    Repo.aggregate(from(p in Post, where: is_nil(p.deleted_at)), :count, :id)
+    posts_query = from(p in base_posts_query())
+    Repo.aggregate(posts_query, :count, :id)
   end
 
   @doc """

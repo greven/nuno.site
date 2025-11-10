@@ -1,7 +1,7 @@
 defmodule SiteWeb.GamingLive.Index do
   use SiteWeb, :live_view
 
-  alias SiteWeb.SiteComponents
+  alias SiteWeb.GamingLive.Components
 
   @impl true
   def render(assigns) do
@@ -29,10 +29,10 @@ defmodule SiteWeb.GamingLive.Index do
             </:subtitle>
           </.header>
 
-          <SiteComponents.recent_games
+          <Components.recent_games
             async={@recent_games}
             games={@streams.recent_games}
-            class="mt-4"
+            class="mt-4 min-h-[242px]"
           />
         </section>
 
@@ -45,7 +45,7 @@ defmodule SiteWeb.GamingLive.Index do
             </:subtitle>
           </.header>
 
-          <SiteComponents.favourite_games
+          <Components.favourite_games
             async={@favourite_games}
             games={@streams.favourite_games}
             class="mt-4"

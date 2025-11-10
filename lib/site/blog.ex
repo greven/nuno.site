@@ -54,11 +54,17 @@ defmodule Site.Blog do
     all_posts() |> apply_options(opts)
   end
 
+  @doc """
+  List published posts.
+  """
   def list_published_posts(opts \\ []) do
     opts = Keyword.merge(opts, status: :published)
     list_posts(opts)
   end
 
+  @doc """
+  List published featured posts.
+  """
   def list_featured_posts(opts \\ []) do
     list_published_posts(opts)
     |> Stream.filter(& &1.featured)
@@ -83,6 +89,16 @@ defmodule Site.Blog do
     all_posts()
     |> Enum.filter(&(&1.category == category))
     |> apply_options(opts)
+  end
+
+  @doc """
+  List published posts within a given date range, inclusive.
+  """
+  def list_published_posts_by_date_range(from_date, to_date) do
+    list_published_posts()
+    |> Enum.filter(
+      &(Date.compare(&1.date, from_date) != :lt and Date.compare(&1.date, to_date) != :gt)
+    )
   end
 
   @doc """

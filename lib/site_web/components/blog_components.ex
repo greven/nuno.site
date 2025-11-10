@@ -21,9 +21,9 @@ defmodule SiteWeb.BlogComponents do
     ~H"""
     <article
       class={[
-        "group relative isolate flex flex-col gap-4 rounded-xl border border-transparent border-dashed md:flex-row",
-        "md:gap-8 md:p-2",
-        "hover:bg-surface-20/60 hover:border-border/80 hover:backdrop-blur-xs"
+        "group relative isolate flex flex-col gap-4 rounded-xl border border-transparent border-dashed bg-transparent transition ease-in-out duration-150",
+        "hover:bg-surface-20/60 hover:border-border/80 hover:backdrop-blur-xs",
+        "md:flex-row md:gap-8 md:p-2"
       ]}
       {@rest}
     >
@@ -60,7 +60,7 @@ defmodule SiteWeb.BlogComponents do
       |> assign(
         :base_class,
         [
-          "w-full aspect-video rounded-md border border-border/50 shadow-sm object-cover",
+          "w-full max-h-[200px] aspect-video rounded-md border border-border/50 shadow-sm object-cover",
           "md:w-44 md:aspect-square md:shrink-0"
         ]
       )

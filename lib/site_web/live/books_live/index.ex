@@ -2,7 +2,7 @@ defmodule SiteWeb.BooksLive.Index do
   use SiteWeb, :live_view
 
   alias Site.Services.Goodreads
-  alias SiteWeb.SiteComponents
+  alias SiteWeb.BooksLive.Components
 
   @impl true
   def render(assigns) do
@@ -47,7 +47,7 @@ defmodule SiteWeb.BooksLive.Index do
               />
             </:subtitle>
           </.header>
-          <SiteComponents.books_list async={@books} books={@streams.books} class="mt-2" />
+          <Components.books_list async={@books} books={@streams.books} class="mt-2" />
 
           <.button
             href={Goodreads.profile_url()}

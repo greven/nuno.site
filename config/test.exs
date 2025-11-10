@@ -3,6 +3,9 @@ import Config
 # Only in tests, remove the complexity from the password hashing algorithm
 config :bcrypt_elixir, :log_rounds, 1
 
+# Enable Oban testing mode
+config :site, Oban, testing: :manual
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used

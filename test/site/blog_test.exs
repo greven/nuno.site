@@ -32,30 +32,59 @@ defmodule Site.BlogTest do
         %HeaderLink{
           depth: 1,
           id: "section-title",
-          text: "Section Title",
           subsections: [
             %HeaderLink{
               depth: 2,
               id: "subsection-title",
-              text: "SubSection Title",
-              subsections: []
+              subsections: [],
+              text: "SubSection Title"
             }
-          ]
+          ],
+          text: "Section Title"
+        },
+        %HeaderLink{
+          depth: 1,
+          id: "childless-section",
+          subsections: [],
+          text: "Childless Section"
+        },
+        %HeaderLink{
+          depth: 1,
+          id: "last-section",
+          subsections: [
+            %HeaderLink{
+              id: "last-section-subsection",
+              text: "Last Section SubSection",
+              depth: 2,
+              subsections: [
+                %HeaderLink{
+                  id: "last-section-subsection-subsection",
+                  text: "Last Section SubSection SubSection",
+                  depth: 3,
+                  subsections: []
+                }
+              ]
+            }
+          ],
+          text: "Last Section"
         }
+      ]
+
+      options = [
+        render: [
+          unsafe: true,
+          escape: false
+        ]
       ]
 
       headings =
         content
-        |> MDEx.to_html!()
+        |> MDEx.parse_document!(options)
+        |> Parser.linkify_headers()
+        |> MDEx.to_html!(options)
         |> Parser.parse_headers()
 
       assert headings == expected
     end
   end
-
-  # describe "get_next_and_prev_posts/1" do
-  # test "given a post with existing previous and next posts return the corresponding posts" do
-  # Blog.get_next_and_prev_posts()
-  # end
-  # end
 end

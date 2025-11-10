@@ -26,19 +26,23 @@ defmodule Site.Services do
   ## Bluesky
 
   @doc """
-  Get the latest BlueSky posts from the given actor (handle or DID).
+  Get the BlueSky posts from the given actor (handle or DID).
   """
 
   @decorate cacheable(
               cache: Site.Cache,
-              key: {:get_latest_skeets, opts},
+              key: {:list_bluesky_posts, opts},
               opts: [ttl: :timer.minutes(30)]
             )
-  def get_recent_bluesky_posts(opts \\ []) do
-    limit = Keyword.get(opts, :limit, 10)
-    actor_or_did = Keyword.get(opts, :actor, nil)
+  def list_bluesky_posts(opts \\ []) do
+    Bluesky.list_posts(opts)
+  end
 
-    Bluesky.list_recent_posts(limit: limit, actor: actor_or_did)
+  @doc """
+  List BlueSky posts within a given date range.
+  """
+  def list_bluesky_posts_by_date_range(from_date, to_date, opts \\ []) do
+    Bluesky.list_posts_by_date_range(from_date, to_date, opts)
   end
 
   @doc """
@@ -46,16 +50,11 @@ defmodule Site.Services do
   till a given cutoff date (defaults to 7 days ago) unless the "caching" database
   table is empty, so we override the cutoff date in that case to fetch all posts.
   """
-
   def sync_bluesky_posts(handle, opts \\ []) do
-    post_count = Bluesky.count_posts()
-
-    case post_count do
+    case Bluesky.count_posts() do
       0 ->
-        Bluesky.sync_posts(
-          handle,
-          Keyword.put(opts, :cutoff_date, ~U[1970-01-01 00:00:00Z])
-        )
+        opts = Keyword.put(opts, :cutoff_date, ~U[1970-01-01 00:00:00Z])
+        Bluesky.sync_posts(handle, opts)
 
       _ ->
         Bluesky.sync_posts(handle, opts)
