@@ -331,6 +331,47 @@ defmodule SiteWeb.KitchenSinkLive.Index do
             </.tooltip>
           </div>
         </div>
+
+        <%!-- Timeline --%>
+        <div class="flex flex-col gap-6">
+          <h2 class="flex items-center gap-1 text-2xl font-medium ">
+            <a name="tooltips" href="#timeline" class="text-content-40 scroll-my-(--header-height)">#</a>Timeline
+          </h2>
+
+          <.timeline node_size={30} line_width={2}>
+            <.timeline_item active>
+              <:title>Step 1: New branch</:title>
+              <:node><.icon name="lucide-git-branch" class="size-4 text-white" /></:node>
+              <p class="text-content-40">
+                You've created new branch do-stuff from master
+              </p>
+            </.timeline_item>
+
+            <.timeline_item active>
+              <:title>Step 2: Commits</:title>
+              <:node><.icon name="lucide-git-commit-vertical" class="size-4 text-white" /></:node>
+              <p class="text-content-40">
+                You've pushed 11 commits to the branch do-stuff
+              </p>
+            </.timeline_item>
+
+            <.timeline_item line="dashed">
+              <:title>Step 3: Pull Request</:title>
+              <:node><.icon name="lucide-git-pull-request" class="size-4 text-white" /></:node>
+              <p class="text-content-40">
+                You've opened a pull request to merge do-stuff into master
+              </p>
+            </.timeline_item>
+
+            <.timeline_item>
+              <:title>Step 4: Code Review</:title>
+              <:node><.icon name="lucide-git-compare" class="size-4 text-white" /></:node>
+              <p class="text-content-40">
+                Your code is being reviewed by your team
+              </p>
+            </.timeline_item>
+          </.timeline>
+        </div>
       </Layouts.page_content>
     </Layouts.app>
     """

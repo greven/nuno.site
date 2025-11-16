@@ -47,7 +47,8 @@ defmodule SiteWeb.BooksLive.Index do
               />
             </:subtitle>
           </.header>
-          <Components.books_list async={@books} books={@streams.books} class="mt-2" />
+
+          <Components.books_list async={@books} books={@streams.books} class="mt-8" />
 
           <.button
             href={Goodreads.profile_url()}

@@ -37,8 +37,8 @@ defmodule Site.MixProject do
     [
       # Phoenix Framework
       {:phoenix, "~> 1.8.1"},
-      {:phoenix_live_view, "~> 1.1.15"},
-      {:phoenix_ecto, "~> 4.6"},
+      {:phoenix_live_view, "~> 1.1.17"},
+      {:phoenix_ecto, "~> 4.7"},
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},

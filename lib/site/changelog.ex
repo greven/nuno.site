@@ -32,11 +32,16 @@ defmodule Site.Changelog do
   Note that periods with no updates will have an empty list.
   """
   def list_updates_grouped_by_period do
+    # list_periods()
+    # |> Enum.reduce(%{}, fn period, acc ->
+    # {from_date, to_date} = date_range_for_period(period)
+    # updates = list_updates_by_date_range(from_date, to_date)
+    # Map.put(acc, period, updates)
+    # end)
+
     list_periods()
-    |> Enum.reduce(%{}, fn period, acc ->
-      {from_date, to_date} = date_range_for_period(period)
-      updates = list_updates_by_date_range(from_date, to_date)
-      Map.put(acc, period, updates)
+    |> Enum.map(fn period ->
+      %{id: period, updates: list_updates_by_period(period)}
     end)
   end
 

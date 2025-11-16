@@ -17,7 +17,7 @@ export const Tooltip = {
     this.anchor.addEventListener('mouseleave', this.handleLeave.bind(this));
 
     // DEBUG: REMOVE
-    this.tooltip.showPopover();
+    // this.tooltip.showPopover();
   },
 
   destroyed() {

@@ -66,12 +66,42 @@ defmodule SiteWeb.ChangelogLive.Components do
   def updates_timeline(assigns) do
     ~H"""
     <div class={@class} {@rest}>
-      <div id="changelog-list" phx-update="stream">
-        <div :for={{dom_id, update} <- @updates} id={dom_id} class="">
-          <.update_title type={update.type} update={update} />
-        </div>
+      <div id="changelog-list" class="flex flex-col gap-14" phx-update="stream">
+        <section
+          :for={{dom_id, period_updates} <- @updates}
+          id={dom_id}
+          class=""
+          id={"period-#{period_updates.id}"}
+          aria-label={
+            case period_updates.id do
+              :week -> "Updates from the past week"
+              :month -> "Updates from the past month"
+              year when is_integer(year) -> "Updates from the year #{year}"
+            end
+          }
+        >
+          <.period_section_header period={period_updates.id} />
+
+          <%= if period_updates.updates == [] do %>
+            <p class="mt-2 flex items-center text-content-40">
+              <.icon name="lucide-shredder" class="mr-4 size-6 text-content-40/80" />
+              <span class="font-light">No updates</span>
+            </p>
+          <% else %>
+            <.update_item :for={update <- period_updates.updates} update={update} />
+          <% end %>
+        </section>
       </div>
     </div>
+    """
+  end
+
+  attr :update, :any, required: true
+  attr :rest, :global
+
+  defp update_item(assigns) do
+    ~H"""
+    <div {@rest}>Bla</div>
     """
   end
 
@@ -88,6 +118,45 @@ defmodule SiteWeb.ChangelogLive.Components do
     <a href={@update.uri} class="text-lg font-medium text-cyan-600 hover:underline">
       BLUESKY!
     </a>
+    """
+  end
+
+  defp update_title(assigns) do
+    ~H"""
+    <div class="text-lg font-medium text-neutral-600"></div>
+    """
+  end
+
+  attr :period, :any, required: true
+  attr :rest, :global
+
+  defp period_section_header(%{period: :week} = assigns) do
+    ~H"""
+    <.header
+      tag="h3"
+      header_class="text-primary uppercase"
+      show_anchor_link={false}
+      anchor="week"
+      {@rest}
+    >
+      This Week
+    </.header>
+    """
+  end
+
+  defp period_section_header(%{period: :month} = assigns) do
+    ~H"""
+    <.header tag="h3" header_class="text-primary uppercase" {@rest}>
+      This Month
+    </.header>
+    """
+  end
+
+  defp period_section_header(%{period: year} = assigns) when is_integer(year) do
+    ~H"""
+    <.header tag="h3" header_class="text-primary uppercase" {@rest}>
+      {@period}
+    </.header>
     """
   end
 end

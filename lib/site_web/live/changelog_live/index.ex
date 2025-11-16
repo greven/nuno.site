@@ -26,7 +26,7 @@ defmodule SiteWeb.ChangelogLive.Index do
 
         <div class="mt-8 flex items-start justify-start gap-8 md:gap-16 lg:gap-20">
           <Components.timeline_nav periods={@periods} current={@filter_period} />
-          <%!-- <Components.updates_timeline updates={@streams.updates} /> --%>
+          <Components.updates_timeline updates={@streams.updates} />
         </div>
       </Layouts.page_content>
     </Layouts.app>
@@ -44,17 +44,16 @@ defmodule SiteWeb.ChangelogLive.Index do
         %{count: count} -> count > 0
       end)
 
-    updates = Changelog.list_updates_grouped_by_period()
-
-    dbg(updates)
+    updates =
+      Changelog.list_updates_grouped_by_period()
+      |> Enum.filter(fn %{id: period} -> period in Enum.map(periods_counts, & &1.period) end)
 
     socket =
       socket
       |> assign(:page_title, "Updates")
       |> assign(:filter_period, :week)
       |> assign(:periods, periods_counts)
-
-    # |> stream(:updates, updates)
+      |> stream(:updates, updates)
 
     {:ok, socket}
   end
@@ -64,8 +63,6 @@ defmodule SiteWeb.ChangelogLive.Index do
     socket =
       socket
       |> assign(:filter_period, get_uri_period(URI.parse(uri)))
-
-    # |> stream(:updates, Changelog.list_updates_by_period(period), reset: true)
 
     {:noreply, socket}
   end

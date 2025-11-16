@@ -522,4 +522,20 @@ defmodule SiteWeb.Components.Theming do
       _ -> nil
     end
   end
+
+  def radius_var(radius) do
+    case radius do
+      "xs" -> "var(--radius-xs)"
+      "sm" -> "var(--radius-sm)"
+      "md" -> "var(--radius-md)"
+      "lg" -> "var(--radius-lg)"
+      "xl" -> "var(--radius-xl)"
+      "2xl" -> "var(--radius-2xl)"
+      "3xl" -> "var(--radius-3xl)"
+      "4xl" -> "var(--radius-4xl)"
+      "full" -> "calc(infinity * 1px)"
+      "none" -> "0"
+      _ -> nil
+    end
+  end
 end

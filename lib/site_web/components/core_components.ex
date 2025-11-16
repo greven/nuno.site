@@ -502,6 +502,7 @@ defmodule SiteWeb.CoreComponents do
   attr :padding_class, :string, default: "pb-4"
   attr :class, :any, default: "flex flex-col"
   attr :anchor, :string, default: nil
+  attr :show_anchor_link, :boolean, default: false
   attr :tag, :string, default: "h1"
   attr :rest, :global
 
@@ -536,8 +537,8 @@ defmodule SiteWeb.CoreComponents do
           ]}
         >
           <%= if @anchor do %>
-            <a id={@anchor} class="header-link" href={"##{@anchor}"}>
-              {@tag}
+            <a id={@anchor} class={@show_anchor_link && "header-link"} href={"##{@anchor}"}>
+              <span :if={@show_anchor_link}>{@tag}</span>
             </a>
             {render_slot(@inner_block)}
           <% else %>
@@ -1018,21 +1019,21 @@ defmodule SiteWeb.CoreComponents do
       )
       |> assign(
         :scrollable_class,
-        "bg-emerald-300 overflow-hidden overflow-x-auto"
+        "max-w-(--content-width) pb-2 overflow-x-auto scrollbar-thin snap-x snap-mandatory scroll-px-4"
       )
 
     ~H"""
     <.dynamic_tag tag_name={@root_tag} class={@class}>
       <ul
+        {@rest}
+        aria-label={@aria_label}
         class={[
-          "w-full inline-flex",
+          "p-1 w-full inline-flex",
           @items_gap_class,
           @orientation_class,
           @scrollable && @scrollable_class,
           @show_backdrop && @backdrop_class
         ]}
-        aria-label={@aria_label}
-        {@rest}
       >
         <li :for={item <- @item} id={item[:id]}>
           <button
@@ -1044,7 +1045,7 @@ defmodule SiteWeb.CoreComponents do
               item[:class],
               "group relative w-full h-10 px-4 inline-flex flex-nowrap shrink-0 items-center justify-center",
               "text-sm rounded-full overflow-hidden whitespace-nowrap cursor-pointer align-middle text-center",
-              "text-content-40 border border-surface-30/50 bg-surface-20/50 transition-colors duration-150",
+              "text-content-40 border border-surface-30/50 bg-surface-20/50 transition-colors duration-150 backdrop-blur-sm",
               "hover:not-aria-current:bg-surface-10/25 hover:not-aria-current:text-content-10  hover:not-aria-current:border-surface-40",
               "aria-current:text-content aria-current:bg-surface-10 aria-current:border-primary aria-current:shadow-sm active:shadow-none",
               "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-primary"
@@ -1069,6 +1070,129 @@ defmodule SiteWeb.CoreComponents do
         </li>
       </ul>
     </.dynamic_tag>
+    """
+  end
+
+  @doc """
+  Renders a timeline component.
+  Timelines are used to display a list of events in chronological order.
+  """
+
+  attr :node_size, :integer, default: 24, doc: "the size of the timeline nodes in px"
+
+  attr :node_radius, :string,
+    values: ~w(xs sm md lg xl full),
+    default: "full",
+    doc: "the border radius of the timeline nodes"
+
+  attr :line_width, :integer, default: 2, doc: "the width of the timeline line in px"
+
+  attr :align, :string,
+    values: ~w(left right),
+    default: "left",
+    doc: "the alignment of the timeline relative to content"
+
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def timeline(assigns) do
+    ~H"""
+    <div
+      {@rest}
+      class="flow-root"
+      style={"--tl-node-size: #{@node_size}px; --tl-line-width: #{@line_width}px;
+        --tl-node-radius: #{Theming.radius_var(@node_radius)}; --tl-align: #{@align};
+        --tl-offset: calc(var(--tl-node-size) / 2 + var(--tl-line-width) / 2);
+        --tl-border-width: #{@line_width}px;"}
+    >
+      <ul
+        role="list"
+        data-align={@align}
+        class={[
+          "data-[align=left]:[--tl-ps:var(--tl-offset)]",
+          "data-[align=right]:[--tl-pe:var(--tl-offset)]",
+          "data-[align=left]:ps-(--tl-offset)",
+          "data-[align=right]:pe-(--tl-offset)",
+          "data-[align=left]:[--tl-node-left:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)]",
+          "data-[align=left]:[--tl-node-right:auto]",
+          "data-[align=right]:[--tl-node-right:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)]",
+          "data-[align=right]:[--tl-node-left:auto]",
+          "data-[align=left]:[--tl-line-left:calc(var(--tl-line-width)*-1)]",
+          "data-[align=left]:[--tl-line-right:auto]",
+          "data-[align=right]:[--tl-line-right:calc(var(--tl-line-width)*-1)]",
+          "data-[align=right]:[--tl-line-left:auto]"
+        ]}
+      >
+        {render_slot(@inner_block)}
+      </ul>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a timeline item component.
+  Timeline items are used to display individual events within a timeline.
+  """
+
+  attr :active, :boolean, default: false
+  attr :line, :string, values: ~w(dashed dotted solid), default: "solid"
+  attr :show_backdrop, :boolean, default: true
+  attr :rest, :global
+
+  slot :node
+
+  slot :title do
+    attr :class, :string
+  end
+
+  slot :inner_block
+
+  def timeline_item(assigns) do
+    ~H"""
+    <li
+      data-active={@active}
+      style={"--tl-border: var(--tl-border-width) #{@line} #{if(@active,
+        do: "var(--color-primary)", else: "var(--color-surface-40)")};"}
+      class={[
+        "relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe)",
+        "before:content-[''] last:before:hidden before:absolute before:pointer-events-none",
+        "before:[border-inline-start:var(--tl-border)]",
+        "before:top-0 before:-bottom-8 before:left-(--tl-line-left)"
+      ]}
+      {@rest}
+    >
+      <div
+        data-part="timeline-node"
+        aria-hidden="true"
+        style={"width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+          #{@show_backdrop && "border-width: var(--tl-line-width);"}"}
+        class={[
+          "absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center",
+          @active && @show_backdrop && "bg-primary border-primary border-shade-primary/10",
+          !@active && @show_backdrop && "bg-surface-30 border-surface-40"
+        ]}
+      >
+        <div class="w-full h-full relative inline-flex items-center justify-center">
+          {render_slot(@node)}
+        </div>
+      </div>
+
+      <div
+        data-part="timeline-body"
+        class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)"
+      >
+        <h3
+          :for={title <- @title}
+          class={Map.get(title, :class, "mt-0.5 text-base font-medium text-content-10")}
+        >
+          {render_slot(title)}
+        </h3>
+
+        <div class="text-sm text-content-40">
+          {render_slot(@inner_block)}
+        </div>
+      </div>
+    </li>
     """
   end
 
