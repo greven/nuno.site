@@ -19,50 +19,62 @@ defmodule SiteWeb.ChangelogLive.Components do
 
   def timeline_nav(assigns) do
     ~H"""
-    <%!-- <.segmented_control
-      class="sticky top-[calc(var(--header-height)+2rem)]"
-      value={@current}
-      orientation={:class}
-      on_change="period_filter_changed"
-      aria_label="Filter updates by period"
-      items_gap_class="gap-2"
-      orientation_class="flex-row md:flex-col"
-      root_tag="nav"
-      scrollable
+    <nav
+      id="timeline-nav"
+      class={[
+        "md:sticky md:top-[calc(var(--header-height)+2rem)]",
+        @class
+      ]}
+      aria-label="Filter updates by period"
+      {@rest}
     >
-      <:item
-        :for={%{period: period, count: count} <- @periods}
-        value={period}
-      >
-        <div class="w-full flex items-center justify-between gap-3.5">
-          <%= case period do %>
-            <% :week -> %>
-              <div>Week</div>
-            <% :month -> %>
-              <div>Month</div>
-            <% year when is_integer(year) -> %>
-              <div>{Integer.to_string(year)}</div>
-          <% end %>
-
-          <span
+      <ul class="flex flex-row md:flex-col gap-1.5">
+        <li :for={%{period: period, count: count} <- @periods}>
+          <.link
+            href={"##{period_anchor(period)}"}
             class={[
-              "-mr-1.5 p-0 size-[1.725em] flex justify-center items-center rounded-full",
-              "text-sm text-content-40/80 bg-surface-20 transition-colors ease-in-out",
-              "group-hover:text-content-30 group-hover:bg-surface-30/80 aria-current:text-content-30 aria-current:bg-surface-30"
+              "group flex items-center justify-between gap-3.5 px-3 py-2 rounded-lg",
+              "text-content-40 hover:text-content-30 hover:bg-surface-20/50",
+              "transition-colors ease-in-out",
+              "aria-[current]:text-content aria-[current]:bg-surface-30/50"
             ]}
+            data-period={period_id(period)}
             aria-current={@current == period}
+            phx-click={JS.push("period_filter_changed", value: %{value: period})}
           >
-            {count}
-          </span>
-        </div>
-      </:item>
-    </.segmented_control> --%>
+            <span class="group-aria-[current]:font-medium">
+              <%= case period do %>
+                <% :week -> %>
+                  Week
+                <% :month -> %>
+                  Month
+                <% year when is_integer(year) -> %>
+                  {Integer.to_string(year)}
+              <% end %>
+            </span>
 
-    <%!-- TODO: Redo the component without using segmented_control, we just want the nav element to use period text as links but keep same functionality. We also want to observe scroll position to highlight the current period in view.
-    --%>
-    <nav></nav>
+            <span class={[
+              "p-0 size-[1.725em] flex justify-center items-center rounded-full",
+              "text-sm text-content-40/80 bg-surface-20 transition-colors ease-in-out",
+              "group-hover:text-content-30 group-hover:bg-surface-30",
+              "group-aria-[current]:text-surface group-aria-[current]:bg-content"
+            ]}>
+              {count}
+            </span>
+          </.link>
+        </li>
+      </ul>
+    </nav>
     """
   end
+
+  defp period_anchor(:week), do: "week"
+  defp period_anchor(:month), do: "month"
+  defp period_anchor(year) when is_integer(year), do: "year-#{year}"
+
+  defp period_id(:week), do: "week"
+  defp period_id(:month), do: "month"
+  defp period_id(year) when is_integer(year), do: Integer.to_string(year)
 
   @doc false
 
@@ -91,7 +103,7 @@ defmodule SiteWeb.ChangelogLive.Components do
 
           <%= if period_updates.updates == [] do %>
             <p class="mt-2 flex items-center text-content-40 opacity-60">
-              <.icon name="lucide-shredder" class="mr-4 size-6 text-content-40/80" />
+              <.icon name="lucide-megaphone-off" class="mr-4 size-6 text-content-40/80" />
               <span class="font-light">No updates</span>
             </p>
           <% else %>
@@ -139,7 +151,11 @@ defmodule SiteWeb.ChangelogLive.Components do
       </.header>
 
       <div class="max-w-md">
-        <a href={@update.uri} class="text-sm link-ghost text-balance" target="_blank">
+        <a
+          href={@update.uri}
+          class="text-sm link-ghost text-balance hover:decoration-sky-600"
+          target="_blank"
+        >
           {@update.text}
         </a>
       </div>
@@ -157,7 +173,7 @@ defmodule SiteWeb.ChangelogLive.Components do
 
   defp update_icon(%{type: :bluesky} = assigns) do
     ~H"""
-    <.icon name="lucide-cloud" class="size-4 text-secondary" />
+    <.icon name="lucide-cloud" class="size-4 text-sky-600" />
     """
   end
 
