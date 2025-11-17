@@ -6,6 +6,8 @@ defmodule Site.Changelog do
 
   use Nebulex.Caching
 
+  alias Site.Support
+
   @start_year 2020
 
   defguard is_date_struct(date)
@@ -148,9 +150,9 @@ defmodule Site.Changelog do
       NaiveDateTime.new!(date, ~T[00:00:00])
     end
 
-    post_url = fn %{id: id} ->
+    post_url = fn %{id: id, title: title} ->
       year = String.slice(id, 0, 4)
-      slug = String.replace_prefix(id, "#{year}_", "")
+      slug = Support.slugify(title)
       "/blog/#{year}/#{slug}"
     end
 

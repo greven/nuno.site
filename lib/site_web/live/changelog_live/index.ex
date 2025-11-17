@@ -24,9 +24,9 @@ defmodule SiteWeb.ChangelogLive.Index do
           </:subtitle>
         </.header>
 
-        <div class="mt-8 flex items-start justify-start gap-8 md:gap-16 lg:gap-20">
+        <div class="mt-8 flex flex-col items-start justify-start gap-8 md:flex-row md:gap-16 lg:gap-20">
           <Components.timeline_nav periods={@periods} current={@filter_period} />
-          <Components.updates_timeline updates={@streams.updates} />
+          <Components.updates_timeline updates={@streams.updates} class="mt-4 md:mt-0" />
         </div>
       </Layouts.page_content>
     </Layouts.app>
@@ -68,14 +68,25 @@ defmodule SiteWeb.ChangelogLive.Index do
   end
 
   @impl true
-  def handle_event("period_filter_changed", %{"value" => value}, socket) do
+  def handle_event("period_filter_changed", %{"value" => value}, socket) when is_integer(value) do
+    {:noreply, push_patch(socket, to: ~p"/changelog#year-#{value}", replace: true)}
+  end
+
+  def handle_event("period_filter_changed", %{"value" => value}, socket)
+      when is_binary(value) and value in ~w(week month) do
     {:noreply, push_patch(socket, to: ~p"/changelog##{value}", replace: true)}
   end
+
+  def handle_event("period_filter_changed", _, socket), do: {:noreply, socket}
 
   defp get_uri_period(%URI{fragment: nil}), do: :week
   defp get_uri_period(%URI{fragment: "week"}), do: :week
   defp get_uri_period(%URI{fragment: "month"}), do: :month
-  defp get_uri_period(%URI{fragment: year}) when is_binary(year), do: maybe_parse_year(year)
+
+  defp get_uri_period(%URI{fragment: "year-" <> year}) when is_binary(year) do
+    maybe_parse_year(year)
+  end
+
   defp get_uri_period(_), do: :week
 
   # Attempt to parse year as integer, default to :week on failure

@@ -76,6 +76,10 @@
   }
 }
 
+@utility scroll-header {
+  scroll-margin-block: calc(var(--header-height) + 2rem);
+}
+
 /* Layout */
 
 @utility wrapper {
@@ -110,5 +114,5 @@
 @utility header-link {
   @apply hidden sm:inline-block absolute -left-[1.85em] top-0 shadow-none
   text-content-40/20 cursor-pointer no-underline bg-transparent capitalize
-  group-hover:text-content-40/40;
+  scroll-header group-hover:text-content-40/40;
 }

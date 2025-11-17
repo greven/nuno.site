@@ -5,7 +5,8 @@ defmodule Mix.Tasks.Post.New do
 
   @moduledoc """
   Creates a new blog post file in the posts directory (priv/content/posts).
-  The mix command takes a title and an optional date (YYYY-MM-DD).
+  The mix command takes a title and an optional date (YYYY-MM-DD), if no date
+  is provided the current date is used.
 
   Usage:
 
@@ -76,6 +77,7 @@ defmodule Mix.Tasks.Post.New do
       title: "#{post_title}",
       tags: ~w(random),
       excerpt: "Lorem ipsum",
+      category: :article,
       status: :draft
     }
 

@@ -529,7 +529,7 @@ defmodule SiteWeb.CoreComponents do
           tag_name={@tag}
           class={[
             if(@anchor,
-              do: "relative group hidden sm:flex items-center",
+              do: "relative group sm:flex items-center",
               else: "flex items-center"
             ),
             "text-content-10",
@@ -537,7 +537,11 @@ defmodule SiteWeb.CoreComponents do
           ]}
         >
           <%= if @anchor do %>
-            <a id={@anchor} class={@show_anchor_link && "header-link"} href={"##{@anchor}"}>
+            <a
+              id={@anchor}
+              class={if(@show_anchor_link, do: "header-link", else: "scroll-header")}
+              href={"##{@anchor}"}
+            >
               <span :if={@show_anchor_link}>{@tag}</span>
             </a>
             {render_slot(@inner_block)}
@@ -1152,7 +1156,7 @@ defmodule SiteWeb.CoreComponents do
     <li
       data-active={@active}
       style={"--tl-border: var(--tl-border-width) #{@line} #{if(@active,
-        do: "var(--color-primary)", else: "var(--color-surface-40)")};"}
+        do: "var(--color-primary)", else: "var(--color-surface-30)")};"}
       class={[
         "relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe)",
         "before:content-[''] last:before:hidden before:absolute before:pointer-events-none",
@@ -1169,7 +1173,7 @@ defmodule SiteWeb.CoreComponents do
         class={[
           "absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center",
           @active && @show_backdrop && "bg-primary border-primary border-shade-primary/10",
-          !@active && @show_backdrop && "bg-surface-30 border-surface-40"
+          !@active && @show_backdrop && "bg-surface-20 border-surface-30"
         ]}
       >
         <div class="w-full h-full relative inline-flex items-center justify-center">

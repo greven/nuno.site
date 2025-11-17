@@ -101,11 +101,11 @@ defmodule SiteWeb.TravelLive.Components do
         </div>
 
         <div class="flex flex-col justify-center items-end text-right gap-0.5">
-          <date class="flex items-center">
+          <time class="flex items-center">
             <.icon name="hero-calendar" class="size-4 md:size-4.5 text-content-40/80 mr-2" />
             <div class="hidden lg:block text-content-30">{format_date(@trip.date)}</div>
             <div class="lg:hidden text-content-30">{format_date(@trip.date, "%d-%m-%y")}</div>
-          </date>
+          </time>
 
           <div class="lg:hidden">
             <span class="font-mono text-content-40">{format_distance(@trip.distance)}</span>
