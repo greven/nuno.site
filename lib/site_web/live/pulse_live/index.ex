@@ -11,6 +11,7 @@ defmodule SiteWeb.PulseLive.Index do
     >
       <Layouts.page_content class="flex flex-col gap-16">
         <h2 class="text-3xl font-semibold">🚧 Work in Progress</h2>
+        <p class="text-content-40">Coming soon...™️</p>
       </Layouts.page_content>
     </Layouts.app>
     """

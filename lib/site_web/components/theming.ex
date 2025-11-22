@@ -1,4 +1,25 @@
 defmodule SiteWeb.Components.Theming do
+  @moduledoc """
+  Shared theming-related helpers.
+  """
+
+  @doc """
+  Generate classes for focus-visible outlines.
+  """
+  def focus_visible_outline_cx(color \\ :primary)
+
+  def focus_visible_outline_cx(:primary) do
+    [focus_visible_outline(), "focus-visible:outline-primary"]
+  end
+
+  def focus_visible_outline_cx(:secondary) do
+    [focus_visible_outline(), "focus-visible:outline-secondary"]
+  end
+
+  defp focus_visible_outline do
+    "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-dashed"
+  end
+
   ## Buttons
 
   def button_cx(assigns) do
@@ -11,9 +32,9 @@ defmodule SiteWeb.Components.Theming do
       root: [
         "relative isolate outline-none overflow-hidden cursor-pointer transition-all",
         "disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed",
-        "focus-visible:border-ring focus-visible:ring-ring/75 focus-visible:ring-[3px]",
         "aria-invalid:ring-danger aria-invalid:border-danger",
         "active:shadow-none",
+        focus_visible_outline_cx(),
         "[&_svg]:pointer-events-none [&_[data-slot=icon]]:pointer-events-none [&_svg]:shrink-0 [&_[data-slot=icon]]:shrink-0 [&_svg:not([class*='size-'])]:size-5! [&_[data-slot=icon]:not([class*='size-'])]:size-5!",
         "[&:disabled_svg]:opacity-50 [&:disabled_[data-slot=icon]]:opacity-50",
         "[--button-shadow:var(--shadow-xs)]",

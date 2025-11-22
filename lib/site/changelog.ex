@@ -17,7 +17,7 @@ defmodule Site.Changelog do
 
   defmodule Update do
     @enforce_keys [:type, :date, :title, :text, :uri]
-    defstruct [:type, :id, :date, :title, :text, :uri]
+    defstruct [:type, :id, :date, :title, :text, :uri, :meta]
   end
 
   defp sources do
@@ -136,7 +136,8 @@ defmodule Site.Changelog do
         date: mapper_item(item, mapper(type)[:date]),
         title: mapper_item(item, mapper(type)[:title]),
         text: mapper_item(item, mapper(type)[:text]),
-        uri: mapper_item(item, mapper(type)[:uri])
+        uri: mapper_item(item, mapper(type)[:uri]),
+        meta: mapper_item(item, mapper(type)[:meta])
       }
     end)
   end
@@ -156,7 +157,9 @@ defmodule Site.Changelog do
       "/blog/#{year}/#{slug}"
     end
 
-    %{id: :id, date: post_date, title: :title, text: :excerpt, uri: post_url}
+    meta = fn %{tags: tags, category: category} -> %{tags: tags, category: category} end
+
+    %{id: :id, date: post_date, title: :title, text: :excerpt, uri: post_url, meta: meta}
   end
 
   defp mapper(:bluesky) do

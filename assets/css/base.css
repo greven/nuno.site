@@ -32,6 +32,13 @@
     background-color: --alpha(var(--color-secondary) / 0.2);
   }
 
+  a {
+    &:focus-visible {
+      outline: 1px dashed var(--color-primary);
+      outline-offset: 2px;
+    }
+  }
+
   h1,
   h2,
   h3,

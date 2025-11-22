@@ -181,69 +181,115 @@
 
   /* Navbar */
 
-  .navbar-link {
-    --link-accent: var(--color-primary);
-    --link-color: var(--color-content-10);
-    --inactive-link-color: var(--color-content-40);
+  .navbar {
+    --nav-px: 0.725rem;
 
-    position: relative;
-    font-weight: var(--font-weight-medium);
-    font-size: 15px;
-    color: var(--inactive-link-color);
-    transition: all 0.3s;
-  }
+    display: flex;
+    width: fit-content;
 
-  .navbar-link::before,
-  .navbar-link::after {
-    position: absolute;
-    bottom: -6px;
-    left: 0;
-    right: 0;
-    width: 16px;
-    height: 2px;
-    margin-left: auto;
-    margin-right: auto;
-    pointer-events: none;
-    background: var(--inactive-link-color);
-  }
+    &::before {
+      content: '';
+      position: absolute;
+      position-anchor: --nav-link;
+      top: auto;
+      left: calc(anchor(left) + var(--nav-px));
+      right: calc(anchor(right) + var(--nav-px));
+      bottom: anchor(bottom);
+      height: 2px;
+      background: var(--color-content-40);
+      opacity: 0.8;
+      transition: 500ms
+        linear(
+          0,
+          0.029 1.6%,
+          0.123 3.5%,
+          0.651 10.6%,
+          0.862 14.1%,
+          1.002 17.7%,
+          1.046 19.6%,
+          1.074 21.6%,
+          1.087 23.9%,
+          1.086 26.6%,
+          1.014 38.5%,
+          0.994 46.3%,
+          1
+        );
+    }
 
-  .navbar-link::before {
-    content: '';
-    transform-origin: 100% 50%;
-    transform: scale3d(0, 1, 1);
-    transition: transform 0.3s;
-  }
+    .navbar-link[aria-current] {
+      anchor-name: --nav-link;
+    }
 
-  .navbar-link:hover {
-    color: var(--color-content-20);
-  }
+    &:has(.navbar-link[aria-current]):not(
+        :has(.navbar-link:not([aria-current]):is(:hover, :focus-visible))
+      )::before {
+      background: var(--color-primary);
+      opacity: 1;
+    }
 
-  .navbar-link:hover::before {
-    transform-origin: 0% 50%;
-    transform: scale3d(1, 1, 1);
-  }
-
-  .navbar-link[aria-current='true'] {
-    color: var(--link-color);
-
-    &:focus-visible {
-      color: var(--link-accent);
+    /* Fallback for browsers that don't support position-anchor */
+    @supports not (position-anchor: --nav-link) {
+      &::before {
+        display: none;
+      }
     }
   }
 
-  .navbar-link[aria-current='true']::before,
-  .navbar-link[aria-current='true']::after {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    left: 0;
-    right: 0;
-    width: 16px;
-    height: 2px;
-    margin-left: auto;
-    margin-right: auto;
-    pointer-events: none;
-    background: var(--link-accent);
+  .navbar-link {
+    position: relative;
+    display: block;
+    padding: 0.25rem var(--nav-px);
+    font-size: 15px;
+    color: var(--color-content-40);
+    cursor: pointer;
+    outline: none;
+    border-radius: 999px;
+    transition: color 200ms;
+
+    @supports (corner-shape: squircle) {
+      corner-shape: squircle;
+    }
+
+    &:focus-visible {
+      outline: 1px dashed var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    /* Only apply anchor-name on hover/focus */
+    &:is(:hover, :focus-visible) {
+      anchor-name: --nav-link;
+      color: var(--color-content-10);
+    }
+
+    &[aria-current] {
+      font-weight: var(--font-weight-medium);
+      color: var(--color-content-10);
+    }
+
+    @supports not (position-anchor: --nav-link) {
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        top: auto;
+        bottom: 0px;
+        left: 25%;
+        width: 50%;
+        height: 2px;
+        background: transparent;
+        border-radius: 1px;
+        transition: background 200ms ease;
+      }
+
+      &:hover::after,
+      &:focus-visible::after {
+        background: var(--color-content-40);
+      }
+
+      &[aria-current]::after {
+        background: var(--color-primary);
+      }
+    }
   }
 
   .typing-reveal {
@@ -394,6 +440,7 @@
 
     & .slideshow-nav-prev:focus-visible,
     & .slideshow-nav-next:focus-visible {
+      outline: 2px solid var(--color-primary);
       opacity: 1;
     }
 

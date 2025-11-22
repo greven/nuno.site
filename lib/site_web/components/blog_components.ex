@@ -844,7 +844,7 @@ defmodule SiteWeb.BlogComponents do
             :for={header <- @headers}
             :if={header.depth <= @depth}
             class="m-0 p-0 leading-5 text-content-10/20 transition ease-in-out duration-500
-            data-[active]:text-primary"
+            data-active:text-primary"
           >
             <a href={"##{header.id}"} inert>&ndash;</a>
             <span class="sr-only">{header.text}</span>
@@ -912,8 +912,8 @@ defmodule SiteWeb.BlogComponents do
           phx-click={JS.dispatch("hide-toc")}
           class="group relative flex items-center text-sm text-content-40
             before:content-[''] before:absolute before:-left-[calc(--spacing(5)+1px)] before:w-px
-            before:h-5 before:border-l-2 before:border-l-transparent data-[active]:text-content-10
-            data-[active]:before:border-l-primary hover:text-content-20 transition-all touch-manipulation"
+            before:h-5 before:border-l-2 before:border-l-transparent data-active:text-content-10
+            data-active:before:border-l-primary hover:text-content-20 transition-all touch-manipulation"
         >
           <a href={"##{header.id}"} class="w-full line-clamp-1 touch-manipulation">
             {header.text}

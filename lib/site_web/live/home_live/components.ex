@@ -269,7 +269,7 @@ defmodule SiteWeb.HomeLive.Components do
       <.async_result assign={@async}>
         <:loading>
           <div class="flex items-center justify-center">
-            <.card class="w-full h-[196px] md:w-[512px] lg:w-[564px] lg:h-[208px] animate-pulse">
+            <.card class="w-full h-48 md:w-lg lg:w-[564px] lg:h-52 animate-pulse">
               <div class="h-full flex items-start gap-3">
                 <.skeleton height="38px" width="38px" class="rounded-full bg-surface-30" />
 

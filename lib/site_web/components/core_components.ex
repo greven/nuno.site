@@ -1048,7 +1048,7 @@ defmodule SiteWeb.CoreComponents do
             class={[
               item[:class],
               "group relative w-full h-10 px-4 inline-flex flex-nowrap shrink-0 items-center justify-center",
-              "text-sm rounded-full overflow-hidden whitespace-nowrap cursor-pointer align-middle text-center",
+              "text-sm rounded-full corner-squircle overflow-hidden whitespace-nowrap cursor-pointer align-middle text-center",
               "text-content-40 border border-surface-30/50 bg-surface-20/50 transition-colors duration-150 backdrop-blur-sm",
               "hover:not-aria-current:bg-surface-10/25 hover:not-aria-current:text-content-10  hover:not-aria-current:border-surface-40",
               "aria-current:text-content aria-current:bg-surface-10 aria-current:border-primary aria-current:shadow-sm active:shadow-none",
@@ -1141,9 +1141,13 @@ defmodule SiteWeb.CoreComponents do
   attr :active, :boolean, default: false
   attr :line, :string, values: ~w(dashed dotted solid), default: "solid"
   attr :show_backdrop, :boolean, default: true
+  attr :show_border, :boolean, default: true
+  attr :class, :string, default: nil
   attr :rest, :global
 
-  slot :node
+  slot :node do
+    attr :class, :string
+  end
 
   slot :title do
     attr :class, :string
@@ -1161,7 +1165,8 @@ defmodule SiteWeb.CoreComponents do
         "relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe)",
         "before:content-[''] last:before:hidden before:absolute before:pointer-events-none",
         "before:[border-inline-start:var(--tl-border)]",
-        "before:top-0 before:-bottom-8 before:left-(--tl-line-left)"
+        "before:top-0 before:-bottom-8 before:left-(--tl-line-left)",
+        @class
       ]}
       {@rest}
     >
@@ -1169,15 +1174,20 @@ defmodule SiteWeb.CoreComponents do
         data-part="timeline-node"
         aria-hidden="true"
         style={"width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
-          #{@show_backdrop && "border-width: var(--tl-line-width);"}"}
+          #{@show_border && "border-width: var(--tl-line-width);"}"}
         class={[
           "absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center",
-          @active && @show_backdrop && "bg-primary border-primary border-shade-primary/10",
-          !@active && @show_backdrop && "bg-surface-20 border-surface-30"
+          @active && @show_backdrop && "bg-primary",
+          @active && @show_border && "border-primary border-shade-primary/10",
+          !@active && @show_backdrop && "bg-surface-20",
+          !@active && @show_border && "border-surface-30"
         ]}
       >
-        <div class="w-full h-full relative inline-flex items-center justify-center">
-          {render_slot(@node)}
+        <div
+          :for={node <- @node}
+          class={["w-full h-full relative inline-flex items-center justify-center", node[:class]]}
+        >
+          {render_slot(node)}
         </div>
       </div>
 

@@ -33,9 +33,9 @@ defmodule SiteWeb.ChangelogLive.Components do
           <.link
             href={"##{period_anchor(period)}"}
             class={[
-              "group flex items-center justify-between gap-3.5 px-3 py-2 rounded-lg",
-              "text-content-40 hover:text-content-30 hover:bg-surface-20/50",
-              "transition-colors ease-in-out",
+              "group flex items-center justify-between gap-3.5 px-3 py-2",
+              "rounded-lg corner-squircle text-content-40 transition-colors ease-in-out",
+              "hover:text-content-30 hover:bg-surface-20/50",
               "aria-[current]:text-content aria-[current]:bg-surface-30/50"
             ]}
             data-period={period_id(period)}
@@ -108,8 +108,14 @@ defmodule SiteWeb.ChangelogLive.Components do
             </p>
           <% else %>
             <.timeline node_size={34} class="mt-2">
-              <.timeline_item :for={update <- period_updates.updates} line="dashed">
-                <:node><.update_icon type={update.type} /></:node>
+              <.timeline_item
+                :for={update <- period_updates.updates}
+                line="dashed"
+                show_border={false}
+              >
+                <:node class={node_style(update.type, update.meta)}>
+                  <.update_icon type={update.type} meta={update.meta} />
+                </:node>
                 <div class="flex flex-col gap-1">
                   <.update_body update={update} class="mt-1" />
                 </div>
@@ -122,18 +128,34 @@ defmodule SiteWeb.ChangelogLive.Components do
     """
   end
 
+  defp node_style(:posts, %{category: :article}),
+    do: "rounded-full bg-red-50 border border-red-200 dark:bg-red-500/10 dark:border-red-500/60"
+
+  defp node_style(:posts, %{category: :note}),
+    do:
+      "rounded-full bg-amber-50 border border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/60"
+
+  defp node_style(:bluesky, _),
+    do: "rounded-full bg-sky-50 border border-sky-200 dark:bg-sky-500/10 dark:border-sky-500/60"
+
   attr :update, :any, required: true
   attr :rest, :global
 
   defp update_body(%{update: %{type: :posts}} = assigns) do
+    %{update: %{meta: meta}} = assigns
+
+    assigns =
+      assigns
+      |> assign(:category, meta.category || "Article")
+
     ~H"""
     <div {@rest}>
-      <.header tag="h4" class="-mb-2" header_class="text-sm text-content-40">
-        Blog Post
+      <.header tag="h4" class="-mb-2" header_class="font-medium text-sm text-content-10 capitalize">
+        Blog {@category}
       </.header>
 
       <div class="max-w-md">
-        <a href={@update.uri} class="link-subtle text-base text-balance">
+        <a href={@update.uri} class="link-subtle text-base text-balance text-content-30">
           {@update.title}
         </a>
       </div>
@@ -146,14 +168,14 @@ defmodule SiteWeb.ChangelogLive.Components do
   defp update_body(%{update: %{type: :bluesky}} = assigns) do
     ~H"""
     <div {@rest}>
-      <.header tag="h4" class="-mb-2" header_class="text-sm text-content-40">
+      <.header tag="h4" class="-mb-2" header_class="font-medium text-sm text-content-10">
         Bluesky Post
       </.header>
 
       <div class="max-w-md">
         <a
           href={@update.uri}
-          class="text-sm link-ghost text-balance hover:decoration-sky-600"
+          class="link-ghost text-sm text-balance text-content-30 hover:decoration-sky-600"
           target="_blank"
         >
           {@update.text}
@@ -165,15 +187,21 @@ defmodule SiteWeb.ChangelogLive.Components do
     """
   end
 
-  defp update_icon(%{type: :posts} = assigns) do
+  defp update_icon(%{type: :posts, meta: %{category: :article}} = assigns) do
     ~H"""
-    <.icon name="lucide-file-text" class="size-4 text-primary" />
+    <.icon name="lucide-file-text" class="size-4 text-red-600 dark:text-red-400" />
+    """
+  end
+
+  defp update_icon(%{type: :posts, meta: %{category: :note}} = assigns) do
+    ~H"""
+    <.icon name="lucide-message-square" class="size-4 text-amber-600 dark:text-amber-500" />
     """
   end
 
   defp update_icon(%{type: :bluesky} = assigns) do
     ~H"""
-    <.icon name="lucide-cloud" class="size-4 text-sky-600" />
+    <.icon name="lucide-cloud" class="size-4 text-sky-600 dark:text-sky-400" />
     """
   end
 

@@ -90,7 +90,7 @@ defmodule SiteWeb.FinderComponent do
                     System Mode
                     <.icon
                       name="lucide-check"
-                      class="hidden size-4.5 ml-1.5 text-secondary [[data-theme-mode=system]_&]:block"
+                      class="hidden size-4.5 ml-1.5 text-secondary in-data-[theme-mode=system]:block"
                     />
                   </.finder_item>
                 </.finder_items_list>
@@ -213,7 +213,7 @@ defmodule SiteWeb.FinderComponent do
     ~H"""
     <div
       class={[
-        "fixed -bottom-px left-1 right-1 md:max-w-xl md:relative md:mx-auto rounded-t-lg md:rounded-lg bg-surface-10/95 shadow-2xl overflow-hidden",
+        "fixed -bottom-px left-1 right-1 md:max-w-xl md:relative md:mx-auto rounded-t-md md:rounded-md bg-surface-10/95 shadow-2xl overflow-hidden",
         "animate-slide-out-down data-open:animate-slide-in-up md:animate-none md:data-open:animate-none",
         "outline-1 outline-black/5 backdrop-blur-md backdrop-filter",
         "divide-y divide-neutral-500/10 dark:divide-white/5",

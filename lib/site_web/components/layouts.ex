@@ -9,6 +9,8 @@ defmodule SiteWeb.Layouts do
   """
   use SiteWeb, :html
 
+  alias SiteWeb.Components.Theming
+
   embed_templates "layouts/*"
 
   @doc false
@@ -73,7 +75,11 @@ defmodule SiteWeb.Layouts do
 
   def site_logo(assigns) do
     ~H"""
-    <.link id="site-logo" navigate={~p"/"} class="relative group flex items-center">
+    <.link
+      id="site-logo"
+      navigate={~p"/"}
+      class="relative group flex items-center rounded-sm"
+    >
       <span class="flex items-baseline gap-0.5 font-headings font-medium">
         <span class="text-2xl text-content-10">nuno</span>
         <span class="font-semibold text-xl text-content-40/60
@@ -158,7 +164,9 @@ defmodule SiteWeb.Layouts do
         <div class="my-1 flex items-center gap-2 justify-center text-xs font-headings text-content-30">
           <.footer_copyright />
           <.footer_divider class="print:hidden" />
-          <span class="link-ghost print:hidden"><a href={~p"/sitemap"}>Sitemap</a></span>
+          <span class="link-ghost print:hidden">
+            <a href={~p"/sitemap"}>Sitemap</a>
+          </span>
         </div>
       </.wrapper>
     </footer>
@@ -194,7 +202,7 @@ defmodule SiteWeb.Layouts do
 
   def site_nav(assigns) do
     ~H"""
-    <nav class="flex items-center">
+    <div class="flex items-center">
       <%!-- Small devices --%>
       <button
         type="button"
@@ -207,84 +215,86 @@ defmodule SiteWeb.Layouts do
       </button>
 
       <%!-- Larger devices --%>
-      <div id="menu" class="hidden sm:ml-6 sm:flex items-center">
-        <.finder_trigger_button />
+      <nav id="menu" class="hidden sm:ml-6 sm:flex items-center">
+        <.finder_button />
 
-        <div class="flex space-x-4">
-          <.navbar_item item={:home} navigate={~p"/"} active_link={@active_link}>
+        <ul class="navbar">
+          <.navbar_item navigate={~p"/"} active={@active_link == :home}>
             {gettext("Home")}
           </.navbar_item>
 
-          <.navbar_item item={:about} navigate={~p"/about"} active_link={@active_link}>
+          <.navbar_item navigate={~p"/about"} active={@active_link == :about}>
             {gettext("About")}
           </.navbar_item>
 
-          <.navbar_item item={:blog} navigate={~p"/blog"} active_link={@active_link}>
+          <.navbar_item navigate={~p"/blog"} active={@active_link == :blog}>
             {gettext("Blog")}
           </.navbar_item>
 
           <.navbar_item
             :if={@current_scope}
-            item={:admin}
             navigate={~p"/admin"}
-            active_link={@active_link}
+            active={@active_link == :admin}
           >
             {gettext("Admin")}
           </.navbar_item>
-        </div>
-      </div>
-    </nav>
+        </ul>
+      </nav>
+    </div>
     """
   end
 
-  attr :item, :atom, required: true
   attr :href, :string, default: nil
   attr :navigate, :string, default: nil
-  attr :active_link, :atom, default: nil
+  attr :active, :boolean, default: false
+  attr :rest, :global
 
   slot :inner_block, required: true
 
   defp navbar_item(assigns) do
     ~H"""
-    <.link
-      href={@href}
-      navigate={@navigate}
-      role="navigation"
-      aria-current={if @item == @active_link, do: "true", else: "false"}
-      class={[
-        "navbar-link lowercase px-1 rounded-full",
-        "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-primary"
-      ]}
-    >
-      {render_slot(@inner_block)}
-    </.link>
+    <li {@rest}>
+      <.link
+        href={@href}
+        navigate={@navigate}
+        aria-current={@active}
+        role="navigation"
+        class="navbar-link"
+      >
+        {render_slot(@inner_block)}
+      </.link>
+    </li>
     """
   end
 
-  defp finder_trigger_button(assigns) do
+  attr :rest, :global
+
+  defp finder_button(assigns) do
     ~H"""
-    <button
-      type="button"
-      class={[
-        "group flex items-center gap-1 mr-4 px-2 py-1 rounded-full bg-surface-40/25 inset-ring inset-ring-surface-40/40
-          outline-none cursor-pointer transition duration-200",
-        "hover:inset-ring-surface-40 hover:bg-surface-20",
-        "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-primary"
-      ]}
-      aria-label="Open command finder (Cmd+K)"
-      phx-click={SiteWeb.Finder.toggle()}
-    >
-      <.icon
-        name="hero-magnifying-glass-mini"
-        class="size-4 text-content-40/90 group-hover:text-content-30"
-      />
-      <kbd class="hidden font-sans text-xs/4 text-content-20 macos:block group-hover:text-content-10 mr-0.5">
-        ⌘K
-      </kbd>
-      <kbd class="hidden font-sans text-xs/4 text-content-20 not-macos:block group-hover:text-content-10">
-        Ctrl&nbsp;K
-      </kbd>
-    </button>
+    <div {@rest}>
+      <button
+        type="button"
+        class={[
+          "group flex items-center gap-1 mr-4 px-2 py-1 rounded-full corner-squircle bg-surface-40/25
+        inset-ring inset-ring-surface-40/40 outline-none cursor-pointer transition duration-200",
+          "hover:inset-ring-surface-40 hover:bg-surface-20",
+          Theming.focus_visible_outline_cx()
+        ]}
+        aria-label="Open command finder (Cmd+K)"
+        phx-click={SiteWeb.Finder.toggle()}
+      >
+        <.icon
+          name="hero-magnifying-glass-mini"
+          class="size-4 text-content-40/90 group-hover:text-content-30"
+        />
+        <kbd class="hidden font-sans text-xs/4 text-content-20 macos:block group-hover:text-content-10 mr-0.5">
+          ⌘K
+        </kbd>
+        <kbd class="hidden font-sans text-xs/4 text-content-20 not-macos:block group-hover:text-content-10">
+          Ctrl&nbsp;K
+        </kbd>
+      </button>
+    </div>
     """
   end
 
