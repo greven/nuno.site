@@ -29,9 +29,10 @@ defmodule SiteWeb.BlogLive.Show do
   end
 
   @impl true
-  def mount(%{"slug" => slug, "year" => year} = params, _session, socket) do
-    post = Blog.get_post_by_year_and_slug!(year, slug)
+  def mount(%{"slug" => slug, "year" => year}, _session, socket) do
     current_user = get_in(socket.assigns, [:current_scope, Access.key(:user)])
+
+    post = Blog.get_post_by_year_and_slug!(year, slug)
     {next_post, prev_post} = Blog.get_post_pagination(post)
 
     # Raise not found exception if post status is not published and no current_user
@@ -39,29 +40,46 @@ defmodule SiteWeb.BlogLive.Show do
       raise Site.Blog.NotFoundError, "Post not found!"
     end
 
-    if connected?(socket) do
-      Site.Blog.subscribe_post_likes(post)
-      SiteWeb.Presence.track_post_readers(post, socket.id, params)
-      SiteWeb.Presence.subscribe(post)
-    end
-
     {
       :ok,
       socket
+      # |> assign_seo(post)
       |> assign(:page_title, post.title)
       |> assign(:next_post, next_post)
       |> assign(:prev_post, prev_post)
-      |> assign(:readers, 1)
       |> assign(:post, post)
-      |> assign_async(:likes, fn ->
-        {:ok, %{likes: Blog.get_post_likes_count(post)}}
-      end)
+      |> track_readers(post)
+      |> track_likes(post),
+      temporary_assigns: [next_post: nil, prev_post: nil]
     }
+  end
+
+  defp track_readers(socket, post) do
+    readers = SiteWeb.Presence.count_post_readers(socket.assigns.post)
+
+    if connected?(socket) do
+      SiteWeb.Presence.track_post_readers(post, socket.id)
+      SiteWeb.Presence.subscribe(post)
+    end
+
+    socket
+    |> assign(:post_topic, SiteWeb.Presence.post_topic(post))
+    |> assign(:readers, readers)
+  end
+
+  defp track_likes(socket, post) do
+    if connected?(socket) do
+      Blog.subscribe_post_likes(post)
+    end
+
+    assign_async(socket, :likes, fn ->
+      {:ok, %{likes: Blog.get_post_likes_count(post)}}
+    end)
   end
 
   @impl true
   def handle_info({SiteWeb.Presence, {:join, _presence}}, socket) do
-    readers = SiteWeb.Presence.count_post_readers(socket.assigns.post)
+    readers = SiteWeb.Presence.count_post_readers(socket.assigns.post_topic)
     diff = readers - socket.assigns.readers
 
     socket =

@@ -172,8 +172,8 @@ export const Finder = {
   // to local storage if not already cached or if cache is stale (more than 24h old).
   // Content items to search against are articles where each item has an id, title and keywords.
   warmUpSearchCache() {
-    const cachedIndex = localStorage.getItem('ns_search');
-    const cacheTimestamp = localStorage.getItem('ns_search_timestamp');
+    const cachedIndex = localStorage.getItem('ns-search');
+    const cacheTimestamp = localStorage.getItem('ns-search-timestamp');
 
     // If cache is fresh, use it
     if (cachedIndex && cacheTimestamp) {
@@ -197,14 +197,14 @@ export const Finder = {
     this.searchIndex = [];
 
     // Clear the local storage
-    localStorage.removeItem('ns_search');
-    localStorage.removeItem('ns_search_timestamp');
+    localStorage.removeItem('ns-search');
+    localStorage.removeItem('ns-search-timestamp');
 
     // Send server event to fetch new search data
     this.pushEventTo(this.el, 'finder:update_search', {}, (reply, ref) => {
       if (reply.status === 'ok') {
-        localStorage.setItem('ns_search', JSON.stringify(reply.data));
-        localStorage.setItem('ns_search_timestamp', Date.now());
+        localStorage.setItem('ns-search', JSON.stringify(reply.data));
+        localStorage.setItem('ns-search-timestamp', Date.now());
         this.searchIndex = reply.data;
       } else {
         console.error('NS: Failed to update search cache');

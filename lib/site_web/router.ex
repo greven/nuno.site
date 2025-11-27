@@ -28,12 +28,12 @@ defmodule SiteWeb.Router do
     plug :fetch_current_scope_for_user
   end
 
-  pipeline :rss do
-    plug :accepts, ["xml"]
-  end
-
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :xml do
+    plug :accepts, ["xml"]
   end
 
   scope "/", SiteWeb do
@@ -71,7 +71,9 @@ defmodule SiteWeb.Router do
   end
 
   scope "/", SiteWeb do
-    pipe_through :rss
+    pipe_through :xml
+
+    get "/sitemap.xml", SitemapController, :index
     get "/rss", RssController, :feed
   end
 

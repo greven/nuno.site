@@ -14,7 +14,7 @@ defmodule Site.Blog.Post do
             likes: nil,
             status: :draft,
             featured: false,
-            reading_time: 0,
+            reading_time: 0.0,
             show_toc: true,
             headers: [],
             year: nil,
@@ -22,6 +22,26 @@ defmodule Site.Blog.Post do
             updated: nil,
             category: :article,
             tags: []
+
+  @type t :: %__MODULE__{
+          id: String.t(),
+          title: String.t(),
+          slug: String.t(),
+          body: String.t(),
+          excerpt: String.t(),
+          image: String.t() | nil,
+          likes: non_neg_integer() | nil,
+          status: :draft | :review | :published,
+          featured: boolean(),
+          reading_time: float(),
+          show_toc: boolean(),
+          headers: [map()],
+          year: integer(),
+          date: Date.t(),
+          updated: Date.t() | nil,
+          category: :article | :note,
+          tags: [String.t()]
+        }
 
   @doc """
   The status of the post:

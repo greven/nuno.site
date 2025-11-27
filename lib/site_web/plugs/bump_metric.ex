@@ -14,9 +14,10 @@ defmodule SiteWeb.Plugs.BumpMetric do
       if conn.status == 200 do
         path = "/" <> Enum.join(conn.path_info, "/")
         Site.Analytics.bump(path)
-      end
 
-      assign(conn, :bumped_metric, true)
+        # Store in session that we already bumped this path
+        put_session(conn, :bumped_metric_path, path)
+      end
     end)
   end
 end

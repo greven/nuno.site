@@ -123,8 +123,9 @@ defmodule SiteWeb.Layouts do
       phx-hook="SiteHeader"
       class={[
         "relative top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
-        "bg-surface/40 border-b border-dashed border-transparent shadow-gray-900/5 supports-backdrop-filter:blur(0)",
-        "data-scrolled:bg-surface/95 data-scrolled:supports-backdrop-filter:bg-surface/80 data-scrolled:border-surface-40 data-scrolled:shadow-sm data-scrolled:backdrop-blur-sm",
+        "bg-surface/20 border-b border-dashed border-transparent shadow-gray-900/5 supports-backdrop-filter:blur(0)",
+        "data-scrolled:bg-surface/95 data-scrolled:supports-backdrop-filter:bg-surface/80 data-scrolled:border-surface-40
+         data-scrolled:shadow-sm data-scrolled:backdrop-blur-sm",
         "print:hidden"
       ]}
       style="position:var(--header-position);height:var(--header-height);margin-bottom:var(--header-mb)"
@@ -159,7 +160,7 @@ defmodule SiteWeb.Layouts do
 
   def site_footer(assigns) do
     ~H"""
-    <footer class="z-0 flex flex-col items-center gap-4 pt-6 md:pt-12 pb-3">
+    <footer class="z-0 flex flex-col items-center gap-4 pt-8 pb-4 md:pt-12">
       <.wrapper>
         <div class="my-1 flex items-center gap-2 justify-center text-xs font-headings text-content-30">
           <.footer_copyright />
@@ -233,7 +234,7 @@ defmodule SiteWeb.Layouts do
 
           <.navbar_item
             :if={@current_scope}
-            navigate={~p"/admin"}
+            href={~p"/admin"}
             active={@active_link == :admin}
           >
             {gettext("Admin")}

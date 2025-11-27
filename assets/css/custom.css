@@ -216,13 +216,18 @@
         );
     }
 
-    .navbar-link[aria-current] {
+    /* Show indicator under current page if no link is hovered */
+    &:not(:has(.navbar-link:is(:hover, :focus-visible))) .navbar-link[aria-current] {
       anchor-name: --nav-link;
     }
 
-    &:has(.navbar-link[aria-current]):not(
-        :has(.navbar-link:not([aria-current]):is(:hover, :focus-visible))
-      )::before {
+    /* When hovering any link, that link becomes the anchor */
+    .navbar-link:is(:hover, :focus-visible) {
+      anchor-name: --nav-link;
+    }
+
+    /* Highlight current page indicator if no link is hovered */
+    &:has(.navbar-link[aria-current]):not(:has(.navbar-link:is(:hover, :focus-visible)))::before {
       background: var(--color-primary);
       opacity: 1;
     }
@@ -257,7 +262,6 @@
 
     /* Only apply anchor-name on hover/focus */
     &:is(:hover, :focus-visible) {
-      anchor-name: --nav-link;
       color: var(--color-content-10);
     }
 

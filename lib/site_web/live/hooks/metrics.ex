@@ -6,10 +6,11 @@ defmodule SiteWeb.Hooks.Metrics do
   import Phoenix.LiveView
   import Phoenix.Component
 
-  def on_mount(:default, _params, _session, socket) do
+  def on_mount(:default, _params, session, socket) do
     {
       :cont,
       socket
+      |> assign(:bumped_metric_path, session["bumped_metric_path"])
       |> attach_hook(:page_views, :handle_params, &handle_page_views/3)
       |> attach_hook(:page_views_update, :handle_info, &handle_page_views_update/2)
     }
@@ -57,10 +58,13 @@ defmodule SiteWeb.Hooks.Metrics do
 
   # Bump the metric if the socket is connected and hasn't been bumped yet (Live Session navigation)
   defp maybe_bump_metric(socket, path) do
-    if not Map.has_key?(socket.assigns, :bumped_metric) do
+    bumped_path = Map.get(socket.assigns, :bumped_metric_path)
+
+    if bumped_path != path do
       Site.Analytics.bump(path)
     end
 
-    socket
+    # Clear the session for subsequent navigations
+    assign(socket, :bumped_metric_path, nil)
   end
 end

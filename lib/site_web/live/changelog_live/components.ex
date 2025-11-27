@@ -28,16 +28,19 @@ defmodule SiteWeb.ChangelogLive.Components do
       aria-label="Filter updates by period"
       {@rest}
     >
-      <ul class="flex flex-row md:flex-col gap-1.5">
+      <ul class={[
+        "flex flex-row md:flex-col gap-3 md:gap-1.5",
+        "max-w-(--content-width) pb-2 overflow-x-auto scrollbar-thin snap-x snap-mandatory scroll-px-4"
+      ]}>
         <li :for={%{period: period, count: count} <- @periods}>
-          <.link
-            href={"##{period_anchor(period)}"}
+          <button
             class={[
-              "group flex items-center justify-between gap-3.5 px-3 py-2",
+              "group w-full flex items-center justify-between gap-3.5 px-3 py-2",
               "rounded-lg corner-squircle text-content-40 transition-colors ease-in-out",
-              "hover:text-content-30 hover:bg-surface-20/50",
+              "hover:text-content-30 hover:bg-surface-20/50 cursor-pointer",
               "aria-[current]:text-content aria-[current]:bg-surface-30/50"
             ]}
+            role="link"
             data-period={period_id(period)}
             aria-current={@current == period}
             phx-click={JS.push("period_filter_changed", value: %{value: period})}
@@ -61,16 +64,12 @@ defmodule SiteWeb.ChangelogLive.Components do
             ]}>
               {count}
             </span>
-          </.link>
+          </button>
         </li>
       </ul>
     </nav>
     """
   end
-
-  defp period_anchor(:week), do: "week"
-  defp period_anchor(:month), do: "month"
-  defp period_anchor(year) when is_integer(year), do: "year-#{year}"
 
   defp period_id(:week), do: "week"
   defp period_id(:month), do: "month"

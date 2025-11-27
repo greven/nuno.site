@@ -5,7 +5,6 @@ defmodule SiteWeb.RssXML do
 
   embed_templates "rss_xml/*"
 
-  def site_url, do: "https://nuno.site"
   def post_url(%Blog.Post{} = post), do: ~p"/blog/#{post.year}/#{post}"
 
   def post_date(nil), do: ""
@@ -22,6 +21,8 @@ defmodule SiteWeb.RssXML do
     |> NaiveDateTime.new!(~T[00:00:00])
     |> date_to_rfc822()
   end
+
+  def cdata(data), do: "<![CDATA[#{data}]]>"
 
   defp date_to_rfc822(date) do
     Calendar.strftime(date, "%a, %d %b %Y %H:%M:%S %z")

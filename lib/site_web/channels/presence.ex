@@ -38,8 +38,12 @@ defmodule SiteWeb.Presence do
     |> Enum.count()
   end
 
-  def track_readers(id, params), do: track(self(), "readers", id, params)
-  def track_post_readers(post, id, params), do: track(self(), post_topic(post), id, params)
+  def count_post_readers(post_topic) when is_binary(post_topic) do
+    list(post_topic) |> Enum.count()
+  end
+
+  def track_readers(id), do: track(self(), "readers", id, %{id: id})
+  def track_post_readers(post, id), do: track(self(), post_topic(post), id, %{id: id})
 
   def post_topic(%Site.Blog.Post{} = post), do: "readers:#{post.year}:#{post.id}"
 

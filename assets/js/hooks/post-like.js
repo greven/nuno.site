@@ -34,7 +34,7 @@ export const PostLike = {
 
   getStoredLikeState() {
     try {
-      const stored = localStorage.getItem(`post-like-${this.postSlug}`);
+      const stored = localStorage.getItem(`ns-post-like-${this.postSlug}`);
       return stored === 'true';
     } catch (error) {
       console.warn('localStorage not available:', error);
@@ -44,7 +44,7 @@ export const PostLike = {
 
   storeLikeState() {
     try {
-      localStorage.setItem(`post-like-${this.postSlug}`, this.isLiked.toString());
+      localStorage.setItem(`ns-post-like-${this.postSlug}`, this.isLiked.toString());
     } catch (error) {
       console.warn('Failed to store like state:', error);
     }

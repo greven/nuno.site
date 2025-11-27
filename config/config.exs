@@ -65,12 +65,6 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, JSON
 
-# Application configuration
-config :site, Site.Cache,
-  max_size: 1_000_000,
-  allocated_memory: 100 * 1_000_000,
-  gc_interval: :timer.hours(48)
-
 config :site, Oban,
   repo: Site.Repo,
   engine: Oban.Engines.Lite,
@@ -83,6 +77,22 @@ config :site, Oban,
        {"@hourly", Site.Workers.BlueskySyncWorker}
      ]}
   ]
+
+# Application configuration
+config :site, Site.Cache,
+  max_size: 1_000_000,
+  allocated_memory: 100 * 1_000_000,
+  gc_interval: :timer.hours(48)
+
+config :site, :site_url, "https://nuno.site"
+
+config :site, :seo,
+  default_title: "Nuno Moço - Software Engineer",
+  default_description:
+    "Personal website of Nuno Moço, a Software Engineer from Lisbon focused on web technologies.",
+  default_keywords:
+    "software engineer, web development, elixir, phoenix, css, javascript, programming",
+  title_suffix: " · Nuno's Site"
 
 # Inject the environment into the config
 config :site, :env, config_env()

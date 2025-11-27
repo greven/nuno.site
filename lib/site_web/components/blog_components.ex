@@ -173,7 +173,7 @@ defmodule SiteWeb.BlogComponents do
             format="%b %-d, %Y"
             post={@post}
           />
-          <span class="opacity-70">in</span><span class="text-content-20 uppercase">{@post.category}</span>
+          <span class="opacity-70">in</span><span class="text-content-20 capitalize">{@post.category}</span>
         </div>
 
         <h2 class="col-start-3 col-span-1">

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2" viewBox="0 0 100 100">
+  <style>
+    .bg { fill: #EBEBEB; }
+
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #181818; }
+    }
+  </style>
+
+
+  <circle cx="46" cy="48" r="33" class="bg" transform="translate(-18.303 -21.273) scale(1.48485)"></circle>
+  <circle cx="46" cy="48" r="33" style="fill:#181818" transform="translate(-18.303 -21.273) scale(1.48485)"></circle>
+  <path d="M0 0h.5v.076H0z" style="fill:#cd4346;fill-rule:nonzero" transform="translate(29.5 70.43) scale(82.00009)"></path>
+  <path d="M.385-.54c.043 0 .081.008.115.025a.186.186 0 0 1 .079.076.276.276 0 0 1 .029.133V0H.483v-.29c0-.047-.011-.082-.033-.106a.127.127 0 0 0-.094-.035.166.166 0 0 0-.078.018.118.118 0 0 0-.052.054.18.18 0 0 0-.019.089V0H.082v-.534h.119v.144L.18-.434a.193.193 0 0 1 .081-.079.273.273 0 0 1 .124-.027Z" style="fill:#3c3c3c;fill-rule:nonzero" transform="matrix(76.00009 0 0 76.00009 23.953 65.894)"></path>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>

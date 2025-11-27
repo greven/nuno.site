@@ -72,7 +72,7 @@ defmodule SiteWeb.BlogLive.Index do
       |> assign(:filter_category, "all")
       |> assign(:page_title, "Blog")
 
-    {:ok, socket}
+    {:ok, socket, temporary_assigns: [has_posts?: nil]}
   end
 
   @impl true

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc><%= site_url() %></loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <%= for {_title, route} <- Enum.reject(@pages, fn {title, _route} ->
+    title in ~w(Home About Blog) end) do %>
+  <url>
+    <loc><%= "#{site_url()}#{route}" %></loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <% end %>
+
+  <%= for {_title, route} <- @other_pages do %>
+  <url>
+    <loc><%= "#{site_url()}#{route}" %></loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <% end %>
+
+  <url>
+    <loc><%= site_url() %>/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <%= for post <- @posts do %>
+  <url>
+    <loc><%= "#{site_url()}/blog/#{post.year}/#{post.slug}" %></loc>
+    <lastmod><%= Date.to_iso8601(post.updated || post.date) %></lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <% end %>
+</urlset>

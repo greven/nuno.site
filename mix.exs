@@ -36,8 +36,8 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.1"},
-      {:phoenix_live_view, "~> 1.1.17"},
+      {:phoenix, "~> 1.8.2"},
+      {:phoenix_live_view, "~> 1.1.18"},
       {:phoenix_ecto, "~> 4.7"},
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
@@ -76,12 +76,12 @@ defmodule Site.MixProject do
       {:dotenvy, "~> 1.1"},
       {:geocalc, "~> 0.8"},
       {:uniq, "~> 0.6"},
-      # {:image, "~> 0.56"},
+      {:owl, "~> 0.6"},
+      # {:image, "~> 0.62"},
 
       # Content
-      {:mdex, "~> 0.9"},
+      {:mdex, "~> 0.10"},
       {:nimble_publisher, "~> 1.1"},
-      # {:phoenix_seo, "~> 0.1"},
 
       # Assets
       {:bun, "~> 1.5", runtime: Mix.env() == :dev},

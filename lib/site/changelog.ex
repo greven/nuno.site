@@ -95,7 +95,7 @@ defmodule Site.Changelog do
   @decorate cacheable(
               cache: Site.Cache,
               key: :count_updates_by_period,
-              opts: [ttl: :timer.minutes(60)]
+              opts: [ttl: :timer.minutes(5)]
             )
   def count_updates_by_period do
     list_periods()
