@@ -97,7 +97,11 @@ defmodule SiteWeb.MusicLive.Components do
 
         <%= if track.name do %>
           <div class="flex items-center gap-4">
-            <.track_image :if={@show_artwork} src={track.image} class="size-30 md:size-32 lg:size-36" />
+            <.track_image
+              :if={@show_artwork}
+              src={track.image}
+              class="size-30 md:size-32 lg:size-36"
+            />
             <div class="flex flex-col justify-center gap-1">
               <SiteComponents.playing_indicator
                 is_playing={track.now_playing}
@@ -290,7 +294,7 @@ defmodule SiteWeb.MusicLive.Components do
           <span class="font-headings font-medium text-xs sm:text-sm text-ellipsis line-clamp-1">
             {@playlist.name}
           </span>
-          <p class="text-xs text-content-40">{@playlist.songs} songs</p>
+          <p class="text-xs text-content-40/80">{@playlist.songs} songs</p>
         </a>
       </div>
       <.icon
@@ -322,7 +326,7 @@ defmodule SiteWeb.MusicLive.Components do
           <ol
             id={@id}
             class={[
-              "list-[style:decimal-leading-zero] list-inside marker:text-content-40/80",
+              "list-[decimal-leading-zero] list-inside marker:text-content-40/80",
               "grid grid-cols-1 md:grid-cols-2 gap-y-1 md:gap-x-16"
             ]}
             phx-update={is_struct(@items, Phoenix.LiveView.LiveStream) && "stream"}
@@ -330,7 +334,7 @@ defmodule SiteWeb.MusicLive.Components do
             <li
               :for={{dom_id, item} <- @items}
               class={[
-                "group max-h-[34px] text-base/7 font-light transition-colors border-b-1 border-border/40 overflow-hidden",
+                "group max-h-[34px] text-base/7 font-light transition-colors border-b border-border/40 overflow-hidden",
                 "md:text-lg/8 hover:marker:text-primary"
               ]}
               id={dom_id}

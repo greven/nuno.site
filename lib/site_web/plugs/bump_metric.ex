@@ -17,6 +17,8 @@ defmodule SiteWeb.Plugs.BumpMetric do
 
         # Store in session that we already bumped this path
         put_session(conn, :bumped_metric_path, path)
+      else
+        conn
       end
     end)
   end

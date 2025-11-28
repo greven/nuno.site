@@ -16,7 +16,7 @@ defmodule SiteWeb.SiteComponents do
       ~H"""
       <.link {@rest}>
         <div
-          class="bg-white/80 p-[1px] rounded-full shadow-sm shadow-neutral-800/10 dark:bg-neutral-800/90"
+          class="bg-white/80 p-px rounded-full shadow-sm shadow-neutral-800/10 dark:bg-neutral-800/90"
           style={"width:#{@size}px;height:#{@size}px;"}
         >
           <.avatar_image class={@class} />
@@ -26,7 +26,7 @@ defmodule SiteWeb.SiteComponents do
     else
       ~H"""
       <div
-        class="bg-white/80 p-[1px] rounded-full shadow-sm shadow-neutral-800/10 dark:bg-neutral-800/90"
+        class="bg-white/80 p-px rounded-full shadow-sm shadow-neutral-800/10 dark:bg-neutral-800/90"
         style={"width:#{@size}px;height:#{@size}px;"}
       >
         <.avatar_image class={@class} {@rest} />
@@ -49,7 +49,7 @@ defmodule SiteWeb.SiteComponents do
       class={[
         @class,
         "rounded-full object-cover",
-        "hover:ring-2 ring-primary ring-offset-2 ring-offset-surface transition-all"
+        "hover:ring ring-primary ring-offset-2 ring-offset-surface transition-all"
       ]}
     />
     """
@@ -246,7 +246,7 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <div class="flex flex-col items-center gap-2">
       <div
-        class="h-10 px-3 min-w-10 flex justify-center items-center rounded-lg border-1"
+        class="h-10 px-3 min-w-10 flex justify-center items-center rounded-lg border"
         style={"background: var(#{@color});border-color: color-mix(in oklch, var(#{@color}), #000 5%);"}
       >
         {render_slot(@inner_block)}

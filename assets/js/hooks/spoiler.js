@@ -14,9 +14,9 @@ export const Spoiler = {
       this.js().setAttribute(trigger, 'aria-expanded', !isExpanded);
 
       if (isExpanded) {
-        this.js().removeClass(overlay, 'opacity-0');
+        this.js().removeClass(overlay, 'hidden opacity-0');
       } else {
-        this.js().addClass(overlay, 'opacity-0');
+        this.js().addClass(overlay, 'hidden opacity-0');
       }
     });
   },

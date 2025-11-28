@@ -95,7 +95,7 @@ defmodule SiteWeb do
       alias SiteWeb.Helpers
 
       # SEO helpers
-      use SiteWeb.Seo
+      # use SiteWeb.Seo
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())

@@ -2,6 +2,7 @@ defmodule SiteWeb.ChangelogLive.Components do
   use SiteWeb, :html
 
   alias Site.Support
+  alias Site.Changelog
 
   @doc """
   Renders a navigation list of dates to filter the changelog timeline.
@@ -82,6 +83,16 @@ defmodule SiteWeb.ChangelogLive.Components do
   attr :rest, :global
 
   def updates_timeline(assigns) do
+    assigns =
+      assigns
+      |> assign(:hadoc, %Changelog.Update{
+        type: :adhoc,
+        title: "The Beginning",
+        text: "This is where it all started... but I didn't know how to use a computer yet.",
+        date: ~D[1982-02-25],
+        uri: nil
+      })
+
     ~H"""
     <div class={@class} {@rest}>
       <div id="changelog-list" class="flex flex-col gap-14" phx-update="stream">
@@ -122,6 +133,21 @@ defmodule SiteWeb.ChangelogLive.Components do
             </.timeline>
           <% end %>
         </section>
+
+        <section id="period-1982" aria-label="The beginning">
+          <.period_section_header period={1982} />
+
+          <.timeline node_size={34} class="mt-2">
+            <.timeline_item line="dashed" show_border={false}>
+              <:node class={node_style(:default)}>
+                <.icon name="lucide-signpost-big" class="size-4 text-content-40" />
+              </:node>
+              <div class="flex flex-col gap-1">
+                <.update_body update={@hadoc} class="mt-1" />
+              </div>
+            </.timeline_item>
+          </.timeline>
+        </section>
       </div>
     </div>
     """
@@ -136,6 +162,9 @@ defmodule SiteWeb.ChangelogLive.Components do
 
   defp node_style(:bluesky, _),
     do: "rounded-full bg-sky-50 border border-sky-200 dark:bg-sky-500/10 dark:border-sky-500/60"
+
+  defp node_style(:default),
+    do: "rounded-full bg-surface-20 border border-surface-30"
 
   attr :update, :any, required: true
   attr :rest, :global
@@ -181,6 +210,18 @@ defmodule SiteWeb.ChangelogLive.Components do
         </a>
       </div>
 
+      <.update_date date={@update.date} class="mt-1" />
+    </div>
+    """
+  end
+
+  defp update_body(%{update: %{type: :adhoc}} = assigns) do
+    ~H"""
+    <div {@rest}>
+      <.header tag="h4" class="-mb-2" header_class="font-medium text-sm text-content-10">
+        {@update.title}
+      </.header>
+      <div class="max-w-md">{@update.text}</div>
       <.update_date date={@update.date} class="mt-1" />
     </div>
     """

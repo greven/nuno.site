@@ -28,8 +28,7 @@ defmodule SiteWeb.Presence do
   end
 
   def count_readers do
-    list("readers")
-    |> Enum.count()
+    list("readers") |> Enum.count()
   end
 
   def count_post_readers(%Site.Blog.Post{} = post) do

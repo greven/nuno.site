@@ -16,12 +16,16 @@ defmodule SiteWeb.BlogLive.Show do
     >
       <Layouts.page_content class="relative post" data-cateogry={@post.category}>
         <BlogComponents.post_header post={@post} readers={@readers} page_views={@page_views} />
-        <BlogComponents.post_content post={@post} />
+        <BlogComponents.post_content
+          body={@post.body}
+          headers={@post.headers}
+          show_toc={@post.show_toc}
+        />
         <BlogComponents.post_footer
           post={@post}
+          likes={@likes}
           next_post={@next_post}
           prev_post={@prev_post}
-          likes={@likes}
         />
       </Layouts.page_content>
     </Layouts.app>
@@ -55,7 +59,7 @@ defmodule SiteWeb.BlogLive.Show do
   end
 
   defp track_readers(socket, post) do
-    readers = SiteWeb.Presence.count_post_readers(socket.assigns.post)
+    readers = SiteWeb.Presence.count_post_readers(post)
 
     if connected?(socket) do
       SiteWeb.Presence.track_post_readers(post, socket.id)
@@ -91,7 +95,7 @@ defmodule SiteWeb.BlogLive.Show do
   end
 
   def handle_info({SiteWeb.Presence, {:leave, _presence}}, socket) do
-    readers = SiteWeb.Presence.count_post_readers(socket.assigns.post)
+    readers = SiteWeb.Presence.count_post_readers(socket.assigns.post_topic)
     diff = readers - socket.assigns.readers
 
     socket =

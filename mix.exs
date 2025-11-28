@@ -42,46 +42,39 @@ defmodule Site.MixProject do
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
-
-      # HTTP server
       {:bandit, "~> 1.8"},
-
-      # Database
+      {:lazy_html, "~> 0.1"},
       {:ecto_sql, "~> 3.13"},
       {:ecto_sqlite3, ">= 0.0.0"},
-      # {:litestream, "~> 0.3.0"},
-
-      # Mail
-      {:swoosh, "~> 1.19"},
-
-      # Telemetry
-      {:telemetry_metrics, "~> 1.1"},
-      {:telemetry_poller, "~> 1.1"},
-
-      # i18n
-      {:gettext, "~> 1.0"},
-
-      # Caching
-      {:nebulex, "~> 2.6"},
-      {:decorator, "~> 1.4"},
-
-      # Utils
-      {:req, "~> 0.5"},
-      {:oban, "~> 2.20"},
       {:bcrypt_elixir, "~> 3.3"},
       {:dns_cluster, "~> 0.2"},
-      {:lazy_html, "~> 0.1"},
+      {:telemetry_metrics, "~> 1.1"},
+      {:telemetry_poller, "~> 1.1"},
+      {:gettext, "~> 1.0"},
+      {:swoosh, "~> 1.19"},
+      {:req, "~> 0.5"},
+
+      # Utilities
+      {:oban, "~> 2.20"},
+      {:nebulex, "~> 2.6"},
+      {:decorator, "~> 1.4"},
+      {:nimble_publisher, "~> 1.1"},
       {:nimble_csv, "~> 1.3"},
+      {:mdex, "~> 0.10"},
       {:recase, "~> 0.9"},
       {:dotenvy, "~> 1.1"},
       {:geocalc, "~> 0.8"},
       {:uniq, "~> 0.6"},
       {:owl, "~> 0.6"},
-      # {:image, "~> 0.62"},
+      # {:litestream, "~> 0.3.0"},
+      # {:image, "~> 0.62.1"},
 
-      # Content
-      {:mdex, "~> 0.10"},
-      {:nimble_publisher, "~> 1.1"},
+      # Development
+      {:igniter, "~> 0.7", only: [:dev]},
+      {:credo, "~> 1.7", only: :dev, runtime: false},
+      {:tidewave, "~> 0.5", only: [:dev]},
+      # {:live_debugger, "~> 0.2.2", only: :dev},
+      # {:benchee, "~> 1.4", only: :dev},
 
       # Assets
       {:bun, "~> 1.5", runtime: Mix.env() == :dev},
@@ -105,14 +98,7 @@ defmodule Site.MixProject do
        sparse: "icons",
        app: false,
        compile: false,
-       depth: 1},
-
-      # Development
-      {:igniter, "~> 0.7", only: [:dev]},
-      {:credo, "~> 1.7", only: :dev, runtime: false},
-      {:tidewave, "~> 0.5", only: [:dev]}
-      # {:live_debugger, "~> 0.2.2", only: :dev},
-      # {:benchee, "~> 1.4", only: :dev}
+       depth: 1}
     ]
   end
 

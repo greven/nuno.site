@@ -358,14 +358,15 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
-  attr :post, Blog.Post, required: true
+  attr :body, :string, required: true
+  attr :headers, :string, required: true
   attr :show_toc, :boolean, default: true
 
   def post_content(assigns) do
     ~H"""
     <article class="relative mt-10 md:mt-16 [--article-gap:16rem] lg:[--article-gap:16rem]">
-      <.table_of_contents :if={@post.show_toc} headers={@post.headers} />
-      <div class="prose">{raw(@post.body)}</div>
+      <.table_of_contents :if={@show_toc} headers={@headers} />
+      <div class="prose">{raw(@body)}</div>
     </article>
     """
   end

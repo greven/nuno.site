@@ -1260,7 +1260,7 @@ defmodule SiteWeb.CoreComponents do
           <div
             class={[
               "absolute bottom-0 left-0 right-0 h-7 z-1 bg-surface/85 mask-t-from-50% transition-opacity duration-150",
-              @open && "opacity-0"
+              @open && "hidden opacity-0"
             ]}
             data-part="spoiler-overlay"
           >
