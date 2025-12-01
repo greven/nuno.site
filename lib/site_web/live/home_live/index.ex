@@ -219,12 +219,13 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign(:post_count, published_posts_count)
       |> assign(:bookmarks_count, 0)
       |> assign(:photos_count, 0)
+      |> assign(:posts, posts)
       |> assign_async(:track, &get_currently_playing/0)
       |> assign_async(:reading_stats, fn ->
         {:ok, %{reading_stats: get_reading_stats()}}
       end)
 
-    {:ok, socket, temporary_assigns: [posts: posts]}
+    {:ok, socket, temporary_assigns: [posts: []]}
   end
 
   @impl true

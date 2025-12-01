@@ -73,7 +73,7 @@ defmodule Site.MixProject do
       {:igniter, "~> 0.7", only: [:dev]},
       {:credo, "~> 1.7", only: :dev, runtime: false},
       {:tidewave, "~> 0.5", only: [:dev]},
-      # {:live_debugger, "~> 0.2.2", only: :dev},
+      {:live_debugger, "~> 0.5", only: :dev},
       # {:benchee, "~> 1.4", only: :dev},
 
       # Assets

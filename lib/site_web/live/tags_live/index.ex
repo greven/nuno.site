@@ -46,8 +46,9 @@ defmodule SiteWeb.TagsLive.Index do
     {
       :ok,
       socket
-      |> assign(:page_title, "Tags"),
-      temporary_assigns: [posts: posts]
+      |> assign(:page_title, "Tags")
+      |> assign(:posts, posts),
+      temporary_assigns: [posts: []]
     }
   end
 end

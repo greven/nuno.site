@@ -42,7 +42,7 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <.image
       use_picture
-      src="/images/avatar.png"
+      src="/images/pages/avatar.png"
       alt="avatar"
       height={@size}
       width={@size}
@@ -73,7 +73,7 @@ defmodule SiteWeb.SiteComponents do
       >
         <div class="slideshow-container" style={"width:#{@size}px;"}>
           <.slide
-            src="/images/profile.png"
+            src="/images/pages/profile.png"
             size={@size}
             alt="Nuno's portrait"
             title="It's a me!"
@@ -81,38 +81,38 @@ defmodule SiteWeb.SiteComponents do
             active
           />
           <.slide
-            src="/images/tram.png"
+            src="/images/pages/tram.png"
             size={@size}
             alt="A picture of a Lisbon's yellow tram"
             title="Lisbon"
           />
           <.slide
-            src="/images/british.png"
+            src="/images/pages/british.png"
             size={@size}
             alt="Picture of the London's British Museum"
             title="London!"
           />
           <.slide
-            src="/images/leeds.png"
+            src="/images/pages/leeds.png"
             size={@size}
             alt="Photo of Leeds, UK at night"
             title="Leeds <3"
           />
           <.slide
-            src="/images/corn.png"
+            src="/images/pages/corn.png"
             size={@size}
             alt="Photo of Leeds' Corn Exchange"
             title="Leeds <3"
           />
           <.slide
-            src="/images/beach.png"
+            src="/images/pages/beach.png"
             size={@size}
             alt="Picture of Nuno"
             title="It's a me again!"
             contrast
           />
           <.slide
-            src="/images/lisbon.png"
+            src="/images/pages/lisbon.png"
             size={@size}
             alt="Photo of traditional Lisbon buildings"
             title="Lisbon"

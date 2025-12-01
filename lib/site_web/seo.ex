@@ -11,6 +11,7 @@ defmodule SiteWeb.Seo do
     :title,
     :description,
     :keywords,
+    :canonical_url,
     :og_type,
     :og_image,
     :article_published_time,
@@ -22,6 +23,7 @@ defmodule SiteWeb.Seo do
           title: String.t() | nil,
           description: String.t() | nil,
           keywords: String.t() | nil,
+          canonical_url: String.t() | nil,
           og_type: String.t() | nil,
           og_image: String.t() | nil,
           article_published_time: String.t() | nil,
@@ -35,40 +37,28 @@ defmodule SiteWeb.Seo do
     end
   end
 
+  defp site_url, do: Application.get_env(:site, :site_url)
   defp config, do: Application.get_env(:site, :seo)
-
-  ## Components
 
   @doc """
   Generates SEO tags for the given assigns.
   """
 
-  # attr :conn, Plug.Conn, required: true
-  attr :data, :map, required: true
+  attr :conn, Plug.Conn, required: true
 
-  def tags(assigns) do
-    # route_data = route_data(assigns.conn)
-
-    # assigns =
-    # assigns
-    # |> assign(:data, page_meta(route_data, config()))
-    # |> assign(:data, %{})
-
-    # route_data(assigns.conn)
-    # |> dbg()
+  def tags(%{conn: conn} = assigns) do
+    assigns =
+      assigns
+      |> assign(:data, seo_data(conn))
 
     ~H"""
+    <link rel="canonical" href={@data.canonical_url} />
+
     <%!-- Primary Meta Tags --%>
+    <meta name="title" content={@data.title} />
+    <meta name="description" content={@data.description} />
     """
   end
-
-  # def data(conn_or_socket) do
-  # dbg(conn_or_socket)
-  # end
-
-  # Get the route SEO assigns from the Plug.Conn or Phoenix.LiveView.Socket
-  # defp route_data(%Plug.Conn{} = conn), do: conn.private[:seo] || conn.assigns[:seo] || %{}
-  # defp route_data(%Phoenix.LiveView.Socket{} = socket), do: socket.assigns[:seo] || %{}
 
   # <%!-- Primary Meta Tags --%>
   #   <meta name="title" content={@meta[:title] || "Nuno Moço - Software Engineer"} />
@@ -107,57 +97,84 @@ defmodule SiteWeb.Seo do
   # <%!-- <meta property="twitter:description" content={@meta[:description] || "Personal website"} /> --%>
   # <%!-- <meta property="twitter:image" content={@meta[:og_image] || "https://nuno.site/images/og-default.jpg"} /> --%>
 
+  def seo_data(%Plug.Conn{} = conn) do
+    Map.get(conn.assigns, :seo, %{})
+    |> case do
+      %Blog.Post{} = post -> from_post(post)
+      data -> page_data(conn, data)
+    end
+  end
+
+  defp page_data(conn, route_data) do
+    [canonical_url: canonical_url(List.first(conn.path_info))]
+    |> Keyword.merge(Map.to_list(route_data))
+    |> default()
+  end
+
+  @doc """
+  Returns the default SEO data for pages without specific content.
+  """
+  def default(overrides \\ []) do
+    struct!(
+      __MODULE__,
+      Keyword.merge(
+        [
+          title: Keyword.get(config(), :default_title),
+          description: Keyword.get(config(), :default_description),
+          keywords: Keyword.get(config(), :default_keywords),
+          canonical_url: canonical_url("/"),
+          og_type: "website",
+          og_image: "#{site_url()}/images/og-default.jpg"
+        ],
+        overrides
+      )
+    )
+  end
+
+  def from_post(%Blog.Post{} = post) do
+    %__MODULE__{
+      title: post.title <> Keyword.get(config(), :title_suffix, "· Nuno's Site"),
+      description: post.excerpt,
+      keywords: default().keywords,
+      canonical_url: canonical_url("/blog/#{post.year}/#{post.slug}"),
+      og_type: "article",
+      og_image: post.image || "#{site_url()}/images/og-blog.jpg",
+      article_published_time: to_datetime(post.date),
+      article_author: "Nuno Moço",
+      article_tags: post.tags
+    }
+  end
+
   # @doc """
   # Assigns SEO metadata to the given `conn` or `socket` based on the provided item.
   # """
-  # @spec assign_seo(Plug.Conn.t() | Phoenix.LiveView.Socket.t(), Blog.Post.t() | t()) ::
-  #         Plug.Conn.t() | Phoenix.LiveView.Socket.t()
-  # def assign_seo(conn_or_socket, item)
+  @spec assign_seo(Plug.Conn.t() | Phoenix.LiveView.Socket.t(), Blog.Post.t() | t()) ::
+          Plug.Conn.t() | Phoenix.LiveView.Socket.t()
+  def assign_seo(conn_or_socket, data)
 
-  # def assign_seo(%Plug.Conn{} = conn, item) do
-  #   Plug.Conn.put_private(conn, :seo, item)
-  # end
+  def assign_seo(%Plug.Conn{} = conn, data) do
+    Plug.Conn.put_private(conn, :seo, data)
+  end
 
-  # def assign_seo(%Phoenix.LiveView.Socket{} = socket, item) do
-  #   assign(socket, :seo, item)
-  # end
+  def assign_seo(%Phoenix.LiveView.Socket{} = socket, data) do
+    Phoenix.Component.assign(socket, :seo, data)
+  end
 
-  ## Meta
+  @doc """
+  Builds a canonical URL from a path.
+  Strips query params and fragments, ensures HTTPS and proper domain.
+  """
+  @spec canonical_url(String.t() | nil) :: String.t()
+  def canonical_url(nil), do: site_url()
 
-  # @spec page_meta(Blog.Post.t() | t(), keyword()) :: t()
-  # def page_meta(%Blog.Post{} = post, config) do
-  # post
-  #
-  # %__MODULE__{
-  # title: "#{post.title} · Nuno's Site"
-  # }
-
-  # %{
-  #   title: "#{post.title} · Nuno's Site",
-  #   description: post.excerpt,
-  #   keywords: default_keywords(),
-  #   og_type: "article",
-  #   og_image: post.image || "https://nuno.site/images/og-blog.jpg",
-  #   article_published_time: published_datetime(post.date),
-  #   article_author: "Nuno Moço",
-  #   article_tags: post.tags
-  # }
-  # end
-
-  # def page_meta(%__MODULE__{} = meta, config) do
-  # meta
-
-  # %{
-  #   title: meta[:page_title] || default_title(),
-  #   description: meta[:meta_description] || default_description(),
-  #   keywords: default_keywords(),
-  #   og_type: meta[:og_type] || "website",
-  #   og_image: meta[:og_image] || "https://nuno.site/images/og-default.jpg"
-  # }
-  # end
+  def canonical_url(path) do
+    path
+    |> String.split(["?", "#"])
+    |> then(&URI.merge(site_url(), hd(&1)))
+    |> URI.to_string()
+  end
 
   defp to_datetime(%DateTime{} = dt), do: DateTime.to_iso8601(dt)
   defp to_datetime(%NaiveDateTime{} = ndt), do: NaiveDateTime.to_iso8601(ndt)
   defp to_datetime(%Date{} = date), do: Date.to_iso8601(date)
-  defp to_iso8601(_), do: nil
 end

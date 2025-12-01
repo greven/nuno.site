@@ -17,13 +17,6 @@ defmodule Site.Travel do
     |> Enum.sort(&compare_trips/2)
   end
 
-  # TODO: Show trips in the map and add them to visited countries / cities listing?
-  def list_trips_timeline do
-    list_trips()
-    |> Enum.group_by(fn %Trip{date: date} -> date.year end)
-    |> Enum.sort_by(fn {year, _} -> year end, :desc)
-  end
-
   def list_visits do
     visits()
     |> Stream.map(&put_visit_id/1)

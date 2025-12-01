@@ -45,7 +45,7 @@ defmodule SiteWeb.TravelLive.Index do
 
         <div class="relative h-full flex flex-col isolate">
           <Components.travel_map trips={@trips} />
-          <Components.travel_list trips_timeline={@grouped_trips} />
+          <Components.travel_list grouped_trips={@streams.grouped_trips} />
         </div>
       </Layouts.page_content>
     </Layouts.app>
@@ -55,11 +55,22 @@ defmodule SiteWeb.TravelLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     trips = Travel.list_trips()
-    grouped_trips = Travel.list_trips_timeline()
 
-    {:ok,
-     socket
-     |> assign(stats: Travel.travel_stats()),
-     temporary_assigns: [trips: trips, grouped_trips: grouped_trips]}
+    grouped_trips =
+      trips
+      |> Enum.group_by(fn %Travel.Trip{date: date} -> date.year end)
+      |> Enum.map(fn {year, trips} ->
+        %{id: year, trips: trips}
+      end)
+      |> Enum.sort_by(fn %{id: year} -> year end, :desc)
+
+    {
+      :ok,
+      socket
+      |> assign(stats: Travel.travel_stats())
+      |> assign(trips: trips)
+      |> stream(:grouped_trips, grouped_trips),
+      temporary_assigns: [trips: []]
+    }
   end
 end

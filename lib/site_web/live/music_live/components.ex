@@ -11,6 +11,7 @@ defmodule SiteWeb.MusicLive.Components do
   attr :src, :string, default: nil
   attr :loading, :boolean, default: false
   attr :offline, :boolean, default: false
+  attr :playing_animation, :boolean, default: false
 
   attr :class, :string, default: nil
 
@@ -30,33 +31,52 @@ defmodule SiteWeb.MusicLive.Components do
   def track_image(assigns) do
     ~H"""
     <div class={["shrink-0", @class]} {@rest}>
-      <.box
-        class={@wrapper_class}
-        padding={@padding_class}
-        border={@border_class}
-        shadow={@shadow_class}
-        bg="bg-surface-20/50"
-      >
-        <%= cond do %>
-          <% @src -> %>
+      <%= if @playing_animation do %>
+        <div class={[@wrapper_class, @shadow_class, "rounded-full p-0.5 bg-surface-40"]}>
+          <div class="relative w-full h-full rounded-full overflow-hidden animate-[spin_5s_linear_infinite]">
             <.image
-              class={["shrink-0", @radius_class, @image_class]}
+              class="w-full h-full object-cover"
               alt="Album cover"
               src={@src}
               width={@image_width}
               height={@image_height}
             />
-          <% @loading -> %>
-            <.icon
-              name="lucide-loader-circle"
-              class="size-4/6 max-w-10 max-h-10 bg-surface-30 animate-spin"
-            />
-          <% @offline -> %>
-            <.icon name="lucide-volume-off" class="size-4/6 max-w-10 max-h-10 bg-surface-30" />
-          <% true -> %>
-            <.icon name="lucide-volume-off" class="size-4/6 max-w-10 max-h-10 bg-surface-30" />
-        <% end %>
-      </.box>
+            <div class={[
+              "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[15%] h-[15%]",
+              "bg-surface rounded-full border border-surface-40 shadow-inner"
+            ]}>
+            </div>
+          </div>
+        </div>
+      <% else %>
+        <.box
+          class={@wrapper_class}
+          padding={@padding_class}
+          border={@border_class}
+          shadow={@shadow_class}
+          bg="bg-surface-20/50"
+        >
+          <%= cond do %>
+            <% @src -> %>
+              <.image
+                class={["shrink-0", @radius_class, @image_class]}
+                alt="Album cover"
+                src={@src}
+                width={@image_width}
+                height={@image_height}
+              />
+            <% @loading -> %>
+              <.icon
+                name="lucide-loader-circle"
+                class="size-4/6 max-w-10 max-h-10 bg-surface-30 animate-spin"
+              />
+            <% @offline -> %>
+              <.icon name="lucide-volume-off" class="size-4/6 max-w-10 max-h-10 bg-surface-30" />
+            <% true -> %>
+              <.icon name="lucide-volume-off" class="size-4/6 max-w-10 max-h-10 bg-surface-30" />
+          <% end %>
+        </.box>
+      <% end %>
     </div>
     """
   end
@@ -73,7 +93,7 @@ defmodule SiteWeb.MusicLive.Components do
     <div class={["flex items-center gap-2", @class]} {@rest}>
       <.async_result :let={track} assign={@track}>
         <:loading>
-          <div class="-mt-0.5 flex items-center gap-4">
+          <div class="-mt-0.5 flex items-center gap-5">
             <.track_image :if={@show_artwork} loading={true} class="size-30 md:size-32 lg:size-36" />
             <div class="flex flex-col gap-1">
               <div class="flex flex-col gap-2">
@@ -87,7 +107,7 @@ defmodule SiteWeb.MusicLive.Components do
         </:loading>
 
         <:failed :let={_failure}>
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-5">
             <.track_image :if={@show_artwork} offline={true} class="size-30 md:size-32 lg:size-36" />
             <div class="flex flex-col gap-1">
               Failed to load track
@@ -96,11 +116,12 @@ defmodule SiteWeb.MusicLive.Components do
         </:failed>
 
         <%= if track.name do %>
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-5">
             <.track_image
               :if={@show_artwork}
               src={track.image}
               class="size-30 md:size-32 lg:size-36"
+              playing_animation={track.now_playing}
             />
             <div class="flex flex-col justify-center gap-1">
               <SiteComponents.playing_indicator

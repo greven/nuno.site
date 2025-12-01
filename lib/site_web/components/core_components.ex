@@ -1444,21 +1444,13 @@ defmodule SiteWeb.CoreComponents do
   attr :date, :string, required: true
   attr :cutoff_in_days, :integer, default: nil
   attr :short, :boolean, default: false
-  attr :format, :string, default: "%B %o, %Y"
   attr :class, :any, default: nil
 
   def relative_time(assigns) do
-    %{date: date, cutoff_in_days: cutoff, short: short, format: format} = assigns
+    %{date: date, cutoff_in_days: cutoff, short: short} = assigns
 
     assigns =
-      assign(
-        assigns,
-        :date,
-        case Support.time_ago(date, cutoff_in_days: cutoff, short: short) do
-          %NaiveDateTime{} = datetime -> Support.format_date_with_ordinal(datetime, format)
-          relative_date -> relative_date
-        end
-      )
+      assign(assigns, :date, Support.time_ago(date, cutoff_in_days: cutoff, short: short))
 
     ~H"""
     <time datetime={@date} class={@class}>{@date}</time>

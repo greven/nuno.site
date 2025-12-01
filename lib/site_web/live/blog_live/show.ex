@@ -1,6 +1,8 @@
 defmodule SiteWeb.BlogLive.Show do
   use SiteWeb, :live_view
 
+  import SiteWeb.Seo, only: [assign_seo: 2]
+
   alias Phoenix.LiveView.AsyncResult
 
   alias Site.Blog
@@ -47,7 +49,7 @@ defmodule SiteWeb.BlogLive.Show do
     {
       :ok,
       socket
-      # |> assign_seo(post)
+      |> assign_seo(post)
       |> assign(:page_title, post.title)
       |> assign(:next_post, next_post)
       |> assign(:prev_post, prev_post)

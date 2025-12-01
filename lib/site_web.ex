@@ -17,7 +17,7 @@ defmodule SiteWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images data favicon.ico robots.txt)
+  def static_paths, do: ~w(assets fonts images data favicon.ico robots.txt site.webmanifest)
 
   def router do
     quote do
@@ -93,9 +93,6 @@ defmodule SiteWeb do
 
       # Helper functions
       alias SiteWeb.Helpers
-
-      # SEO helpers
-      # use SiteWeb.Seo
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())

@@ -57,8 +57,9 @@ defmodule SiteWeb.TagsLive.Show do
       socket
       |> assign(:tag, tag)
       |> assign(:count, count)
-      |> assign(:page_title, "Articles tagged with #{tag}"),
-      temporary_assigns: [posts: posts]
+      |> assign(:page_title, "Articles tagged with #{tag}")
+      |> assign(:posts, posts),
+      temporary_assigns: [posts: []]
     }
   end
 end

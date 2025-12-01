@@ -1,31 +1,69 @@
 export const TravelMap = {
   mounted() {
-    this.initialScaleK = 1; // Default zoom level for the whole map
-    this.hoverZoomScaleK = 4; // Zoom level when hovering a list item
-    this.initialLonLat = [0, 20]; // Initial longitude and latitude
+    this.initialScaleK = 1;
+    this.hoverZoomScaleK = 4;
+    this.initialLonLat = [0, 20];
 
-    this.baseRadius = 4; // Base map pin point radius
-    this.baseStrokeWidth = 1; // Base stroke width for pins
+    this.baseRadius = 4;
+    this.baseStrokeWidth = 1;
     this.currentTransform = { k: this.initialScaleK }; // Default zoom level
 
     this.locationsMap = new Map(); // Processed location data
-    this.projection = null; // Map projection
-    this.highlightedPin = { key: null, selection: null }; // { key, selection } of highlighted pin
+    this.projection = null;
+    this.highlightedPin = { key: null, selection: null };
 
-    // Lazy load D3 and TopoJSON modules
-    this.loadMapDependencies()
-      .then(() => {
-        this.initializeMap();
-      })
-      .catch((error) => {
-        console.error('Error loading map dependencies:', error);
-        this.handleLoadError(error);
-      });
+    this.showLoadingIndicator();
+    this.scheduleMapInitialization();
+  },
+
+  scheduleMapInitialization() {
+    // Use requestIdleCallback if available, otherwise setTimeout
+    const scheduler = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+
+    scheduler(() => {
+      this.loadMapDependencies()
+        .then(() => {
+          this.initializeMap();
+        })
+        .catch((error) => {
+          console.error('Error loading map dependencies:', error);
+          this.handleLoadError(error);
+        });
+    });
+  },
+
+  showLoadingIndicator() {
+    const loader = document.createElement('div');
+    loader.className = 'map-loading';
+    loader.style.cssText = `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: var(--color-content-40);
+    `;
+    loader.innerHTML = `
+      <div class="animate-pulse">
+        <svg class="inline-block w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-sm">Loading map...</p>
+      </div>
+    `;
+    this.loadingIndicator = loader;
+    this.el.appendChild(loader);
+  },
+
+  hideLoadingIndicator() {
+    if (this.loadingIndicator) {
+      this.loadingIndicator.remove();
+      this.loadingIndicator = null;
+    }
   },
 
   async loadMapDependencies() {
     try {
-      // Dynamic imports for lazy loading
       const [d3Module, topojsonModule] = await Promise.all([
         import('d3'),
         import('topojson-client'),
@@ -71,6 +109,8 @@ export const TravelMap = {
   },
 
   handleLoadError() {
+    this.hideLoadingIndicator();
+
     // Graceful fallback when dependencies fail to load
     const errorMessage = document.createElement('div');
     errorMessage.className = 'map-error p-4 text-center text-content-40';
@@ -91,7 +131,7 @@ export const TravelMap = {
     this.el.removeEventListener('phx:map-reset', this.onReset.bind(this));
   },
 
-  initMap() {
+  async initMap() {
     const { d3, topojson } = this;
 
     // ViewBox Dimensions
@@ -176,8 +216,10 @@ export const TravelMap = {
       }
     }
 
-    // Load World map data
-    d3.json('data/world-110m.json').then((worldData) => {
+    try {
+      // Load world data asynchronously
+      const worldData = await d3.json('data/world-110m.json');
+
       if (!worldData) {
         throw new Error('Failed to load world map data!');
       }
@@ -186,76 +228,92 @@ export const TravelMap = {
       const worldBounds = path.bounds(worldFeature);
       this.zoom.translateExtent(worldBounds);
 
-      // Draw world map
-      g.append('g')
-        .selectAll('path')
-        .data(worldFeature.features)
-        .enter()
-        .append('path')
-        .attr('d', path)
-        .attr('class', (d_country) => {
-          const geoCountryName = d_country.properties.name;
-          return visitedCountries.has(geoCountryName) ? 'country visited' : 'country';
-        })
-        .attr('stroke', 'var(--color-surface-40)')
-        .attr('stroke-width', 0.5)
-        .attr('cursor', 'pointer');
+      this.hideLoadingIndicator();
 
-      // Draw map pins
-      this.pins = g
-        .selectAll('.city')
-        .data(Array.from(this.locationsMap.values()))
-        .enter()
-        .append('circle')
-        .attr('class', 'map-pin')
-        .attr('cx', (d_pin) => {
-          const pin = projection([d_pin.coordinates[1], d_pin.coordinates[0]]);
-          return pin ? pin[0] : null;
-        })
-        .attr('cy', (d_pin) => {
-          const pin = projection([d_pin.coordinates[1], d_pin.coordinates[0]]);
-          return pin ? pin[1] : null;
-        })
-        .attr('r', this.baseRadius)
-        .attr('fill', 'var(--color-primary)')
-        .attr('stroke', 'var(--color-surface-20)')
-        .attr('stroke-width', this.baseStrokeWidth)
-        .attr('cursor', 'pointer')
-        .on('mouseover', (event, d_pin) => {
-          const [mouseX, mouseY] = this.d3.pointer(event, this.el);
-          this.tooltip.transition().duration(200).style('opacity', 0.9);
-          this.tooltip
-            .html(
-              `<span class="tooltip-title">${d_pin.name}</span><br/>` +
-                `<span class="tooltip-subtitle">${d_pin.country}</span><br/>` +
-                `<span class="tooltip-info">${d_pin.visits} ${pluralize(
-                  'visit',
-                  'visits',
-                  d_pin.visits
-                )}</span>`
-            )
-            .style('left', `${mouseX + 15}px`)
-            .style('top', `${mouseY - 28}px`);
-        })
-        .on('mousemove', (event) => {
-          const [mouseX, mouseY] = this.d3.pointer(event, this.el);
-          this.tooltip.style('left', `${mouseX + 15}px`).style('top', `${mouseY - 28}px`);
-        })
-        .on('mouseout', () => {
-          this.tooltip.transition().duration(500).style('opacity', 0);
-        });
+      requestAnimationFrame(() => {
+        this.renderMap(g, path, worldFeature, visitedCountries, projection);
+      });
+    } catch (error) {
+      console.error('Error loading world map:', error);
+      this.handleLoadError(error);
+    }
+  },
 
-      // Set initial map position and zoom using viewBox dimensions
-      this.setMapPositionAndZoom(svg, projection, viewBoxWidth, viewBoxHeight);
+  renderMap(g, path, worldFeature, visitedCountries, projection) {
+    const { d3 } = this;
 
-      // Apply pin scaling
+    // Draw world map
+    g.append('g')
+      .selectAll('path')
+      .data(worldFeature.features)
+      .enter()
+      .append('path')
+      .attr('d', path)
+      .attr('class', (d_country) => {
+        const geoCountryName = d_country.properties.name;
+        return visitedCountries.has(geoCountryName) ? 'country visited' : 'country';
+      })
+      .attr('stroke', 'var(--color-surface-40)')
+      .attr('stroke-width', 0.5)
+      .attr('cursor', 'pointer');
+
+    // Draw map pins
+    this.pins = g
+      .selectAll('.city')
+      .data(Array.from(this.locationsMap.values()))
+      .enter()
+      .append('circle')
+      .attr('class', 'map-pin')
+      .attr('cx', (d_pin) => {
+        const pin = projection([d_pin.coordinates[1], d_pin.coordinates[0]]);
+        return pin ? pin[0] : null;
+      })
+      .attr('cy', (d_pin) => {
+        const pin = projection([d_pin.coordinates[1], d_pin.coordinates[0]]);
+        return pin ? pin[1] : null;
+      })
+      .attr('r', this.baseRadius)
+      .attr('fill', 'var(--color-primary)')
+      .attr('stroke', 'var(--color-surface-20)')
+      .attr('stroke-width', this.baseStrokeWidth)
+      .attr('cursor', 'pointer')
+      .on('mouseover', (event, d_pin) => {
+        const [mouseX, mouseY] = d3.pointer(event, this.el);
+        this.tooltip.transition().duration(200).style('opacity', 0.9);
+        this.tooltip
+          .html(
+            `<span class="tooltip-title">${d_pin.name}</span><br/>` +
+              `<span class="tooltip-subtitle">${d_pin.country}</span><br/>` +
+              `<span class="tooltip-info">${d_pin.visits} ${pluralize(
+                'visit',
+                'visits',
+                d_pin.visits
+              )}</span>`
+          )
+          .style('left', `${mouseX + 15}px`)
+          .style('top', `${mouseY - 28}px`);
+      })
+      .on('mousemove', (event) => {
+        const [mouseX, mouseY] = d3.pointer(event, this.el);
+        this.tooltip.style('left', `${mouseX + 15}px`).style('top', `${mouseY - 28}px`);
+      })
+      .on('mouseout', () => {
+        this.tooltip.transition().duration(500).style('opacity', 0);
+      });
+
+    // Set initial position in next frame to avoid blocking
+    requestAnimationFrame(() => {
+      const viewBoxWidth = this.el.offsetWidth;
+      const viewBoxHeight = this.el.offsetHeight;
+      this.setMapPositionAndZoom(this.svg, projection, viewBoxWidth, viewBoxHeight);
+
       if (this.pins) {
         const scaledRadius = this.baseRadius / this.currentTransform.k;
-        const newRadius = Math.max(scaledRadius, this.baseRadius / 2); // Ensure min radius
+        const newRadius = Math.max(scaledRadius, this.baseRadius / 2);
         this.pins.attr('r', newRadius);
 
         const scaledStrokeWidth = this.baseStrokeWidth / this.currentTransform.k;
-        const newStrokeWidth = Math.max(scaledStrokeWidth, 0.5); // Ensure min stroke
+        const newStrokeWidth = Math.max(scaledStrokeWidth, 0.5);
         this.pins.attr('stroke-width', newStrokeWidth);
       }
     });

@@ -126,10 +126,9 @@ defmodule SiteWeb.MusicLive.Index do
       socket
       |> assign(:page_title, "Music")
       |> assign(:form, to_form(filters))
+      |> assign(:time_range_options, time_range_options)
       |> assign_async(:track, &get_currently_playing/0)
-      |> stream_configure(:recent_tracks,
-        dom_id: &"songs-#{&1.name}-#{&1.played_at || (&1.now_playing && DateTime.utc_now())}"
-      )
+      |> stream_configure(:recent_tracks, dom_id: &recent_tracks_dom_id/1)
       |> stream_configure(:top_artists, dom_id: &"artist-#{&1.name}-#{&1.rank}")
       |> stream_configure(:top_albums, dom_id: &"album-#{&1.name}-#{&1.rank}")
       |> stream_configure(:playlists, dom_id: &"playlist-#{&1.id}")
@@ -138,7 +137,7 @@ defmodule SiteWeb.MusicLive.Index do
       |> stream_async(:top_albums, fn -> get_top_albums("overall") end)
       |> stream_async(:playlists, fn -> Services.get_spotify_playlists() end)
 
-    {:ok, socket, temporary_assigns: [time_range_options: time_range_options]}
+    {:ok, socket}
   end
 
   @impl true
@@ -176,6 +175,10 @@ defmodule SiteWeb.MusicLive.Index do
       |> stream_async(:top_albums, fn -> get_top_albums(time_range) end)
 
     {:noreply, socket}
+  end
+
+  defp recent_tracks_dom_id(%MusicTrack{} = track) do
+    "song-#{track.name}-#{track.played_at || (track.now_playing && DateTime.utc_now())}"
   end
 
   defp get_currently_playing do
