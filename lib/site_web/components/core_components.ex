@@ -1629,6 +1629,14 @@ defmodule SiteWeb.CoreComponents do
   end
 
   @doc """
+  Starts a view transition to the given target element.
+  """
+  def start_view_transition(js \\ %JS{}, opts) do
+    {to, opts} = Keyword.pop!(opts, :to)
+    JS.dispatch(js, "phx:start-view-transition", to: to, detail: Map.new(opts))
+  end
+
+  @doc """
   Render an svg diagonal pattern.
   """
 

@@ -42,6 +42,7 @@ defmodule SiteWeb.Router do
     live_session :default,
       on_mount: [
         {SiteWeb.UserAuth, :mount_current_scope},
+        Hooks.Defaults,
         Hooks.ActiveLinks,
         Hooks.Metrics
       ] do

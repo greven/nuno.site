@@ -2,7 +2,7 @@
   "private": true,
   "name": "nuno_site",
   "type": "module",
-  "module": "./js/app.ts",
+  "module": "./js/app.js",
   "workspaces": [
     "../deps/*"
   ],

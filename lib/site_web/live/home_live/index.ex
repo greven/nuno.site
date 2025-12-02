@@ -22,7 +22,7 @@ defmodule SiteWeb.HomeLive.Index do
         <section id="hero">
           <div class="flex items-center justify-center md:justify-start">
             <.link
-              href="/about"
+              navigate="/about"
               id="hello"
               phx-hook="Hello"
             >

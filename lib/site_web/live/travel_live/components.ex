@@ -49,7 +49,7 @@ defmodule SiteWeb.TravelLive.Components do
 
   def travel_list(assigns) do
     ~H"""
-    <div id="travel-list" class="relative mx-0.5">
+    <div class="relative mx-0.5">
       <ol
         id="travel-list"
         class="h-full flex flex-col gap-8"

@@ -45,11 +45,11 @@ config :site, SiteWeb.Endpoint,
 config :site, Site.Mailer, adapter: Swoosh.Adapters.Local
 
 config :bun,
-  version: "1.3.1",
+  version: "1.3.3",
   assets: [args: [], cd: Path.expand("../assets", __DIR__)],
   js: [
     args:
-      ~w(build js/app.ts --outdir=../priv/static/assets/js --splitting --external /fonts/* --external /images/*),
+      ~w(build js/app.js --outdir=../priv/static/assets/js --splitting --external /fonts/* --external /images/*),
     cd: Path.expand("../assets", __DIR__)
   ],
   css: [
