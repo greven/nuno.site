@@ -130,7 +130,7 @@
 
 /* Basic view transition styles */
 ::view-transition-group(root) {
-  animation-duration: 300ms;
+  animation-duration: 250ms;
 }
 
 /* Disable animations when theme is transitioning */

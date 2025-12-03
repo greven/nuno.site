@@ -11,14 +11,10 @@
     </.live_title>
 
     <SiteWeb.Seo.tags conn={@conn} />
+    <SiteWeb.Seo.favicons />
 
     <%!-- Web App Manifest --%>
     <link rel="manifest" href={~p"/site.webmanifest"} />
-
-    <%!-- Favicon links --%>
-    <link rel="icon" href={~p"/images/favicon.svg"} type="image/svg+xml" />
-    <link rel="icon" href={~p"/images/favicon.ico"} sizes="48x48" />
-    <link rel="apple-touch-icon" href={~p"/images/apple-touch-icon.png"} sizes="180x180" />
 
     <%!-- RSS feed  --%>
     <link rel="alternate" type="application/rss+xml" title="RSS feed for nuno.site" href="/rss" />

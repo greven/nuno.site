@@ -1,5 +1,6 @@
 import { ArticleTableOfContents } from './article-toc';
 import { CardStack } from './card-stack';
+import { CoverImage } from './cover-image';
 import { Dialog } from './dialog';
 import { Finder } from './finder';
 import { Hello } from './hello';
@@ -21,6 +22,7 @@ import { TravelMap } from './travel-map';
 export default {
   ArticleTableOfContents,
   CardStack,
+  CoverImage,
   Dialog,
   Finder,
   Hello,

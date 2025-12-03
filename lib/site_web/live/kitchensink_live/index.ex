@@ -357,7 +357,7 @@ defmodule SiteWeb.KitchenSinkLive.Index do
 
             <.timeline_item line="dashed">
               <:title>Step 3: Pull Request</:title>
-              <:node><.icon name="lucide-git-pull-request" class="size-4 text-white" /></:node>
+              <:node><.icon name="lucide-git-pull-request" class="size-4 text-content" /></:node>
               <p class="text-content-40">
                 You've opened a pull request to merge do-stuff into master
               </p>
@@ -365,7 +365,7 @@ defmodule SiteWeb.KitchenSinkLive.Index do
 
             <.timeline_item>
               <:title>Step 4: Code Review</:title>
-              <:node><.icon name="lucide-git-compare" class="size-4 text-white" /></:node>
+              <:node><.icon name="lucide-git-compare" class="size-4 text-content" /></:node>
               <p class="text-content-40">
                 Your code is being reviewed by your team
               </p>

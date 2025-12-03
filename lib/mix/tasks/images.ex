@@ -13,6 +13,11 @@ defmodule Mix.Tasks.Images do
   """
 
   @images_dir "priv/static/images"
+  @ignore_pattern ~r/(_blur|\.webp|\.svg)/
+  @ignored_files ~w(
+    favicon.svg favicon-16x16.png favicon-32x32.png
+    android-chrome-192x192.png android-chrome-512x512.png apple-touch-icon.png
+  )
 
   @doc false
   def run(_args) do
@@ -24,7 +29,8 @@ defmodule Mix.Tasks.Images do
     # Get all images in the directory (recursively)
     images =
       Path.wildcard("#{directory}/**/*.{jpg,jpeg,png,gif}")
-      |> Enum.reject(fn image -> Regex.match?(~r/(_blur|\.webp|\.svg)/, image) end)
+      |> Enum.reject(fn image -> Regex.match?(@ignore_pattern, image) end)
+      |> Enum.reject(fn image -> Enum.any?(@ignored_files, &String.ends_with?(image, &1)) end)
 
     # Process each image (concurrently... because BEAM!!)
     Task.async_stream(

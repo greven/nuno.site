@@ -1178,9 +1178,9 @@ defmodule SiteWeb.CoreComponents do
         class={[
           "absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center",
           @active && @show_backdrop && "bg-primary",
-          @active && @show_border && "border-primary border-shade-primary/10",
-          !@active && @show_backdrop && "bg-surface-20",
-          !@active && @show_border && "border-surface-30"
+          @active && @show_border && "border-shade-primary/10",
+          !@active && @show_backdrop && "bg-surface-30",
+          !@active && @show_border && "border-surface-40"
         ]}
       >
         <div
@@ -1364,7 +1364,7 @@ defmodule SiteWeb.CoreComponents do
 
   attr :id, :string
   attr :class, :any, default: nil
-  attr :rest, :global, include: ~w(loading)
+  attr :rest, :global, include: ~w(loading crossorigin)
 
   slot :source do
     attr :type, :string

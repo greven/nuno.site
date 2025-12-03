@@ -39,7 +39,7 @@ const liveSocket = new LiveSocket('/live', Socket, {
   dom: {
     onDocumentPatch(start) {
       // View Transitions integration
-      if (supportsViewTransitions()) {
+      if (typeof document.startViewTransition === 'function') {
         const update = () => {
           transitionEls.forEach((el) => (el.style.viewTransitionName = ''));
           transitionEls = [];
@@ -156,9 +156,4 @@ if (process.env.NODE_ENV === 'development') {
 
     window.liveReloader = reloader;
   });
-}
-
-// View Transition API integration
-function supportsViewTransitions() {
-  return typeof document.startViewTransition === 'function';
 }
