@@ -349,7 +349,7 @@ defmodule SiteWeb.FinderComponent do
   attr :type, :string, values: ["command", "nav"], default: "nav"
 
   attr :icon_class, :string,
-    default: "size-5 flex-none text-content-40 group-aria-selected:text-secondary"
+    default: "size-5 flex-none text-content-40/60 group-aria-selected:text-secondary"
 
   attr :rest, :global
 

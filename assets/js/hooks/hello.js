@@ -11,6 +11,10 @@ export const Hello = {
     this.maybeRevealText();
   },
 
+  updated() {
+    this.maybeRevealText();
+  },
+
   maybeRevealText() {
     const textContent = this.helloTextEl.getAttribute('data-text');
 

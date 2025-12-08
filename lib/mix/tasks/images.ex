@@ -13,10 +13,13 @@ defmodule Mix.Tasks.Images do
   """
 
   @images_dir "priv/static/images"
+
   @ignore_pattern ~r/(_blur|\.webp|\.svg)/
+
   @ignored_files ~w(
     favicon.svg favicon-16x16.png favicon-32x32.png
-    android-chrome-192x192.png android-chrome-512x512.png apple-touch-icon.png
+    android-chrome-192x192.png android-chrome-512x512.png
+    apple-touch-icon.png
   )
 
   @doc false

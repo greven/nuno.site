@@ -131,34 +131,31 @@ defmodule SiteWeb.HomeLive.Components do
   @doc false
 
   attr :class, :string, default: nil
-  attr :icon, :string, default: nil
-  attr :highlight, :string
+  attr :show_icon, :boolean, default: true
+  attr :show_underline, :boolean, default: true
+  attr :icon, :string, default: "lucide-corner-down-right"
+  attr :icon_cx, :string, default: "size-5 text-primary/80"
+  attr :justify_cx, :string, default: "justify-start"
+  attr :title_cx, :string, default: "text-content-10 text-2xl"
+  attr :subtitle_cx, :string, default: "font-light text-content-40"
+
   slot :inner_block, required: true
   slot :subtitle
 
   def home_section_title(assigns) do
-    assigns =
-      assign_new(assigns, :highlight_class, fn ->
-        if assigns[:highlight], do: assigns[:highlight], else: "bg-content-30"
-      end)
-
     ~H"""
     <header class={[@class, "flex flex-col items-center pb-6"]}>
-      <div class="w-full flex items-center justify-center gap-2.5">
-        <.icon :if={@icon} name={@icon} class="size-6.5 text-content-40/80" />
-        <div class="relative">
-          <div
-            :if={@highlight}
-            class={[
-              "absolute bottom-1 left-0 right-0 top-2/3 opacity-15 dark:opacity-25 -z-1",
-              @highlight_class
-            ]}
-          >
-          </div>
-          <h2 class="font-medium text-3xl text-content-10">{render_slot(@inner_block)}</h2>
-        </div>
+      <div class={["w-full flex items-center gap-2", @justify_cx]}>
+        <.icon :if={@show_icon} name={@icon} class={@icon_cx} />
+        <h2 class={[
+          @title_cx,
+          @show_underline &&
+            "underline underline-offset-10 underline-dashed decoration-1 decoration-border decoration-dashed"
+        ]}>
+          {render_slot(@inner_block)}
+        </h2>
       </div>
-      <p :if={@subtitle != []} class="font-light text-content-40">{render_slot(@subtitle)}</p>
+      <p :if={@subtitle != []} class={@subtitle_cx}>{render_slot(@subtitle)}</p>
     </header>
     """
   end

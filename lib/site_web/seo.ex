@@ -52,11 +52,25 @@ defmodule SiteWeb.Seo do
       |> assign(:data, seo_data(conn))
 
     ~H"""
+    <%!-- Canonical URL --%>
     <link rel="canonical" href={@data.canonical_url} />
 
     <%!-- Primary Meta Tags --%>
     <meta name="title" content={@data.title} />
     <meta name="description" content={@data.description} />
+    <meta name="author" content="Nuno Moço" />
+
+    <%!-- Open Graph --%>
+
+    <%!-- PWA / Mobile --%>
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Nuno's Site" />
+
+    <%!-- Blog specific --%>
     """
   end
 
@@ -68,8 +82,8 @@ defmodule SiteWeb.Seo do
     <link rel="icon" type="image/svg+xml" href={~p"/images/favicon.svg"} />
     <link rel="icon" type="image/png" sizes="16x16" href={~p"/images/favicon-16x16.png"} />
     <link rel="icon" type="image/png" sizes="32x32" href={~p"/images/favicon-32x32.png"} />
-    <link rel="icon" type="image/png" sizes="192x192" href={~p"/images/android-chrome-192x192.png"} />
-    <link rel="icon" type="image/png" sizes="512x512" href={~p"/images/android-chrome-512x512.png"} />
+    <link rel="icon" type="image/png" sizes="192x192" href={~p"/images/icon-192x192.png"} />
+    <link rel="icon" type="image/png" sizes="512x512" href={~p"/images/icon-512x512.png"} />
     <link rel="apple-touch-icon" sizes="180x180" href={~p"/images/apple-touch-icon.png"} />
     """
   end

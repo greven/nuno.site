@@ -71,11 +71,15 @@ defmodule SiteWeb.MusicLive.Components do
   attr :rest, :global
 
   def now_playing(assigns) do
+    assigns =
+      assigns
+      |> assign(:gap_cx, "gap-5 md:gap-7")
+
     ~H"""
     <div class={["flex items-center gap-2", @class]} {@rest}>
       <.async_result :let={track} assign={@track}>
         <:loading>
-          <div class="-mt-0.5 flex items-center gap-5">
+          <div class={["-mt-0.5 flex items-center", @gap_cx]}>
             <.track_image :if={@show_artwork} loading={true} class="size-30 md:size-32 lg:size-36" />
             <div class="flex flex-col gap-1">
               <div class="flex flex-col gap-2">
@@ -89,7 +93,7 @@ defmodule SiteWeb.MusicLive.Components do
         </:loading>
 
         <:failed :let={_failure}>
-          <div class="flex items-center gap-5">
+          <div class={["flex items-center gap-5", @gap_cx]}>
             <.track_image :if={@show_artwork} offline={true} class="size-30 md:size-32 lg:size-36" />
             <div class="flex flex-col gap-1">
               Failed to load track
@@ -97,15 +101,15 @@ defmodule SiteWeb.MusicLive.Components do
           </div>
         </:failed>
 
+        <%!-- drop-shadow(var(--album-shadow-gradient, 0 8px 16px rgba(128, 128, 128, 0.3))) --%>
         <%= if track.name do %>
-          <div class="flex items-center gap-5">
+          <div class={["flex items-center gap-5", @gap_cx]}>
             <.track_image
               :if={@show_artwork}
               src={track.image}
               class={[
                 "size-30 md:size-32 lg:size-36",
-                "drop-shadow-[0_8px_16px_rgba(var(--album-shadow-color),0.8)]",
-                "dark:drop-shadow-[0_8px_16px_rgba(var(--album-shadow-color),0.3)]"
+                "drop-shadow-[0_8px_16px_rgba(var(--album-shadow-color),0.5)]"
               ]}
               id={track.image && Helpers.use_id("album")}
               phx-hook={track.image && "CoverImage"}

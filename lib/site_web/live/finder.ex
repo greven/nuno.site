@@ -30,7 +30,7 @@ defmodule SiteWeb.Finder do
       commands: [
         {:nav_home, name: "Home", description: "Go Home", icon: "lucide-house", push: true},
         {:nav_about,
-         name: "About", description: "About me", icon: "lucide-fingerprint", push: true},
+         name: "About", description: "About me", icon: "lucide-fingerprint-pattern", push: true},
         {:nav_blog,
          name: "Blog", description: "Articles and notes", icon: "lucide-notebook-pen", push: true},
         {:nav_music,

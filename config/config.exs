@@ -49,13 +49,17 @@ config :bun,
   assets: [args: [], cd: Path.expand("../assets", __DIR__)],
   js: [
     args:
-      ~w(build js/app.js --outdir=../priv/static/assets/js --splitting --external /fonts/* --external /images/*),
+      ~w(build js/app.js js/workers/color.worker.js --outdir=../priv/static/assets/js --splitting --external /fonts/* --external /images/*),
     cd: Path.expand("../assets", __DIR__)
   ],
   css: [
     args: ~w(run tailwindcss --input=css/app.css --output=../priv/static/assets/css/app.css),
     cd: Path.expand("../assets", __DIR__)
   ]
+
+# With bun, contrary to esbuild, we need to specify where colocated JS files should be placed
+config :phoenix_live_view, :colocated_js,
+  target_directory: Path.expand("../assets/node_modules/phoenix-colocated", __DIR__)
 
 # Configures Elixir's Logger
 config :logger, :default_formatter,

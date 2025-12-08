@@ -191,9 +191,7 @@ defmodule SiteWeb.HomeLive.Index do
           </div>
 
           <section :if={@posts != []}>
-            <Components.home_section_title icon="lucide-newspaper" highlight="bg-primary">
-              Featured Articles
-            </Components.home_section_title>
+            <Components.home_section_title>Featured Articles</Components.home_section_title>
             <Components.featured_posts posts={@posts} />
           </section>
         </div>
