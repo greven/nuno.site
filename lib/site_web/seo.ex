@@ -71,44 +71,15 @@ defmodule SiteWeb.Seo do
     <meta name="apple-mobile-web-app-title" content="Nuno's Site" />
 
     <%!-- Blog specific --%>
+    <meta
+      :if={@data.article_published_time}
+      property="article:published_time"
+      content={@data.article_published_time}
+    />
+    <meta :if={@data.article_author} property="article:author" content={@data.article_author} />
+    <meta :for={tag <- @data.article_tags || []} property="article:tag" content={tag} />
     """
   end
-
-  @doc """
-  """
-
-  def favicons(assigns) do
-    ~H"""
-    <link rel="icon" type="image/svg+xml" href={~p"/images/favicon.svg"} />
-    <link rel="icon" type="image/png" sizes="16x16" href={~p"/images/favicon-16x16.png"} />
-    <link rel="icon" type="image/png" sizes="32x32" href={~p"/images/favicon-32x32.png"} />
-    <link rel="icon" type="image/png" sizes="192x192" href={~p"/images/icon-192x192.png"} />
-    <link rel="icon" type="image/png" sizes="512x512" href={~p"/images/icon-512x512.png"} />
-    <link rel="apple-touch-icon" sizes="180x180" href={~p"/images/apple-touch-icon.png"} />
-    """
-  end
-
-  # <%!-- Primary Meta Tags --%>
-  #   <meta name="title" content={@meta[:title] || "Nuno Moço - Software Engineer"} />
-  # <meta name="description" content={@meta[:description] || "Personal website of Nuno Moço"} />
-  # <meta name="author" content="Nuno Moço" />
-  # <meta
-  # name="keywords"
-  # content={
-  # @meta[:keywords] ||
-  # "software engineer, web development, elixir, phoenix, css, javascript, programming"
-  # } />
-  # <%!-- Article specific --%>
-  # <meta
-  # :if={@meta[:article_published_time]}
-  # property="article:published_time"
-  # content={@meta[:article_published_time]}
-  # />
-  # <meta :if={@meta[:article_author]} property="article:author" content={@meta[:article_author]} />
-  # <meta :for={tag <- @meta[:article_tags] || []} property="article:tag" content={tag} />
-
-  # <!-- Canonical URL -->
-  # <link rel="canonical" href={assigns[:canonical_url] || "https://nuno.site"} />
 
   # <%!-- Open Graph / Facebook --%>
   # <%!-- <meta property="og:type" content={@meta[:og_type] || "website"} /> --%>
@@ -124,6 +95,20 @@ defmodule SiteWeb.Seo do
   # <%!-- <meta property="twitter:title" content={@meta[:title] || "Nuno Moço - Software Engineer"} /> --%>
   # <%!-- <meta property="twitter:description" content={@meta[:description] || "Personal website"} /> --%>
   # <%!-- <meta property="twitter:image" content={@meta[:og_image] || "https://nuno.site/images/og-default.jpg"} /> --%>
+
+  @doc """
+  """
+
+  def favicons(assigns) do
+    ~H"""
+    <link rel="icon" type="image/svg+xml" href={~p"/images/favicon.svg"} />
+    <link rel="icon" type="image/png" sizes="16x16" href={~p"/images/favicon-16x16.png"} />
+    <link rel="icon" type="image/png" sizes="32x32" href={~p"/images/favicon-32x32.png"} />
+    <link rel="icon" type="image/png" sizes="192x192" href={~p"/images/icon-192x192.png"} />
+    <link rel="icon" type="image/png" sizes="512x512" href={~p"/images/icon-512x512.png"} />
+    <link rel="apple-touch-icon" sizes="180x180" href={~p"/images/apple-touch-icon.png"} />
+    """
+  end
 
   def seo_data(%Plug.Conn{} = conn) do
     Map.get(conn.assigns, :seo, %{})
