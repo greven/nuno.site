@@ -1,0 +1,10 @@
+{
+  "languages": {
+    "CSS": {
+      "format_on_save": "on",
+      "formatter": "prettier",
+      "enable_language_server": false,
+      "tab_size": 2
+    }
+  }
+}

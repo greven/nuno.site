@@ -33,6 +33,8 @@ defmodule SiteWeb.Finder do
          name: "About", description: "About me", icon: "lucide-fingerprint-pattern", push: true},
         {:nav_blog,
          name: "Blog", description: "Articles and notes", icon: "lucide-notebook-pen", push: true},
+        {:nav_pulse,
+         name: "Pulse", description: "News Pulse", icon: "lucide-activity", push: true},
         {:nav_music,
          name: "Music", description: "Recent music", icon: "lucide-music-4", push: true},
         {:nav_books,
@@ -66,6 +68,7 @@ defmodule SiteWeb.Finder do
   def handle_command(:nav_home, socket), do: push_navigate(socket, to: ~p"/")
   def handle_command(:nav_about, socket), do: push_navigate(socket, to: ~p"/about")
   def handle_command(:nav_blog, socket), do: push_navigate(socket, to: ~p"/blog")
+  def handle_command(:nav_pulse, socket), do: push_navigate(socket, to: ~p"/pulse")
   def handle_command(:nav_music, socket), do: push_navigate(socket, to: ~p"/music")
   def handle_command(:nav_books, socket), do: push_navigate(socket, to: ~p"/books")
   def handle_command(:nav_gaming, socket), do: push_navigate(socket, to: ~p"/gaming")

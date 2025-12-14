@@ -38,6 +38,14 @@ defmodule SiteWeb.Seo do
   end
 
   defp site_url, do: Application.get_env(:site, :site_url)
+
+  # Dynamically builds the site URL from the connection
+  defp site_url(%Plug.Conn{} = conn) do
+    scheme = if conn.scheme == :https, do: "https", else: "http"
+    port = if conn.port in [80, 443], do: "", else: ":#{conn.port}"
+    "#{scheme}://#{conn.host}#{port}"
+  end
+
   defp config, do: Application.get_env(:site, :seo)
 
   @doc """
@@ -110,24 +118,29 @@ defmodule SiteWeb.Seo do
     """
   end
 
+  @spec seo_data(Plug.Conn.t()) :: t()
   def seo_data(%Plug.Conn{} = conn) do
     Map.get(conn.assigns, :seo, %{})
     |> case do
-      %Blog.Post{} = post -> from_post(post)
+      %Blog.Post{} = post -> from_post(post, conn)
       data -> page_data(conn, data)
     end
   end
 
+  @spec page_data(Plug.Conn.t(), map()) :: t()
   defp page_data(conn, route_data) do
-    [canonical_url: canonical_url(List.first(conn.path_info))]
+    [canonical_url: canonical_url(conn, List.first(conn.path_info))]
     |> Keyword.merge(Map.to_list(route_data))
-    |> default()
+    |> default(conn)
   end
 
   @doc """
   Returns the default SEO data for pages without specific content.
   """
-  def default(overrides \\ []) do
+  @spec default(keyword(), Plug.Conn.t() | nil) :: t()
+  def default(overrides \\ [], conn \\ nil)
+
+  def default(overrides, nil) do
     struct!(
       __MODULE__,
       Keyword.merge(
@@ -135,23 +148,41 @@ defmodule SiteWeb.Seo do
           title: Keyword.get(config(), :default_title),
           description: Keyword.get(config(), :default_description),
           keywords: Keyword.get(config(), :default_keywords),
-          canonical_url: canonical_url("/"),
+          canonical_url: canonical_url(nil, "/"),
           og_type: "website",
-          og_image: og_image_url()
+          og_image: og_image_url(nil)
         ],
         overrides
       )
     )
   end
 
-  def from_post(%Blog.Post{} = post) do
+  def default(overrides, %Plug.Conn{} = conn) do
+    struct!(
+      __MODULE__,
+      Keyword.merge(
+        [
+          title: Keyword.get(config(), :default_title),
+          description: Keyword.get(config(), :default_description),
+          keywords: Keyword.get(config(), :default_keywords),
+          canonical_url: canonical_url(conn, "/"),
+          og_type: "website",
+          og_image: og_image_url(conn)
+        ],
+        overrides
+      )
+    )
+  end
+
+  @spec from_post(Blog.Post.t(), Plug.Conn.t() | nil) :: t()
+  def from_post(%Blog.Post{} = post, conn \\ nil) do
     %__MODULE__{
       title: post.title <> Keyword.get(config(), :title_suffix, "· Nuno's Site"),
       description: post.excerpt,
-      keywords: default().keywords,
-      canonical_url: canonical_url("/blog/#{post.year}/#{post.slug}"),
+      keywords: Keyword.get(config(), :default_keywords),
+      canonical_url: canonical_url(conn, "/blog/#{post.year}/#{post.slug}"),
       og_type: "article",
-      og_image: og_image_url(post),
+      og_image: og_image_url(conn, post),
       article_published_time: to_datetime(post.date),
       article_author: "Nuno Moço",
       article_tags: post.tags
@@ -159,13 +190,21 @@ defmodule SiteWeb.Seo do
   end
 
   # Generates the default OG image URL
-  defp og_image_url do
+  defp og_image_url(nil) do
     "#{site_url()}/og-image"
   end
 
+  defp og_image_url(%Plug.Conn{} = conn) do
+    "#{site_url(conn)}/og-image"
+  end
+
   # Generates the OG image URL for a blog post
-  defp og_image_url(%Blog.Post{} = post) do
+  defp og_image_url(nil, %Blog.Post{} = post) do
     "#{site_url()}/og-image?year=#{post.year}&slug=#{post.slug}"
+  end
+
+  defp og_image_url(%Plug.Conn{} = conn, %Blog.Post{} = post) do
+    "#{site_url(conn)}/og-image?year=#{post.year}&slug=#{post.slug}"
   end
 
   # @doc """
@@ -187,13 +226,24 @@ defmodule SiteWeb.Seo do
   Builds a canonical URL from a path.
   Strips query params and fragments, ensures HTTPS and proper domain.
   """
-  @spec canonical_url(String.t() | nil) :: String.t()
-  def canonical_url(nil), do: site_url()
+  @spec canonical_url(Plug.Conn.t() | nil, String.t() | nil) :: String.t()
+  def canonical_url(conn \\ nil, path \\ nil)
 
-  def canonical_url(path) do
+  def canonical_url(nil, nil), do: site_url()
+
+  def canonical_url(nil, path) when is_binary(path) do
     path
     |> String.split(["?", "#"])
     |> then(&URI.merge(site_url(), hd(&1)))
+    |> URI.to_string()
+  end
+
+  def canonical_url(%Plug.Conn{} = conn, nil), do: site_url(conn)
+
+  def canonical_url(%Plug.Conn{} = conn, path) when is_binary(path) do
+    path
+    |> String.split(["?", "#"])
+    |> then(&URI.merge(site_url(conn), hd(&1)))
     |> URI.to_string()
   end
 

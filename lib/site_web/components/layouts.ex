@@ -21,8 +21,6 @@ defmodule SiteWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
 
-  attr :finder_commands, :list, default: [], doc: "the list of finder commands"
-
   attr :active_link, :atom, default: nil, doc: "the active link for the header"
   attr :wide, :boolean, default: false, doc: "whether to use the wide wrapper"
   attr :show_progress, :boolean, default: false, doc: "whether to show the page progress bar"
