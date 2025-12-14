@@ -39,6 +39,8 @@ defmodule SiteWeb.Router do
   scope "/", SiteWeb do
     pipe_through :browser
 
+    get "/og-image", OGIController, :show
+
     live_session :default,
       on_mount: [
         {SiteWeb.UserAuth, :mount_current_scope},

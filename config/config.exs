@@ -98,6 +98,9 @@ config :site, :seo,
     "software engineer, web development, elixir, phoenix, css, javascript, programming",
   title_suffix: " · Nuno's Site"
 
+# OG Image Generation
+config :ogi, cache: true
+
 # Inject the environment into the config
 config :site, :env, config_env()
 

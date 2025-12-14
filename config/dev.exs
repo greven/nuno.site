@@ -84,3 +84,6 @@ config :phoenix_live_view,
 config :swoosh, :api_client, false
 
 config :site, Oban, peer: Oban.Peers.Global
+
+# Disable Ogi cache in development
+config :ogi, cache: false

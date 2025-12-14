@@ -67,6 +67,7 @@ defmodule Site.MixProject do
       {:mdex, "~> 0.10"},
       {:geocalc, "~> 0.8"},
       {:owl, "~> 0.6"},
+      {:ogi, "~> 0.2"},
       # {:litestream, "~> 0.3.0"},
       # {:image, "~> 0.62.1"},
 

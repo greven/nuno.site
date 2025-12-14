@@ -78,23 +78,23 @@ defmodule SiteWeb.Seo do
     />
     <meta :if={@data.article_author} property="article:author" content={@data.article_author} />
     <meta :for={tag <- @data.article_tags || []} property="article:tag" content={tag} />
+
+    <%!-- Open Graph - Facebook --%>
+    <meta property="og:type" content={@data.og_type} />
+    <meta property="og:url" content={@data.canonical_url} />
+    <meta property="og:title" content={@data.title} />
+    <meta property="og:description" content={@data.description} />
+    <meta property="og:image" content={@data.og_image} />
+    <meta property="og:site_name" content="Nuno's Site" />
+
+    <%!-- Twitter --%>
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={@data.canonical_url} />
+    <meta property="twitter:title" content={@data.title} />
+    <meta property="twitter:description" content={@data.description} />
+    <meta property="twitter:image" content={@data.og_image} />
     """
   end
-
-  # <%!-- Open Graph / Facebook --%>
-  # <%!-- <meta property="og:type" content={@meta[:og_type] || "website"} /> --%>
-  # <%!-- <meta property="og:url" content={@meta[:url] || "https://nuno.site"} /> --%>
-  # <%!-- <meta property="og:title" content={@meta[:title] || "Nuno Moço - Software Engineer"} /> --%>
-  # <%!-- <meta property="og:description" content={@meta[:description] || "Personal website"} /> --%>
-  # <%!-- <meta property="og:image" content={@meta[:og_image] || "https://nuno.site/images/og-default.jpg"} /> --%>
-  # <%!-- <meta property="og:site_name" content="Nuno's Site" /> --%>
-
-  # <%!-- Twitter --%>
-  # <%!-- <meta property="twitter:card" content="summary_large_image" /> --%>
-  # <%!-- <meta property="twitter:url" content={@meta[:url] || "https://nuno.site"} /> --%>
-  # <%!-- <meta property="twitter:title" content={@meta[:title] || "Nuno Moço - Software Engineer"} /> --%>
-  # <%!-- <meta property="twitter:description" content={@meta[:description] || "Personal website"} /> --%>
-  # <%!-- <meta property="twitter:image" content={@meta[:og_image] || "https://nuno.site/images/og-default.jpg"} /> --%>
 
   @doc """
   """
@@ -137,7 +137,7 @@ defmodule SiteWeb.Seo do
           keywords: Keyword.get(config(), :default_keywords),
           canonical_url: canonical_url("/"),
           og_type: "website",
-          og_image: "#{site_url()}/images/og-default.jpg"
+          og_image: og_image_url()
         ],
         overrides
       )
@@ -151,11 +151,21 @@ defmodule SiteWeb.Seo do
       keywords: default().keywords,
       canonical_url: canonical_url("/blog/#{post.year}/#{post.slug}"),
       og_type: "article",
-      og_image: post.image || "#{site_url()}/images/og-blog.jpg",
+      og_image: og_image_url(post),
       article_published_time: to_datetime(post.date),
       article_author: "Nuno Moço",
       article_tags: post.tags
     }
+  end
+
+  # Generates the default OG image URL
+  defp og_image_url do
+    "#{site_url()}/og-image"
+  end
+
+  # Generates the OG image URL for a blog post
+  defp og_image_url(%Blog.Post{} = post) do
+    "#{site_url()}/og-image?year=#{post.year}&slug=#{post.slug}"
   end
 
   # @doc """
