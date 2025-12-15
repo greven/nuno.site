@@ -28,19 +28,23 @@ defmodule Site.Changelog do
   end
 
   @doc """
+  Return a list of periods for which (possibly) there are updates.
+  The periods can be :week, :month, or specific years as integers.
+  The list is ordered starting with :week, :month, then the most recent
+  year down to the first year with updates (`@start_year`).
+  """
+  def list_periods do
+    current_year = Date.utc_today().year
+    [:week, :month] ++ Enum.to_list(current_year..@start_year//-1)
+  end
+
+  @doc """
   List all updates from all sources grouped by period, where the period can be:
   :week, :month, or a specific year as integer (e.g., 2024). The result is a map
   where the keys are the periods and the values are lists of updates.
   Note that periods with no updates will have an empty list.
   """
   def list_updates_grouped_by_period do
-    # list_periods()
-    # |> Enum.reduce(%{}, fn period, acc ->
-    # {from_date, to_date} = date_range_for_period(period)
-    # updates = list_updates_by_date_range(from_date, to_date)
-    # Map.put(acc, period, updates)
-    # end)
-
     list_periods()
     |> Enum.map(fn period ->
       %{id: period, updates: list_updates_by_period(period)}
@@ -77,17 +81,6 @@ defmodule Site.Changelog do
       end
     end)
     |> Enum.sort_by(& &1.date, {:desc, NaiveDateTime})
-  end
-
-  @doc """
-  Return a list of periods for which (possibly) there are updates.
-  The periods can be :week, :month, or specific years as integers.
-  The list is ordered starting with :week, :month, then the most recent
-  year down to the first year with updates (`@start_year`).
-  """
-  def list_periods do
-    current_year = Date.utc_today().year
-    [:week, :month] ++ Enum.to_list(current_year..@start_year//-1)
   end
 
   @doc """
