@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-theme-mode="system">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <meta name="color-scheme" content="dark light" />
+
+    <title>Not found!</title>
+
+    <link rel="stylesheet" href={~p"/assets/css/app.css"} />
+    <script defer type="module" src={~p"/assets/js/app.js"}>
+    </script>
+  </head>
+  <body>
+    <div class="min-h-screen flex flex-col bg-dots-fade">
+      <div class="flex flex-col items-center justify-center text-center py-16 md:py-24">
+        <div class="mb-8">
+          <h1 class="text-[8rem] md:text-[12rem] font-bold font-headings leading-none text-content-10">
+            404
+          </h1>
+        </div>
+
+        <div class="max-w-2xl">
+          <h2 class="text-2xl md:text-3xl font-semibold font-headings text-content-10 mb-4">
+            Page Not Found
+          </h2>
+
+          <p class="text-lg text-content-20 mb-8">
+            Oops! The page you're looking for doesn't exist. It might have been moved or deleted.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <.link
+              navigate={~p"/"}
+              class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              <.icon name="hero-home" class="size-5" />
+              <span>Go Home</span>
+            </.link>
+
+            <.link
+              navigate={~p"/blog"}
+              class="inline-flex items-center gap-2 px-6 py-3 bg-surface-40 text-content-10 rounded-lg hover:bg-surface-30 transition-colors"
+            >
+              <.icon name="hero-newspaper" class="size-5" />
+              <span>Read Blog</span>
+            </.link>
+          </div>
+        </div>
+
+        <div class="mt-16 text-content-40 font-mono text-sm">
+          <code phx-no-curly-interpolation>
+            cd ~/home || echo "path not found"
+          </code>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
