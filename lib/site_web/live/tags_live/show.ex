@@ -16,7 +16,7 @@ defmodule SiteWeb.TagsLive.Show do
         <div class="flex items-center justify-center md:justify-between">
           <.header class="mt-4 text-center md:text-left">
             <.link navigate={~p"/tags"} class="text-content-40/40" title="Explore all tags">
-              <span class="text-primary font-light">#</span><span class="sr-only">Explore all tags</span>
+              <span class="text-primary font-light mr-1.5">#</span><span class="sr-only">Explore all tags</span>
             </.link>
             <span class="capitalize">{@tag}</span>
 
@@ -51,6 +51,10 @@ defmodule SiteWeb.TagsLive.Show do
   def mount(%{"tag" => tag}, _session, socket) do
     posts = Blog.list_published_posts_by_tag_grouped_by_year(tag)
     count = Blog.list_published_posts_by_tag(tag) |> length()
+
+    if count == 0 do
+      raise Site.Blog.NotFoundError, "Tag not found!"
+    end
 
     {
       :ok,

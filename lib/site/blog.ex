@@ -24,6 +24,7 @@ defmodule Site.Blog do
     as: :posts
 
   @posts Enum.sort_by(@posts, & &1.date, {:desc, Date})
+  @categories @posts |> Enum.map(& &1.category) |> Enum.uniq() |> Enum.sort()
   @tags @posts |> Enum.flat_map(& &1.tags) |> Enum.uniq() |> Enum.sort()
 
   @doc """
@@ -35,6 +36,11 @@ defmodule Site.Blog do
   Returns the list of tags.
   """
   def all_tags, do: @tags
+
+  @doc """
+  Returns the list of categories.
+  """
+  def all_categories, do: @categories
 
   # ------------------------------------------
   #  Posts
@@ -137,6 +143,22 @@ defmodule Site.Blog do
     list_published_posts()
     |> Enum.filter(fn post -> post_has_tag?(post, tag) end)
     |> Enum.group_by(& &1.year)
+    |> Enum.sort_by(fn {year, _posts} -> year end, :desc)
+  end
+
+  @doc """
+  List posts by category and grouped by year.
+
+  Examples:
+
+      iex> list_posts_by_category_grouped_by_year!(:article)
+      %{"2025" => [%Post{}, ...], "2024" => ...}
+  """
+  def list_published_posts_by_category_grouped_by_year(category) do
+    list_published_posts()
+    |> Enum.filter(fn post -> post.category == category end)
+    |> Enum.group_by(& &1.year)
+    |> Enum.sort_by(fn {year, _posts} -> year end, :desc)
   end
 
   @doc """
@@ -158,6 +180,22 @@ defmodule Site.Blog do
 
   defp post_has_tag?(%Blog.Post{tags: tags}, tag) do
     Enum.any?(tags, fn t -> String.downcase(t) == String.downcase(tag) end)
+  end
+
+  @doc """
+  List published posts grouped by category.
+  Returns a list of tuples where each tuple contains the category and a list of posts.
+  The posts are sorted by date in descending order.
+  """
+  def list_published_posts_grouped_by_category do
+    posts = list_published_posts()
+
+    list_categories()
+    |> Map.new(fn category ->
+      matching_posts = Enum.filter(posts, fn post -> post.category == category end)
+      {category, matching_posts}
+    end)
+    |> Enum.reject(fn {_category, posts} -> posts == [] end)
   end
 
   @doc """
@@ -304,6 +342,19 @@ defmodule Site.Blog do
     |> List.keysort(1, :desc)
     |> Enum.take(limit)
   end
+
+  # ------------------------------------------
+  #  Categories
+  # ------------------------------------------
+
+  def list_categories, do: all_categories()
+
+  def pluralize_category(:article), do: "Articles"
+  def pluralize_category(:note), do: "Notes"
+  def pluralize_category(other), do: other
+
+  def category_icon(:article), do: "hero-newspaper"
+  def category_icon(:note), do: "hero-chat-bubble-bottom-center-text"
 
   # ------------------------------------------
   #  Post Likes
