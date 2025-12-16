@@ -8,6 +8,18 @@ defmodule SiteWeb.HomeLive.Components do
 
   @doc false
 
+  attr :loading, :boolean, default: false
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def activity_graph(assigns) do
+    ~H"""
+    <div id="activity-graph" class=""></div>
+    """
+  end
+
+  @doc false
+
   attr :icon, :string, default: nil
   attr :variant, :atom, values: ~w(default static subtle)a, default: :default
   attr :size, :atom, values: ~w(small medium)a, default: :medium

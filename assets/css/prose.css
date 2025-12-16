@@ -177,7 +177,7 @@
       padding-inline-start: 1.65em;
       font-weight: var(--font-weight-normal);
       font-size: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
-      quotes: '\201C''\201D''\2018''\2019';
+      quotes: '\201C' '\201D' '\2018' '\2019';
 
       &::before {
         content: '';
@@ -446,7 +446,7 @@
         color: var(--color-content-10);
         text-wrap: pretty;
 
-        &:not([data-icon=false])::before {
+        &:not([data-icon='false'])::before {
           content: '‼';
           display: flex;
           height: 2.5rem;

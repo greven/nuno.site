@@ -117,7 +117,7 @@ defmodule SiteWeb.ChangelogLive.Components do
               <span class="font-light">No updates</span>
             </p>
           <% else %>
-            <.timeline node_size={34} class="mt-2">
+            <.timeline node_size={38} class="mt-2">
               <.timeline_item
                 :for={update <- period_updates.updates}
                 line="dashed"
@@ -154,14 +154,14 @@ defmodule SiteWeb.ChangelogLive.Components do
   end
 
   defp node_style(:posts, %{category: :article}),
-    do: "rounded-full bg-red-50 border border-red-200 dark:bg-red-500/10 dark:border-red-500/60"
+    do: "rounded-full bg-red-50/80 border border-red-200 dark:bg-red-500/5 dark:border-red-500/60"
 
   defp node_style(:posts, %{category: :note}),
     do:
-      "rounded-full bg-amber-50 border border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/60"
+      "rounded-full bg-amber-50/80 border border-amber-200 dark:bg-amber-500/5 dark:border-amber-500/60"
 
   defp node_style(:bluesky, _),
-    do: "rounded-full bg-sky-50 border border-sky-200 dark:bg-sky-500/10 dark:border-sky-500/60"
+    do: "rounded-full bg-sky-50/80 border border-sky-200 dark:bg-sky-500/5 dark:border-sky-500/60"
 
   defp node_style(:default),
     do: "rounded-full bg-surface-20 border border-surface-30"
@@ -182,7 +182,7 @@ defmodule SiteWeb.ChangelogLive.Components do
         Blog {@category}
       </.header>
 
-      <div class="max-w-md">
+      <div class="mt-1 max-w-md">
         <a href={@update.uri} class="link-subtle text-base text-balance text-content-30">
           {@update.title}
         </a>
@@ -200,7 +200,7 @@ defmodule SiteWeb.ChangelogLive.Components do
         Bluesky Post
       </.header>
 
-      <div class="max-w-md">
+      <div class="mt-1 max-w-md">
         <a
           href={@update.uri}
           class="link-ghost text-sm text-balance text-content-30 hover:decoration-sky-600"

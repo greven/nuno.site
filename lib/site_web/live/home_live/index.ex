@@ -183,13 +183,18 @@ defmodule SiteWeb.HomeLive.Index do
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>Bookmarks</:label>
-                <:value>
-                  {@bookmarks_count} {gettext("Saved")}
-                </:value>
+                <:value>My Blogroll</:value>
               </Components.card_content>
             </Components.bento_card>
           </div>
 
+          <%!-- Activity Graph --%>
+          <section>
+            <Components.home_section_title>Activity</Components.home_section_title>
+            <Components.activity_graph />
+          </section>
+
+          <%!-- Featured Articles --%>
           <section :if={@posts != []}>
             <Components.home_section_title>Featured Articles</Components.home_section_title>
             <Components.featured_posts posts={@posts} />
@@ -215,7 +220,6 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign(:page_title, "Home")
       |> assign(:today, Date.utc_today())
       |> assign(:post_count, published_posts_count)
-      |> assign(:bookmarks_count, 0)
       |> assign(:photos_count, 0)
       |> assign(:posts, posts)
       |> assign_async(:track, &get_currently_playing/0)

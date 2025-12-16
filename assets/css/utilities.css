@@ -89,7 +89,7 @@
 /* Layout */
 
 @utility wrapper {
-  @apply not-print:container w-screen mx-auto not-print:max-w-5xl px-5 sm:px-20 lg:px-24;
+  @apply mx-auto w-screen px-5 not-print:container not-print:max-w-5xl sm:px-20 lg:px-24;
 }
 
 @utility wide-wrapper {
@@ -97,28 +97,23 @@
 }
 
 @utility breakout {
-  @apply relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw];
+  @apply relative right-1/2 left-1/2 -mr-[50vw] -ml-[50vw] w-screen;
 }
 
 /* Links */
 
 @utility link {
-  @apply text-content-10 decoration-[1.5px] decoration-primary underline underline-offset-3
-    transition-colors hover:decoration-content-30 hover:bg-surface-40/40;
+  @apply text-content-10 decoration-primary hover:decoration-content-30 hover:bg-surface-40/40 underline decoration-[1.5px] underline-offset-3 transition-colors;
 }
 
 @utility link-subtle {
-  @apply text-content-10 decoration-[1.5px] decoration-content-40/20 underline underline-offset-3
-    transition-colors hover:decoration-primary;
+  @apply text-content-10 decoration-content-40/20 hover:decoration-primary underline decoration-[1.5px] underline-offset-3 transition-colors;
 }
 
 @utility link-ghost {
-  @apply text-content-30 decoration-[1.5px] decoration-transparent underline underline-offset-3
-    transition-colors hover:text-content-10 hover:decoration-primary;
+  @apply text-content-30 hover:text-content-10 hover:decoration-primary underline decoration-transparent decoration-[1.5px] underline-offset-3 transition-colors;
 }
 
 @utility header-link {
-  @apply hidden sm:inline-block absolute -left-[1.85em] top-0 shadow-none
-  text-content-40/20 cursor-pointer no-underline bg-transparent capitalize
-  scroll-header group-hover:text-content-40/40;
+  @apply text-content-40/20 scroll-header group-hover:text-content-40/40 absolute top-0 -left-[1.85em] hidden cursor-pointer bg-transparent capitalize no-underline shadow-none sm:inline-block;
 }
