@@ -10,6 +10,8 @@ defmodule Site.Changelog do
 
   @start_year 2020
 
+  @all_sources ~w(posts bluesky)a
+
   defguard is_date_struct(date)
            when is_struct(date, Date) or
                   is_struct(date, DateTime) or
@@ -39,40 +41,86 @@ defmodule Site.Changelog do
   end
 
   @doc """
-  List all updates from all sources grouped by period, where the period can be:
+  List updates given a date period where the period can be:
+  :week, :month, or a specific year as integer (e.g., 2024).
+  """
+  def list_updates_by_period(period, opts \\ [])
+
+  def list_updates_by_period(:week, opts) do
+    {from_date, to_date} = date_range_for_period(:week)
+    list_updates_by_date_range(from_date, to_date, opts)
+  end
+
+  def list_updates_by_period(:month, opts) do
+    {from_date, to_date} = date_range_for_period(:month)
+    list_updates_by_date_range(from_date, to_date, opts)
+  end
+
+  def list_updates_by_period(year, opts) when is_integer(year) do
+    {from_date, to_date} = date_range_for_period(year)
+    list_updates_by_date_range(from_date, to_date, opts)
+  end
+
+  @doc """
+  List updates from sources grouped by period, where the period can be:
   :week, :month, or a specific year as integer (e.g., 2024). The result is a map
   where the keys are the periods and the values are lists of updates.
   Note that periods with no updates will have an empty list.
   """
-  def list_updates_grouped_by_period do
+  def list_updates_grouped_by_period(opts \\ []) do
     list_periods()
     |> Enum.map(fn period ->
-      %{id: period, updates: list_updates_by_period(period)}
+      %{id: period, updates: list_updates_by_period(period, opts)}
     end)
   end
 
   @doc """
-  List updates given a date period where the period can be:
-  :week, :month, or a specific year as integer (e.g., 2024).
+  List updates from sources grouped by week for the past `:date_shift` period.
+  The result is a list of updates sorted using the `date` field in ascending order,
+  where each entry is a tuple of `{week_start_date, updates}`.
+
+  Options:
+    - :sources - list of sources to include (default: all sources)
+    - :date_shift - keyword list (same as `Duration`) to shift the starting date
+      back (default: week: -52)
   """
-  def list_updates_by_period(:week) do
-    {from_date, to_date} = date_range_for_period(:week)
-    list_updates_by_date_range(from_date, to_date)
+
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: {:list_updates_grouped_by_week, opts},
+              opts: [ttl: :timer.minutes(10)]
+            )
+  def list_updates_grouped_by_week(opts \\ []) do
+    sources = Keyword.get(opts, :sources, @all_sources)
+    date_shift = Keyword.get(opts, :date_shift, week: -52)
+
+    to_date = Date.utc_today()
+    from_date = Date.shift(to_date, date_shift)
+
+    list_updates_by_date_range(from_date, to_date, sources: sources)
+    |> Enum.group_by(fn
+      %Update{date: nil} ->
+        nil
+
+      %Update{date: %DateTime{} = date} ->
+        Date.beginning_of_week(DateTime.to_date(date), :monday)
+
+      %Update{date: %NaiveDateTime{} = date} ->
+        Date.beginning_of_week(NaiveDateTime.to_date(date), :monday)
+
+      %Update{date: %Date{} = date} ->
+        Date.beginning_of_week(date, :monday)
+    end)
+    |> Enum.reject(fn {week_start, _updates} -> is_nil(week_start) end)
+    |> Enum.sort_by(fn {week_start, _updates} -> week_start end, Date)
   end
 
-  def list_updates_by_period(:month) do
-    {from_date, to_date} = date_range_for_period(:month)
-    list_updates_by_date_range(from_date, to_date)
-  end
-
-  def list_updates_by_period(year) when is_integer(year) do
-    {from_date, to_date} = date_range_for_period(year)
-    list_updates_by_date_range(from_date, to_date)
-  end
-
-  defp list_updates_by_date_range(from_date, to_date)
+  defp list_updates_by_date_range(from_date, to_date, opts)
        when is_date_struct(from_date) and is_date_struct(to_date) do
+    sources = Keyword.get(opts, :sources, @all_sources)
+
     sources()
+    |> Enum.filter(fn {type, _} -> type in sources end)
     |> Enum.flat_map(fn {type, {mod, fun}} ->
       case apply(mod, fun, [from_date, to_date]) do
         {:ok, items} when is_list(items) -> map_item(items, type)

@@ -269,7 +269,7 @@ defmodule SiteWeb.ChangelogLive.Components do
     ~H"""
     <.header
       tag="h3"
-      header_class="text-primary uppercase"
+      header_class="text-content uppercase"
       show_anchor_link={false}
       anchor="week"
       {@rest}
@@ -283,7 +283,7 @@ defmodule SiteWeb.ChangelogLive.Components do
     ~H"""
     <.header
       tag="h3"
-      header_class="text-primary uppercase"
+      header_class="text-content uppercase"
       show_anchor_link={false}
       anchor="month"
       {@rest}
@@ -297,7 +297,7 @@ defmodule SiteWeb.ChangelogLive.Components do
     ~H"""
     <.header
       tag="h3"
-      header_class="text-primary uppercase"
+      header_class="text-content uppercase"
       show_anchor_link={false}
       anchor={"year-#{@period}"}
       {@rest}

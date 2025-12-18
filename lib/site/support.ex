@@ -165,6 +165,29 @@ defmodule Site.Support do
   end
 
   @doc """
+  Return the abbreviated month name for a given month number (1-12).
+  1 -> "Jan", 2 -> "Feb", ..., 12 -> "Dec".
+  """
+
+  # Handle Date and DateTime struct
+  def month_abbr(%Date{} = date), do: Calendar.strftime(date, "%b")
+  def month_abbr(%DateTime{} = dt), do: Calendar.strftime(dt, "%b")
+  def month_abbr(%NaiveDateTime{} = ndt), do: Calendar.strftime(ndt, "%b")
+
+  def month_abbr(1), do: "Jan"
+  def month_abbr(2), do: "Feb"
+  def month_abbr(3), do: "Mar"
+  def month_abbr(4), do: "Apr"
+  def month_abbr(5), do: "May"
+  def month_abbr(6), do: "Jun"
+  def month_abbr(7), do: "Jul"
+  def month_abbr(8), do: "Aug"
+  def month_abbr(9), do: "Sep"
+  def month_abbr(10), do: "Oct"
+  def month_abbr(11), do: "Nov"
+  def month_abbr(12), do: "Dec"
+
+  @doc """
   List days of week names in a given locale.
   """
   def days_of_week_names(locale \\ :en)

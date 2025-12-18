@@ -2,6 +2,7 @@ defmodule SiteWeb.HomeLive.Index do
   use SiteWeb, :live_view
 
   alias Site.Blog
+  alias Site.Changelog
   alias Site.Services
   alias Site.Services.MusicTrack
 
@@ -191,7 +192,8 @@ defmodule SiteWeb.HomeLive.Index do
           <%!-- Activity Graph --%>
           <section>
             <Components.home_section_title>Activity</Components.home_section_title>
-            <Components.activity_graph />
+            <Components.activity_graph data={%{}} />
+            <%!-- <Components.activity_graph data={@activity_data} loading={is_nil(@activity_data)} /> --%>
           </section>
 
           <%!-- Featured Articles --%>
@@ -209,6 +211,7 @@ defmodule SiteWeb.HomeLive.Index do
   def mount(_params, _session, socket) do
     posts = Blog.list_featured_posts() |> Enum.take(3)
     published_posts_count = Blog.list_published_posts() |> length()
+    # activity_data = Changelog.count_updates_by_day()
 
     if connected?(socket) do
       Process.send_after(self(), :refresh_music, @refresh_interval)
@@ -222,6 +225,7 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign(:post_count, published_posts_count)
       |> assign(:photos_count, 0)
       |> assign(:posts, posts)
+      # |> assign(:activity_data, activity_data)
       |> assign_async(:track, &get_currently_playing/0)
       |> assign_async(:reading_stats, fn ->
         {:ok, %{reading_stats: get_reading_stats()}}

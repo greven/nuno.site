@@ -6,19 +6,21 @@ defmodule SiteWeb.HomeLive.Components do
   alias SiteWeb.SiteComponents
   alias SiteWeb.BlogComponents
 
-  @doc false
+  @doc """
+  Activity graph component that displays a GitHub-style contribution graph
+  showing activity over the last 365 days.
+  """
 
-  attr :loading, :boolean, default: false
+  attr :data, :map, default: %{}
+  # attr :loading, :boolean, default: false
   attr :class, :string, default: nil
   attr :rest, :global
 
   def activity_graph(assigns) do
     ~H"""
-    <div id="activity-graph" class=""></div>
+    <div class={@class} {@rest}></div>
     """
   end
-
-  @doc false
 
   attr :icon, :string, default: nil
   attr :variant, :atom, values: ~w(default static subtle)a, default: :default
