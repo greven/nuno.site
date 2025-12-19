@@ -187,6 +187,31 @@ defmodule Site.Support do
   def month_abbr(11), do: "Nov"
   def month_abbr(12), do: "Dec"
 
+  def month_number("January"), do: {:ok, 1}
+  def month_number("Jan"), do: {:ok, 1}
+  def month_number("February"), do: {:ok, 2}
+  def month_number("Feb"), do: {:ok, 2}
+  def month_number("March"), do: {:ok, 3}
+  def month_number("Mar"), do: {:ok, 3}
+  def month_number("April"), do: {:ok, 4}
+  def month_number("Apr"), do: {:ok, 4}
+  def month_number("May"), do: {:ok, 5}
+  def month_number("June"), do: {:ok, 6}
+  def month_number("Jun"), do: {:ok, 6}
+  def month_number("July"), do: {:ok, 7}
+  def month_number("Jul"), do: {:ok, 7}
+  def month_number("August"), do: {:ok, 8}
+  def month_number("Aug"), do: {:ok, 8}
+  def month_number("September"), do: {:ok, 9}
+  def month_number("Sep"), do: {:ok, 9}
+  def month_number("October"), do: {:ok, 10}
+  def month_number("Oct"), do: {:ok, 10}
+  def month_number("November"), do: {:ok, 11}
+  def month_number("Nov"), do: {:ok, 11}
+  def month_number("December"), do: {:ok, 12}
+  def month_number("Dec"), do: {:ok, 12}
+  def month_number(_), do: {:error, :invalid_month}
+
   @doc """
   List days of week names in a given locale.
   """

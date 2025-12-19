@@ -594,6 +594,7 @@ defmodule SiteWeb.CoreComponents do
   attr :rows, :list, required: true
   attr :row_id, :any, default: nil, doc: "the function for generating the row id"
   attr :row_click, :any, default: nil, doc: "the function for handling phx-click on each row"
+  attr :class, :any, default: nil
 
   attr :row_item, :any,
     default: &Function.identity/1,
@@ -601,6 +602,8 @@ defmodule SiteWeb.CoreComponents do
 
   slot :col, required: true do
     attr :label, :string
+    attr :class, :string
+    attr :head_class, :string
   end
 
   slot :action, doc: "the slot for showing user actions in the last table column"
@@ -612,21 +615,27 @@ defmodule SiteWeb.CoreComponents do
       end
 
     ~H"""
-    <table class="border border-surface-30">
-      <thead class="bg-surface-20">
+    <table class={["border border-surface-30", @class]}>
+      <thead class="bg-surface-20/90">
         <tr>
-          <th :for={col <- @col}>{col[:label]}</th>
-          <th :if={@action != []}>
+          <th :for={col <- @col} class={["font-medium px-4 py-2", col[:head_class]]}>
+            {col[:label]}
+          </th>
+          <th :if={@action != []} class="font-medium px-4 py-2">
             <span class="sr-only">{gettext("Actions")}</span>
           </th>
         </tr>
       </thead>
       <tbody id={@id} phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}>
-        <tr :for={row <- @rows} id={@row_id && @row_id.(row)}>
+        <tr
+          :for={row <- @rows}
+          id={@row_id && @row_id.(row)}
+          class="not-last:border-b not-last:border-b-surface-20 hover:bg-surface-20/50"
+        >
           <td
             :for={col <- @col}
             phx-click={@row_click && @row_click.(row)}
-            class={@row_click && "hover:cursor-pointer"}
+            class={["px-4 py-2", col[:class], @row_click && "hover:cursor-pointer"]}
           >
             {render_slot(col, @row_item.(row))}
           </td>

@@ -11,7 +11,7 @@ defmodule SiteWeb.GamingLive.Index do
       current_scope={@current_scope}
       active_link={@active_link}
     >
-      <Layouts.page_content class="flex flex-col gap-20">
+      <Layouts.page_content class="flex flex-col gap-16">
         <.header tag="h2">
           Games
           <:subtitle>

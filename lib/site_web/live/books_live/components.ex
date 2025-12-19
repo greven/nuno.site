@@ -6,13 +6,13 @@ defmodule SiteWeb.BooksLive.Components do
 
   @doc false
 
-  attr :id, :string, default: "books-list"
+  attr :id, :string, default: "books-reading-list"
   attr :async, AsyncResult, required: true
   attr :books, :list, required: true
   attr :class, :string, default: nil
   attr :rest, :global
 
-  def books_list(assigns) do
+  def reading_list(assigns) do
     ~H"""
     <div class={@class} {@rest}>
       <.async_result :let={_async} assign={@async}>
@@ -65,7 +65,7 @@ defmodule SiteWeb.BooksLive.Components do
                     <a
                       href={book.author_url}
                       target="_blank"
-                      class="link-ghost font-light text-xl text-content-30"
+                      class="link-ghost font-light text-xl text-content-40"
                     >
                       {book.author}
                     </a>
@@ -91,5 +91,60 @@ defmodule SiteWeb.BooksLive.Components do
       </.async_result>
     </div>
     """
+  end
+
+  @doc false
+
+  attr :id, :string, default: "books-read-list"
+  attr :async, AsyncResult, required: true
+  attr :books, :list, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def read_list(assigns) do
+    ~H"""
+    <div class={@class} {@rest}>
+      <.async_result :let={_async} assign={@async}>
+        <:loading>
+          <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+        </:loading>
+
+        <.table id="recent-books" class="text-sm" rows={@books}>
+          <:col
+            :let={{_id, book}}
+            label="Title"
+            head_class="text-left"
+            class="w-full text-left"
+          >
+            <span class="block truncate max-w-[72ch]">
+              <.link href={book.url} target="_blank" rel="noreferrer">{book.title}</.link>
+            </span>
+          </:col>
+          <:col
+            :let={{_id, book}}
+            label="Author"
+            head_class="text-left"
+            class="text-left whitespace-nowrap text-content-20"
+          >
+            {book.author}
+          </:col>
+          <:col
+            :let={{_id, book}}
+            label="Date"
+            head_class="text-left"
+            class="text-left whitespace-nowrap text-content-20"
+          >
+            {format_read_date(book.read_date)}
+          </:col>
+        </.table>
+      </.async_result>
+    </div>
+    """
+  end
+
+  defp format_read_date(nil), do: "Unknown"
+
+  defp format_read_date(%Date{} = date) do
+    Helpers.format_date(date, "%b %Y")
   end
 end
