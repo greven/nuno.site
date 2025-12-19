@@ -49,18 +49,23 @@ defmodule SiteWeb.BooksLive.Index do
 
         <Components.books_list async={@books} books={@streams.books} class="mt-8 min-h-32" />
 
-        <.button
-          href={Goodreads.profile_url()}
-          target="_blank"
-          variant="light"
-          class="group mt-8"
-        >
-          My Goodreads
-          <.icon
-            name="hero-arrow-up-right-mini"
-            class="-ml-0.5 size-5 text-content-40/60 duration-200 group-hover:text-primary transition-colors"
-          />
-        </.button>
+        <div class="flex flex-col gap-6">
+          <.header tag="h3">
+            <.icon
+              name="lucide-arrow-down"
+              class="mr-1.5 size-5 text-content-40"
+            /> Recently Read
+            <:subtitle>
+              Books I've recently finished reading.
+            </:subtitle>
+          </.header>
+
+          <.table id="recent-books" rows={@recent_books}>
+            <:col :let={book} label="Title">{book["title"]}</:col>
+            <:col :let={book} label="Author">{book["author"]}</:col>
+            <:col :let={book} label="Date">{book["date"]}</:col>
+          </.table>
+        </div>
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -71,10 +76,11 @@ defmodule SiteWeb.BooksLive.Index do
     socket =
       socket
       |> assign(:page_title, "Books")
+      |> assign(:recent_books, Site.Services.get_recent_books())
       |> assign_async(:stats, fn -> {:ok, %{stats: get_reading_stats()}} end)
       |> stream_async(:books, fn -> get_currently_reading() end)
 
-    {:ok, socket}
+    {:ok, socket, temporary_assigns: [recent_books: []]}
   end
 
   defp get_currently_reading(opts \\ []) do

@@ -44,6 +44,8 @@ config :site, :spotify,
   client_secret: env!("SPOTIFY_CLIENT_SECRET", :string!),
   refresh_token: env!("SPOTIFY_REFRESH_TOKEN", :string!)
 
+config :site, :github, access_token: env!("GITHUB_ACCESS_TOKEN", :string!)
+
 if config_env() == :prod do
   database_path =
     System.get_env("DATABASE_PATH") ||

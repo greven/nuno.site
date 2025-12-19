@@ -612,8 +612,8 @@ defmodule SiteWeb.CoreComponents do
       end
 
     ~H"""
-    <table class="table">
-      <thead>
+    <table class="border border-surface-30">
+      <thead class="bg-surface-20">
         <tr>
           <th :for={col <- @col}>{col[:label]}</th>
           <th :if={@action != []}>

@@ -148,6 +148,14 @@ defmodule Site.Services do
             )
   def get_currently_reading, do: Goodreads.get_currently_reading()
 
+  # @decorate cacheable(cache: Site.Cache, key: :recent_books)
+  def get_recent_books do
+    Path.join([:code.priv_dir(:site), "content/books.json"])
+    |> File.read!()
+    |> JSON.decode!()
+    |> Map.get("recent")
+  end
+
   @decorate cacheable(
               cache: Site.Cache,
               key: :reading_stats,
