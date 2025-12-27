@@ -74,7 +74,7 @@ defmodule SiteWeb.HomeLive.Index do
         </section>
 
         <%!-- Content --%>
-        <div class="flex flex-col gap-28 last:mb-16">
+        <div class="flex flex-col gap-20 md:gap-28 last:mb-16">
           <%!-- Bento Grid --%>
           <div class="relative grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:p-2">
             <Components.bento_card

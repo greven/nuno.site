@@ -76,6 +76,15 @@ defmodule Site.Services.Bluesky do
   end
 
   @doc """
+  Delete all posts.
+  Primarily for development and testing purposes.
+  """
+
+  def delete_all_posts! do
+    Repo.delete_all(Post)
+  end
+
+  @doc """
   Incrementally sync Bluesky posts for the given handle into the database.
 
   The options are the same that `Site.Services.Bluesky.list_author_feed/2` accepts
@@ -119,6 +128,7 @@ defmodule Site.Services.Bluesky do
           author_handle: post.author_handle,
           author_name: post.author_name,
           avatar_url: post.avatar_url,
+          embed: post.embed,
           inserted_at: {:placeholder, :now},
           updated_at: {:placeholder, :now}
         }
@@ -174,11 +184,16 @@ defmodule Site.Services.Bluesky do
       reply_count: post["replyCount"],
       author_handle: get_in(post, ["author", "handle"]),
       author_name: get_in(post, ["author", "displayName"]),
-      avatar_url: get_in(post, ["author", "avatar"])
+      avatar_url: get_in(post, ["author", "avatar"]),
+      embed: extract_embed(post)
     }
   end
 
   defp map_author_post(_), do: nil
+
+  # Add this new function
+  defp extract_embed(%{"embed" => embed}) when is_map(embed), do: embed
+  defp extract_embed(_), do: nil
 
   @doc """
   Fetches the author feed for a given BlueSky actor (handle or DID).

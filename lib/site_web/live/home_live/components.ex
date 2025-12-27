@@ -61,11 +61,11 @@ defmodule SiteWeb.HomeLive.Components do
 
         <div class="flex items-center gap-1">
           <span class="">Less</span>
-          <div class="size-2 bg-surface-40"></div>
-          <div class="size-2 bg-primary/20"></div>
-          <div class="size-2 bg-primary/40"></div>
-          <div class="size-2 bg-primary/60"></div>
-          <div class="size-2 bg-primary"></div>
+          <div class="size-2 rounded-[2px] bg-surface-40"></div>
+          <div class="size-2 rounded-[2px] bg-primary/20"></div>
+          <div class="size-2 rounded-[2px] bg-primary/40"></div>
+          <div class="size-2 rounded-[2px] bg-primary/60"></div>
+          <div class="size-2 rounded-[2px] bg-primary"></div>
           <span class="">More</span>
         </div>
       </div>

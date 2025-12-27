@@ -186,6 +186,10 @@ defmodule SiteWeb.ChangelogLive.Components do
         <a href={@update.uri} class="link-subtle text-base text-balance text-content-30">
           {@update.title}
         </a>
+
+        <p class="mt-1 text-sm text-content-40">
+          {@update.text}
+        </p>
       </div>
 
       <.update_date date={@update.date} class="mt-1" />
@@ -209,6 +213,8 @@ defmodule SiteWeb.ChangelogLive.Components do
           {@update.text}
         </a>
       </div>
+
+      <.bluesky_embed :if={@update.embed} embed={@update.embed} />
 
       <.update_date date={@update.date} class="mt-1" />
     </div>
@@ -259,6 +265,59 @@ defmodule SiteWeb.ChangelogLive.Components do
         {@date}
       </time>
     </div>
+    """
+  end
+
+  attr :embed, :map, required: true
+
+  defp bluesky_embed(%{embed: %{"$type" => "app.bsky.embed.external#view"}} = assigns) do
+    ~H"""
+    <a
+      href={@embed["external"]["uri"]}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-block mt-4 mb-1"
+    >
+      <img
+        :if={@embed["external"]["thumb"]}
+        src={@embed["external"]["thumb"]}
+        alt={@embed["external"]["title"]}
+        loading="lazy"
+        class="rounded-md max-h-48 object-cover"
+      />
+    </a>
+    """
+  end
+
+  defp bluesky_embed(%{embed: %{"$type" => "app.bsky.embed.images#view"}} = assigns) do
+    ~H"""
+    <div :for={image <- @embed["images"]} class="mt-4 mb-1">
+      <img
+        class="max-h-[400px] rounded-md object-cover"
+        src={image["thumb"] || image["fullsize"]}
+        alt={image["alt"] || ""}
+        loading="lazy"
+      />
+    </div>
+    """
+  end
+
+  defp bluesky_embed(%{embed: %{"$type" => "app.bsky.embed.video#view"}} = assigns) do
+    ~H"""
+    <div class="mt-4 mb-1">
+      <video
+        controls
+        class="rounded-md"
+      >
+        <source src={@embed["playlist"]} type="application/x-mpegURL" />
+      </video>
+    </div>
+    """
+  end
+
+  defp bluesky_embed(assigns) do
+    ~H"""
+    <!-- Unsupported embed type -->
     """
   end
 

@@ -29,11 +29,6 @@ defmodule Site.Services do
   Get the BlueSky posts from the given actor (handle or DID).
   """
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: {:list_bluesky_posts, opts},
-              opts: [ttl: :timer.minutes(30)]
-            )
   def list_bluesky_posts(opts \\ []) do
     Bluesky.list_posts(opts)
   end

@@ -18,6 +18,7 @@ defmodule Site.Repo.Migrations.CreateBlueskyPosts do
       add :author_handle, :string
       add :author_name, :string
       add :avatar_url, :string
+      add :embed, :map
 
       timestamps(type: :utc_datetime)
     end

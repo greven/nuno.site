@@ -6,6 +6,25 @@ defmodule Site.Services.Bluesky.Post do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @fields ~w(
+    did
+    rkey
+    cid
+    uri
+    url
+    text
+    created_at
+    deleted_at
+    edited_at
+    like_count
+    repost_count
+    reply_count
+    author_handle
+    author_name
+    avatar_url
+    embed
+  )a
+
   @type t :: %{
           did: String.t(),
           rkey: String.t(),
@@ -21,7 +40,8 @@ defmodule Site.Services.Bluesky.Post do
           reply_count: non_neg_integer() | nil,
           author_handle: String.t() | nil,
           author_name: String.t() | nil,
-          avatar_url: String.t() | nil
+          avatar_url: String.t() | nil,
+          embed: map() | nil
         }
 
   schema "bluesky_posts" do
@@ -40,13 +60,14 @@ defmodule Site.Services.Bluesky.Post do
     field :author_handle, :string
     field :author_name, :string
     field :avatar_url, :string
+    field :embed, :map
 
     timestamps(type: :utc_datetime)
   end
 
   def changeset(post, attrs) do
     post
-    |> cast(attrs, [:did, :rkey, :cid, :uri, :url, :text, :created_at])
+    |> cast(attrs, @fields)
     |> validate_required([:did, :rkey, :cid, :uri])
   end
 end

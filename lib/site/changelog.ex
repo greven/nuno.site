@@ -19,7 +19,7 @@ defmodule Site.Changelog do
 
   defmodule Update do
     @enforce_keys [:type, :date, :title, :text, :uri]
-    defstruct [:type, :id, :date, :title, :text, :uri, :meta]
+    defstruct [:type, :id, :date, :title, :text, :uri, :meta, :embed]
   end
 
   defp sources do
@@ -43,8 +43,6 @@ defmodule Site.Changelog do
   # Periods exclusions. For example, if the current date is
   # within the last week of the year, we may want to
   # exclude the :month period to avoid overlap.
-  defp exclude_period?(:week, _entry_date), do: false
-
   defp exclude_period?(:month, entry_date) do
     today = Date.utc_today()
     week_start_today = Date.beginning_of_week(today, :monday)
@@ -60,6 +58,8 @@ defmodule Site.Changelog do
 
     month_start_today == month_start_date
   end
+
+  defp exclude_period?(_period, _entry_date), do: false
 
   @doc """
   List updates given a date period where the period can be:
@@ -176,7 +176,8 @@ defmodule Site.Changelog do
         title: extract_field(item, mapper[:title]),
         text: extract_field(item, mapper[:text]),
         uri: extract_field(item, mapper[:uri]),
-        meta: extract_field(item, mapper[:meta])
+        meta: extract_field(item, mapper[:meta]),
+        embed: extract_field(item, mapper[:embed])
       }
     end)
   end
@@ -198,7 +199,15 @@ defmodule Site.Changelog do
 
     meta = fn %{tags: tags, category: category} -> %{tags: tags, category: category} end
 
-    %{id: :id, date: post_date, title: :title, text: :excerpt, uri: post_url, meta: meta}
+    %{
+      id: :id,
+      date: post_date,
+      title: :title,
+      text: :excerpt,
+      uri: post_url,
+      meta: meta,
+      embed: nil
+    }
   end
 
   defp item_mapper(:bluesky) do
@@ -210,6 +219,6 @@ defmodule Site.Changelog do
       end
     end
 
-    %{id: :cid, date: date, title: nil, text: :text, uri: :url}
+    %{id: :cid, date: date, title: nil, text: :text, uri: :url, meta: nil, embed: :embed}
   end
 end
