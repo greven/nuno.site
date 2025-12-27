@@ -109,34 +109,47 @@ defmodule SiteWeb.BooksLive.Components do
           <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
         </:loading>
 
-        <.table id="recent-books" class="text-sm" rows={@books}>
-          <:col
-            :let={{_id, book}}
-            label="Title"
-            head_class="text-left"
-            class="w-full text-left"
-          >
-            <span class="block truncate max-w-[72ch]">
-              <.link href={book.url} target="_blank" rel="noreferrer">{book.title}</.link>
-            </span>
-          </:col>
-          <:col
-            :let={{_id, book}}
-            label="Author"
-            head_class="text-left"
-            class="text-left whitespace-nowrap text-content-20"
-          >
-            {book.author}
-          </:col>
-          <:col
-            :let={{_id, book}}
-            label="Date"
-            head_class="text-left"
-            class="text-left whitespace-nowrap text-content-20"
-          >
-            {format_read_date(book.read_date)}
-          </:col>
-        </.table>
+        <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <.table id="recent-books" class="w-full text-sm" rows={@books}>
+            <:col
+              :let={{_id, book}}
+              label="Title"
+              head_class="text-left"
+              class="text-left text-content-10"
+            >
+              <span class="group flex items-center">
+                <.link
+                  href={book.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="inline-block max-w-[50ch] md:max-w-[60ch] lg:max-w-[72ch] truncate"
+                >
+                  {book.title}
+                </.link>
+                <.icon
+                  name="lucide-arrow-up-right"
+                  class="size-4 inline-block ml-1 text-content-40/20 group-hover:text-content-40 transition-colors"
+                />
+              </span>
+            </:col>
+            <:col
+              :let={{_id, book}}
+              label="Author"
+              head_class="text-left"
+              class="text-left whitespace-nowrap text-content-20"
+            >
+              {book.author}
+            </:col>
+            <:col
+              :let={{_id, book}}
+              label="Date"
+              head_class="hidden md:table-cell text-left"
+              class="hidden md:table-cell text-left whitespace-nowrap text-content-40"
+            >
+              {format_read_date(book.read_date)}
+            </:col>
+          </.table>
+        </div>
       </.async_result>
     </div>
     """

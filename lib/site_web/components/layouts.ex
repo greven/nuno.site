@@ -121,7 +121,7 @@ defmodule SiteWeb.Layouts do
       phx-hook="SiteHeader"
       class={[
         "relative top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
-        "bg-surface/20 border-b border-dashed border-transparent shadow-gray-900/5 supports-backdrop-filter:blur(0)",
+        "bg-surface/30 border-b border-dashed border-transparent shadow-gray-900/5 supports-backdrop-filter:blur(0)",
         "data-scrolled:bg-surface/95 data-scrolled:supports-backdrop-filter:bg-surface/80 data-scrolled:border-surface-40
          data-scrolled:shadow-sm data-scrolled:backdrop-blur-sm",
         "print:hidden"

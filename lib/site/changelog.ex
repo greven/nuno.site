@@ -40,6 +40,27 @@ defmodule Site.Changelog do
     [:week, :month] ++ Enum.to_list(current_year..@start_year//-1)
   end
 
+  # Periods exclusions. For example, if the current date is
+  # within the last week of the year, we may want to
+  # exclude the :month period to avoid overlap.
+  defp exclude_period?(:week, _entry_date), do: false
+
+  defp exclude_period?(:month, entry_date) do
+    today = Date.utc_today()
+    week_start_today = Date.beginning_of_week(today, :monday)
+    week_start_date = Date.beginning_of_week(entry_date, :monday)
+
+    week_start_today == week_start_date
+  end
+
+  defp exclude_period?(:year, entry_date) do
+    today = Date.utc_today()
+    month_start_today = Date.new!(today.year, today.month, 1)
+    month_start_date = Date.new!(entry_date.year, entry_date.month, 1)
+
+    month_start_today == month_start_date
+  end
+
   @doc """
   List updates given a date period where the period can be:
   :week, :month, or a specific year as integer (e.g., 2024).
@@ -48,17 +69,26 @@ defmodule Site.Changelog do
 
   def list_updates_by_period(:week, opts) do
     {from_date, to_date} = date_range_for_period(:week)
+
     list_updates_by_date_range(from_date, to_date, opts)
   end
 
   def list_updates_by_period(:month, opts) do
     {from_date, to_date} = date_range_for_period(:month)
+
     list_updates_by_date_range(from_date, to_date, opts)
+    |> Enum.reject(fn update ->
+      exclude_period?(:month, update.date)
+    end)
   end
 
   def list_updates_by_period(year, opts) when is_integer(year) do
     {from_date, to_date} = date_range_for_period(year)
+
     list_updates_by_date_range(from_date, to_date, opts)
+    |> Enum.reject(fn update ->
+      exclude_period?(:year, update.date)
+    end)
   end
 
   @doc """
@@ -74,57 +104,23 @@ defmodule Site.Changelog do
     end)
   end
 
-  @doc """
-  List updates from sources grouped by week for the past `:date_shift` period.
-  The result is a list of updates sorted using the `date` field in ascending order,
-  where each entry is a tuple of `{week_start_date, updates}`.
-
-  Options:
-    - :sources - list of sources to include (default: all sources)
-    - :date_shift - keyword list (same as `Duration`) to shift the starting date
-      back (default: week: -52)
-  """
-
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: {:list_updates_grouped_by_week, opts},
-              opts: [ttl: :timer.minutes(10)]
-            )
-  def list_updates_grouped_by_week(opts \\ []) do
-    sources = Keyword.get(opts, :sources, @all_sources)
-    date_shift = Keyword.get(opts, :date_shift, week: -52)
-
-    to_date = Date.utc_today()
-    from_date = Date.shift(to_date, date_shift)
-
-    list_updates_by_date_range(from_date, to_date, sources: sources)
-    |> Enum.group_by(fn
-      %Update{date: nil} ->
-        nil
-
-      %Update{date: %DateTime{} = date} ->
-        Date.beginning_of_week(DateTime.to_date(date), :monday)
-
-      %Update{date: %NaiveDateTime{} = date} ->
-        Date.beginning_of_week(NaiveDateTime.to_date(date), :monday)
-
-      %Update{date: %Date{} = date} ->
-        Date.beginning_of_week(date, :monday)
-    end)
-    |> Enum.reject(fn {week_start, _updates} -> is_nil(week_start) end)
-    |> Enum.sort_by(fn {week_start, _updates} -> week_start end, Date)
-  end
-
+  # List updates `from_date` to `to_date`, both inclusive.
+  # Updates shouldn't appear on multiple ranges, example, if
+  # `This Week` shows a recent update, it shouldn't show on
+  # `This Month` and the corresponding year period.
+  #
+  # Options:
+  #   - :sources - list of sources to include (default: all sources)
   defp list_updates_by_date_range(from_date, to_date, opts)
        when is_date_struct(from_date) and is_date_struct(to_date) do
     sources = Keyword.get(opts, :sources, @all_sources)
 
     sources()
-    |> Enum.filter(fn {type, _} -> type in sources end)
-    |> Enum.flat_map(fn {type, {mod, fun}} ->
+    |> Stream.filter(fn {type, _} -> type in sources end)
+    |> Stream.flat_map(fn {type, {mod, fun}} ->
       case apply(mod, fun, [from_date, to_date]) do
-        {:ok, items} when is_list(items) -> map_item(items, type)
-        items when is_list(items) -> map_item(items, type)
+        {:ok, items} when is_list(items) -> normalize_items(items, type)
+        items when is_list(items) -> normalize_items(items, type)
         _ -> []
       end
     end)
@@ -169,25 +165,27 @@ defmodule Site.Changelog do
     {Date.new!(year, 1, 1), Date.new!(year, 12, 31)}
   end
 
-  defp map_item(items, type) do
+  defp normalize_items(items, type) do
+    mapper = item_mapper(type)
+
     Enum.map(items, fn item ->
       %Update{
         type: type,
-        id: mapper_item(item, mapper(type)[:id]) || Uniq.UUID.uuid4(),
-        date: mapper_item(item, mapper(type)[:date]),
-        title: mapper_item(item, mapper(type)[:title]),
-        text: mapper_item(item, mapper(type)[:text]),
-        uri: mapper_item(item, mapper(type)[:uri]),
-        meta: mapper_item(item, mapper(type)[:meta])
+        id: extract_field(item, mapper[:id]) || Uniq.UUID.uuid4(),
+        date: extract_field(item, mapper[:date]),
+        title: extract_field(item, mapper[:title]),
+        text: extract_field(item, mapper[:text]),
+        uri: extract_field(item, mapper[:uri]),
+        meta: extract_field(item, mapper[:meta])
       }
     end)
   end
 
-  defp mapper_item(item, field) when is_atom(field), do: Map.get(item, field)
-  defp mapper_item(item, fun) when is_function(fun, 1), do: fun.(item)
-  defp mapper_item(_item, nil), do: nil
+  defp extract_field(item, field) when is_atom(field), do: Map.get(item, field)
+  defp extract_field(item, fun) when is_function(fun, 1), do: fun.(item)
+  defp extract_field(_item, nil), do: nil
 
-  defp mapper(:posts) do
+  defp item_mapper(:posts) do
     post_date = fn %{date: date} ->
       NaiveDateTime.new!(date, ~T[00:00:00])
     end
@@ -203,7 +201,7 @@ defmodule Site.Changelog do
     %{id: :id, date: post_date, title: :title, text: :excerpt, uri: post_url, meta: meta}
   end
 
-  defp mapper(:bluesky) do
+  defp item_mapper(:bluesky) do
     date = fn %{created_at: datetime} ->
       case datetime do
         %DateTime{} = dt -> DateTime.to_naive(dt)

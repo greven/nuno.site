@@ -180,4 +180,16 @@ defmodule Site.Services do
   def get_favourite_games do
     Steam.get_favourite_games()
   end
+
+  ## Github
+
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: {:get_github_activity_by_date_range, from_date, to_date},
+              opts: [ttl: :timer.hours(3)]
+            )
+
+  def get_github_activity_by_date_range(from_date, to_date) do
+    Site.Services.Github.get_contributions_by_date_range(from_date, to_date)
+  end
 end

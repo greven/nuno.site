@@ -3,24 +3,97 @@ defmodule SiteWeb.HomeLive.Components do
 
   alias Phoenix.LiveView.AsyncResult
 
+  alias Site.Support
   alias SiteWeb.SiteComponents
   alias SiteWeb.BlogComponents
 
   @doc """
-  Activity graph component that displays a GitHub-style contribution graph
-  showing activity over the last 365 days.
+  Activity graph component that displays a GitHub-style contribution
+  graph showing activity over the last 365 days with each bar
+  representing a week.
   """
 
-  attr :data, :map, default: %{}
+  attr :activity, :map, required: true
   # attr :loading, :boolean, default: false
   attr :class, :string, default: nil
   attr :rest, :global
 
   def activity_graph(assigns) do
+    {weeks, labels} = assigns.activity
+
+    data =
+      weeks
+      |> Enum.map(fn {date, count, weight} ->
+        date_label = Map.get(labels, "#{date.year}-#{date.month}")
+
+        label =
+          if date_label == date,
+            do: Support.month_abbr(date.month),
+            else: nil
+
+        {date, count, weight, label}
+      end)
+
+    assigns = assign(assigns, data: data)
+
     ~H"""
-    <div class={@class} {@rest}></div>
+    <div class={@class} {@rest}>
+      <div class="w-fit flex gap-1 justify-center md:justify-start md:gap-1.5">
+        <div
+          :for={{date, count, weight, label} <- @data}
+          class={[
+            "relative w-1 md:w-1.5 h-12 md:h-14 rounded-[2px]",
+            activity_level(weight) |> level_class()
+          ]}
+          title={format_tooltip(date, count)}
+        >
+          <div :if={label} class="absolute -top-4 left-0 text-[10px] text-content-40/90">
+            {label}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between mt-1.5 text-xs text-content-40/80">
+        <div class="flex items-center">
+          <.icon name="hero-information-circle-mini" class="size-3 mr-1.5 text-content-40/60" />
+          Activity represents site content and Github commits.
+        </div>
+
+        <div class="flex items-center gap-1">
+          <span class="">Less</span>
+          <div class="size-2 bg-surface-40"></div>
+          <div class="size-2 bg-primary/20"></div>
+          <div class="size-2 bg-primary/40"></div>
+          <div class="size-2 bg-primary/60"></div>
+          <div class="size-2 bg-primary"></div>
+          <span class="">More</span>
+        </div>
+      </div>
+    </div>
     """
   end
+
+  defp format_tooltip(date, 0) do
+    "No activity on the week of #{Calendar.strftime(date, "%B %-d, %Y")}"
+  end
+
+  defp format_tooltip(date, count) do
+    "#{count} #{ngettext("update", "updates", count)} on the week of #{Calendar.strftime(date, "%B %-d, %Y")}"
+  end
+
+  defp level_class(0), do: "bg-surface-40"
+  defp level_class(1), do: "bg-primary/20"
+  defp level_class(2), do: "bg-primary/40"
+  defp level_class(3), do: "bg-primary/60"
+  defp level_class(4), do: "bg-primary"
+
+  # Determine activity level based on total weight
+  defp activity_level(nil), do: 0
+  defp activity_level(0), do: 0
+  defp activity_level(weight) when weight in 1..2, do: 1
+  defp activity_level(weight) when weight in 3..4, do: 2
+  defp activity_level(weight) when weight in 5..10, do: 3
+  defp activity_level(weight) when weight >= 11, do: 4
 
   attr :icon, :string, default: nil
   attr :variant, :atom, values: ~w(default static subtle)a, default: :default
@@ -405,7 +478,7 @@ defmodule SiteWeb.HomeLive.Components do
                 navigate={~p"/blog/#{post.year}/#{post}"}
               >
                 <span class="absolute inset-0 z-10"></span>
-                <h3 class="font-medium text-content-20 group-hover/card:text-content-10 line-clamp-2 md:line-clamp-1">
+                <h3 class="font-medium text-content-30 group-hover/card:text-content-10 line-clamp-2 md:line-clamp-1">
                   {post.title}
                 </h3>
               </.link>
