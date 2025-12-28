@@ -8,7 +8,7 @@ defmodule SiteWeb.HomeLive.Index do
 
   alias SiteWeb.HomeLive.Components
 
-  @refresh_interval 10_000
+  @refresh_interval 15_000
 
   @impl true
   def render(assigns) do
@@ -192,7 +192,7 @@ defmodule SiteWeb.HomeLive.Index do
           <%!-- Activity Graph --%>
           <section>
             <Components.home_section_title>Activity</Components.home_section_title>
-            <Components.activity_graph activity={@activity} class="mt-6" />
+            <Components.activity_graph activity={@activity} class="mt-2" />
           </section>
 
           <%!-- Featured Articles --%>
@@ -223,11 +223,9 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign(:post_count, published_posts_count)
       |> assign(:photos_count, 0)
       |> assign(:posts, posts)
-      |> assign(:activity, Activity.list_yearly_activity())
       |> assign_async(:track, &get_currently_playing/0)
-      |> assign_async(:reading_stats, fn ->
-        {:ok, %{reading_stats: get_reading_stats()}}
-      end)
+      |> assign_async(:activity, fn -> {:ok, %{activity: Activity.list_yearly_activity()}} end)
+      |> assign_async(:reading_stats, fn -> {:ok, %{reading_stats: get_reading_stats()}} end)
 
     {:ok, socket, temporary_assigns: [posts: []]}
   end

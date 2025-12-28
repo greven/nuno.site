@@ -7,93 +7,7 @@ defmodule SiteWeb.HomeLive.Components do
   alias SiteWeb.SiteComponents
   alias SiteWeb.BlogComponents
 
-  @doc """
-  Activity graph component that displays a GitHub-style contribution
-  graph showing activity over the last 365 days with each bar
-  representing a week.
-  """
-
-  attr :activity, :map, required: true
-  # attr :loading, :boolean, default: false
-  attr :class, :string, default: nil
-  attr :rest, :global
-
-  def activity_graph(assigns) do
-    {weeks, labels} = assigns.activity
-
-    data =
-      weeks
-      |> Enum.map(fn {date, count, weight} ->
-        date_label = Map.get(labels, "#{date.year}-#{date.month}")
-
-        label =
-          if date_label == date,
-            do: Support.month_abbr(date.month),
-            else: nil
-
-        {date, count, weight, label}
-      end)
-
-    assigns = assign(assigns, data: data)
-
-    ~H"""
-    <div class={@class} {@rest}>
-      <div class="w-fit flex gap-1 justify-center md:justify-start md:gap-1.5">
-        <div
-          :for={{date, count, weight, label} <- @data}
-          class={[
-            "relative w-1 md:w-1.5 h-12 md:h-14 rounded-[2px]",
-            activity_level(weight) |> level_class()
-          ]}
-          title={format_tooltip(date, count)}
-        >
-          <div :if={label} class="absolute -top-4 left-0 text-[10px] text-content-40/90">
-            {label}
-          </div>
-        </div>
-      </div>
-
-      <div class="flex items-center justify-between mt-1.5 text-xs text-content-40/80">
-        <div class="flex items-center">
-          <.icon name="hero-information-circle-mini" class="size-3 mr-1.5 text-content-40/60" />
-          Activity represents site content and Github commits.
-        </div>
-
-        <div class="flex items-center gap-1">
-          <span class="">Less</span>
-          <div class="size-2 rounded-[2px] bg-surface-40"></div>
-          <div class="size-2 rounded-[2px] bg-primary/20"></div>
-          <div class="size-2 rounded-[2px] bg-primary/40"></div>
-          <div class="size-2 rounded-[2px] bg-primary/60"></div>
-          <div class="size-2 rounded-[2px] bg-primary"></div>
-          <span class="">More</span>
-        </div>
-      </div>
-    </div>
-    """
-  end
-
-  defp format_tooltip(date, 0) do
-    "No activity on the week of #{Calendar.strftime(date, "%B %-d, %Y")}"
-  end
-
-  defp format_tooltip(date, count) do
-    "#{count} #{ngettext("update", "updates", count)} on the week of #{Calendar.strftime(date, "%B %-d, %Y")}"
-  end
-
-  defp level_class(0), do: "bg-surface-40"
-  defp level_class(1), do: "bg-primary/20"
-  defp level_class(2), do: "bg-primary/40"
-  defp level_class(3), do: "bg-primary/60"
-  defp level_class(4), do: "bg-primary"
-
-  # Determine activity level based on total weight
-  defp activity_level(nil), do: 0
-  defp activity_level(0), do: 0
-  defp activity_level(weight) when weight in 1..2, do: 1
-  defp activity_level(weight) when weight in 3..4, do: 2
-  defp activity_level(weight) when weight in 5..10, do: 3
-  defp activity_level(weight) when weight >= 11, do: 4
+  @doc false
 
   attr :icon, :string, default: nil
   attr :variant, :atom, values: ~w(default static subtle)a, default: :default
@@ -339,6 +253,140 @@ defmodule SiteWeb.HomeLive.Components do
     </div>
     """
   end
+
+  @doc """
+  Activity graph component that displays a GitHub-style contribution
+  graph showing activity over the last 365 days with each bar
+  representing a week.
+  """
+
+  attr :activity, AsyncResult, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def activity_graph(assigns) do
+    map_activity = fn activity ->
+      {weeks, labels} = activity
+
+      Enum.map(weeks, fn {date, count, weight} ->
+        date_label = Map.get(labels, "#{date.year}-#{date.month}")
+
+        label =
+          if date_label == date,
+            do: Support.month_abbr(date.month),
+            else: nil
+
+        {date, count, weight, label}
+      end)
+    end
+
+    assigns =
+      assigns
+      |> assign(:map_activity, map_activity)
+
+    ~H"""
+    <div class={@class} {@rest}>
+      <.async_result :let={activity} assign={@activity}>
+        <:loading>
+          <div class="w-full flex flex-col items-start justify-start gap-2 animate-pulse">
+            <div class="flex justify-start gap-1 sm:gap-1.5">
+              <.activity_item
+                :for={_ <- 1..52}
+                class="bg-surface-30"
+                title="Loading..."
+              />
+            </div>
+            <div class="text-xs text-content-40/60">Loading...</div>
+          </div>
+        </:loading>
+
+        <:failed :let={_failure}>
+          <div class="flex items-center gap-4 text-content-40/60">
+            <div class="flex flex-col gap-1">
+              Activity not available
+            </div>
+          </div>
+        </:failed>
+
+        <div class="w-full sm:w-fit">
+          <div class="flex justify-start gap-1 sm:gap-1.5">
+            <.activity_item
+              :for={{date, count, weight, label} <- @map_activity.(activity)}
+              class={activity_level(weight) |> level_class()}
+              title={format_tooltip(date, count)}
+              label={label}
+            />
+          </div>
+
+          <%!-- Labels --%>
+          <div class="flex items-center justify-between mt-1.5 text-xs text-content-40/80">
+            <div class="hidden md:flex items-center">
+              <.icon name="hero-information-circle-mini" class="size-3 mr-1.5 text-content-40/60" />
+              Activity represents Site and Github updates.
+            </div>
+
+            <div class="flex items-center gap-1">
+              <span class="">Less</span>
+              <div class="size-2 rounded-[2px] bg-surface-40"></div>
+              <div class="size-2 rounded-[2px] bg-primary/20"></div>
+              <div class="size-2 rounded-[2px] bg-primary/40"></div>
+              <div class="size-2 rounded-[2px] bg-primary/60"></div>
+              <div class="size-2 rounded-[2px] bg-primary"></div>
+              <span class="">More</span>
+            </div>
+          </div>
+        </div>
+      </.async_result>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :class, :any, default: nil
+  attr :label, :string, default: nil
+  attr :title, :string, default: nil
+
+  defp activity_item(assigns) do
+    ~H"""
+    <div
+      class={[
+        "isolate relative mt-4 w-1 md:w-1.5 h-10 md:h-12 lg:h-14 rounded-[2px]",
+        @class
+      ]}
+      title={@title}
+    >
+      <div
+        :if={@label}
+        class="hidden sm:block absolute -top-4 left-0 z-10 text-[10px] text-content-40/90"
+      >
+        {@label}
+      </div>
+    </div>
+    """
+  end
+
+  defp format_tooltip(date, 0) do
+    "No activity on the week of #{Calendar.strftime(date, "%B %-d, %Y")}"
+  end
+
+  defp format_tooltip(date, count) do
+    "#{count} #{ngettext("update", "updates", count)} on the week of #{Calendar.strftime(date, "%B %-d, %Y")}"
+  end
+
+  defp level_class(0), do: "bg-surface-40"
+  defp level_class(1), do: "bg-primary/20"
+  defp level_class(2), do: "bg-primary/40"
+  defp level_class(3), do: "bg-primary/60"
+  defp level_class(4), do: "bg-primary"
+
+  # Determine activity level based on total weight
+  defp activity_level(nil), do: 0
+  defp activity_level(0), do: 0
+  defp activity_level(weight) when weight in 1..2, do: 1
+  defp activity_level(weight) when weight in 3..4, do: 2
+  defp activity_level(weight) when weight in 5..10, do: 3
+  defp activity_level(weight) when weight >= 11, do: 4
 
   @doc false
 
