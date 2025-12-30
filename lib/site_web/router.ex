@@ -1,6 +1,8 @@
 defmodule SiteWeb.Router do
   use SiteWeb, :router
 
+  use ErrorTracker.Web, :router
+
   import SiteWeb.UserAuth
 
   alias SiteWeb.Plugs
@@ -34,6 +36,12 @@ defmodule SiteWeb.Router do
 
   pipeline :xml do
     plug :accepts, ["xml"]
+  end
+
+  scope "/", SiteWeb do
+    pipe_through :api
+
+    get "/health", HealthController, :index
   end
 
   scope "/", SiteWeb do
@@ -110,6 +118,7 @@ defmodule SiteWeb.Router do
     end
 
     live_dashboard "/dashboard", metrics: SiteWeb.Telemetry
+    error_tracker_dashboard "/errors"
   end
 
   # Authentication

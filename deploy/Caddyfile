@@ -1,0 +1,89 @@
+# Caddyfile for nuno.site
+
+# Main site configuration
+nuno.site, www.nuno.site {
+    # Redirect www to non-www
+    @www host www.nuno.site
+    redir @www https://nuno.site{uri} permanent
+
+    # Reverse proxy to Phoenix application
+    reverse_proxy localhost:4000 {
+        # Health check
+        health_uri /health
+        health_interval 10s
+        health_timeout 5s
+
+        # Forward real IP
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Security headers
+    header {
+        # Enable HSTS with 1 year duration
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+
+        # Prevent MIME type sniffing
+        X-Content-Type-Options "nosniff"
+
+        # XSS Protection
+        X-XSS-Protection "1; mode=block"
+
+        # Referrer Policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+
+        # Permissions Policy (restrict access to browser features)
+        Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+
+        # Remove Server header
+        -Server
+    }
+
+    # Cache headers for static assets
+    @static {
+        path /assets/* /fonts/* /images/* /favicon.ico /robots.txt /site.webmanifest
+    }
+
+    header @static {
+        # Cache static assets for 1 year
+        Cache-Control "public, max-age=31536000, immutable"
+    }
+
+    # Cache headers for data files (world map, etc.)
+    @data {
+        path /data/*
+    }
+
+    header @data {
+        # Cache data files for 1 day
+        Cache-Control "public, max-age=86400"
+    }
+
+    # Enable gzip compression
+    encode gzip zstd
+
+    # Logging
+    log {
+        output file /var/log/caddy/nuno.site.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json
+        level INFO
+    }
+
+    # Custom error pages (optional)
+    handle_errors {
+        @5xx expression {http.error.status_code} >= 500
+        @4xx expression {http.error.status_code} >= 400 && {http.error.status_code} < 500
+
+        # You can customize error pages here if needed
+        respond @5xx "Service temporarily unavailable" 503
+        respond @4xx "Page not found" 404
+    }
+}

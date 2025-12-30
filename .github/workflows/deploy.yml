@@ -1,0 +1,139 @@
+name: Deploy to Production
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g., v1.0.0)"
+        required: true
+        type: string
+
+env:
+  ELIXIR_VERSION: "1.19.1"
+  OTP_VERSION: "28.1"
+  MIX_ENV: prod
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Get release version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Restore dependencies cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
+
+      - name: Install dependencies
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get --only prod
+
+      - name: Compile dependencies
+        run: mix deps.compile
+
+      - name: Compile application
+        run: mix compile
+
+      - name: Install asset dependencies
+        run: mix assets.setup
+
+      - name: Build assets
+        run: mix assets.deploy
+
+      - name: Build release
+        run: |
+          mix release
+          cd _build/prod/rel/site
+          tar -czf ../../../../site-${{ steps.version.outputs.VERSION }}.tar.gz .
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-release
+          path: site-${{ steps.version.outputs.VERSION }}.tar.gz
+          retention-days: 7
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          # Copy release tarball to VPS
+          scp -i ~/.ssh/deploy_key \
+            site-${VERSION}.tar.gz \
+            ${VPS_USER}@${VPS_HOST}:/tmp/
+
+          # Copy deployment script to VPS
+          scp -i ~/.ssh/deploy_key \
+            deploy/deploy_release.sh \
+            ${VPS_USER}@${VPS_HOST}:/tmp/
+
+          # Execute deployment on VPS
+          ssh -i ~/.ssh/deploy_key ${VPS_USER}@${VPS_HOST} \
+            "bash /tmp/deploy_release.sh ${VERSION}"
+
+      - name: Verify deployment
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          # Wait for application to start
+          sleep 10
+
+          # Check if application is responding
+          if curl -f -s https://$VPS_HOST/health > /dev/null; then
+            echo "✅ Deployment successful! Application is healthy."
+          else
+            echo "❌ Deployment verification failed. Application is not responding."
+            exit 1
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f ~/.ssh/deploy_key
+          rm -f site-*.tar.gz
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed for version ${{ steps.version.outputs.VERSION }}"
+          echo "Check the logs above for details."

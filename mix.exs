@@ -68,6 +68,7 @@ defmodule Site.MixProject do
       {:geocalc, "~> 0.8"},
       {:owl, "~> 0.6"},
       {:ogi, "~> 0.2"},
+      {:error_tracker, "~> 0.7"},
       # {:litestream, "~> 0.3.0"},
       # {:image, "~> 0.62.1"},
 
