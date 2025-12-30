@@ -144,20 +144,22 @@ defmodule Site.Changelog do
 
   @doc """
   Date range helpers for periods, returning a tuple of {from_date, to_date}
-  where both are `Date` structs and where `from_date` is older than or equal to `to_date`.
-
-  For the :year range it returns the the tuple for the full year,
-  e.g., {2024-01-01, 2024-12-31}.
+  where both are `Date` structs and where `from_date` is older than
+  or equal to `to_date`.
   """
   def date_range_for_period(:week) do
-    to_date = Date.utc_today()
-    from_date = Date.shift(to_date, week: -1)
+    today = Date.utc_today()
+    from_date = Date.beginning_of_week(today, :monday)
+    to_date = Date.end_of_week(today, :sunday)
+
     {from_date, to_date}
   end
 
   def date_range_for_period(:month) do
-    to_date = Date.utc_today()
-    from_date = Date.shift(to_date, month: -1)
+    today = Date.utc_today()
+    from_date = Date.beginning_of_month(today)
+    to_date = Date.end_of_month(today)
+
     {from_date, to_date}
   end
 

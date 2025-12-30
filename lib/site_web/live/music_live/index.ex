@@ -51,7 +51,7 @@ defmodule SiteWeb.MusicLive.Index do
 
         <section>
           <.header tag="h3">
-            <.icon name="lucide-mic-vocal" class="hidden md:inline-block mr-2.5 text-content-40" />
+            <.icon name="lucide-star" class="hidden md:inline-block mr-2.5 text-content-40" />
             Top Artists
             <:actions>
               <.form for={@form} phx-change="change_top_artists_range">

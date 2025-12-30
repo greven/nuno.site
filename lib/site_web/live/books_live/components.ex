@@ -17,7 +17,7 @@ defmodule SiteWeb.BooksLive.Components do
     <div class={@class} {@rest}>
       <.async_result :let={_async} assign={@async}>
         <:loading>
-          <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+          <div class="min-h-34 font-medium text-content-40/50 animate-pulse">Loading...</div>
         </:loading>
 
         <%= if @books != [] do %>
@@ -84,8 +84,9 @@ defmodule SiteWeb.BooksLive.Components do
             </li>
           </ul>
         <% else %>
-          <div class="flex items-center">
-            <.icon name="hero-bolt-slash-solid" class="mt-2 size-6 text-content-40/20" />
+          <div class="flex items-center gap-3">
+            <.icon name="lucide-book-dashed" class="size-8 text-content-40/40" />
+            <span class="text-lg text-content-40">Currently not reading any books...</span>
           </div>
         <% end %>
       </.async_result>
@@ -114,37 +115,46 @@ defmodule SiteWeb.BooksLive.Components do
             <:col
               :let={{_id, book}}
               label="Title"
-              head_class="text-left"
-              class="text-left text-content-10"
+              head_class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-none text-left"
+              class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-none text-left text-content-10"
             >
               <span class="group flex items-center">
                 <.link
                   href={book.url}
                   target="_blank"
                   rel="noreferrer"
-                  class="inline-block max-w-[50ch] md:max-w-[60ch] lg:max-w-[72ch] truncate"
+                  class="inline-block"
                 >
-                  {book.title}
+                  <div class="flex flex-col gap-1">
+                    <div class="flex gap-0.5 items-center">
+                      <div class="max-w-[32ch] sm:max-w-[48ch] md:max-w-[60ch] lg:max-w-[72ch] truncate">
+                        {book.title}
+                      </div>
+                      <.icon
+                        name="lucide-arrow-up-right"
+                        class="size-4 inline-block ml-1 text-content-40/20 group-hover:text-content-40 transition-colors"
+                      />
+                    </div>
+                    <div class="lg:hidden max-w-[32ch] sm:max-w-[48ch] md:max-w-[60ch] lg:max-w-[72ch] truncate text-content-40">
+                      {book.author}
+                    </div>
+                  </div>
                 </.link>
-                <.icon
-                  name="lucide-arrow-up-right"
-                  class="size-4 inline-block ml-1 text-content-40/20 group-hover:text-content-40 transition-colors"
-                />
               </span>
             </:col>
             <:col
               :let={{_id, book}}
               label="Author"
-              head_class="text-left"
-              class="text-left whitespace-nowrap text-content-20"
+              head_class="hidden lg:table-cell text-left"
+              class="hidden lg:table-cell text-left whitespace-nowrap text-content-20"
             >
               {book.author}
             </:col>
             <:col
               :let={{_id, book}}
               label="Date"
-              head_class="hidden md:table-cell text-left"
-              class="hidden md:table-cell text-left whitespace-nowrap text-content-40"
+              head_class="hidden lg:table-cell text-left"
+              class="hidden lg:table-cell text-left whitespace-nowrap text-content-40"
             >
               {format_read_date(book.read_date)}
             </:col>

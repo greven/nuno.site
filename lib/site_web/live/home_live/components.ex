@@ -311,10 +311,13 @@ defmodule SiteWeb.HomeLive.Components do
         <div class="w-full sm:w-fit">
           <div class="flex justify-start gap-1 sm:gap-1.5">
             <.activity_item
-              :for={{date, count, weight, label} <- @map_activity.(activity)}
+              :for={
+                {{date, count, weight, label}, week} <- Enum.with_index(@map_activity.(activity), 1)
+              }
               class={activity_level(weight) |> level_class()}
               title={format_tooltip(date, count)}
               label={label}
+              week={week}
             />
           </div>
 
@@ -346,6 +349,8 @@ defmodule SiteWeb.HomeLive.Components do
   attr :class, :any, default: nil
   attr :label, :string, default: nil
   attr :title, :string, default: nil
+  attr :week, :integer, default: nil
+  attr :rest, :global
 
   defp activity_item(assigns) do
     ~H"""
@@ -355,9 +360,10 @@ defmodule SiteWeb.HomeLive.Components do
         @class
       ]}
       title={@title}
+      {@rest}
     >
       <div
-        :if={@label}
+        :if={@week != 1 && @label}
         class="hidden sm:block absolute -top-4 left-0 z-10 text-[10px] text-content-40/90"
       >
         {@label}

@@ -101,6 +101,9 @@ config :site, :seo,
 # OG Image Generation
 config :ogi, cache: true
 
+# ErrorTracker configuration
+config :error_tracker, repo: Site.Repo, otp_app: :site, enabled: true
+
 # Inject the environment into the config
 config :site, :env, config_env()
 

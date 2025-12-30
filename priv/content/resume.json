@@ -23,7 +23,7 @@
       "location": "Lisbon, Portugal",
       "url": "https://eikko.ai",
       "startDate": "2020-01-01",
-      "endDate": "2025-06-01",
+      "endDate": "2025-08-01",
       "summary": "Co-founded a small Startup to develop a recruiting platform with a strong focus on people and fair processes. The platform is skill based first, backed by personality and culture tests to match candidates with the right jobs. The platform was developed from the ground up with Elixir, Phoenix LiveView and PostgreSQL. Custom made CSS library and Phoenix Components.",
       "highlights": ["Co-founded the company"]
     },

@@ -391,4 +391,54 @@ defmodule Site.Support do
     years = div(seconds, @day_in_seconds * 365)
     ngettext("%{years} year ago", "%{years} years ago", years, years: years)
   end
+
+  ## Converters
+
+  @doc """
+  Converts bytes to megabytes.
+
+  ## Examples
+
+      iex> Site.Support.bytes_to_megabytes(1_048_576)
+      1.0
+  """
+  def bytes_to_megabytes(bytes) do
+    Float.round(bytes / 1_048_576, 2)
+  end
+
+  @doc """
+  Converts bytes to gigabytes.
+
+  ## Examples
+
+      iex> Site.Support.bytes_to_gigabytes(1_073_741_824)
+      1.0
+  """
+  def bytes_to_gigabytes(bytes) do
+    Float.round(bytes / 1_073_741_824, 2)
+  end
+
+  @doc """
+  Converts kilobytes to megabytes.
+
+  ## Examples
+
+      iex> Site.Support.kilobytes_to_megabytes(1_024)
+      1.0
+  """
+  def kilobytes_to_megabytes(kilobytes) do
+    Float.round(kilobytes / 1024, 2)
+  end
+
+  @doc """
+  Converts megabytes to gigabytes.
+
+  ## Examples
+
+      iex> Site.Support.megabytes_to_gigabytes(1_024)
+      1.0
+  """
+  def megabytes_to_gigabytes(megabytes) do
+    Float.round(megabytes / 1024, 2)
+  end
 end
