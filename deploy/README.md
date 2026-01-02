@@ -310,19 +310,19 @@ Use the Mix task to bump versions:
 
 ```bash
 # Bump patch version (0.1.0 → 0.1.1)
-mix release patch
+mix bump patch
 
 # Bump minor version (0.1.0 → 0.2.0)
-mix release minor
+mix bump minor
 
 # Bump major version (0.1.0 → 1.0.0)
-mix release major
+mix bump major
 
 # Preview changes without making them
-mix release patch --dry-run
+mix bump patch --dry-run
 
 # Skip confirmation prompt (useful for CI/CD)
-mix release patch --yes
+mix bump patch --yes
 ```
 
 Or use the shorthand:
@@ -378,7 +378,7 @@ If you need more control:
 
 ```bash
 # Bump version but don't push
-mix release patch --no-push
+mix bump patch --no-push
 
 # Then manually push when ready
 git push
