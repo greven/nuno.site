@@ -284,12 +284,6 @@ crontab -e
 Add this line to run backups daily at 2 AM:
 
 ```cron
-0 2 * * * /opt/site/current/backup.sh >> /var/log/site/backup.log 2>&1
-```
-
-Note: After first deployment, you'll need to update this to:
-
-```cron
 0 2 * * * cd /opt/site && ./deploy/backup.sh >> /var/log/site/backup.log 2>&1
 ```
 
@@ -316,19 +310,19 @@ Use the Mix task to bump versions:
 
 ```bash
 # Bump patch version (0.1.0 → 0.1.1)
-mix release.bump patch
+mix release patch
 
 # Bump minor version (0.1.0 → 0.2.0)
-mix release.bump minor
+mix release minor
 
 # Bump major version (0.1.0 → 1.0.0)
-mix release.bump major
+mix release major
 
 # Preview changes without making them
-mix release.bump patch --dry-run
+mix release patch --dry-run
 
 # Skip confirmation prompt (useful for CI/CD)
-mix release.bump patch --yes
+mix release patch --yes
 ```
 
 Or use the shorthand:
@@ -384,7 +378,7 @@ If you need more control:
 
 ```bash
 # Bump version but don't push
-mix release.bump patch --no-push
+mix release patch --no-push
 
 # Then manually push when ready
 git push
@@ -405,6 +399,7 @@ mix bump patch
 ```
 
 This will:
+
 1. Update version from 0.1.0 to 0.1.1
 2. Create a git tag `v0.1.1`
 3. Push to GitHub
