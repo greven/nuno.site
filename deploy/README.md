@@ -300,14 +300,123 @@ cd /opt/site
 ./deploy/backup.sh
 ```
 
+## Version Management
+
+The site uses **Semantic Versioning** (vX.Y.Z) for releases. Deployment is triggered automatically when a GitHub release is published.
+
+### Version Strategy
+
+- **Patch** (v0.1.1): Bug fixes, typos, blog posts, minor tweaks
+- **Minor** (v0.2.0): New features, new pages, significant enhancements
+- **Major** (v1.0.0): Breaking changes, major redesigns
+
+### Bumping Versions
+
+Use the Mix task to bump versions:
+
+```bash
+# Bump patch version (0.1.0 → 0.1.1)
+mix release.bump patch
+
+# Bump minor version (0.1.0 → 0.2.0)
+mix release.bump minor
+
+# Bump major version (0.1.0 → 1.0.0)
+mix release.bump major
+
+# Preview changes without making them
+mix release.bump patch --dry-run
+
+# Skip confirmation prompt (useful for CI/CD)
+mix release.bump patch --yes
+```
+
+Or use the shorthand:
+
+```bash
+mix bump patch
+```
+
+### What the Task Does
+
+1. ✅ Validates git working directory is clean
+2. ✅ Warns if not on main/master branch
+3. ✅ Updates version in `mix.exs`
+4. ✅ Creates git commit: "chore: bump version to vX.Y.Z"
+5. ✅ Creates annotated git tag
+6. ✅ Pushes commit and tag to GitHub
+7. ✅ Creates GitHub release with auto-generated notes
+8. ✅ Triggers automatic deployment via GitHub Actions
+
+### Workflow for Content Updates
+
+When adding blog posts or making content-only changes:
+
+```bash
+# Write your blog post
+mix post.new "My Awesome Post"
+
+# Edit and commit your changes
+git add .
+git commit -m "Add new blog post about Phoenix"
+
+# When ready to deploy (can batch multiple posts)
+mix bump patch
+
+# Deployment happens automatically via GitHub Actions
+```
+
+### Workflow for New Features
+
+```bash
+# Develop your feature
+# Commit your changes
+
+# When ready to release
+mix bump minor
+
+# Creates release and deploys automatically
+```
+
+### Manual Release Options
+
+If you need more control:
+
+```bash
+# Bump version but don't push
+mix release.bump patch --no-push
+
+# Then manually push when ready
+git push
+git push origin v0.1.1
+
+# Create GitHub release manually
+gh release create v0.1.1 --generate-notes --title "Release v0.1.1"
+```
+
 ## First Deployment
 
-### Step 1: Create a GitHub Release
+### Step 1: Create Initial Release
+
+Use the Mix task to create your first release:
+
+```bash
+mix bump patch
+```
+
+This will:
+1. Update version from 0.1.0 to 0.1.1
+2. Create a git tag `v0.1.1`
+3. Push to GitHub
+4. Create GitHub release with auto-generated notes
+5. Trigger automatic deployment
+
+Alternatively, create a release manually:
 
 1. Go to your repository on GitHub
 2. Click "Releases" → "Create a new release"
-3. Tag version: `v1.0.0`
-4. Release title: `v1.0.0 - Initial Production Release`
+3. Tag version: `v0.1.0`
+4. Release title: `v0.1.0 - Initial Production Release`
 5. Description: Add release notes
 6. Click "Publish release"
 
@@ -359,9 +468,22 @@ https://nuno.site
 
 ### Deploy a New Version
 
+**Using the Mix task (recommended):**
+
+```bash
+# Make your changes
+git add .
+git commit -m "Your changes"
+
+# Bump version and deploy
+mix bump patch  # or minor/major
+```
+
+**Manual approach:**
+
 1. Make your code changes
 2. Commit and push to `main`
-3. Create a new release on GitHub (e.g., `v1.0.1`)
+3. Create a new release on GitHub (e.g., `v0.1.2`)
 4. GitHub Actions will automatically deploy
 
 ### Manual Deployment (if needed)
