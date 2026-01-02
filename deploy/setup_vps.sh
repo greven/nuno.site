@@ -117,7 +117,34 @@ else
   echo -e "${YELLOW}  Please copy deploy/Caddyfile to /etc/caddy/Caddyfile manually${NC}"
 fi
 
-echo -e "${YELLOW}[10/10] Copying systemd service...${NC}"
+echo -e "${YELLOW}[10/11] Configuring sudoers for deploy user...${NC}"
+# Create sudoers file for deploy user to allow specific commands without password
+cat > /etc/sudoers.d/${APP_NAME}-deploy << EOF
+# Allow deploy user to manage the ${APP_NAME} systemd service
+${APP_USER} ALL=(ALL) NOPASSWD: /bin/systemctl start ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: /bin/systemctl stop ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: /bin/systemctl restart ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: /bin/systemctl is-active ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: /bin/systemctl status ${APP_NAME}
+
+# Allow deploy user to manage ownership of application directories
+${APP_USER} ALL=(ALL) NOPASSWD: /bin/chown -R ${APP_USER}\:${APP_USER} ${APP_DIR}/*
+${APP_USER} ALL=(ALL) NOPASSWD: /bin/chown -R ${APP_USER}\:${APP_USER} ${DB_DIR}/*
+${APP_USER} ALL=(ALL) NOPASSWD: /bin/chown -R ${APP_USER}\:${APP_USER} ${LOG_DIR}/*
+EOF
+
+# Validate sudoers syntax
+chmod 440 /etc/sudoers.d/${APP_NAME}-deploy
+visudo -c -f /etc/sudoers.d/${APP_NAME}-deploy > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+  echo -e "${GREEN}✓ Sudoers configuration created${NC}"
+else
+  echo -e "${RED}✗ Sudoers configuration has syntax errors${NC}"
+  rm -f /etc/sudoers.d/${APP_NAME}-deploy
+  exit 1
+fi
+
+echo -e "${YELLOW}[11/11] Copying systemd service...${NC}"
 if [ -f "site.service" ]; then
   cp site.service /etc/systemd/system/site.service
   chown root:root /etc/systemd/system/site.service
@@ -143,10 +170,16 @@ echo ""
 echo -e "2. Configure rclone for Cloudflare R2 backups:"
 echo -e "   sudo -u ${APP_USER} rclone config"
 echo ""
+echo ""
 echo -e "3. Set up SSH key for GitHub Actions deployment:"
-echo -e "   sudo -u ${APP_USER} ssh-keygen -t ed25519 -C 'github-actions'"
-echo -e "   cat /opt/site/.ssh/id_ed25519.pub >> /opt/site/.ssh/authorized_keys"
-echo -e "   Add the private key to GitHub Secrets as SSH_PRIVATE_KEY"
+echo -e "   As ${APP_USER} user, generate SSH key:"
+echo -e "     sudo -u ${APP_USER} mkdir -p ${APP_DIR}/.ssh"
+echo -e "     sudo -u ${APP_USER} ssh-keygen -t ed25519 -C 'github-actions' -f ${APP_DIR}/.ssh/id_ed25519 -N ''"
+echo -e "     sudo -u ${APP_USER} cat ${APP_DIR}/.ssh/id_ed25519.pub >> ${APP_DIR}/.ssh/authorized_keys"
+echo -e "     sudo -u ${APP_USER} chmod 600 ${APP_DIR}/.ssh/authorized_keys"
+echo -e "   Then add the private key to GitHub Secrets as SSH_PRIVATE_KEY:"
+echo -e "     cat ${APP_DIR}/.ssh/id_ed25519"
+echo ""
 echo ""
 echo -e "4. Copy the Caddyfile and service file if not already done:"
 echo -e "   cp deploy/Caddyfile /etc/caddy/Caddyfile"

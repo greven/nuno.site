@@ -41,6 +41,56 @@ echo -e "${BLUE}  Deploying nuno.site ${VERSION}${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
+# Check required permissions
+echo -e "${YELLOW}Checking deployment permissions...${NC}"
+PERMISSION_ERRORS=0
+
+# Check if we can use systemctl commands
+if ! sudo -n systemctl is-active ${APP_NAME} &>/dev/null && ! sudo -n systemctl status ${APP_NAME} &>/dev/null; then
+  echo -e "${RED}✗ Cannot run systemctl commands. Missing sudo privileges.${NC}"
+  PERMISSION_ERRORS=$((PERMISSION_ERRORS + 1))
+fi
+
+# Check if we can change ownership
+if ! sudo -n test -w /etc/sudoers.d/ 2>/dev/null && ! sudo -n chown --version &>/dev/null; then
+  echo -e "${RED}✗ Cannot run chown commands. Missing sudo privileges.${NC}"
+  PERMISSION_ERRORS=$((PERMISSION_ERRORS + 1))
+fi
+
+if [ $PERMISSION_ERRORS -gt 0 ]; then
+  echo -e "${RED}========================================${NC}"
+  echo -e "${RED}  Permission Check Failed${NC}"
+  echo -e "${RED}========================================${NC}"
+  echo ""
+  echo -e "${YELLOW}This script requires sudo privileges for the following commands:${NC}"
+  echo -e "  - systemctl (start, stop, restart, is-active, status)"
+  echo -e "  - chown"
+  echo ""
+  echo -e "${YELLOW}To fix this, run the following as root on your VPS:${NC}"
+  echo ""
+  echo -e "cat > /etc/sudoers.d/${APP_NAME}-deploy << 'SUDOERS_EOF'"
+  echo -e "# Allow deploy user to manage the ${APP_NAME} systemd service"
+  echo -e "${USER} ALL=(ALL) NOPASSWD: /bin/systemctl start ${APP_NAME}"
+  echo -e "${USER} ALL=(ALL) NOPASSWD: /bin/systemctl stop ${APP_NAME}"
+  echo -e "${USER} ALL=(ALL) NOPASSWD: /bin/systemctl restart ${APP_NAME}"
+  echo -e "${USER} ALL=(ALL) NOPASSWD: /bin/systemctl is-active ${APP_NAME}"
+  echo -e "${USER} ALL=(ALL) NOPASSWD: /bin/systemctl status ${APP_NAME}"
+  echo -e ""
+  echo -e "# Allow deploy user to manage ownership of application directories"
+  echo -e "${USER} ALL=(ALL) NOPASSWD: /bin/chown -R ${USER}\\:${USER} ${APP_DIR}/*"
+  echo -e "${USER} ALL=(ALL) NOPASSWD: /bin/chown -R ${USER}\\:${USER} ${DB_DIR}/*"
+  echo -e "${USER} ALL=(ALL) NOPASSWD: /bin/chown -R ${USER}\\:${USER} ${LOG_DIR}/*"
+  echo -e "SUDOERS_EOF"
+  echo ""
+  echo -e "chmod 440 /etc/sudoers.d/${APP_NAME}-deploy"
+  echo -e "visudo -c -f /etc/sudoers.d/${APP_NAME}-deploy"
+  echo ""
+  exit 1
+fi
+
+echo -e "${GREEN}✓ All required permissions available${NC}"
+echo ""
+
 # Check if tarball exists
 if [ ! -f "${TARBALL}" ]; then
   echo -e "${RED}Error: Release tarball not found: ${TARBALL}${NC}"
@@ -66,14 +116,14 @@ mkdir -p "${DB_DIR}"
 echo -e "${GREEN}✓ Database directory ready${NC}"
 
 echo -e "${YELLOW}[4/8] Setting permissions...${NC}"
-chown -R deploy:deploy "${RELEASE_DIR}"
+sudo chown -R deploy:deploy "${RELEASE_DIR}"
 chmod +x "${RELEASE_DIR}/bin/site"
 chmod +x "${RELEASE_DIR}/bin/server"
 echo -e "${GREEN}✓ Permissions set${NC}"
 
 echo -e "${YELLOW}[5/8] Stopping current application...${NC}"
-if systemctl is-active --quiet site; then
-  systemctl stop site
+if sudo systemctl is-active --quiet site; then
+  sudo systemctl stop site
   echo -e "${GREEN}✓ Application stopped${NC}"
 else
   echo -e "${YELLOW}⚠ Application was not running${NC}"
@@ -97,13 +147,13 @@ ln -sfn "${RELEASE_DIR}" "${CURRENT_DIR}"
 echo -e "${GREEN}✓ Current symlink updated${NC}"
 
 echo -e "${YELLOW}[8/8] Starting application...${NC}"
-systemctl start site
+sudo systemctl start site
 
 # Wait a moment for the application to start
 sleep 3
 
 # Check if the application started successfully
-if systemctl is-active --quiet site; then
+if sudo systemctl is-active --quiet site; then
   echo -e "${GREEN}✓ Application started successfully${NC}"
 else
   echo -e "${RED}✗ Failed to start application${NC}"
@@ -141,8 +191,8 @@ echo -e "  Release Path:   ${RELEASE_DIR}"
 echo -e "  Current Path:   ${CURRENT_DIR}"
 echo ""
 echo -e "${BLUE}Useful Commands:${NC}"
-echo -e "  Check status:   systemctl status site"
+echo -e "  Check status:   sudo systemctl status site"
 echo -e "  View logs:      journalctl -u site -f"
-echo -e "  Restart app:    systemctl restart site"
-echo -e "  Rollback:       ln -sfn \$(readlink ${APP_DIR}/previous) ${CURRENT_DIR} && systemctl restart site"
+echo -e "  Restart app:    sudo systemctl restart site"
+echo -e "  Rollback:       ln -sfn \$(readlink ${APP_DIR}/previous) ${CURRENT_DIR} && sudo systemctl restart site"
 echo ""
