@@ -215,11 +215,10 @@ In Cloudflare DNS settings, add these records:
 
 ### Step 6: Configure Security
 
-1. Go to Security → Settings
-2. Set Security Level to **Medium**
-3. Enable:
-   - Bot Fight Mode: ✅ (free tier)
-   - Browser Integrity Check: ✅
+1. Go to Security
+2. Enable Cloudflare Managed Ruleset ✅
+3. Enable Browser Integrity Check ✅
+4. Enable Bot AI Bots ✅
 
 ## Cloudflare R2 Backup Setup
 
