@@ -18,6 +18,9 @@ env:
 jobs:
   build-and-deploy:
     name: Build and Deploy Release
+    env:
+      SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+      DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
     runs-on: ubuntu-latest
 
     steps:
@@ -66,18 +69,12 @@ jobs:
         run: mix compile
 
       - name: Install asset dependencies
-        env:
-          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
-          DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
         run: mix assets.setup
 
       - name: Build assets
         run: mix assets.deploy
 
       - name: Build release
-        env:
-          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
-          DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
         run: |
           mix release
           cd _build/prod/rel/site
