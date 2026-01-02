@@ -2,6 +2,7 @@ import { ArticleTableOfContents } from './article-toc';
 import { CardStack } from './card-stack';
 import { CoverImage } from './cover-image';
 import { Dialog } from './dialog';
+import { EmailLink } from './email-link';
 import { Finder } from './finder';
 import { Hello } from './hello';
 import { Image } from './image';
@@ -24,6 +25,7 @@ export default {
   CardStack,
   CoverImage,
   Dialog,
+  EmailLink,
   Finder,
   Hello,
   Image,

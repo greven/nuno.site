@@ -255,4 +255,48 @@ defmodule SiteWeb.SiteComponents do
     </div>
     """
   end
+
+  @doc """
+  Protected email link component that obfuscates email addresses from spam bots.
+
+  The email is split into user and domain parts and only revealed when the user
+  clicks on the link. This provides protection against automated email scrapers.
+
+  ## Examples
+
+      <.email_link email="hello@example.com" class="link-ghost">
+        Email
+      </.email_link>
+
+      <.email_link email="contact@example.com" icon="hero-envelope">
+        Contact Us
+      </.email_link>
+  """
+  attr :email, :string, required: true, doc: "the email address to protect"
+  attr :class, :string, default: nil, doc: "additional CSS classes"
+  attr :rest, :global, doc: "additional HTML attributes"
+  slot :inner_block, required: true, doc: "the link text content"
+
+  def email_link(assigns) do
+    [user, domain] = String.split(assigns.email, "@", parts: 2)
+
+    assigns =
+      assigns
+      |> assign(:user, user)
+      |> assign(:domain, domain)
+
+    ~H"""
+    <a
+      href="#"
+      id={"email-link-#{SiteWeb.Helpers.use_id()}"}
+      phx-hook="EmailLink"
+      data-email-user={@user}
+      data-email-domain={@domain}
+      class={@class}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </a>
+    """
+  end
 end
