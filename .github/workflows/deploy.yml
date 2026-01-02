@@ -66,6 +66,9 @@ jobs:
         run: mix compile
 
       - name: Install asset dependencies
+        env:
+          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+          DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
         run: mix assets.setup
 
       - name: Build assets
