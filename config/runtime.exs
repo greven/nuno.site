@@ -26,8 +26,8 @@ end
 ## External Services
 
 config :site, :steam,
-  steam_id: env("STEAM_ID", :string!, "steam-id"),
-  api_key: env("STEAM_API_KEY", :string!, "steam-api-key")
+  steam_id: env!("STEAM_ID", :string!, "steam-id"),
+  api_key: env!("STEAM_API_KEY", :string!, "steam-api-key")
 
 config :site, :bluesky,
   handle: env!("BLUESKY_HANDLE", :string!, "bluesky-handle"),
