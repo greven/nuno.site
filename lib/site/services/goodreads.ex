@@ -14,6 +14,7 @@ defmodule Site.Services.Goodreads do
   def profile_url, do: "#{@base_url}/review/list/87020422-nuno-freire"
   defp reading_shelf_url, do: "#{profile_url()}?shelf=currently-reading"
   defp read_shelf_url, do: "#{profile_url()}?shelf=read&sort=date_read&order=d&per_page=25"
+  defp want_to_read_url, do: "#{profile_url()}?shelf=to-read&sort=position&order=a&per_page=25"
 
   def get_currently_reading do
     fetch_reading_shelf()
@@ -21,24 +22,18 @@ defmodule Site.Services.Goodreads do
   end
 
   defp fetch_reading_shelf do
-    case Site.Cache.get(:currently_reading) do
-      nil ->
-        reading_shelf_url()
-        |> Req.get()
-        |> case do
-          {:ok, %Req.Response{status: 200, body: body}} ->
-            Site.Cache.put(:currently_reading, body, ttl: :timer.minutes(5))
-            {:ok, body}
-
-          {:ok, %Req.Response{status: status, body: body}} ->
-            {:error, {status, body}}
-
-          {:error, reason} ->
-            {:error, reason}
-        end
-
-      body ->
+    reading_shelf_url()
+    |> Req.get()
+    |> case do
+      {:ok, %Req.Response{status: 200, body: body}} ->
+        Site.Cache.put(:currently_reading, body, ttl: :timer.minutes(5))
         {:ok, body}
+
+      {:ok, %Req.Response{status: status, body: body}} ->
+        {:error, {status, body}}
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 
@@ -70,30 +65,20 @@ defmodule Site.Services.Goodreads do
   defp parse_currently_reading_response({:error, _} = error), do: error
 
   def get_recently_read do
-    fetch_read_shelf()
-    |> parse_recently_read_response()
-  end
-
-  defp fetch_read_shelf do
-    case Site.Cache.get(:recently_read) do
-      nil ->
-        read_shelf_url()
-        |> Req.get()
-        |> case do
-          {:ok, %Req.Response{status: 200, body: body}} ->
-            Site.Cache.put(:recently_read, body, ttl: :timer.hours(24 * 5))
-            {:ok, body}
-
-          {:ok, %Req.Response{status: status, body: body}} ->
-            {:error, {status, body}}
-
-          {:error, reason} ->
-            {:error, reason}
-        end
-
-      body ->
+    read_shelf_url()
+    |> Req.get()
+    |> case do
+      {:ok, %Req.Response{status: 200, body: body}} ->
+        Site.Cache.put(:recently_read, body, ttl: :timer.hours(24 * 5))
         {:ok, body}
+
+      {:ok, %Req.Response{status: status, body: body}} ->
+        {:error, {status, body}}
+
+      {:error, reason} ->
+        {:error, reason}
     end
+    |> parse_recently_read_response()
   end
 
   defp parse_recently_read_response({:ok, body}) do
@@ -133,9 +118,58 @@ defmodule Site.Services.Goodreads do
 
   defp parse_recently_read_response({:error, _} = error), do: error
 
+  def get_want_to_read do
+    want_to_read_url()
+    |> Req.get()
+    |> case do
+      {:ok, %Req.Response{status: 200, body: body}} ->
+        Site.Cache.put(:want_to_read, body, ttl: :timer.hours(24 * 5))
+        {:ok, body}
+
+      {:ok, %Req.Response{status: status, body: body}} ->
+        {:error, {status, body}}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+    |> parse_want_to_read_response()
+  end
+
+  defp parse_want_to_read_response({:ok, body}) do
+    document = LazyHTML.from_document(body)
+
+    books =
+      document
+      |> LazyHTML.query("#booksBody tr.bookalike")
+      |> Enum.map(fn html_fragment ->
+        thumbnail_url = parse_book_thumbnail_url(html_fragment)
+
+        %Book{
+          id: parse_book_id(html_fragment),
+          title: parse_book_title(html_fragment),
+          author: parse_book_author(html_fragment),
+          url: parse_book_url(html_fragment),
+          author_url: parse_author_url(html_fragment),
+          thumbnail_url: thumbnail_url,
+          cover_url: book_cover_url(thumbnail_url),
+          pub_date: parse_book_pub_date(html_fragment),
+          started_date: parse_book_started_date(html_fragment),
+          read_date: parse_book_read_date(html_fragment)
+        }
+      end)
+
+    {:ok, books}
+  end
+
   def get_reading_stats do
-    fetch_reading_shelf()
-    |> parse_reading_stats_response()
+    case Site.Cache.get(:reading_stats) do
+      nil ->
+        fetch_reading_shelf()
+        |> parse_reading_stats_response()
+
+      cached_stats ->
+        {:ok, cached_stats}
+    end
   end
 
   defp parse_reading_stats_response({:ok, body}) do

@@ -64,13 +64,37 @@ defmodule SiteWeb.BooksLive.Index do
             <.icon
               name="lucide-arrow-down"
               class="mr-1.5 size-5 text-content-40"
+            /> Want to read
+            <:subtitle>Some books I want to read (or re-read), eventually...</:subtitle>
+          </.header>
+
+          <Components.want_to_read_list async={@want_books} class="mt-4" books={@streams.want_books} />
+          <.button
+            href={"#{Goodreads.profile_url()}?shelf=to-read&sort=position&order=a"}
+            target="_blank"
+            variant="light"
+            class="group w-fit mt-2"
+          >
+            More at Goodreads
+            <.icon
+              name="hero-arrow-up-right-mini"
+              class="-ml-0.5 size-5 text-content-40/60 duration-200 group-hover:text-primary transition-colors"
+            />
+          </.button>
+        </section>
+
+        <section class="flex flex-col gap-6">
+          <.header tag="h3">
+            <.icon
+              name="lucide-arrow-down"
+              class="mr-1.5 size-5 text-content-40"
             /> Books Read
             <:subtitle>Latest books I've finished reading</:subtitle>
           </.header>
 
           <Components.read_list async={@recent_books} class="mt-4" books={@streams.recent_books} />
           <.button
-            href={Goodreads.profile_url()}
+            href={"#{Goodreads.profile_url()}?order=d&shelf=read&sort=date_read"}
             target="_blank"
             variant="light"
             class="group w-fit mt-2"
@@ -95,6 +119,7 @@ defmodule SiteWeb.BooksLive.Index do
       |> assign_async(:stats, fn -> {:ok, %{stats: get_reading_stats()}} end)
       |> stream_async(:books, fn -> get_currently_reading() end)
       |> stream_async(:recent_books, fn -> get_recently_read() end)
+      |> stream_async(:want_books, fn -> get_want_to_read() end)
 
     {:ok, socket}
   end
@@ -109,6 +134,13 @@ defmodule SiteWeb.BooksLive.Index do
   defp get_recently_read(opts \\ []) do
     case Site.Services.get_recent_books() do
       {:ok, books} -> {:ok, books, opts}
+      error -> error
+    end
+  end
+
+  defp get_want_to_read(opts \\ []) do
+    case Site.Services.get_want_to_read_books() do
+      {:ok, books} -> {:ok, Enum.take(books, 20), opts}
       error -> error
     end
   end
