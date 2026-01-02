@@ -25,10 +25,6 @@ defmodule SiteWeb.AboutLive.Components do
 
       <%!-- Main Links --%>
       <ul class="flex flex-wrap items-center gap-2.5">
-        <.contact_link href="mailto:hello@nuno.site" icon="hero-envelope" class="hidden md:block">
-          Email
-        </.contact_link>
-
         <.contact_link href="https://github.com/greven" icon="si-github">
           Github
         </.contact_link>
@@ -40,9 +36,6 @@ defmodule SiteWeb.AboutLive.Components do
 
       <%!-- Secondary Links --%>
       <ul class="mt-2 flex flex-wrap items-center gap-1">
-        <.secondary_contact_link href="mailto:hello@nuno.site" class="md:hidden">
-          Email
-        </.secondary_contact_link>
         <.secondary_contact_link href="https://mastodon.social/@nuno_fm">
           Mastodon
         </.secondary_contact_link>
@@ -59,6 +52,7 @@ defmodule SiteWeb.AboutLive.Components do
 
   attr :href, :string, required: true
   attr :icon, :string, required: true
+  attr :mailto, :string, default: nil
   attr :rest, :global
 
   slot :inner_block, required: true

@@ -3,6 +3,7 @@ defmodule SiteWeb.AboutLive.Resume do
 
   alias Site.Resume
   alias SiteWeb.AboutLive.Components
+  alias SiteWeb.SiteComponents
 
   @impl true
   def render(assigns) do
@@ -39,9 +40,9 @@ defmodule SiteWeb.AboutLive.Resume do
               <%!-- Email --%>
               <div class="flex items-center justify-center gap-1.5 md:gap-2.5 text-content print:text-sm">
                 <.icon name="hero-at-symbol-mini" class="size-5 text-content-20 print:size-4" />
-                <a href={"mailto:#{@resume["profile"]["email"]}"} class="link-ghost">
-                  {@resume["profile"]["email"]}
-                </a>
+                <SiteComponents.email_link email={@resume["profile"]["email"]} class="link-ghost">
+                  Email Contact
+                </SiteComponents.email_link>
               </div>
 
               <%!-- LinkedIn --%>
