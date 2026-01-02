@@ -26,25 +26,25 @@ end
 ## External Services
 
 config :site, :steam,
-  steam_id: env!("STEAM_ID", :string!),
-  api_key: env!("STEAM_API_KEY", :string!)
+  steam_id: env("STEAM_ID", :string!, "steam-id"),
+  api_key: env("STEAM_API_KEY", :string!, "steam-api-key")
 
 config :site, :bluesky,
-  handle: env!("BLUESKY_HANDLE", :string!),
-  app_password: env!("BLUESKY_APP_PASSWORD", :string!)
+  handle: env!("BLUESKY_HANDLE", :string!, "bluesky-handle"),
+  app_password: env!("BLUESKY_APP_PASSWORD", :string!, "bluesky-app-password")
 
 config :site, :lastfm,
-  api_key: env!("LASTFM_API_KEY", :string!),
-  shared_secret: env!("LASTFM_SHARED_SECRET", :string!),
-  username: env!("LASTFM_USERNAME", :string!),
-  session_key: env!("LASTFM_SESSION_KEY", :string!)
+  api_key: env!("LASTFM_API_KEY", :string!, "lastfm-api-key"),
+  shared_secret: env!("LASTFM_SHARED_SECRET", :string!, "lastfm-shared-secret"),
+  username: env!("LASTFM_USERNAME", :string!, "lastfm-username"),
+  session_key: env!("LASTFM_SESSION_KEY", :string!, "lastfm-session-key")
 
 config :site, :spotify,
-  client_id: env!("SPOTIFY_CLIENT_ID", :string!),
-  client_secret: env!("SPOTIFY_CLIENT_SECRET", :string!),
-  refresh_token: env!("SPOTIFY_REFRESH_TOKEN", :string!)
+  client_id: env!("SPOTIFY_CLIENT_ID", :string!, "spotify-client-id"),
+  client_secret: env!("SPOTIFY_CLIENT_SECRET", :string!, "spotify-client-secret"),
+  refresh_token: env!("SPOTIFY_REFRESH_TOKEN", :string!, "spotify-refresh-token")
 
-config :site, :github, access_token: env!("GITHUB_ACCESS_TOKEN", :string!)
+config :site, :github, access_token: env!("GITHUB_ACCESS_TOKEN", :string!, "github-access-token")
 
 if config_env() == :prod do
   database_path =
