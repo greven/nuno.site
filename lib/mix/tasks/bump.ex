@@ -1,23 +1,24 @@
-defmodule Mix.Tasks.Release do
+defmodule Mix.Tasks.Bump do
   use Mix.Task
 
-  @shortdoc "Bumps the application version and creates a release"
+  @shortdoc "Bumps the application versionm, create a release and push to GitHub"
 
   @moduledoc """
-  Bumps the application version, creates a git tag, and optionally creates a GitHub release.
+  Bumps the application version, creates a git tag, (optionally creates a GitHub release)
+  and pushes everything to GitHub.
 
   ## Usage
 
-      mix release [major|minor|patch] [options]
+      mix bump [major|minor|patch] [options]
 
   ## Examples
 
-      mix release patch              # 0.1.0 → 0.1.1 (bug fixes, content)
-      mix release minor              # 0.1.0 → 0.2.0 (new features)
-      mix release major              # 0.1.0 → 1.0.0 (breaking changes)
-      mix release patch --no-push    # bump but don't push/release
-      mix release minor --yes        # skip confirmation prompt
-      mix release patch --dry-run    # preview changes without making them
+      mix bump patch              # 0.1.0 → 0.1.1 (bug fixes, content)
+      mix bump minor              # 0.1.0 → 0.2.0 (new features)
+      mix bump major              # 0.1.0 → 1.0.0 (breaking changes)
+      mix bump patch --no-push    # bump but don't push/release
+      mix bump minor --yes        # skip confirmation prompt
+      mix bump patch --dry-run    # preview changes without making them
 
   ## Options
 
