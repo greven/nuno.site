@@ -121,16 +121,10 @@ echo -e "${YELLOW}[10/11] Configuring sudoers for deploy user...${NC}"
 # Create sudoers file for deploy user to allow specific commands without password
 cat > /etc/sudoers.d/${APP_NAME}-deploy << EOF
 # Allow deploy user to manage the ${APP_NAME} systemd service
-${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl start ${APP_NAME}
-${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop ${APP_NAME}
-${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart ${APP_NAME}
-${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl is-active ${APP_NAME}
-${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl status ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl * ${APP_NAME}
 
-# Allow deploy user to manage ownership of application directories
-${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/chown -R ${APP_USER}\:${APP_USER} ${APP_DIR}/*
-${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/chown -R ${APP_USER}\:${APP_USER} ${DB_DIR}/*
-${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/chown -R ${APP_USER}\:${APP_USER} ${LOG_DIR}/*
+# Allow deploy user to run chown
+${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/chown *
 EOF
 
 # Validate sudoers syntax
