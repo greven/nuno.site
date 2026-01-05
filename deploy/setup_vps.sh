@@ -118,13 +118,21 @@ else
 fi
 
 echo -e "${YELLOW}[10/11] Configuring sudoers for deploy user...${NC}"
+# Auto-detect binary paths
+SYSTEMCTL_PATH=$(command -v systemctl || echo "/usr/bin/systemctl")
+CHOWN_PATH=$(command -v chown || echo "/usr/bin/chown")
+
+echo -e "${YELLOW}  Detected systemctl at: ${SYSTEMCTL_PATH}${NC}"
+echo -e "${YELLOW}  Detected chown at: ${CHOWN_PATH}${NC}"
+
 # Create sudoers file for deploy user to allow specific commands without password
 cat > /etc/sudoers.d/${APP_NAME}-deploy << EOF
-# Allow deploy user to manage the ${APP_NAME} systemd service
-${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl * ${APP_NAME}
+# Allow ${APP_USER} user to manage the ${APP_NAME} systemd service with any arguments
+${APP_USER} ALL=(ALL) NOPASSWD: ${SYSTEMCTL_PATH} * ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: ${SYSTEMCTL_PATH} --version
 
-# Allow deploy user to run chown
-${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/chown *
+# Allow ${APP_USER} user to run chown for any file operations
+${APP_USER} ALL=(ALL) NOPASSWD: ${CHOWN_PATH} *
 EOF
 
 # Validate sudoers syntax

@@ -46,15 +46,19 @@ echo -e "${YELLOW}Checking deployment permissions...${NC}"
 PERMISSION_ERRORS=0
 
 # Check if we can use systemctl commands
-if ! sudo -n systemctl is-active ${APP_NAME} &>/dev/null && ! sudo -n systemctl status ${APP_NAME} &>/dev/null; then
+if ! sudo -n systemctl --version &>/dev/null; then
   echo -e "${RED}✗ Cannot run systemctl commands. Missing sudo privileges.${NC}"
   PERMISSION_ERRORS=$((PERMISSION_ERRORS + 1))
+else
+  echo -e "${GREEN}✓ systemctl permissions OK${NC}"
 fi
 
 # Check if we can change ownership
-if ! sudo -n test -w /etc/sudoers.d/ 2>/dev/null && ! sudo -n chown --version &>/dev/null; then
+if ! sudo -n chown --version &>/dev/null; then
   echo -e "${RED}✗ Cannot run chown commands. Missing sudo privileges.${NC}"
   PERMISSION_ERRORS=$((PERMISSION_ERRORS + 1))
+else
+  echo -e "${GREEN}✓ chown permissions OK${NC}"
 fi
 
 if [ $PERMISSION_ERRORS -gt 0 ]; then
@@ -63,21 +67,24 @@ if [ $PERMISSION_ERRORS -gt 0 ]; then
   echo -e "${RED}========================================${NC}"
   echo ""
   echo -e "${YELLOW}This script requires sudo privileges for the following commands:${NC}"
-  echo -e "  - systemctl (start, stop, restart, is-active, status)"
+  echo -e "  - systemctl (start, stop, restart, is-active, status, --version)"
   echo -e "  - chown"
   echo ""
   echo -e "${YELLOW}To fix this, run the following as root on your VPS:${NC}"
   echo ""
   echo -e "cat > /etc/sudoers.d/${APP_NAME}-deploy << 'SUDOERS_EOF'"
-  echo -e "# Allow deploy user to manage the ${APP_NAME} systemd service"
+  echo -e "# Allow ${USER} user to manage the ${APP_NAME} systemd service with any arguments"
   echo -e "${USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl * ${APP_NAME}"
+  echo -e "${USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl --version"
   echo -e ""
-  echo -e "# Allow deploy user to run chown"
+  echo -e "# Allow ${USER} user to run chown for any file operations"
   echo -e "${USER} ALL=(ALL) NOPASSWD: /usr/bin/chown *"
   echo -e "SUDOERS_EOF"
   echo ""
   echo -e "chmod 440 /etc/sudoers.d/${APP_NAME}-deploy"
   echo -e "visudo -c -f /etc/sudoers.d/${APP_NAME}-deploy"
+  echo ""
+  echo -e "${YELLOW}Note: Make sure the paths match your system. Run 'which systemctl' and 'which chown' to verify.${NC}"
   echo ""
   exit 1
 fi
