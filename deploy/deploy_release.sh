@@ -132,7 +132,12 @@ fi
 
 echo -e "${YELLOW}[6/8] Running database migrations...${NC}"
 cd "${RELEASE_DIR}"
-sudo -u deploy bash -c "cd ${RELEASE_DIR} && ./bin/site eval 'Site.Release.migrate()'"
+# Run migrations as deploy user (if we're not already deploy, use sudo)
+if [ "$(whoami)" = "deploy" ]; then
+  ./bin/site eval 'Site.Release.migrate()'
+else
+  sudo -u deploy bash -c "cd ${RELEASE_DIR} && ./bin/site eval 'Site.Release.migrate()'"
+fi
 echo -e "${GREEN}✓ Migrations completed${NC}"
 
 echo -e "${YELLOW}[7/8] Updating current symlink...${NC}"
