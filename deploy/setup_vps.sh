@@ -28,7 +28,7 @@ echo -e "${GREEN}========================================${NC}"
 echo ""
 
 # Check if running as root
-if [ "$EUID" -ne 0 ]; then 
+if [ "$EUID" -ne 0 ]; then
   echo -e "${RED}Please run as root (use sudo)${NC}"
   exit 1
 fi
@@ -121,16 +121,16 @@ echo -e "${YELLOW}[10/11] Configuring sudoers for deploy user...${NC}"
 # Create sudoers file for deploy user to allow specific commands without password
 cat > /etc/sudoers.d/${APP_NAME}-deploy << EOF
 # Allow deploy user to manage the ${APP_NAME} systemd service
-${APP_USER} ALL=(ALL) NOPASSWD: /bin/systemctl start ${APP_NAME}
-${APP_USER} ALL=(ALL) NOPASSWD: /bin/systemctl stop ${APP_NAME}
-${APP_USER} ALL=(ALL) NOPASSWD: /bin/systemctl restart ${APP_NAME}
-${APP_USER} ALL=(ALL) NOPASSWD: /bin/systemctl is-active ${APP_NAME}
-${APP_USER} ALL=(ALL) NOPASSWD: /bin/systemctl status ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl start ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl is-active ${APP_NAME}
+${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/systemctl status ${APP_NAME}
 
 # Allow deploy user to manage ownership of application directories
-${APP_USER} ALL=(ALL) NOPASSWD: /bin/chown -R ${APP_USER}\:${APP_USER} ${APP_DIR}/*
-${APP_USER} ALL=(ALL) NOPASSWD: /bin/chown -R ${APP_USER}\:${APP_USER} ${DB_DIR}/*
-${APP_USER} ALL=(ALL) NOPASSWD: /bin/chown -R ${APP_USER}\:${APP_USER} ${LOG_DIR}/*
+${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/chown -R ${APP_USER}\:${APP_USER} ${APP_DIR}/*
+${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/chown -R ${APP_USER}\:${APP_USER} ${DB_DIR}/*
+${APP_USER} ALL=(ALL) NOPASSWD: /usr/bin/chown -R ${APP_USER}\:${APP_USER} ${LOG_DIR}/*
 EOF
 
 # Validate sudoers syntax
