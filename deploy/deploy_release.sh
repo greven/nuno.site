@@ -132,11 +132,23 @@ fi
 
 echo -e "${YELLOW}[6/8] Running database migrations...${NC}"
 cd "${RELEASE_DIR}"
+
+# Load environment variables from .env file
+if [ ! -f "${APP_DIR}/.env" ]; then
+  echo -e "${RED}✗ Environment file not found: ${APP_DIR}/.env${NC}"
+  exit 1
+fi
+
 # Run migrations as deploy user (if we're not already deploy, use sudo)
 if [ "$(whoami)" = "deploy" ]; then
+  # Load env vars and run migrations
+  set -a  # automatically export all variables
+  source "${APP_DIR}/.env"
+  set +a
   ./bin/site eval 'Site.Release.migrate()'
 else
-  sudo -u deploy bash -c "cd ${RELEASE_DIR} && ./bin/site eval 'Site.Release.migrate()'"
+  # Run as deploy user with env vars loaded
+  sudo -u deploy bash -c "set -a; source ${APP_DIR}/.env; set +a; cd ${RELEASE_DIR} && ./bin/site eval 'Site.Release.migrate()'"
 fi
 echo -e "${GREEN}✓ Migrations completed${NC}"
 
