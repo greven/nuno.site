@@ -46,7 +46,7 @@ echo -e "${YELLOW}Checking deployment permissions...${NC}"
 PERMISSION_ERRORS=0
 
 # Check if we can use systemctl commands
-if ! sudo -n systemctl --version &>/dev/null; then
+if ! sudo -n systemctl status ${APP_NAME} &>/dev/null; then
   echo -e "${RED}✗ Cannot run systemctl commands. Missing sudo privileges.${NC}"
   PERMISSION_ERRORS=$((PERMISSION_ERRORS + 1))
 else

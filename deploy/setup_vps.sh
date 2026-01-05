@@ -129,7 +129,6 @@ echo -e "${YELLOW}  Detected chown at: ${CHOWN_PATH}${NC}"
 cat > /etc/sudoers.d/${APP_NAME}-deploy << EOF
 # Allow ${APP_USER} user to manage the ${APP_NAME} systemd service with any arguments
 ${APP_USER} ALL=(ALL) NOPASSWD: ${SYSTEMCTL_PATH} * ${APP_NAME}
-${APP_USER} ALL=(ALL) NOPASSWD: ${SYSTEMCTL_PATH} --version
 
 # Allow ${APP_USER} user to run chown for any file operations
 ${APP_USER} ALL=(ALL) NOPASSWD: ${CHOWN_PATH} *
