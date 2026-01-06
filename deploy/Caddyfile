@@ -62,13 +62,8 @@ nuno.site, www.nuno.site {
 	# Enable gzip compression
 	encode gzip zstd
 
-	# Logging
+	# Logging (outputs to systemd journal)
 	log {
-		output file /var/log/caddy/nuno.site.log {
-			roll_size 100mb
-			roll_keep 5
-			roll_keep_for 720h
-		}
 		format json
 		level INFO
 	}
