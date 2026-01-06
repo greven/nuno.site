@@ -68,9 +68,10 @@ else
 fi
 
 echo -e "${YELLOW}[5/10] Creating application directories...${NC}"
-mkdir -p "${APP_DIR}"/{releases,current}
+mkdir -p "${APP_DIR}/releases"
 mkdir -p "${DB_DIR}"
 mkdir -p "${LOG_DIR}"
+# Note: current symlink will be created during first deployment
 
 chown -R "${APP_USER}:${APP_USER}" "${APP_DIR}"
 chown -R "${APP_USER}:${APP_USER}" "${DB_DIR}"

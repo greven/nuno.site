@@ -160,6 +160,13 @@ if [ -L "${CURRENT_DIR}" ] && [ -e "${CURRENT_DIR}" ]; then
   ln -sfn "${PREVIOUS}" "${APP_DIR}/previous"
 fi
 
+# Remove current if it exists as a directory (not a symlink)
+# This handles the case where setup_vps.sh created it as a directory
+if [ -d "${CURRENT_DIR}" ] && [ ! -L "${CURRENT_DIR}" ]; then
+  echo -e "${YELLOW}  Removing old current directory...${NC}"
+  rm -rf "${CURRENT_DIR}"
+fi
+
 # Update current symlink to new release
 ln -sfn "${RELEASE_DIR}" "${CURRENT_DIR}"
 echo -e "${GREEN}✓ Current symlink updated${NC}"
