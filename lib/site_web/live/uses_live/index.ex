@@ -1,4 +1,4 @@
-defmodule SiteWeb.StackLive.Index do
+defmodule SiteWeb.UsesLive.Index do
   use SiteWeb, :live_view
 
   @impl true

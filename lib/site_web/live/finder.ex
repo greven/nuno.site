@@ -74,7 +74,7 @@ defmodule SiteWeb.Finder do
   def handle_command(:nav_gaming, socket), do: push_navigate(socket, to: ~p"/gaming")
   def handle_command(:nav_photos, socket), do: push_navigate(socket, to: ~p"/photos")
   def handle_command(:nav_travel, socket), do: push_navigate(socket, to: ~p"/travel")
-  def handle_command(:nav_stack, socket), do: push_navigate(socket, to: ~p"/stack")
+  def handle_command(:nav_stack, socket), do: push_navigate(socket, to: ~p"/uses")
   def handle_command(:nav_bookmarks, socket), do: push_navigate(socket, to: ~p"/bookmarks")
   def handle_command(:nav_changelog, socket), do: push_navigate(socket, to: ~p"/changelog")
 end

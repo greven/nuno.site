@@ -72,7 +72,7 @@ defmodule SiteWeb.Router do
       live "/gaming", GamingLive.Index, :index
       live "/photos", PhotosLive.Index, :index
       live "/bookmarks", BookmarksLive.Index, :index
-      live "/stack", StackLive.Index, :index
+      live "/uses", UsesLive.Index, :index
       live "/about", AboutLive.Index, :index
       live "/resume", AboutLive.Resume, :show
       live "/pulse", PulseLive.Index, :index
@@ -118,7 +118,7 @@ defmodule SiteWeb.Router do
     end
 
     live_dashboard "/dashboard", metrics: SiteWeb.Telemetry
-    error_tracker_dashboard "/errors"
+    error_tracker_dashboard("/errors")
   end
 
   # Authentication

@@ -165,7 +165,7 @@ defmodule SiteWeb.HomeLive.Index do
             </Components.bento_card>
 
             <Components.bento_card
-              navigate={~p"/stack"}
+              navigate={~p"/uses"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-layers"
             >
