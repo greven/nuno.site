@@ -161,7 +161,6 @@ if [ -L "${CURRENT_DIR}" ] && [ -e "${CURRENT_DIR}" ]; then
 fi
 
 # Remove current if it exists as a directory (not a symlink)
-# This handles the case where setup_vps.sh created it as a directory
 if [ -d "${CURRENT_DIR}" ] && [ ! -L "${CURRENT_DIR}" ]; then
   echo -e "${YELLOW}  Removing old current directory...${NC}"
   rm -rf "${CURRENT_DIR}"
