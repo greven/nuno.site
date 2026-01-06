@@ -36,13 +36,13 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.2"},
-      {:phoenix_live_view, "~> 1.1.18"},
+      {:phoenix, "~> 1.8.3"},
+      {:phoenix_live_view, "~> 1.1.19"},
       {:phoenix_ecto, "~> 4.7"},
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
-      {:bandit, "~> 1.8"},
+      {:bandit, "~> 1.10"},
       {:lazy_html, "~> 0.1"},
       {:ecto_sql, "~> 3.13"},
       {:ecto_sqlite3, ">= 0.0.0"},
@@ -51,7 +51,7 @@ defmodule Site.MixProject do
       {:telemetry_metrics, "~> 1.1"},
       {:telemetry_poller, "~> 1.1"},
       {:gettext, "~> 1.0"},
-      {:swoosh, "~> 1.19"},
+      {:swoosh, "~> 1.20"},
       {:req, "~> 0.5"},
 
       # Utilities
