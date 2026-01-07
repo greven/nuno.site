@@ -143,7 +143,8 @@ Go to your repository on GitHub:
 
 | Secret Name       | Value                                 |
 | ----------------- | ------------------------------------- |
-| `VPS_HOST`        | Your server IP (e.g., `123.45.67.89`) |
+| `VPS_HOST`        | Your server IP (e.g., `91.99.77.146`) |
+| `VPS_DOMAIN`      | Your domain name (e.g., `nuno.site`)  |
 | `VPS_USER`        | `deploy`                              |
 | `SSH_PRIVATE_KEY` | The private key from previous step    |
 
