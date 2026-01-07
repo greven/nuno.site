@@ -24,7 +24,8 @@ defmodule SiteWeb.Endpoint do
     at: "/",
     from: :site,
     gzip: not code_reloading?,
-    only: SiteWeb.static_paths()
+    only: SiteWeb.static_paths(),
+    only_matching: ~w(site)
 
   if Code.ensure_loaded?(Tidewave) do
     plug Tidewave
