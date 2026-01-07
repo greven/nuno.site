@@ -58,7 +58,7 @@ defmodule Site.Services do
 
   ## Music
 
-  @decorate cacheable(cache: Site.Cache, key: {:now_playing}, opts: [ttl: :timer.seconds(10)])
+  @decorate cacheable(cache: Site.Cache, key: {:now_playing}, opts: [ttl: :timer.seconds(30)])
   def get_now_playing do
     Lastfm.get_now_playing()
   end
