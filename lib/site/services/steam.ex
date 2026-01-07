@@ -3,8 +3,6 @@ defmodule Site.Services.Steam do
   Steam API service module.
   """
 
-  # TODO: Rework how we fetch Steam images as the CDN URLs can change and right now some images URLs are broken.
-
   use Nebulex.Caching
   require Logger
 

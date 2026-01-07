@@ -65,14 +65,12 @@ defmodule Site.Support do
   end
 
   def format_number(number, _) when is_integer(number) do
-    cond do
-      number >= 1_000 ->
-        number
-        |> to_string()
-        |> String.replace(~r/(?<=\d)(?=(\d{3})+(?!\d))/, ",")
-
-      true ->
-        to_string(number)
+    if number >= 1_000 do
+      number
+      |> to_string()
+      |> String.replace(~r/(?<=\d)(?=(\d{3})+(?!\d))/, ",")
+    else
+      to_string(number)
     end
   end
 

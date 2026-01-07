@@ -1,4 +1,6 @@
 defmodule Site.Blog.Parser do
+  @moduledoc false
+
   alias Site.Blog.HeaderLink
   # alias Site.Blog.SyntaxTheme
 

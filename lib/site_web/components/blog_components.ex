@@ -724,9 +724,10 @@ defmodule SiteWeb.BlogComponents do
 
   def post_reading_time(%{post: %{reading_time: reading_time}} = assigns) do
     {duration, unit} =
-      cond do
-        reading_time < 1.0 -> {round(reading_time * 60), "s"}
-        true -> {round(assigns.post.reading_time), "min"}
+      if reading_time < 1.0 do
+        {round(reading_time * 60), "s"}
+      else
+        {round(assigns.post.reading_time), "min"}
       end
 
     assigns =
@@ -866,7 +867,7 @@ defmodule SiteWeb.BlogComponents do
       id="toc-container"
       class={[
         "fixed -bottom-2 left-1 right-1 w-full mb-1 p-5 z-10 rounded-t-lg",
-        "sm:relative sm:mb-20 sm:w-auto sm:min-w-[348px] sm:rounded-lg",
+        "sm:relative sm:mb-20 sm:w-auto sm:min-w-87 sm:rounded-lg",
         "bg-surface-10/95 border border-surface-30 shadow-xs backdrop-blur-sm",
         "transition-transform ease-in-out duration-500 touch-manipulation"
       ]}

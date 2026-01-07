@@ -59,7 +59,7 @@ defmodule SiteWeb.BooksLive.Index do
           <Components.reading_list async={@books} books={@streams.books} class="mt-8 min-h-32" />
         </section>
 
-        <section class="flex flex-col gap-6">
+        <section class="flex flex-col gap-4">
           <.header tag="h3">
             <.icon
               name="lucide-arrow-down"
@@ -69,18 +69,6 @@ defmodule SiteWeb.BooksLive.Index do
           </.header>
 
           <Components.want_to_read_list async={@want_books} class="mt-4" books={@streams.want_books} />
-          <.button
-            href={"#{Goodreads.profile_url()}?shelf=to-read&sort=position&order=a"}
-            target="_blank"
-            variant="light"
-            class="group w-fit mt-2"
-          >
-            More at Goodreads
-            <.icon
-              name="hero-arrow-up-right-mini"
-              class="-ml-0.5 size-5 text-content-40/60 duration-200 group-hover:text-primary transition-colors"
-            />
-          </.button>
         </section>
 
         <section class="flex flex-col gap-6">

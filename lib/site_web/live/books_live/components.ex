@@ -81,7 +81,7 @@ defmodule SiteWeb.BooksLive.Components do
                     </div>
                   <% else %>
                     <div class="font-light text-ellipsis text-base text-content-40/50">
-                      Unknown
+                      Unknown date
                     </div>
                   <% end %>
                 </div>

@@ -1,4 +1,6 @@
 defmodule SiteWeb.RssXML do
+  @moduledoc false
+
   use SiteWeb, :html
 
   alias Site.Blog

@@ -1,4 +1,6 @@
 defmodule Site.Services.MusicTrack do
+  @moduledoc false
+
   defstruct [
     :name,
     :artist,

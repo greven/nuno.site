@@ -1,4 +1,6 @@
 defmodule Site.Accounts.UserNotifier do
+  @moduledoc false
+
   import Swoosh.Email
 
   alias Site.Mailer

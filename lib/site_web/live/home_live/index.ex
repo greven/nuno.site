@@ -8,7 +8,7 @@ defmodule SiteWeb.HomeLive.Index do
 
   alias SiteWeb.HomeLive.Components
 
-  @refresh_interval 20_000
+  @refresh_interval 60_000
 
   @impl true
   def render(assigns) do

@@ -12,9 +12,10 @@ defmodule Site.Services.Lastfm do
   @auth_endpoint "https://www.last.fm/api/auth"
 
   def get_now_playing do
-    with {:ok, config} <- get_config() do
-      fetch_now_playing(config)
-    else
+    case get_config() do
+      {:ok, config} ->
+        fetch_now_playing(config)
+
       {:error, reason} ->
         Logger.error("Error getting currently playing: #{inspect(reason)}")
         {:error, reason}
@@ -22,9 +23,10 @@ defmodule Site.Services.Lastfm do
   end
 
   def get_recently_played do
-    with {:ok, config} <- get_config() do
-      fetch_recent_tracks(config)
-    else
+    case get_config() do
+      {:ok, config} ->
+        fetch_recent_tracks(config)
+
       {:error, reason} ->
         Logger.error("Error getting recently played tracks: #{inspect(reason)}")
         {:error, reason}
@@ -32,9 +34,10 @@ defmodule Site.Services.Lastfm do
   end
 
   def get_top_artists(period, limit \\ 10) do
-    with {:ok, config} <- get_config() do
-      fetch_top_artists(config, period, limit)
-    else
+    case get_config() do
+      {:ok, config} ->
+        fetch_top_artists(config, period, limit)
+
       {:error, reason} ->
         Logger.error("Error getting top artists: #{inspect(reason)}")
         {:error, reason}
@@ -42,9 +45,10 @@ defmodule Site.Services.Lastfm do
   end
 
   def get_top_albums(period, limit \\ 10) do
-    with {:ok, config} <- get_config() do
-      fetch_top_albums(config, period, limit)
-    else
+    case get_config() do
+      {:ok, config} ->
+        fetch_top_albums(config, period, limit)
+
       {:error, reason} ->
         Logger.error("Error getting top albums: #{inspect(reason)}")
         {:error, reason}
@@ -52,11 +56,12 @@ defmodule Site.Services.Lastfm do
   end
 
   def get_top_tracks(period, limit \\ 10) do
-    with {:ok, config} <- get_config() do
-      fetch_top_tracks(config, period, limit)
-    else
+    case get_config() do
+      {:ok, config} ->
+        fetch_top_tracks(config, period, limit)
+
       {:error, reason} ->
-        Logger.error("Error getting top albums: #{inspect(reason)}")
+        Logger.error("Error getting top tracks: #{inspect(reason)}")
         {:error, reason}
     end
   end
@@ -354,8 +359,7 @@ defmodule Site.Services.Lastfm do
     params
     |> Enum.reject(fn {k, v} -> is_nil(v) or v == "" or k == "format" end)
     |> Enum.sort()
-    |> Enum.map(fn {k, v} -> "#{k}#{v}" end)
-    |> Enum.join("")
+    |> Enum.map_join(fn {k, v} -> "#{k}#{v}" end, "")
     |> Kernel.<>(shared_secret)
     |> then(&:crypto.hash(:md5, &1))
     |> Base.encode16()

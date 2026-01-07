@@ -18,6 +18,8 @@ defmodule Site.Changelog do
                   is_struct(date, NaiveDateTime)
 
   defmodule Update do
+    @moduledoc false
+
     @enforce_keys [:type, :date, :title, :text, :uri]
     defstruct [:type, :id, :date, :title, :text, :uri, :meta, :embed]
   end

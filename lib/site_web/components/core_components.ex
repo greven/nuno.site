@@ -113,8 +113,6 @@ defmodule SiteWeb.CoreComponents do
   It is possible to swipe through the cards using the navigation buttons.
   """
 
-  # TODO: Add autoplay functionality
-
   attr :items, :list, default: []
   attr :class, :any, default: nil
 
@@ -1058,10 +1056,11 @@ defmodule SiteWeb.CoreComponents do
               item[:class],
               "group relative w-full h-10 px-4 inline-flex flex-nowrap shrink-0 items-center justify-center",
               "text-sm rounded-full corner-squircle overflow-hidden whitespace-nowrap cursor-pointer align-middle text-center",
-              "text-content-40 border border-surface-30/50 bg-surface-20/50 transition-colors duration-150 backdrop-blur-sm",
+              "text-content-30 border border-surface-30/50 bg-surface-20/50 transition-colors duration-150 backdrop-blur-sm",
               "hover:not-aria-current:bg-surface-10/25 hover:not-aria-current:text-content-10  hover:not-aria-current:border-surface-40",
               "aria-current:text-content aria-current:bg-surface-10 aria-current:border-primary aria-current:shadow-sm active:shadow-none",
-              "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-primary"
+              "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-primary",
+              "disabled:cursor-not-allowed disabled:opacity-50"
             ]}
           >
             <%= if item[:icon] do %>

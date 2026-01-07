@@ -20,22 +20,20 @@ defmodule Site.Services.Spotify do
   end
 
   defp parse_now_playing_response({:ok, resp}) do
-    cond do
-      resp.status == 200 ->
-        {:ok,
-         %{
-           artist: resp.body["item"]["artists"] |> List.first() |> Map.get("name"),
-           song: resp.body["item"]["name"],
-           song_url: resp.body["item"]["external_urls"]["spotify"],
-           album: resp.body["item"]["album"]["name"],
-           album_art: resp.body["item"]["album"]["images"] |> List.first() |> Map.get("url"),
-           duration: resp.body["item"]["duration_ms"],
-           progress: resp.body["progress_ms"],
-           is_playing: resp.body["is_playing"]
-         }}
-
-      true ->
-        {:error, resp.status}
+    if resp.status == 200 do
+      {:ok,
+       %{
+         artist: resp.body["item"]["artists"] |> List.first() |> Map.get("name"),
+         song: resp.body["item"]["name"],
+         song_url: resp.body["item"]["external_urls"]["spotify"],
+         album: resp.body["item"]["album"]["name"],
+         album_art: resp.body["item"]["album"]["images"] |> List.first() |> Map.get("url"),
+         duration: resp.body["item"]["duration_ms"],
+         progress: resp.body["progress_ms"],
+         is_playing: resp.body["is_playing"]
+       }}
+    else
+      {:error, resp.status}
     end
   end
 
@@ -56,20 +54,18 @@ defmodule Site.Services.Spotify do
   end
 
   defp parse_playlist_response({:ok, resp}) do
-    cond do
-      resp.status == 200 ->
-        {:ok,
-         %{
-           id: resp.body["id"],
-           name: resp.body["name"],
-           description: resp.body["description"],
-           image: resp.body["images"] |> List.first() |> Map.get("url"),
-           url: resp.body["external_urls"]["spotify"],
-           songs: resp.body["tracks"]["total"]
-         }}
-
-      true ->
-        {:error, resp.status}
+    if resp.status == 200 do
+      {:ok,
+       %{
+         id: resp.body["id"],
+         name: resp.body["name"],
+         description: resp.body["description"],
+         image: resp.body["images"] |> List.first() |> Map.get("url"),
+         url: resp.body["external_urls"]["spotify"],
+         songs: resp.body["tracks"]["total"]
+       }}
+    else
+      {:error, resp.status}
     end
   end
 

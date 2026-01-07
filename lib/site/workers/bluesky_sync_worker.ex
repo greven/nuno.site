@@ -1,4 +1,6 @@
 defmodule Site.Workers.BlueskySyncWorker do
+  @moduledoc false
+
   use Oban.Worker, queue: :scheduled, max_attempts: 5
 
   def perform(_job) do

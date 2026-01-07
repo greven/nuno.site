@@ -25,9 +25,10 @@ defmodule SiteWeb.BlogLive.Index do
           </:subtitle>
         </.header>
 
+        <%!-- && @post_count > 1 --%>
         <div :if={@has_posts?} class="mt-8 flex justify-between items-center">
           <.segmented_control
-            class="w-full sm:w-auto md:min-w-[422px]"
+            class="w-full sm:w-auto md:min-w-105"
             aria_label="Filter articles by category"
             on_change="article_filter_changed"
             value={@filter_category}
@@ -78,16 +79,17 @@ defmodule SiteWeb.BlogLive.Index do
   @impl true
   def handle_params(params, _uri, socket) do
     filter_category = get_params_category(params)
+    posts = Blog.list_published_posts()
 
-    published_posts =
-      Blog.list_published_posts()
-      |> Enum.filter(filter_posts_by_category(filter_category))
+    published_posts = Enum.filter(posts, filter_posts_by_category(filter_category))
+    category_counts = Enum.frequencies_by(posts, &Atom.to_string(&1.category))
 
     socket =
       socket
       |> assign(:filter_category, filter_category)
       |> assign(:has_posts?, published_posts != [])
-      |> assign(:filter_categories, filter_categories())
+      |> assign(:post_count, length(published_posts))
+      |> assign(:filter_categories, filter_categories(category_counts))
       |> stream(:posts, published_posts, reset: true)
 
     {:noreply, socket}
@@ -100,11 +102,7 @@ defmodule SiteWeb.BlogLive.Index do
 
   defp get_params_category(params) do
     category = Map.get(params, "category", "all")
-
-    cond do
-      category in ~w(all article note) -> category
-      true -> "all"
-    end
+    if category in ~w(all article note), do: category, else: "all"
   end
 
   defp filter_posts_by_category("all"), do: fn _post -> true end
@@ -112,7 +110,7 @@ defmodule SiteWeb.BlogLive.Index do
   defp filter_posts_by_category("note"), do: &(&1.category == :note)
   defp filter_posts_by_category(_), do: fn _post -> true end
 
-  defp filter_categories do
+  defp filter_categories(category_counts) do
     [
       %Category{
         id: "all",
@@ -122,12 +120,14 @@ defmodule SiteWeb.BlogLive.Index do
       %Category{
         id: "article",
         name: "articles",
-        icon: "hero-newspaper"
+        icon: "hero-newspaper",
+        enabled?: Map.get(category_counts, "article", 0) > 0
       },
       %Category{
         id: "note",
         name: "notes",
-        icon: "hero-chat-bubble-bottom-center-text"
+        icon: "hero-chat-bubble-bottom-center-text",
+        enabled?: Map.get(category_counts, "note", 0) > 0
       }
     ]
   end

@@ -1,4 +1,6 @@
 defmodule Site.Travel.Measures do
+  @moduledoc false
+
   alias Site.Geo
 
   @earth_perimeter_km 40_075

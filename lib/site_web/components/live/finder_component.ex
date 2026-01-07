@@ -34,7 +34,7 @@ defmodule SiteWeb.FinderComponent do
 
             <%!-- Commands --%>
             <.finder_commands class={[
-              "max-h-[400px] scroll-py-1 overflow-y-auto focus:outline-none",
+              "max-h-100 scroll-py-1 overflow-y-auto focus:outline-none",
               "divide-y divide-neutral-500/10 dark:divide-white/5"
             ]}>
               <%!-- Theme switcher --%>
@@ -118,7 +118,7 @@ defmodule SiteWeb.FinderComponent do
             <%!-- Content search results --%>
             <div
               id="finder-search-results"
-              class="max-h-[400px] scroll-py-1 overflow-y-auto"
+              class="max-h-100 scroll-py-1 overflow-y-auto"
               data-part="items-container"
               tabindex="-1"
               hidden

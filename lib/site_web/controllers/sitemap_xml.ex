@@ -1,4 +1,6 @@
 defmodule SiteWeb.SitemapXML do
+  @moduledoc false
+
   use SiteWeb, :html
 
   embed_templates "sitemap_xml/*"

@@ -31,7 +31,7 @@ defmodule SiteWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <div class="min-h-screen flex flex-col bg-dots-fade">
+    <div class="min-h-screen flex flex-col">
       <.site_header
         active_link={@active_link}
         current_scope={@current_scope}

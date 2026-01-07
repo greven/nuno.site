@@ -13,7 +13,7 @@ defmodule Site.BlogTest do
       posts = Blog.all_posts()
 
       assert is_list(posts)
-      assert length(posts) > 0
+      refute Enum.empty?(posts)
       assert Enum.all?(posts, fn post -> %Post{} = post end)
     end
 
@@ -200,7 +200,7 @@ defmodule Site.BlogTest do
       Enum.each(grouped, fn {tag, posts} ->
         assert is_binary(tag)
         assert is_list(posts)
-        assert length(posts) > 0
+        refute Enum.empty?(posts)
 
         Enum.each(posts, fn post ->
           assert Enum.any?(post.tags, fn t -> String.downcase(t) == String.downcase(tag) end)

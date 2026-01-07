@@ -291,7 +291,7 @@ defmodule SiteWeb.HomeLive.Components do
           <div class="w-full flex flex-col items-start justify-start gap-2 animate-pulse">
             <div class="flex justify-start gap-1 sm:gap-1.5">
               <.activity_item
-                :for={_ <- 1..52}
+                :for={_ <- 0..52}
                 class="bg-surface-30"
                 title="Loading..."
               />
@@ -330,11 +330,11 @@ defmodule SiteWeb.HomeLive.Components do
 
             <div class="flex items-center gap-1">
               <span class="">Less</span>
-              <div class="size-2 rounded-[2px] bg-surface-40"></div>
-              <div class="size-2 rounded-[2px] bg-primary/20"></div>
-              <div class="size-2 rounded-[2px] bg-primary/40"></div>
-              <div class="size-2 rounded-[2px] bg-primary/60"></div>
-              <div class="size-2 rounded-[2px] bg-primary"></div>
+              <div class={["size-2 rounded-[2px]", level_class(0)]}></div>
+              <div class={["size-2 rounded-[2px]", level_class(1)]}></div>
+              <div class={["size-2 rounded-[2px]", level_class(2)]}></div>
+              <div class={["size-2 rounded-[2px]", level_class(3)]}></div>
+              <div class={["size-2 rounded-[2px]", level_class(4)]}></div>
               <span class="">More</span>
             </div>
           </div>
@@ -407,7 +407,7 @@ defmodule SiteWeb.HomeLive.Components do
       <.async_result assign={@async}>
         <:loading>
           <div class="flex items-center justify-center">
-            <.card class="w-full h-48 md:w-lg lg:w-[564px] lg:h-52 animate-pulse">
+            <.card class="w-full h-48 md:w-lg lg:w-141 lg:h-52 animate-pulse">
               <div class="h-full flex items-start gap-3">
                 <.skeleton height="38px" width="38px" class="rounded-full bg-surface-30" />
 

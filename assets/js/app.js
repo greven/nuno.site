@@ -12,7 +12,7 @@ topbar.config({
   shadowBlur: 4,
 });
 
-window.addEventListener('phx:page-loading-start', (_info) => topbar.show(300));
+window.addEventListener('phx:page-loading-start', (_info) => topbar.show(400));
 window.addEventListener('phx:page-loading-stop', (_info) => topbar.hide());
 
 // View Transition API

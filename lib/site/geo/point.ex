@@ -1,4 +1,6 @@
 defmodule Site.Geo.Point do
+  @moduledoc false
+
   alias __MODULE__
 
   @type t :: %Point{lat: float(), long: float()}

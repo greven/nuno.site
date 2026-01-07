@@ -1,4 +1,6 @@
 defmodule SiteWeb.UserAuth do
+  @moduledoc false
+
   use SiteWeb, :verified_routes
 
   import Plug.Conn

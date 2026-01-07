@@ -7,6 +7,25 @@ defmodule SiteWeb.SiteComponents do
 
   @doc false
 
+  attr :text, :string, default: "Back"
+  attr :rest, :global, include: ~w(href navigate patch method disabled)
+
+  def back_link(assigns) do
+    ~H"""
+    <.link {@rest}>
+      <div class="group inline-flex items-center gap-2 text-sm font-medium text-content-40 underline-offset-3 hover:underline">
+        <.icon
+          name="hero-arrow-left-mini"
+          class="size-4 -mr-0.5 shrink-0 text-content-40/80 transition-transform group-hover:-translate-x-0.5"
+        />
+        <span>{@text}</span>
+      </div>
+    </.link>
+    """
+  end
+
+  @doc false
+
   attr :class, :string, default: nil
   attr :size, :integer, default: 40
   attr :rest, :global, include: ~w(href navigate patch method disabled)

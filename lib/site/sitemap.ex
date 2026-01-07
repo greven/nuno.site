@@ -1,4 +1,6 @@
 defmodule Site.Sitemap do
+  @moduledoc false
+
   def pages do
     [
       {"Home", "/"},

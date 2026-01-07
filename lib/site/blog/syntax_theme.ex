@@ -3,7 +3,6 @@ defmodule Site.Blog.SyntaxTheme do
   Custom Autumn syntax theme.
   """
 
-  # TODO: Create a custom dark theme
   # https://hexdocs.pm/mdex/custom_theme.html
 
   #   def umbra_theme do

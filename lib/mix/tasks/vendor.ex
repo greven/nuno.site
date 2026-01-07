@@ -1,4 +1,6 @@
 defmodule Mix.Tasks.Vendor do
+  @moduledoc false
+
   use Mix.Task
 
   @packages [

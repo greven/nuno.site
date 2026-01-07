@@ -1,4 +1,6 @@
 defmodule Site.Services.Support do
+  @moduledoc false
+
   # def encode_image_hash(image_url) when is_binary(image_url) do
   #   with {:ok, binary} <- fetch_image(image_url),
   #        {:ok, image} <- Image.from_binary(binary),

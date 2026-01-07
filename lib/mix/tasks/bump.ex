@@ -98,32 +98,32 @@ defmodule Mix.Tasks.Bump do
     check_tag_exists!(new_tag, dry_run?)
 
     # Update mix.exs
-    unless dry_run? do
+    if dry_run? do
+      Mix.shell().info("   Would update mix.exs")
+    else
       update_mix_exs(new_version)
       Mix.shell().info("✅ Updated mix.exs")
-    else
-      Mix.shell().info("   Would update mix.exs")
     end
 
     # Create git commit
     commit_message =
       Keyword.get(opts, :message, "chore: bump version to #{new_tag}")
 
-    unless dry_run? do
+    if dry_run? do
+      Mix.shell().info("   Would create commit: #{commit_message}")
+    else
       create_commit(commit_message)
       Mix.shell().info("✅ Created commit: #{commit_message}")
-    else
-      Mix.shell().info("   Would create commit: #{commit_message}")
     end
 
     # Create git tag
     tag_message = "Release #{new_tag}"
 
-    unless dry_run? do
+    if dry_run? do
+      Mix.shell().info("   Would create tag: #{new_tag}")
+    else
       create_tag(new_tag, tag_message)
       Mix.shell().info("✅ Created tag: #{new_tag}")
-    else
-      Mix.shell().info("   Would create tag: #{new_tag}")
     end
 
     # Push to GitHub and create release
@@ -245,10 +245,10 @@ defmodule Mix.Tasks.Bump do
     {branch, 0} = run_cmd("git", ["rev-parse", "--abbrev-ref", "HEAD"])
     branch = String.trim(branch)
 
-    unless branch in ["main", "master"] do
+    if branch not in ["main", "master"] do
       Mix.shell().info("⚠️  Warning: You are on branch '#{branch}', not main/master")
 
-      unless Mix.shell().yes?("   Continue anyway?") do
+      if !Mix.shell().yes?("   Continue anyway?") do
         Mix.raise("Aborted by user")
       end
     end

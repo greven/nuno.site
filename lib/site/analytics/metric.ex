@@ -1,4 +1,6 @@
 defmodule Site.Analytics.Metric do
+  @moduledoc false
+
   use Ecto.Schema
 
   @primary_key false

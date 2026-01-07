@@ -1,4 +1,6 @@
 defmodule Site.Services.Book do
+  @moduledoc false
+
   defstruct [
     :id,
     :title,

@@ -6,6 +6,8 @@ defmodule SiteWeb.BlogLive.Show do
   alias Phoenix.LiveView.AsyncResult
 
   alias Site.Blog
+
+  alias SiteWeb.SiteComponents
   alias SiteWeb.BlogComponents
 
   @impl true
@@ -17,6 +19,8 @@ defmodule SiteWeb.BlogLive.Show do
       active_link={@active_link}
     >
       <Layouts.page_content class="relative post" data-cateogry={@post.category}>
+        <SiteComponents.back_link navigate={~p"/blog"} />
+
         <BlogComponents.post_header post={@post} readers={@readers} page_views={@page_views} />
         <BlogComponents.post_content
           body={@post.body}

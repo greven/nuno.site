@@ -1,4 +1,6 @@
 defmodule Site.Blog.PostLike do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -30,7 +30,7 @@ defmodule SiteWeb.ChangelogLive.Components do
       {@rest}
     >
       <ul class={[
-        "flex flex-row md:flex-col gap-3 md:gap-1.5",
+        "flex flex-row md:flex-col gap-3 md:gap-1.5 p-0.5",
         "max-w-(--content-width) pb-2 overflow-x-auto scrollbar-thin snap-x snap-mandatory scroll-px-4"
       ]}>
         <li :for={%{period: period, count: count} <- @periods}>
@@ -39,7 +39,8 @@ defmodule SiteWeb.ChangelogLive.Components do
               "group w-full flex items-center justify-between gap-3.5 px-3 py-2",
               "rounded-lg corner-squircle text-content-40 transition-colors ease-in-out",
               "hover:text-content-30 hover:bg-surface-20/50 cursor-pointer",
-              "aria-[current]:text-content aria-[current]:bg-surface-30/50"
+              "aria-[current]:text-content aria-[current]:bg-surface-30/50",
+              "focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-dashed focus-visible:outline-primary"
             ]}
             role="link"
             data-period={period_id(period)}
@@ -293,7 +294,7 @@ defmodule SiteWeb.ChangelogLive.Components do
     ~H"""
     <div :for={image <- @embed["images"]} class="mt-4 mb-1">
       <img
-        class="max-h-[400px] rounded-md object-cover"
+        class="max-h-100 rounded-md object-cover"
         src={image["thumb"] || image["fullsize"]}
         alt={image["alt"] || ""}
         loading="lazy"

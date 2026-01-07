@@ -1,3 +1,4 @@
+# credo:disable-for-this-file
 defmodule SiteWeb.Components.Theming do
   @moduledoc """
   Shared theming-related helpers.

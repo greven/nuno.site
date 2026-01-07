@@ -1,8 +1,9 @@
 defmodule SiteWeb.TagsLive.Show do
   use SiteWeb, :live_view
 
-  alias SiteWeb.BlogComponents
   alias Site.Blog
+
+  alias SiteWeb.BlogComponents
 
   @impl true
   def render(assigns) do
