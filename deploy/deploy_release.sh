@@ -176,23 +176,41 @@ sudo systemctl start site
 # Wait a moment for the application to start
 sleep 3
 
-# Check if the application started successfully
+# Check systemd service status
 if sudo systemctl is-active --quiet site; then
-  echo -e "${GREEN}✓ Application started successfully${NC}"
+  echo -e "${GREEN}✓ systemd reports service as active${NC}"
 else
-  echo -e "${RED}✗ Failed to start application${NC}"
-  echo -e "${YELLOW}Checking logs...${NC}"
-  journalctl -u site -n 50 --no-pager
-  exit 1
+  echo -e "${YELLOW}⚠ systemd service check inconclusive${NC}"
+  echo -e "${YELLOW}  Will verify via health endpoint instead${NC}"
 fi
 
 echo -e "${YELLOW}Verifying application health...${NC}"
-if curl -f -s http://localhost:4000/health > /dev/null 2>&1; then
-  echo -e "${GREEN}✓ Application is healthy${NC}"
-else
-  echo -e "${YELLOW}⚠ Health check failed, but application is running${NC}"
-  echo -e "${YELLOW}  This might be expected if the health endpoint is not yet accessible${NC}"
-fi
+
+# Get port from environment or default to 4000
+HEALTH_PORT="${PORT:-4000}"
+MAX_ATTEMPTS=10
+ATTEMPT=1
+
+while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+  if curl -f -s "http://localhost:${HEALTH_PORT}/health" > /dev/null 2>&1; then
+    echo -e "${GREEN}✓ Application is healthy and responding${NC}"
+    break
+  fi
+
+  if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+    echo -e "${RED}✗ Health check failed after ${MAX_ATTEMPTS} attempts (${MAX_ATTEMPTS}×5s = 60s)${NC}"
+    echo -e "${YELLOW}Checking systemd status and logs...${NC}"
+    sudo systemctl status site --no-pager || true
+    echo ""
+    echo -e "${YELLOW}Recent application logs:${NC}"
+    journalctl -u site -n 50 --no-pager
+    exit 1
+  fi
+
+  echo -e "${YELLOW}  Attempt ${ATTEMPT}/${MAX_ATTEMPTS}: waiting for application to be ready...${NC}"
+  sleep 5
+  ATTEMPT=$((ATTEMPT + 1))
+done
 
 # Cleanup
 echo -e "${YELLOW}Cleaning up...${NC}"
