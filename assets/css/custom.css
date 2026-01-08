@@ -227,7 +227,9 @@
     }
 
     /* Highlight current page indicator if no link is hovered */
-    &:has(.navbar-link[aria-current]):not(:has(.navbar-link:is(:hover, :focus-visible)))::before {
+    &:has(.navbar-link[aria-current]):not(
+        :has(.navbar-link:is(:hover, :focus-visible):not([aria-current]))
+      )::before {
       background: var(--color-primary);
       opacity: 1;
     }
