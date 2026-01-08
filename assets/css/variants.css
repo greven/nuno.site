@@ -20,3 +20,13 @@
 @custom-variant windows (&:where([data-os="windows"], [data-os="windows"] *));
 @custom-variant android (&:where([data-os="android"], [data-os="android"] *));
 @custom-variant ios (&:where([data-os="ios"], [data-os="ios"] *));
+
+/* Scroll state snapped container query */
+/* (Remove if added to Tailwind!) */
+@custom-variant @snapped {
+  @supports (container-type: scroll-state) {
+    @container scroll-state(snapped) {
+      @slot;
+    }
+  }
+}
