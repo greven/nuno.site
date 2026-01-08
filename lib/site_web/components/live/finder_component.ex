@@ -277,7 +277,6 @@ defmodule SiteWeb.FinderComponent do
         role="combobox"
         aria-expanded="false"
         aria-controls="options"
-        autofocus
       />
     </div>
     """

@@ -92,6 +92,7 @@ export const Finder = {
   open() {
     this.reset();
     this.finderDialog.showModal();
+    this.finderInput.focus();
   },
 
   close() {
