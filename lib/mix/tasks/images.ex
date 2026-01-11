@@ -20,13 +20,10 @@ defmodule Mix.Tasks.Images do
       mix images --resize "300x200"
       mix images --resize "300"
       mix images --resize "x200"
-      mix images --quality 75
-      mix images --blur
-      mix images --dir "priv/static/images"
+      mix images --quality 75 --blur --thumbnail
       mix images --dir "priv/static/images" --quality 85
       mix images --image "priv/static/images/example.png"
-      mix images --image "priv/static/images/example.png" --resize "300x200" --quality 75 --blur
-      mix images --image "priv/static/images/example.png" --thumbnail
+      mix images --image "priv/static/images/example.png" --quality 75 --blur
   """
 
   @switches [
