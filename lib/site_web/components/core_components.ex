@@ -1363,7 +1363,7 @@ defmodule SiteWeb.CoreComponents do
       if :use_picture is true and no :source slots are provided"
 
   attr :source_ext, :list,
-    default: ~w(webp),
+    default: ~w(avif webp),
     doc: "list of source extensions for the <picture> tag
       if :use_picture is true and no :source slots are provided"
 
@@ -1390,30 +1390,49 @@ defmodule SiteWeb.CoreComponents do
       end)
 
     ~H"""
-    <%= if @use_picture && @source != [] do %>
-      <%= for source <- @source do %>
-        <source type={source.type} srcset={source.srcset} sizes={source.sizes} />
-      <% end %>
-    <% else %>
-      <%= if @use_picture && @source_ext != [] do %>
-        <%= for ext <- @source_ext do %>
-          <source type={"image/#{ext}"} srcset={picture_srcset(@srcset, @src, ext)} sizes={@sizes} />
+    <%= if @use_picture do %>
+      <picture>
+        <%= if @source != [] do %>
+          <%= for source <- @source do %>
+            <source type={source.type} srcset={source.srcset} sizes={source.sizes} />
+          <% end %>
+        <% else %>
+          <%= for ext <- @source_ext do %>
+            <source
+              type={"image/#{ext}"}
+              srcset={picture_srcset(@srcset, @src, ext)}
+              sizes={@sizes}
+            />
+          <% end %>
         <% end %>
-      <% end %>
-    <% end %>
 
-    <img
-      src={@src}
-      width={@width}
-      height={@height}
-      alt={@alt}
-      id={@id}
-      class={["image", @class]}
-      phx-hook="Image"
-      data-src-blur={@blur_path}
-      style="font-size: 0;"
-      {@rest}
-    />
+        <img
+          src={@src}
+          width={@width}
+          height={@height}
+          alt={@alt}
+          id={@id}
+          class={["image", @class]}
+          phx-hook="Image"
+          data-src-blur={@blur_path}
+          style="font-size: 0;"
+          {@rest}
+        />
+      </picture>
+    <% else %>
+      <img
+        src={@src}
+        width={@width}
+        height={@height}
+        alt={@alt}
+        id={@id}
+        class={["image", @class]}
+        phx-hook="Image"
+        data-src-blur={@blur_path}
+        style="font-size: 0;"
+        {@rest}
+      />
+    <% end %>
     """
   end
 

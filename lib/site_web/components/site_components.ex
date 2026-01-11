@@ -61,7 +61,7 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <.image
       use_picture
-      src="/images/pages/avatar.png"
+      src="https://nuno.site/images/avatar.png"
       alt="avatar"
       height={@size}
       width={@size}
@@ -92,7 +92,7 @@ defmodule SiteWeb.SiteComponents do
       >
         <div class="slideshow-container" style={"width:#{@size}px;"}>
           <.slide
-            src="/images/pages/profile.png"
+            src="https://nuno.site/images/profile.png"
             size={@size}
             alt="Nuno's portrait"
             title="It's a me!"
@@ -100,38 +100,38 @@ defmodule SiteWeb.SiteComponents do
             active
           />
           <.slide
-            src="/images/pages/tram.png"
+            src="https://nuno.site/images/tram.png"
             size={@size}
             alt="A picture of a Lisbon's yellow tram"
             title="Lisbon"
           />
           <.slide
-            src="/images/pages/british.png"
+            src="https://nuno.site/images/british.png"
             size={@size}
             alt="Picture of the London's British Museum"
             title="London!"
           />
           <.slide
-            src="/images/pages/leeds.png"
+            src="https://nuno.site/images/leeds.png"
             size={@size}
             alt="Photo of Leeds, UK at night"
             title="Leeds <3"
           />
           <.slide
-            src="/images/pages/corn.png"
+            src="https://nuno.site/images/corn.png"
             size={@size}
             alt="Photo of Leeds' Corn Exchange"
             title="Leeds <3"
           />
           <.slide
-            src="/images/pages/beach.png"
+            src="https://nuno.site/images/beach.png"
             size={@size}
             alt="Picture of Nuno"
             title="It's a me again!"
             contrast
           />
           <.slide
-            src="/images/pages/lisbon.png"
+            src="https://nuno.site/images/lisbon.png"
             size={@size}
             alt="Photo of traditional Lisbon buildings"
             title="Lisbon"

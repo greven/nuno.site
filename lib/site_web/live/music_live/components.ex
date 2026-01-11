@@ -346,7 +346,7 @@ defmodule SiteWeb.MusicLive.Components do
             <li
               :for={{dom_id, item} <- @items}
               class={[
-                "group max-h-[34px] text-base/7 font-light transition-colors border-b border-border/40 overflow-hidden",
+                "group max-h-8.5 text-base/7 font-light transition-colors border-b border-border/40 overflow-hidden",
                 "md:text-lg/8 hover:marker:text-primary"
               ]}
               id={dom_id}

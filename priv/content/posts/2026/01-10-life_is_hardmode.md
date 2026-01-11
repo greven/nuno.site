@@ -4,7 +4,7 @@ tags: ~w(random),
 excerpt: "Lorem ipsum",
 category: :note,
 status: :published,
-image: "hollow_knight.jpeg"
+image: "hollow_knight.jpg"
 }
 
 ---
@@ -16,7 +16,7 @@ So why seek out difficulty in games, especially when they’re supposed to offer
 
 > If life is hard, why make games hard too?
 
-![Hollow Knight](https://nuno.site/images/hollow_knight.jpeg)
+![Hollow Knight](https://nuno.site/images/hollow_knight.jpg)
 
 I do enjoy calm and relaxing games too. But sometimes, unlike many aspects of life you want to feel that,
 getting better, learning from failure and persisting does _pay off_. So for me, enjoying games that are hard,

@@ -48,10 +48,40 @@ defmodule SiteWeb.BlogComponents do
     """
   end
 
+  # TODO: In order to use this we depend on the ability of MDx to use components!
+
+  @doc """
+  Renders an image for an article given an image name (including path) or image URL.
+  If a URL is given, it will use it as is. If an image name/path is given, tt will resolve to a full URL using
+  the site's image CDN base URL. If the site CDN is used, we will use the image optimization parameters.
+  """
+
+  attr :image, :string, required: true
+  attr :size, :integer, default: 1000
+  attr :alt, :string, required: true
+  attr :rest, :global
+
+  def article_image(assigns) do
+    assigns = assign(assigns, :url, post_image_url(assigns.image))
+
+    ~H"""
+    <.image
+      src={@url}
+      alt={@alt}
+      width={@size}
+      height={@size}
+      class={@class}
+      use_picture
+      use_blur
+      {@rest}
+    />
+    """
+  end
+
   @doc false
 
   attr :post, Blog.Post, required: true
-  attr :size, :integer, default: 500
+  attr :size, :integer, default: 250
   attr :rest, :global
 
   def article_thumbnail(assigns) do
@@ -64,36 +94,39 @@ defmodule SiteWeb.BlogComponents do
           "md:w-44 md:aspect-square md:shrink-0"
         ]
       )
-      |> assign(
-        :fallback_image,
-        case assigns.post.category do
-          :article -> "icons.svg"
-          :note -> "note.svg"
-          _ -> "icons.svg"
-        end
-      )
+      |> assign(:image, post_image_url(assigns.post))
 
     ~H"""
-    <%= if @post.image do %>
-      <.image
-        src={@image}
-        alt={@post.title}
-        width={@size}
-        height={@size}
-        class={@base_class}
-        {@rest}
-      />
-    <% else %>
-      <.image
-        src={"/images/posts/#{@fallback_image}"}
-        alt={@post.title}
-        width={@size}
-        height={@size}
-        class={[@base_class, "bg-surface-10/60"]}
-        {@rest}
-      />
-    <% end %>
+    <.image
+      src={@image}
+      alt={@post.title}
+      width={@size}
+      height={@size}
+      class={[@base_class, !@post.image && "bg-surface-10/60"]}
+      {@rest}
+    />
     """
+  end
+
+  defp post_image_url(%Blog.Post{image: nil} = post) do
+    case post.category do
+      :article -> "/images/icons.svg"
+      :note -> "/images/note.svg"
+      _ -> "/images/icons.svg"
+    end
+  end
+
+  defp post_image_url(%Blog.Post{image: image_path}) do
+    post_image_url(image_path)
+  end
+
+  defp post_image_url(image_path) do
+    image_path
+    |> URI.parse()
+    |> case do
+      %URI{host: nil} -> "https://nuno.site/images/#{image_path}"
+      _ -> image_path
+    end
   end
 
   @doc false
