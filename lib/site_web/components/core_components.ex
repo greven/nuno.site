@@ -1411,6 +1411,7 @@ defmodule SiteWeb.CoreComponents do
           width={@width}
           height={@height}
           alt={@alt}
+          title={@alt}
           id={@id}
           class={["image", @class]}
           phx-hook="Image"
@@ -1425,6 +1426,7 @@ defmodule SiteWeb.CoreComponents do
         width={@width}
         height={@height}
         alt={@alt}
+        title={@alt}
         id={@id}
         class={["image", @class]}
         phx-hook="Image"

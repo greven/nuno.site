@@ -48,8 +48,6 @@ defmodule SiteWeb.BlogComponents do
     """
   end
 
-  # TODO: In order to use this we depend on the ability of MDx to use components!
-
   @doc """
   Renders an image for an article given an image name (including path) or image URL.
   If a URL is given, it will use it as is. If an image name/path is given, tt will resolve to a full URL using
@@ -59,22 +57,25 @@ defmodule SiteWeb.BlogComponents do
   attr :image, :string, required: true
   attr :size, :integer, default: 1000
   attr :alt, :string, required: true
-  attr :rest, :global
+  attr :caption, :string, default: nil
+  attr :class, :string, default: nil
 
   def article_image(assigns) do
     assigns = assign(assigns, :url, post_image_url(assigns.image))
 
     ~H"""
-    <.image
-      src={@url}
-      alt={@alt}
-      width={@size}
-      height={@size}
-      class={@class}
-      use_picture
-      use_blur
-      {@rest}
-    />
+    <figure>
+      <.image
+        src={@url}
+        alt={@alt}
+        width={@size}
+        height={@size}
+        class={@class}
+        use_picture
+        use_blur
+      />
+      <figcaption :if={@caption}>{@caption}</figcaption>
+    </figure>
     """
   end
 
@@ -124,7 +125,7 @@ defmodule SiteWeb.BlogComponents do
     image_path
     |> URI.parse()
     |> case do
-      %URI{host: nil} -> "https://nuno.site/images/#{image_path}"
+      %URI{host: nil} -> "https://cdn.nuno.site/images/#{image_path}"
       _ -> image_path
     end
   end
@@ -658,12 +659,14 @@ defmodule SiteWeb.BlogComponents do
   attr :class, :string, default: nil
 
   def post_card_meta(assigns) do
+    assigns = assigns |> assign(:show_reading_time?, assigns.post.category == :article)
+
     ~H"""
     <div class={@class}>
       <div class="flex items-center gap-2 text-content-40">
         <.post_publication_date post={@post} show_icon={false} format={@format} />
-        <span class="font-sans text-sm text-primary">&bull;</span>
-        <.post_reading_time post={@post} show_icon={false} />
+        <span :if={@show_reading_time?} class="font-sans text-sm text-primary">&bull;</span>
+        <.post_reading_time :if={@show_reading_time?} post={@post} show_icon={false} />
       </div>
     </div>
     """

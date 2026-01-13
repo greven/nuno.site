@@ -61,7 +61,7 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <.image
       use_picture
-      src="https://nuno.site/images/avatar.png"
+      src="https://cdn.nuno.site/images/avatar.png"
       alt="avatar"
       height={@size}
       width={@size}
@@ -92,7 +92,7 @@ defmodule SiteWeb.SiteComponents do
       >
         <div class="slideshow-container" style={"width:#{@size}px;"}>
           <.slide
-            src="https://nuno.site/images/profile.png"
+            src="https://cdn.nuno.site/images/profile.png"
             size={@size}
             alt="Nuno's portrait"
             title="It's a me!"
@@ -100,38 +100,38 @@ defmodule SiteWeb.SiteComponents do
             active
           />
           <.slide
-            src="https://nuno.site/images/tram.png"
+            src="https://cdn.nuno.site/images/tram.png"
             size={@size}
             alt="A picture of a Lisbon's yellow tram"
             title="Lisbon"
           />
           <.slide
-            src="https://nuno.site/images/british.png"
+            src="https://cdn.nuno.site/images/british.png"
             size={@size}
             alt="Picture of the London's British Museum"
             title="London!"
           />
           <.slide
-            src="https://nuno.site/images/leeds.png"
+            src="https://cdn.nuno.site/images/leeds.png"
             size={@size}
             alt="Photo of Leeds, UK at night"
             title="Leeds <3"
           />
           <.slide
-            src="https://nuno.site/images/corn.png"
+            src="https://cdn.nuno.site/images/corn.png"
             size={@size}
             alt="Photo of Leeds' Corn Exchange"
             title="Leeds <3"
           />
           <.slide
-            src="https://nuno.site/images/beach.png"
+            src="https://cdn.nuno.site/images/beach.png"
             size={@size}
             alt="Picture of Nuno"
             title="It's a me again!"
             contrast
           />
           <.slide
-            src="https://nuno.site/images/lisbon.png"
+            src="https://cdn.nuno.site/images/lisbon.png"
             size={@size}
             alt="Photo of traditional Lisbon buildings"
             title="Lisbon"

@@ -51,7 +51,7 @@ defmodule SiteWeb.BooksLive.Components do
                   alt={"#{book.title} cover by #{book.author}"}
                   class="object-cover rounded-sm shadow-sm"
                   width={110}
-                  height={220}
+                  height={200}
                   loading="lazy"
                 />
               </a>
