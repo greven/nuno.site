@@ -65,7 +65,7 @@ defmodule Site.MixProject do
       {:error_tracker, "~> 0.7"},
       {:dotenvy, "~> 1.1"},
       {:recase, "~> 0.9"},
-      {:mdex, "~> 0.10"},
+      {:mdex, "~> 0.11"},
       {:geocalc, "~> 0.8"},
       {:owl, "~> 0.6"},
       {:ogi, "~> 0.2"},
