@@ -87,6 +87,8 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  config :site, :cdn, base_url: System.get_env("CDN_BASE_URL") || "https://cdn.nuno.site"
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key

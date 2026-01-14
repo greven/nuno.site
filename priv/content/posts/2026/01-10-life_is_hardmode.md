@@ -9,9 +9,9 @@ image: "hollow_knight.jpg"
 
 ---
 
-<p class="lead">
+<!-- lead -->
+
 I’m often asked why I enjoy playing games that are hard and punishing, like _Elden Ring_, _Hades_, or _Hollow Knight_.
-</p>
 
 ![Hollow Knight](https://cdn.nuno.site/images/hollow_knight.jpg "Hollow Knight is one of my favourite games ever! Remarkable for an indie game made by three people.")
 
