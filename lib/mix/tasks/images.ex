@@ -5,6 +5,7 @@ defmodule Mix.Tasks.Images do
 
   @moduledoc """
   Optimize asset images using `ImageMagick` and `pngquant`.
+  By default it processes all images in `priv/static/images`.
 
   The following options are available:
   - `--dir` - Path to the images directory (default: `priv/static/images`).

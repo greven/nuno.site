@@ -10,6 +10,7 @@ defmodule SiteWeb.BlogComponents do
   alias Site.Blog
   alias Site.Support
 
+  alias SiteWeb.Helpers
   alias SiteWeb.SiteComponents
 
   @doc false
@@ -61,7 +62,7 @@ defmodule SiteWeb.BlogComponents do
   attr :class, :string, default: nil
 
   def article_image(assigns) do
-    assigns = assign(assigns, :url, post_image_url(assigns.image))
+    assigns = assign(assigns, :url, cdn_image_url(assigns.image))
 
     ~H"""
     <figure>
@@ -95,7 +96,7 @@ defmodule SiteWeb.BlogComponents do
           "md:w-44 md:aspect-square md:shrink-0"
         ]
       )
-      |> assign(:image, post_image_url(assigns.post))
+      |> assign(:image, cdn_image_url(assigns.post))
 
     ~H"""
     <.image
@@ -109,7 +110,7 @@ defmodule SiteWeb.BlogComponents do
     """
   end
 
-  defp post_image_url(%Blog.Post{image: nil} = post) do
+  defp cdn_image_url(%Blog.Post{image: nil} = post) do
     case post.category do
       :article -> "/images/icons.svg"
       :note -> "/images/note.svg"
@@ -117,17 +118,8 @@ defmodule SiteWeb.BlogComponents do
     end
   end
 
-  defp post_image_url(%Blog.Post{image: image_path}) do
-    post_image_url(image_path)
-  end
-
-  defp post_image_url(image_path) do
-    image_path
-    |> URI.parse()
-    |> case do
-      %URI{host: nil} -> "https://cdn.nuno.site/images/#{image_path}"
-      _ -> image_path
-    end
+  defp cdn_image_url(%Blog.Post{image: image_path}) do
+    Helpers.cdn_image_url(image_path)
   end
 
   @doc false

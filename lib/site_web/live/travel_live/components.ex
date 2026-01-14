@@ -15,7 +15,7 @@ defmodule SiteWeb.TravelLive.Components do
   def travel_map(assigns) do
     ~H"""
     <div class="sticky top-0 z-10">
-      <div class="breakout py-12 bg-surface bg-dots"></div>
+      <div class="breakout py-12 bg-surface"></div>
       <div
         id="travel-map"
         class="travel-map"

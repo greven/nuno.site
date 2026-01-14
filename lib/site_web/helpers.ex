@@ -30,7 +30,7 @@ defmodule SiteWeb.Helpers do
     |> Phoenix.HTML.raw()
   end
 
-  ## Dates1
+  ## Dates
 
   def format_date(date, format)
 
@@ -38,5 +38,22 @@ defmodule SiteWeb.Helpers do
 
   def format_date(%Date{} = date, format) do
     Calendar.strftime(date, format)
+  end
+
+  ## CDN
+
+  def cdn_image_url(image_path) do
+    cdn_based_url = Application.get_env(:site, :cdn_url, "https://cdn.nuno.site")
+
+    image_path
+    |> URI.parse()
+    |> case do
+      %URI{host: nil} ->
+        path = String.trim_leading(image_path, "/")
+        "#{cdn_based_url}/#{path}"
+
+      _ ->
+        image_path
+    end
   end
 end
