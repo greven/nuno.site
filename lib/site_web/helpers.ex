@@ -43,14 +43,18 @@ defmodule SiteWeb.Helpers do
   ## CDN
 
   def cdn_image_url(image_path) do
-    cdn_based_url = Application.get_env(:site, :cdn_url, "https://cdn.nuno.site")
+    cdn_base_url = Application.get_env(:site, :cdn_url, "https://cdn.nuno.site")
 
     image_path
     |> URI.parse()
     |> case do
       %URI{host: nil} ->
-        path = String.trim_leading(image_path, "/")
-        "#{cdn_based_url}/#{path}"
+        path =
+          image_path
+          |> String.trim_leading("/")
+          |> String.trim_leading("images/")
+
+        "#{cdn_base_url}/images/#{path}"
 
       _ ->
         image_path
