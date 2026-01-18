@@ -153,14 +153,14 @@ defmodule Site.Services do
   @decorate cacheable(
               cache: Site.Cache,
               key: :want_books,
-              opts: [ttl: :timer.hours(12)]
+              opts: [ttl: :timer.hours(24)]
             )
   def get_want_to_read_books, do: Goodreads.get_want_to_read()
 
   @decorate cacheable(
               cache: Site.Cache,
               key: :reading_stats,
-              opts: [ttl: :timer.hours(12)]
+              opts: [ttl: :timer.hours(24)]
             )
   def get_reading_stats, do: Goodreads.get_reading_stats()
 

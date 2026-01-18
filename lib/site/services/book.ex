@@ -5,7 +5,6 @@ defmodule Site.Services.Book do
     :id,
     :title,
     :author,
-    :author_url,
     :url,
     :cover_url,
     :thumbnail_url,
