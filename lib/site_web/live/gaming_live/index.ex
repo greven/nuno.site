@@ -32,7 +32,7 @@ defmodule SiteWeb.GamingLive.Index do
           <Components.recent_games
             async={@recent_games}
             games={@streams.recent_games}
-            class="mt-4 min-h-[242px]"
+            class="mt-4 min-h-60"
           />
         </section>
 

@@ -10,7 +10,7 @@ defmodule Site.Services do
   alias Site.Services.Goodreads
   alias Site.Services.Steam
 
-  @music_albums_limit 25
+  @music_albums_limit 36
   @music_top_artists_limit 50
   @music_top_tracks_limit 50
 

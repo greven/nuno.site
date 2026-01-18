@@ -98,7 +98,7 @@
 
     &[data-error='true'] {
       object-fit: contain;
-      background: var(--color-surface-20) url('/images/image-off.svg') center;
+      background: var(--color-surface-20) url('/images/icons/image-off.svg') center;
       background-repeat: no-repeat;
       background-size: 20%;
       filter: opacity(0.6);

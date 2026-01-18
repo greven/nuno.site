@@ -4,46 +4,97 @@ defmodule Site.Blog.Parser do
   alias Site.Blog.HeaderLink
   # alias Site.Blog.SyntaxTheme
 
-  def parse(_path, contents) do
-    [markdown_header, markdown_body] = String.split(contents, "---\n", trim: true, parts: 2)
-    {%{} = attrs, _} = Code.eval_string(markdown_header, [])
+  @syntax_theme "neovim_dark"
 
-    options = [
-      syntax_highlight: [formatter: {:html_inline, theme: "neovim_dark"}],
+  def parse(_path, contents) do
+    [doc_header, markdown_body] = String.split(contents, "---\n", trim: true, parts: 2)
+
+    {%{} = attrs, _} = Code.eval_string(doc_header, [])
+
+    mdex_options = mdex_options()
+
+    html_body =
+      markdown_body
+      |> MDEx.parse_document!(mdex_options)
+      |> post_parsing()
+      |> MDEx.to_html!(mdex_options)
+      |> post_processing()
+
+    attrs = Map.put(attrs, :headers, parse_headers(html_body))
+
+    # TODO: Phoenix components in markdown is not currently working in MDEx
+    # TODO: Waiting on https://github.com/leandrocp/mdex/issues/290 to be merged
+
+    # We need to eval the template to render any EEx tags
+    # to allow embedding LiveView components in the markdown
+    # env = __ENV__
+
+    # html_body =
+    #   EEx.compile_string(
+    #     html_body,
+    #     engine: Phoenix.LiveView.TagEngine,
+    #     file: env.file,
+    #     line: env.line + 1,
+    #     caller: env,
+    #     indentation: 0,
+    #     source: html_body,
+    #     tag_handler: Phoenix.LiveView.HTMLEngine
+    #   )
+    #   |> Code.eval_quoted([assigns: %{}], env)
+    #   |> then(fn {rendered, _} -> Phoenix.HTML.Safe.to_iodata(rendered) end)
+    #   |> IO.iodata_to_binary()
+
+    {attrs, html_body}
+  end
+
+  # Apply transformations to the markdown AST before converting to HTML
+  defp post_parsing(markdown_body) do
+    markdown_body
+    |> linkify_headers()
+  end
+
+  # Apply transformations to the HTML body
+  defp post_processing(html_body) do
+    html_body
+    |> parse_lead_paragraph()
+  end
+
+  defp mdex_options do
+    [
+      syntax_highlight: [
+        formatter: {:html_inline, theme: @syntax_theme}
+      ],
       render: [
         unsafe: true,
         escape: false,
+        hardbreaks: false,
         github_pre_lang: true,
         full_info_string: true
       ],
       extension: [
-        strikethrough: true,
-        table: true,
-        autolink: false,
-        tasklist: true,
-        superscript: true,
-        footnotes: true,
-        description_lists: true,
-        multiline_block_quotes: true,
         alerts: true,
-        math_dollars: true,
+        autolink: false,
+        description_lists: true,
+        footnotes: true,
+        highlight: true,
         math_code: true,
+        math_dollars: true,
+        multiline_block_quotes: true,
+        phoenix_heex: true,
         shortcodes: true,
-        underline: true,
-        spoiler: true
+        spoiler: true,
+        strikethrough: true,
+        superscript: true,
+        table: true,
+        tasklist: true,
+        underline: true
       ],
-      parse: [relaxed_tasklist_matching: true, relaxed_autolinks: true]
+      parse: [
+        smart: true,
+        relaxed_autolinks: true,
+        relaxed_tasklist_matching: true
+      ]
     ]
-
-    html_body =
-      markdown_body
-      |> MDEx.parse_document!(options)
-      |> linkify_headers()
-      |> MDEx.to_html!(options)
-
-    attrs = Map.put(attrs, :headers, parse_headers(html_body))
-
-    {attrs, html_body}
   end
 
   @doc """
@@ -74,6 +125,16 @@ defmodule Site.Blog.Parser do
       node ->
         node
     end)
+  end
+
+  # Replace the first <p> after an HTML comment marker
+  defp parse_lead_paragraph(html) do
+    html
+    |> String.replace(
+      ~r/<!-- lead -->\s*<p>/,
+      ~s(<p class="lead">),
+      global: false
+    )
   end
 
   @doc """

@@ -392,7 +392,7 @@ defmodule SiteWeb.MusicLive.Components do
           <div class="bg-surface-10 shadow-lg aspect-square">
             <ol
               id={@id}
-              class="grid grid-cols-5 p-1"
+              class="grid grid-cols-6 p-1"
               phx-update={is_struct(@albums, Phoenix.LiveView.LiveStream) && "stream"}
             >
               <li
