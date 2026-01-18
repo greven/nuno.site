@@ -5,6 +5,28 @@ defmodule SiteWeb.SiteComponents do
 
   use SiteWeb, :html
 
+  @doc """
+  Renders a duotone SVG icon using CSS masks given an icon name.
+  All the available icons are Lucide (a small subset) icons located in the static
+  images/icons directory. By default the icon class is `size-6 bg-primary`.
+  """
+
+  attr :name, :string, default: "box"
+  attr :class, :string, default: "size-6 bg-primary"
+
+  def duotone_icon(assigns) do
+    ~H"""
+    <span
+      class={[
+        "flex items-center justify-center mask-contain mask-center mask-no-repeat",
+        @class
+      ]}
+      style={"mask-image:url('/images/icons/#{@name}-duotone.svg');"}
+    >
+    </span>
+    """
+  end
+
   @doc false
 
   attr :text, :string, default: "Back"
