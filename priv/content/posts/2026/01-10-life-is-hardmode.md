@@ -3,7 +3,7 @@ title: "Life is Hardmode",
 tags: ~w(random gaming),
 excerpt: "Why hard games can be more rewarding than easy ones.",
 category: :note,
-status: :published,
+status: :draft,
 image: "hollow_knight.jpg"
 }
 
@@ -29,3 +29,8 @@ is actually about the satisfaction of accomplishment that comes **because** of t
 Thinking about it, I believe this is also why I like programming so much. It's about the challenge and how
 to best solve it. When you finally crack a tough problem or optimize a piece of code, it kinda is like
 defeating a difficult boss in a game.
+
+The game loop of hard games is in fact similar to the process of debugging and refining code.
+Each failure is a lesson and an opportunity to improve.
+
+<!-- TODO: Add picture illustrating both loops -->

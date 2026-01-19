@@ -56,8 +56,8 @@ defmodule SiteWeb.AboutLive.Index do
         <%!-- Skills --%>
         <div class="about-skills">
           <.header tag="h2">
-            <div class="flex items-center gap-2">
-              <.icon name="hero-rectangle-stack" class="size-6.5 text-content-40" />
+            <div class="flex items-center gap-3">
+              <.icon name="hero-rectangle-stack" class="size-8 text-content-40" />
               <span>Skills</span>
             </div>
             <:subtitle>Some of the tech I work with</:subtitle>
@@ -76,8 +76,8 @@ defmodule SiteWeb.AboutLive.Index do
         <%!-- Experience --%>
         <div class="about-experience">
           <.header tag="h2">
-            <div class="flex items-center gap-2">
-              <.icon name="hero-briefcase" class="size-6.5 text-content-40" />
+            <div class="flex items-center gap-3">
+              <.icon name="hero-briefcase" class="size-8 text-content-40" />
               <span>Career</span>
             </div>
             <:subtitle>Recent work experience</:subtitle>

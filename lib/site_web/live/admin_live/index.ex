@@ -5,6 +5,8 @@ defmodule SiteWeb.AdminLive.Index do
   alias Site.SystemInfo
   alias Site.Support
 
+  alias SiteWeb.AdminLive.Components
+
   @refresh_interval 5_000
 
   @impl true
@@ -15,44 +17,51 @@ defmodule SiteWeb.AdminLive.Index do
       current_scope={@current_scope}
       active_link={@active_link}
     >
-      <Layouts.page_content>
-        <.header tag="h2">
-          Admin Dashboard
-          <:actions>
-            <.button variant="light" color="primary" href={~p"/admin/log-out"} method="delete">
-              <.icon name="lucide-log-out" /> Log out
-            </.button>
-          </:actions>
-        </.header>
+      <Layouts.page_content class="flex flex-col gap-16">
+        <section>
+          <.header tag="h2">
+            Admin Dashboard
+            <:actions>
+              <.button variant="light" color="primary" href={~p"/admin/log-out"} method="delete">
+                <.icon name="lucide-log-out" /> Log out
+              </.button>
+            </:actions>
+          </.header>
 
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <.card href={~p"/admin/dashboard"}>
-            <span class="text-content-30">VM Memory</span>
-            <div class="mt-1 flex items-center gap-3 text-3xl font-semibold">
-              <.icon name="lucide-memory-stick" class="size-7 text-content-40" /> {Support.format_number(
-                @memory_usage
-              )} MB
-            </div>
-          </.card>
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <.card href={~p"/admin/dashboard"}>
+              <span class="text-content-30">VM Memory</span>
+              <div class="mt-1 flex items-center gap-3 text-3xl font-semibold">
+                <.icon name="lucide-memory-stick" class="size-7 text-content-40" /> {Support.format_number(
+                  @memory_usage
+                )} MB
+              </div>
+            </.card>
 
-          <.card>
-            <span class="text-content-30">Total Site Views</span>
-            <div class="mt-1 flex items-center gap-3 text-3xl font-semibold">
-              <.icon name="lucide-printer" class="size-7 text-content-40" /> {Support.format_number(
-                @total_site_views
-              )}
-            </div>
-          </.card>
+            <.card>
+              <span class="text-content-30">Total Site Views</span>
+              <div class="mt-1 flex items-center gap-3 text-3xl font-semibold">
+                <.icon name="lucide-printer" class="size-7 text-content-40" /> {Support.format_number(
+                  @total_site_views
+                )}
+              </div>
+            </.card>
 
-          <.card href={~p"/admin/errors"}>
-            <span class="text-content-30">Errors</span>
-            <div class="mt-1 flex items-center gap-3 text-3xl font-semibold">
-              <.icon name="lucide-bug" class="size-7 text-content-40" /> {Support.format_number(
-                @total_errors
-              )}
-            </div>
-          </.card>
-        </div>
+            <.card href={~p"/admin/errors"}>
+              <span class="text-content-30">Errors</span>
+              <div class="mt-1 flex items-center gap-3 text-3xl font-semibold">
+                <.icon name="lucide-bug" class="size-7 text-content-40" /> {Support.format_number(
+                  @total_errors
+                )}
+              </div>
+            </.card>
+          </div>
+        </section>
+
+        <section class="">
+          <.header tag="h2">Blog Posts</.header>
+          <Components.blog_posts posts={@streams.posts} class="mt-8 w-full text-sm" />
+        </section>
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -65,8 +74,11 @@ defmodule SiteWeb.AdminLive.Index do
       Site.Analytics.subscribe()
     end
 
+    posts = Site.Blog.list_posts()
+
     socket =
       socket
+      |> stream(:posts, posts)
       |> assign(:total_site_views, Site.Analytics.total_site_views())
       |> assign(:total_errors, ErrorTracking.total_unresolved_errors_count())
       |> assign(:memory_usage, memory_usage())
