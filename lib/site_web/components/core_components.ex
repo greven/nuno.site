@@ -1355,6 +1355,8 @@ defmodule SiteWeb.CoreComponents do
     default: false,
     doc: "whether to use a blurred placeholder if available"
 
+  attr :title, :string
+
   attr :use_picture, :boolean, default: false
 
   attr :srcset, :string,
@@ -1384,6 +1386,7 @@ defmodule SiteWeb.CoreComponents do
     assigns =
       assigns
       |> assign_new(:id, fn -> Helpers.use_id() end)
+      |> assign_new(:title, fn %{alt: alt} -> alt end)
       |> assign_new(:blur_path, fn
         %{use_blur: true} -> Site.Media.image_blur_exists?(src) && Site.Media.image_blur_path(src)
         _ -> nil
@@ -1410,10 +1413,10 @@ defmodule SiteWeb.CoreComponents do
           src={@src}
           width={@width}
           height={@height}
-          alt={@alt}
-          title={@alt}
-          id={@id}
           class={["image", @class]}
+          title={@title}
+          alt={@alt}
+          id={@id}
           phx-hook="Image"
           data-src-blur={@blur_path}
           style="font-size: 0;"
@@ -1425,10 +1428,10 @@ defmodule SiteWeb.CoreComponents do
         src={@src}
         width={@width}
         height={@height}
-        alt={@alt}
-        title={@alt}
-        id={@id}
         class={["image", @class]}
+        title={@title}
+        alt={@alt}
+        id={@id}
         phx-hook="Image"
         data-src-blur={@blur_path}
         style="font-size: 0;"

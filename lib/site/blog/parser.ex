@@ -22,27 +22,24 @@ defmodule Site.Blog.Parser do
 
     attrs = Map.put(attrs, :headers, parse_headers(html_body))
 
-    # TODO: Phoenix components in markdown is not currently working in MDEx
-    # TODO: Waiting on https://github.com/leandrocp/mdex/issues/290 to be merged
-
     # We need to eval the template to render any EEx tags
     # to allow embedding LiveView components in the markdown
-    # env = __ENV__
+    env = __ENV__
 
-    # html_body =
-    #   EEx.compile_string(
-    #     html_body,
-    #     engine: Phoenix.LiveView.TagEngine,
-    #     file: env.file,
-    #     line: env.line + 1,
-    #     caller: env,
-    #     indentation: 0,
-    #     source: html_body,
-    #     tag_handler: Phoenix.LiveView.HTMLEngine
-    #   )
-    #   |> Code.eval_quoted([assigns: %{}], env)
-    #   |> then(fn {rendered, _} -> Phoenix.HTML.Safe.to_iodata(rendered) end)
-    #   |> IO.iodata_to_binary()
+    html_body =
+      EEx.compile_string(
+        html_body,
+        engine: Phoenix.LiveView.TagEngine,
+        file: env.file,
+        line: env.line + 1,
+        caller: env,
+        indentation: 0,
+        source: html_body,
+        tag_handler: Phoenix.LiveView.HTMLEngine
+      )
+      |> Code.eval_quoted([assigns: %{}], env)
+      |> then(fn {rendered, _} -> Phoenix.HTML.Safe.to_iodata(rendered) end)
+      |> IO.iodata_to_binary()
 
     {attrs, html_body}
   end

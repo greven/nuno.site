@@ -51,7 +51,7 @@ defmodule SiteWeb.BlogComponents do
 
   @doc """
   Renders an image for an article given an image name (including path) or image URL.
-  If a URL is given, it will use it as is. If an image name/path is given, tt will resolve to a full URL using
+  If a URL is given, it will use it as is. If an image name/path is given it will resolve to a full URL using
   the site's image CDN base URL. If the site CDN is used, we will use the image optimization parameters.
   """
 
@@ -72,6 +72,7 @@ defmodule SiteWeb.BlogComponents do
         width={@size}
         height={@size}
         class={@class}
+        title={@caption}
         use_picture
         use_blur
       />
@@ -119,6 +120,10 @@ defmodule SiteWeb.BlogComponents do
   end
 
   defp cdn_image_url(%Blog.Post{image: image_path}) do
+    Helpers.cdn_image_url(image_path)
+  end
+
+  defp cdn_image_url(image_path) when is_binary(image_path) do
     Helpers.cdn_image_url(image_path)
   end
 
