@@ -97,7 +97,7 @@ defmodule SiteWeb.BlogComponents do
           "md:w-44 md:aspect-square md:shrink-0"
         ]
       )
-      |> assign(:image, cdn_image_url(assigns.post))
+      |> assign(:image, article_thumbnail_url(assigns.post))
 
     ~H"""
     <.image
@@ -109,6 +109,14 @@ defmodule SiteWeb.BlogComponents do
       {@rest}
     />
     """
+  end
+
+  defp article_thumbnail_url(%Blog.Post{image: nil} = post), do: cdn_image_url(post)
+
+  defp article_thumbnail_url(%Blog.Post{image: image_path}) do
+    image_path
+    |> Helpers.cdn_image_url()
+    |> String.replace(~r/\.(jpg|jpeg|png|gif)$/, "_thumbnail.jpg")
   end
 
   defp cdn_image_url(%Blog.Post{image: nil} = post) do

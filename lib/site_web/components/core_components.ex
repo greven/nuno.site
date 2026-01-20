@@ -1351,6 +1351,9 @@ defmodule SiteWeb.CoreComponents do
   attr :width, :integer, required: true
   attr :height, :integer, required: true
   # attr :use_loader, :boolean, default: true
+
+  attr :blur_path, :string
+
   attr :use_blur, :boolean,
     default: false,
     doc: "whether to use a blurred placeholder if available"
@@ -1414,12 +1417,12 @@ defmodule SiteWeb.CoreComponents do
           width={@width}
           height={@height}
           class={["image", @class]}
+          style="font-size: 0;"
           title={@title}
           alt={@alt}
           id={@id}
           phx-hook="Image"
           data-src-blur={@blur_path}
-          style="font-size: 0;"
           {@rest}
         />
       </picture>
@@ -1429,12 +1432,12 @@ defmodule SiteWeb.CoreComponents do
         width={@width}
         height={@height}
         class={["image", @class]}
+        style="font-size: 0;"
         title={@title}
         alt={@alt}
         id={@id}
         phx-hook="Image"
         data-src-blur={@blur_path}
-        style="font-size: 0;"
         {@rest}
       />
     <% end %>
