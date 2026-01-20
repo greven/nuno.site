@@ -161,7 +161,7 @@ defmodule Site.Activity do
 
   defp item_weight(%{category: :article}, :posts), do: 5
   defp item_weight(%{category: :note}, :posts), do: 3
-  defp item_weight(_item, :photos), do: 1
+  # defp item_weight(_item, :photos), do: 1
   defp item_weight(_item, :bluesky), do: 1
   defp item_weight(item, :github), do: Map.get(item, :count, 0)
   defp item_weight(_item, _type), do: 0
