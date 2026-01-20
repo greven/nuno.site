@@ -58,9 +58,9 @@ defmodule SiteWeb.AdminLive.Index do
           </div>
         </section>
 
-        <section class="">
+        <section>
           <.header tag="h2">Blog Posts</.header>
-          <Components.blog_posts posts={@streams.posts} class="mt-8 w-full text-sm" />
+          <Components.blog_posts posts={@streams.posts} class="mt-8 text-sm w-full table-auto" />
         </section>
       </Layouts.page_content>
     </Layouts.app>

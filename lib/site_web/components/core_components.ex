@@ -598,6 +598,8 @@ defmodule SiteWeb.CoreComponents do
     default: &Function.identity/1,
     doc: "the function for mapping each row before calling the :col and :action slots"
 
+  attr :padding_class, :any, default: "px-6 py-3", doc: "the padding class for table cells"
+
   slot :col, required: true do
     attr :label, :string
     attr :class, :string
@@ -605,6 +607,14 @@ defmodule SiteWeb.CoreComponents do
   end
 
   slot :action, doc: "the slot for showing user actions in the last table column"
+
+  slot :empty, doc: "the slot to render when there are no rows" do
+    attr :class, :string
+  end
+
+  slot :caption, doc: "the slot for rendering the table caption" do
+    attr :class, :string
+  end
 
   def table(assigns) do
     assigns =
@@ -614,17 +624,33 @@ defmodule SiteWeb.CoreComponents do
 
     ~H"""
     <table class={["border border-surface-30", @class]}>
+      <caption
+        :for={caption <- @caption}
+        class={Map.get(caption, :class, "caption-bottom pt-4 text-xs text-content-40")}
+      >
+        {render_slot(@caption)}
+      </caption>
+
       <thead class="bg-surface-20/90">
         <tr>
-          <th :for={col <- @col} class={["font-medium px-4 py-2", col[:head_class]]}>
+          <th :for={col <- @col} class={["font-medium", @padding_class, col[:head_class]]}>
             {col[:label]}
           </th>
-          <th :if={@action != []} class="font-medium px-4 py-2">
+          <th :if={@action != []} class={["font-medium", @padding_class]}>
             <span class="sr-only">{gettext("Actions")}</span>
           </th>
         </tr>
       </thead>
+
       <tbody id={@id} phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}>
+        <tr :for={empty <- @empty} class="hidden only:table-row" id={"empty-row-#{Helpers.use_id()}"}>
+          <td colspan="100%">
+            <div class={Map.get(empty, :class, "flex items-center justify-center p-6")}>
+              {render_slot(empty)}
+            </div>
+          </td>
+        </tr>
+
         <tr
           :for={row <- @rows}
           id={@row_id && @row_id.(row)}
@@ -633,10 +659,11 @@ defmodule SiteWeb.CoreComponents do
           <td
             :for={col <- @col}
             phx-click={@row_click && @row_click.(row)}
-            class={["px-4 py-2", col[:class], @row_click && "hover:cursor-pointer"]}
+            class={[@padding_class, col[:class], @row_click && "hover:cursor-pointer"]}
           >
             {render_slot(col, @row_item.(row))}
           </td>
+
           <td :if={@action != []} class="w-0 font-semibold">
             <div class="flex gap-4">
               <%= for action <- @action do %>

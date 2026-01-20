@@ -110,6 +110,11 @@ defmodule SiteWeb.BooksLive.Components do
 
         <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
           <.table id="recent-books" class="w-full text-sm" rows={@books}>
+            <:empty>
+              <.icon name="lucide-book-dashed" class="text-content-40/40 mr-3" />
+              <span class="text-lg text-content-40">No books...</span>
+            </:empty>
+
             <:col
               :let={{_id, book}}
               label="Title"

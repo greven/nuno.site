@@ -11,18 +11,21 @@ defmodule SiteWeb.AdminLive.Components do
   def blog_posts(assigns) do
     ~H"""
     <.table id="blog-posts" rows={@posts} {@rest}>
-      <:col :let={{_id, post}} label="Post" class="text-left text-content-10">
+      <:col :let={{_id, post}} label="Post" head_class="text-left" class="text-content-10">
         <.link href={post_path(post)}>{post.title}</.link>
       </:col>
+
+      <:col :let={{_id, post}} label="Views" head_class="text-right" class="w-30 text-right">
+        {post_views(post)}
+      </:col>
+
       <:col
         :let={{_id, post}}
         label="Status"
-        class="capitalize w-20 text-left"
+        head_class="text-left"
+        class="w-30 capitalize"
       >
         <span class={post_status_cx(post)}>{post.status}</span>
-      </:col>
-      <:col :let={{_id, post}} label="Views" class="w-40 text-right">
-        {post_views(post)}
       </:col>
     </.table>
     """

@@ -1,7 +1,6 @@
 defmodule SiteWeb.BooksLive.Index do
   use SiteWeb, :live_view
 
-  alias Site.Services.Goodreads
   alias SiteWeb.BooksLive.Components
 
   @impl true
@@ -51,19 +50,6 @@ defmodule SiteWeb.BooksLive.Index do
             books={@streams.recent_books}
             class="mt-4"
           />
-          <.button
-            disabled={@recent_books.loading}
-            href={"#{Goodreads.profile_url()}?order=d&shelf=read&sort=date_read"}
-            target="_blank"
-            variant="light"
-            class="group w-fit mt-2"
-          >
-            More at Goodreads
-            <.icon
-              name="hero-arrow-up-right-mini"
-              class="-ml-0.5 size-5 text-content-40/60 duration-200 group-hover:text-primary transition-colors"
-            />
-          </.button>
         </section>
       </Layouts.page_content>
     </Layouts.app>
@@ -89,8 +75,7 @@ defmodule SiteWeb.BooksLive.Index do
       end)
       |> stream_async(:recent_books, fn ->
         case Site.Services.get_recent_books() do
-          # {:ok, books} -> {:ok, books}
-          {:ok, books} -> {:ok, []}
+          {:ok, books} -> {:ok, books}
           error -> error
         end
       end)
