@@ -5,6 +5,9 @@ defmodule Site.Activity do
 
   use Nebulex.Caching
 
+  alias Site.Support
+  alias Site.Activity.Update
+
   # Activity sources where each source is defined as a
   # tuple of `{type, {module, function}}`.
   defp sources do
@@ -17,15 +20,12 @@ defmodule Site.Activity do
   end
 
   @doc """
-  List yearly (with the start date of today) activity from all sources grouped by week.
-  The result is a list of updates sorted using the `date` field in ascending order,
-  where each entry is a tuple of `{week_start_date, updates}`.
+  List yearly (with the start date of today) activity from all sources.
   """
-
   @decorate cacheable(
               cache: Site.Cache,
               key: :list_yearly_activity,
-              opts: [ttl: :timer.hours(1)]
+              opts: [ttl: :timer.minutes(30)]
             )
   def list_yearly_activity do
     to_date = Date.utc_today()
@@ -39,41 +39,92 @@ defmodule Site.Activity do
         _ -> []
       end
     end)
+  end
+
+  @doc """
+  List yearly (with the start date of today) activity from all sources
+  grouped by week. See `group_activity_by_month/1`.
+  """
+
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: :list_yearly_activity_grouped_by_week,
+              opts: [ttl: :timer.hours(1)]
+            )
+  def list_yearly_activity_grouped_by_month do
+    list_yearly_activity()
+    |> group_activity_by_month()
+  end
+
+  @doc """
+  Given a list of activity updates grouped by month and subsequent weeks.
+
+  The result is a list of items where each item is a represents a month
+  of updates sorted using the `date` field in ascending order.
+
+  Each list item is a map with the given keys:
+
+  - `ìd` - weekly update id.
+  - `label` - the month label or nil if not labeled.
+  - `group_date` - month grouping date.
+  - `updates` - the list of week update items.
+
+  In turn, each month updates list contains items representing
+  weekly updates with the following shape:
+
+  - `date`- start of week date.
+  - `count` - number of updates.
+  - `weight` - the weighted score of the updates.
+
+  """
+  def group_activity_by_month(activity_list) do
+    activity_list
     |> Enum.group_by(fn
-      %{date: nil} ->
+      %Update{date: nil} ->
         nil
 
-      %{date: %DateTime{} = date} ->
+      %Update{date: %DateTime{} = date} ->
         Date.beginning_of_week(DateTime.to_date(date), :monday)
 
-      %{date: %NaiveDateTime{} = date} ->
+      %Update{date: %NaiveDateTime{} = date} ->
         Date.beginning_of_week(NaiveDateTime.to_date(date), :monday)
 
-      %{date: %Date{} = date} ->
+      %Update{date: %Date{} = date} ->
         Date.beginning_of_week(date, :monday)
     end)
     |> Enum.reject(fn {week_start, _updates} -> is_nil(week_start) end)
-    |> Enum.sort_by(fn {week_start, _updates} -> week_start end, Date)
-    |> Enum.map_reduce(%{}, fn {week_start, updates}, labels ->
-      total_weight = Enum.reduce(updates, 0, fn item, acc -> acc + item.weight end)
+    |> Enum.map(fn {date, updates} ->
+      group_date = Date.new!(date.year, date.month, 1)
+      weight = Enum.reduce(updates, 0, fn item, acc -> acc + item.weight end)
 
       count =
         updates
         |> Enum.reject(fn u -> u.weight == 0 end)
         |> Enum.count()
 
-      label_key = "#{week_start.year}-#{week_start.month}"
-      labels = Map.put_new(labels, label_key, week_start)
-
-      {{week_start, count, total_weight}, labels}
+      {group_date, {date, count, weight}}
     end)
+    |> Enum.group_by(fn {group_date, _} -> group_date end)
+    |> Enum.map(fn {group_date, updates} ->
+      id = to_string(group_date)
+      label = Support.month_abbr(group_date.month)
+
+      updates =
+        Enum.map(updates, fn {_, {date, count, weight}} ->
+          %{date: date, count: count, weight: weight}
+        end)
+        |> Enum.sort_by(fn %{date: date} -> date end, Date)
+
+      %{id: id, group_date: group_date, label: label, updates: updates}
+    end)
+    |> Enum.sort_by(fn %{group_date: date} -> date end, Date)
   end
 
   defp normalize_items(items, type) do
     mapper = mapper(type)
 
     Enum.map(items, fn item ->
-      %{
+      %Update{
         type: type,
         id: extract_field(item, mapper[:id]) || Uniq.UUID.uuid4(),
         date: extract_field(item, mapper[:date]),

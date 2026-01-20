@@ -643,7 +643,7 @@ defmodule SiteWeb.CoreComponents do
       </thead>
 
       <tbody id={@id} phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}>
-        <tr :for={empty <- @empty} class="hidden only:table-row" id={"empty-row-#{Helpers.use_id()}"}>
+        <tr :for={empty <- @empty} class="hidden only:table-row" id={"#{@id}-empty"}>
           <td colspan="100%">
             <div class={Map.get(empty, :class, "flex items-center justify-center p-6")}>
               {render_slot(empty)}

@@ -21,7 +21,7 @@ defmodule SiteWeb.HomeLive.Index do
     >
       <Layouts.page_content class="flex flex-col gap-16">
         <section id="hero">
-          <div class="flex items-center justify-center md:justify-start">
+          <div class="flex items-center justify-center">
             <.link
               navigate="/about"
               id="hello"
@@ -39,7 +39,10 @@ defmodule SiteWeb.HomeLive.Index do
                   >
                     <.icon name="lucide-chevron-right" class="size-5 text-content-40/60 mr-0.5" />
                     <span
-                      class="text-neutral-600 hover:text-neutral-700 transition-colors dark:text-neutral-500 hover:dark:text-neutral-400"
+                      class={[
+                        "text-neutral-600 transition-colors dark:text-neutral-500",
+                        "hover:text-neutral-700 hover:dark:text-neutral-400"
+                      ]}
                       data-text="h3ll0, fr13nd!"
                     >
                     </span>
@@ -50,7 +53,7 @@ defmodule SiteWeb.HomeLive.Index do
             </.link>
           </div>
 
-          <div id="site-intro" class="text-center md:text-left">
+          <div id="site-intro" class="text-center">
             <h1 class="flex flex-col font-headings leading-tight">
               <div class="-ml-1 md:-ml-2 text-6xl md:text-8xl tracking-tight">
                 <span class="text-content-20">I'm</span>
@@ -62,7 +65,7 @@ defmodule SiteWeb.HomeLive.Index do
               A <.link navigate="/about" class="link-subtle">Software Engineer</.link> from Lisbon.
             </div>
 
-            <p class="mt-8 max-w-3xl font-light text-base/7 md:text-xl/8 text-content-30 text-balance">
+            <p class="mt-8 font-light text-base/7 md:text-xl/8 text-content-30 text-balance">
               This site is where I share my knowledge and ideas with others. Here you'll find a
               <.link navigate="/changelog" class="link-subtle">collection</.link>
               of my <.link navigate="/blog?category=blog" class="link-subtle">articles</.link>, <.link
@@ -80,7 +83,7 @@ defmodule SiteWeb.HomeLive.Index do
             <Components.bento_card
               navigate={~p"/blog"}
               class="col-span-1 row-span-1 aspect-square"
-              icon="lucide-file-text"
+              icon="lucide-file-text-duotone"
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>The Blog</:label>
@@ -93,7 +96,7 @@ defmodule SiteWeb.HomeLive.Index do
             <Components.bento_card
               navigate={~p"/music"}
               class="col-span-1 row-span-1 aspect-square"
-              icon="lucide-music"
+              icon="lucide-music-duotone"
             >
               <Components.now_playing track={@track} />
             </Components.bento_card>
@@ -142,11 +145,15 @@ defmodule SiteWeb.HomeLive.Index do
               <Components.async_card_content async_result={@reading_stats}>
                 <:label>Reading</:label>
                 <:result :let={result}>
-                  {result[:currently_reading]} {ngettext(
-                    "Book",
-                    "Books",
-                    result[:currently_reading]
-                  )}
+                  <%= if result[:currently_reading] do %>
+                    {result[:currently_reading]} {ngettext(
+                      "Book",
+                      "Books",
+                      result[:currently_reading]
+                    )}
+                  <% else %>
+                    <span class="text-content-40">Not Available</span>
+                  <% end %>
                 </:result>
               </Components.async_card_content>
             </Components.bento_card>
@@ -154,7 +161,7 @@ defmodule SiteWeb.HomeLive.Index do
             <Components.bento_card
               navigate={~p"/photos"}
               class="col-span-1 row-span-1 aspect-square"
-              icon="lucide-image"
+              icon="lucide-image-duotone"
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>Photography</:label>
@@ -167,7 +174,7 @@ defmodule SiteWeb.HomeLive.Index do
             <Components.bento_card
               navigate={~p"/uses"}
               class="col-span-1 row-span-1 aspect-square"
-              icon="lucide-layers"
+              icon="lucide-layers-duotone"
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>Stack</:label>
@@ -180,7 +187,7 @@ defmodule SiteWeb.HomeLive.Index do
             <Components.bento_card
               navigate={~p"/bookmarks"}
               class="col-span-1 row-span-1 aspect-square"
-              icon="lucide-bookmark"
+              icon="lucide-bookmark-duotone"
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>Bookmarks</:label>
@@ -190,14 +197,21 @@ defmodule SiteWeb.HomeLive.Index do
           </div>
 
           <%!-- Activity Graph --%>
+
           <section>
-            <Components.home_section_title>Activity</Components.home_section_title>
-            <Components.activity_graph activity={@activity} class="mt-2" />
+            <Components.section_title>
+              <:icon name="lucide-activity" class="text-primary" /> Activity
+            </Components.section_title>
+            <Components.activity_bar
+              async={@activity}
+              activity={@streams.activity}
+              class="mt-2 hidden md:flex"
+            />
           </section>
 
           <%!-- Featured Articles --%>
           <section :if={@posts != []}>
-            <Components.home_section_title>Featured Articles</Components.home_section_title>
+            <Components.section_title>Featured Articles</Components.section_title>
             <Components.featured_posts posts={@posts} />
           </section>
         </div>
@@ -222,10 +236,10 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign(:today, Date.utc_today())
       |> assign(:post_count, published_posts_count)
       |> assign(:photos_count, 0)
-      |> assign(:posts, posts)
+      |> stream(:posts, posts)
       |> assign_async(:track, &get_currently_playing/0)
-      |> assign_async(:activity, fn -> {:ok, %{activity: Activity.list_yearly_activity()}} end)
       |> assign_async(:reading_stats, fn -> {:ok, %{reading_stats: get_reading_stats()}} end)
+      |> stream_async(:activity, fn -> {:ok, Activity.list_yearly_activity_grouped_by_month()} end)
 
     {:ok, socket, temporary_assigns: [posts: []]}
   end

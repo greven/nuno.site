@@ -3,7 +3,6 @@ defmodule SiteWeb.HomeLive.Components do
 
   alias Phoenix.LiveView.AsyncResult
 
-  alias Site.Support
   alias SiteWeb.SiteComponents
   alias SiteWeb.BlogComponents
 
@@ -13,12 +12,23 @@ defmodule SiteWeb.HomeLive.Components do
   attr :variant, :atom, values: ~w(default static subtle)a, default: :default
   attr :size, :atom, values: ~w(small medium)a, default: :medium
   attr :content_class, :any, default: "h-full flex flex-col justify-between gap-2"
-  attr :icon_class, :string, default: "size-8 text-primary"
+  attr :icon_class, :string, default: "size-8 text-primary bg-primary shrink-0"
   attr :class, :string, default: nil
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
   def bento_card(assigns) do
+    duotone_icon =
+      cond do
+        assigns[:icon] && String.ends_with?(assigns[:icon], "-duotone") ->
+          assigns[:icon]
+          |> String.trim_leading("lucide-")
+          |> String.trim_trailing("-duotone")
+
+        true ->
+          nil
+      end
+
     assigns =
       assigns
       |> assign_new(:bg, fn ->
@@ -47,6 +57,7 @@ defmodule SiteWeb.HomeLive.Components do
           :subtle -> "hover:shadow-xs"
         end
       end)
+      |> assign(:duotone_icon, duotone_icon)
 
     ~H"""
     <.card
@@ -61,7 +72,11 @@ defmodule SiteWeb.HomeLive.Components do
         "h-full p-1",
         if(@size == :small, do: "flex items-center justify-center gap-3", else: @content_class)
       ]}>
-        <.icon :if={@icon} name={@icon} class={@icon_class} />
+        <%= if @duotone_icon do %>
+          <SiteComponents.duotone_icon name={@duotone_icon} class={@icon_class} />
+        <% else %>
+          <.icon :if={@icon} name={@icon} class={@icon_class} />
+        <% end %>
         {render_slot(@inner_block)}
       </div>
     </.card>
@@ -132,22 +147,31 @@ defmodule SiteWeb.HomeLive.Components do
   @doc false
 
   attr :class, :string, default: nil
-  attr :show_icon, :boolean, default: true
-  attr :show_underline, :boolean, default: true
-  attr :icon, :string, default: "lucide-corner-down-right"
-  attr :icon_cx, :string, default: "size-5 text-primary/80"
-  attr :justify_cx, :string, default: "justify-start"
+  attr :show_underline, :boolean, default: false
+  attr :justify_cx, :string, default: "justify-center"
   attr :title_cx, :string, default: "text-content-10 text-2xl"
   attr :subtitle_cx, :string, default: "font-light text-content-40"
 
   slot :inner_block, required: true
+
+  slot :icon do
+    attr :name, :string
+    attr :class, :string
+  end
+
   slot :subtitle
 
-  def home_section_title(assigns) do
+  def section_title(assigns) do
     ~H"""
     <header class={[@class, "flex flex-col items-center pb-6"]}>
-      <div class={["w-full flex items-center gap-2", @justify_cx]}>
-        <.icon :if={@show_icon} name={@icon} class={@icon_cx} />
+      <div class={["w-full flex items-center gap-3", @justify_cx]}>
+        <div :for={icon <- @icon} class="flex items-center">
+          <%= if icon[:name] do %>
+            <.icon name={icon[:name]} class={icon[:class]} />
+          <% else %>
+            {render_slot(icon)}
+          <% end %>
+        </div>
         <h2 class={[
           @title_cx,
           @show_underline &&
@@ -235,7 +259,7 @@ defmodule SiteWeb.HomeLive.Components do
               is_playing={@is_playing}
               style="--playing-color: var(--color-primary)"
             />
-            <div class="font-medium text-primary">Now Playing</div>
+            <div class="font-medium text-primary line-clamp-1 text-ellipsis">Now Playing</div>
           </div>
         <% @last_played -> %>
           <div class="flex items-center gap-2">
@@ -256,47 +280,30 @@ defmodule SiteWeb.HomeLive.Components do
 
   @doc """
   Activity graph component that displays a GitHub-style contribution
-  graph showing activity over the last 365 days with each bar
-  representing a week.
+  graph showing activity over the last 365 days with each bar representing a week.
   """
 
-  attr :activity, AsyncResult, required: true
+  attr :async, AsyncResult, required: true
+  attr :activity, :list, default: []
   attr :class, :string, default: nil
   attr :rest, :global
 
-  def activity_graph(assigns) do
-    map_activity = fn activity ->
-      {weeks, labels} = activity
-
-      Enum.map(weeks, fn {date, count, weight} ->
-        date_label = Map.get(labels, "#{date.year}-#{date.month}")
-
-        label =
-          if date_label == date,
-            do: Support.month_abbr(date.month),
-            else: nil
-
-        {date, count, weight, label}
-      end)
-    end
-
-    assigns =
-      assigns
-      |> assign(:map_activity, map_activity)
-
+  def activity_bar(assigns) do
     ~H"""
     <div class={@class} {@rest}>
-      <.async_result :let={activity} assign={@activity}>
+      <.async_result :let={_async} assign={@async}>
         <:loading>
-          <div class="w-full flex flex-col items-start justify-start gap-2 animate-pulse">
-            <div class="flex justify-start gap-1 sm:gap-1.5">
-              <.activity_item
-                :for={_ <- 0..52}
-                class="bg-surface-30"
-                title="Loading..."
-              />
+          <div class="w-full">
+            <div class="w-fit mx-auto flex flex-col">
+              <div class="flex justify-center gap-1 sm:gap-1.5">
+                <.activity_item
+                  :for={_ <- 0..52}
+                  class="bg-surface-30"
+                  title="Loading..."
+                />
+              </div>
+              <div class="mt-1.5 text-xs text-content-40/60">Loading...</div>
             </div>
-            <div class="text-xs text-content-40/60">Loading...</div>
           </div>
         </:loading>
 
@@ -308,34 +315,33 @@ defmodule SiteWeb.HomeLive.Components do
           </div>
         </:failed>
 
-        <div class="w-full sm:w-fit">
-          <div class="flex justify-start gap-1 sm:gap-1.5">
-            <.activity_item
-              :for={
-                {{date, count, weight, label}, week} <- Enum.with_index(@map_activity.(activity), 1)
-              }
-              class={activity_level(weight) |> level_class()}
-              title={format_tooltip(date, count)}
-              label={label}
-              week={week}
-            />
-          </div>
-
-          <%!-- Labels --%>
-          <div class="flex items-center justify-between mt-1.5 text-xs text-content-40/80">
-            <div class="hidden md:flex items-center">
-              <.icon name="hero-information-circle-mini" class="size-3 mr-1.5 text-content-40/60" />
-              Activity represents Site and Github updates.
+        <div class="w-full">
+          <div class="w-fit mx-auto flex flex-col">
+            <div id="activity-items" class="flex gap-1 sm:gap-1.5" phx-update="stream">
+              <.activity_month_group
+                :for={{dom_id, %{label: label, updates: month_updates}} <- @activity}
+                activity={month_updates}
+                label={label}
+                id={dom_id}
+              />
             </div>
 
-            <div class="flex items-center gap-1">
-              <span class="">Less</span>
-              <div class={["size-2 rounded-[2px]", level_class(0)]}></div>
-              <div class={["size-2 rounded-[2px]", level_class(1)]}></div>
-              <div class={["size-2 rounded-[2px]", level_class(2)]}></div>
-              <div class={["size-2 rounded-[2px]", level_class(3)]}></div>
-              <div class={["size-2 rounded-[2px]", level_class(4)]}></div>
-              <span class="">More</span>
+            <%!-- Information Labels --%>
+            <div class="flex items-center justify-between mt-1.5 text-xs text-content-40/80">
+              <div class="hidden md:flex items-center">
+                <.icon name="hero-information-circle-mini" class="size-3 mr-1.5 text-content-40/60" />
+                Activity represents Site and Github updates
+              </div>
+
+              <div class="flex items-center gap-1">
+                <span class="">Less</span>
+                <div class={["size-2 rounded-[2px]", level_class(0)]}></div>
+                <div class={["size-2 rounded-[2px]", level_class(1)]}></div>
+                <div class={["size-2 rounded-[2px]", level_class(2)]}></div>
+                <div class={["size-2 rounded-[2px]", level_class(3)]}></div>
+                <div class={["size-2 rounded-[2px]", level_class(4)]}></div>
+                <span class="">More</span>
+              </div>
             </div>
           </div>
         </div>
@@ -346,25 +352,26 @@ defmodule SiteWeb.HomeLive.Components do
 
   @doc false
 
-  attr :class, :any, default: nil
+  attr :id, :string, default: nil
+  attr :class, :string, default: nil
   attr :label, :string, default: nil
-  attr :title, :string, default: nil
-  attr :week, :integer, default: nil
-  attr :rest, :global
+  attr :activity, :list, default: []
 
-  defp activity_item(assigns) do
+  def activity_month_group(assigns) do
     ~H"""
     <div
-      class={[
-        "isolate relative mt-4 w-1 md:w-1.5 h-10 md:h-12 lg:h-14 rounded-[2px]",
-        @class
-      ]}
-      title={@title}
-      {@rest}
+      id={@id}
+      class={["isolate relative flex justify-center gap-1 sm:gap-1.5", @class]}
     >
+      <.activity_item
+        :for={week_update <- @activity}
+        class={activity_level(week_update.weight) |> level_class()}
+        title={format_tooltip(week_update.date, week_update.count)}
+      />
+
       <div
-        :if={@week != 1 && @label}
-        class="hidden sm:block absolute -top-4 left-0 z-10 text-[10px] text-content-40/90"
+        :if={@label && length(@activity) > 2}
+        class="absolute left-0 text-[10px] text-content-40/90"
       >
         {@label}
       </div>
@@ -372,12 +379,21 @@ defmodule SiteWeb.HomeLive.Components do
     """
   end
 
-  defp format_tooltip(date, 0) do
-    "No activity on the week of #{Calendar.strftime(date, "%B %-d, %Y")}"
-  end
+  @doc false
 
-  defp format_tooltip(date, count) do
-    "#{count} #{ngettext("update", "updates", count)} on the week of #{Calendar.strftime(date, "%B %-d, %Y")}"
+  attr :class, :any, default: nil
+  attr :title, :string, default: nil
+  attr :rest, :global
+
+  defp activity_item(assigns) do
+    ~H"""
+    <div
+      class={["mt-4 w-1 h-10 md:h-12 lg:h-14 rounded-[2px]", @class]}
+      title={@title}
+      {@rest}
+    >
+    </div>
+    """
   end
 
   defp level_class(0), do: "bg-surface-40"
@@ -393,6 +409,14 @@ defmodule SiteWeb.HomeLive.Components do
   defp activity_level(weight) when weight in 3..4, do: 2
   defp activity_level(weight) when weight in 5..10, do: 3
   defp activity_level(weight) when weight >= 11, do: 4
+
+  defp format_tooltip(date, 0) do
+    "No activity on the week of #{Calendar.strftime(date, "%B %-d, %Y")}"
+  end
+
+  defp format_tooltip(date, count) do
+    "#{count} #{ngettext("update", "updates", count)} on the week of #{Calendar.strftime(date, "%B %-d, %Y")}"
+  end
 
   @doc false
 
