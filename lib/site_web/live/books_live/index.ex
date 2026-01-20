@@ -22,19 +22,10 @@ defmodule SiteWeb.BooksLive.Index do
 
         <section>
           <.header tag="h3">Currently Reading</.header>
-
-          <Components.reading_list
-            async={@books}
-            books={@streams.books}
-            count={@reading_count}
-            class="mt-8"
-          />
+          <Components.reading_list async={@books} books={@streams.books} class="mt-8" />
         </section>
 
-        <section class={[
-          "flex flex-col gap-4",
-          (!@to_read_count || @to_read_count == 0) && "opacity-50"
-        ]}>
+        <section class={["flex flex-col gap-4", @want_books.loading && "opacity-50"]}>
           <.header tag="h3">
             <.icon
               name="lucide-arrow-down"
@@ -46,7 +37,7 @@ defmodule SiteWeb.BooksLive.Index do
           <Components.want_to_read_list async={@want_books} class="mt-4" books={@streams.want_books} />
         </section>
 
-        <section class={["flex flex-col gap-6", (!@read_count || @read_count == 0) && "opacity-50"]}>
+        <section class={["flex flex-col gap-6", @recent_books.loading && "opacity-50"]}>
           <.header tag="h3">
             <.icon
               name="lucide-arrow-down"
@@ -57,12 +48,11 @@ defmodule SiteWeb.BooksLive.Index do
 
           <Components.read_list
             async={@recent_books}
-            class="mt-4"
             books={@streams.recent_books}
-            count={@read_count}
+            class="mt-4"
           />
           <.button
-            :if={@read_count && @read_count > 0}
+            disabled={@recent_books.loading}
             href={"#{Goodreads.profile_url()}?order=d&shelf=read&sort=date_read"}
             target="_blank"
             variant="light"
@@ -82,42 +72,29 @@ defmodule SiteWeb.BooksLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    currently_reading = Site.Services.get_currently_reading()
-    recent_books = Site.Services.get_recent_books()
-    to_read_books = Site.Services.get_want_to_read_books()
-
     socket =
       socket
       |> assign(:page_title, "Books")
-      |> assign(:reading_count, read_count(currently_reading))
-      |> assign(:read_count, read_count(recent_books))
-      |> assign(:to_read_count, read_count(to_read_books))
       |> stream_async(:books, fn ->
-        case currently_reading do
+        case Site.Services.get_currently_reading() do
           {:ok, books} -> {:ok, Enum.sort_by(books, & &1.started_date, {:desc, Date})}
           error -> error
         end
       end)
-      |> stream_async(:recent_books, fn ->
-        case recent_books do
-          {:ok, books} -> {:ok, books}
+      |> stream_async(:want_books, fn ->
+        case Site.Services.get_want_to_read_books() do
+          {:ok, books} -> {:ok, Enum.take(books, 20)}
           error -> error
         end
       end)
-      |> stream_async(:want_books, fn ->
-        case to_read_books do
-          {:ok, books} -> {:ok, Enum.take(books, 20)}
+      |> stream_async(:recent_books, fn ->
+        case Site.Services.get_recent_books() do
+          # {:ok, books} -> {:ok, books}
+          {:ok, books} -> {:ok, []}
           error -> error
         end
       end)
 
     {:ok, socket}
-  end
-
-  defp read_count(recent_books) do
-    case recent_books do
-      {:ok, books} -> length(books)
-      _error -> nil
-    end
   end
 end
