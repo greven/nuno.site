@@ -61,8 +61,6 @@ defmodule Site.Changelog do
     month_start_today == month_start_date
   end
 
-  defp exclude_period?(_period, _entry_date), do: false
-
   @doc """
   List updates given a date period where the period can be:
   :week, :month, or a specific year as integer (e.g., 2024).
