@@ -342,7 +342,7 @@ defmodule Site.Services.Lastfm do
     params
     |> Enum.reject(fn {k, v} -> is_nil(v) or v == "" or k == "format" end)
     |> Enum.sort()
-    |> Enum.map_join(fn {k, v} -> "#{k}#{v}" end, "")
+    |> Enum.map_join("", fn {k, v} -> "#{k}#{v}" end)
     |> Kernel.<>(shared_secret)
     |> then(&:crypto.hash(:md5, &1))
     |> Base.encode16()
@@ -364,6 +364,8 @@ defmodule Site.Services.Lastfm do
          signature <- generate_api_method_signature(config.shared_secret, params) do
       signed_params = Map.put(params, "api_sig", signature)
       get_request(signed_params)
+    else
+      {:error, reason} -> {:error, reason}
     end
   end
 
