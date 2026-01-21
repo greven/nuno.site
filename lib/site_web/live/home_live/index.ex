@@ -202,11 +202,22 @@ defmodule SiteWeb.HomeLive.Index do
             <Components.section_title>
               <:icon name="lucide-activity" class="text-primary" /> Activity
             </Components.section_title>
-            <Components.activity_bar
-              async={@activity}
-              activity={@streams.activity}
-              class="mt-2 hidden md:flex"
-            />
+
+            <div class="flex flex-col gap-8">
+              <Components.activity_bar_compact
+                id="activity-graph-compact"
+                async={@activity_redux}
+                activity={@streams.activity_redux}
+                class="mt-2 flex md:hidden"
+              />
+
+              <Components.activity_bar
+                id="activity-graph"
+                async={@activity}
+                activity={@streams.activity}
+                class="mt-2 hidden md:flex"
+              />
+            </div>
           </section>
 
           <%!-- Featured Articles --%>
@@ -240,6 +251,9 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign_async(:track, &get_currently_playing/0)
       |> assign_async(:reading_stats, fn -> {:ok, %{reading_stats: get_reading_stats()}} end)
       |> stream_async(:activity, fn -> {:ok, Activity.list_yearly_activity_grouped_by_month()} end)
+      |> stream_async(:activity_redux, fn ->
+        {:ok, Activity.list_yearly_activity_grouped_by_month(), limit: -10}
+      end)
 
     {:ok, socket, temporary_assigns: [posts: []]}
   end

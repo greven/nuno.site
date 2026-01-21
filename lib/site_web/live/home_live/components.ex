@@ -231,6 +231,11 @@ defmodule SiteWeb.HomeLive.Components do
           </div>
         <% else %>
           <%!-- Offline & Not Available --%>
+          <div class="flex items-center gap-4 text-content-40/60">
+            <div class="flex flex-col gap-1">
+              Not Available
+            </div>
+          </div>
         <% end %>
       </.async_result>
     </div>
@@ -283,26 +288,29 @@ defmodule SiteWeb.HomeLive.Components do
   graph showing activity over the last 365 days with each bar representing a week.
   """
 
+  attr :id, :string, required: true
   attr :async, AsyncResult, required: true
   attr :activity, :list, default: []
+  attr :compact, :boolean, default: false
   attr :class, :string, default: nil
   attr :rest, :global
 
   def activity_bar(assigns) do
     ~H"""
-    <div class={@class} {@rest}>
+    <div id={@id} class={@class} {@rest}>
       <.async_result :let={_async} assign={@async}>
         <:loading>
           <div class="w-full">
             <div class="w-fit mx-auto flex flex-col">
               <div class="flex justify-center gap-1 sm:gap-1.5">
                 <.activity_item
-                  :for={_ <- 0..52}
-                  class="bg-surface-30"
+                  :for={index <- 0..52}
+                  class="bg-surface-30 animate-pulse"
+                  style={"animation-delay: calc(#{index + 1} * 50ms);"}
                   title="Loading..."
                 />
               </div>
-              <div class="mt-1.5 text-xs text-content-40/60">Loading...</div>
+              <.activity_label_loading />
             </div>
           </div>
         </:loading>
@@ -317,7 +325,7 @@ defmodule SiteWeb.HomeLive.Components do
 
         <div class="w-full">
           <div class="w-fit mx-auto flex flex-col">
-            <div id="activity-items" class="flex gap-1 sm:gap-1.5" phx-update="stream">
+            <div id={"#{@id}-items"} class="flex gap-1 sm:gap-1.5" phx-update="stream">
               <.activity_month_group
                 :for={{dom_id, %{label: label, updates: month_updates}} <- @activity}
                 activity={month_updates}
@@ -326,23 +334,66 @@ defmodule SiteWeb.HomeLive.Components do
               />
             </div>
 
-            <%!-- Information Labels --%>
-            <div class="flex items-center justify-between mt-1.5 text-xs text-content-40/80">
-              <div class="hidden md:flex items-center">
-                <.icon name="hero-information-circle-mini" class="size-3 mr-1.5 text-content-40/60" />
-                Activity represents Site and Github updates
+            <.activity_label />
+          </div>
+        </div>
+      </.async_result>
+    </div>
+    """
+  end
+
+  @doc """
+  Like `activity_bar/1`, but optimized for mobile.
+  """
+
+  attr :id, :string, required: true
+  attr :async, AsyncResult, required: true
+  attr :activity, :list, default: []
+  attr :compact, :boolean, default: false
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def activity_bar_compact(assigns) do
+    ~H"""
+    <div id={@id} class={@class} {@rest}>
+      <.async_result :let={_async} assign={@async}>
+        <:loading>
+          <div class="w-full">
+            <div class="w-fit mx-auto flex flex-col">
+              <div class="flex justify-center gap-1 sm:gap-1.5">
+                <.activity_item
+                  :for={index <- 0..40}
+                  class="bg-surface-30 animate-pulse"
+                  style={"animation-delay: calc(#{index + 1} * 50ms);"}
+                  title="Loading..."
+                />
               </div>
 
-              <div class="flex items-center gap-1">
-                <span class="">Less</span>
-                <div class={["size-2 rounded-[2px]", level_class(0)]}></div>
-                <div class={["size-2 rounded-[2px]", level_class(1)]}></div>
-                <div class={["size-2 rounded-[2px]", level_class(2)]}></div>
-                <div class={["size-2 rounded-[2px]", level_class(3)]}></div>
-                <div class={["size-2 rounded-[2px]", level_class(4)]}></div>
-                <span class="">More</span>
-              </div>
+              <div class="mt-1.5 text-xs text-content-40/60 animate-pulse">Loading...</div>
             </div>
+          </div>
+        </:loading>
+
+        <:failed :let={_failure}>
+          <div class="flex items-center gap-4 text-content-40/60">
+            <div class="flex flex-col gap-1">
+              Activity not available
+            </div>
+          </div>
+        </:failed>
+
+        <div class="w-full">
+          <div class="w-fit mx-auto flex flex-col">
+            <div id={"#{@id}-items-redux"} class="flex gap-1 sm:gap-1.5" phx-update="stream">
+              <.activity_month_group
+                :for={{dom_id, %{label: label, updates: month_updates}} <- @activity}
+                activity={month_updates}
+                label={label}
+                id={dom_id}
+              />
+            </div>
+
+            <.activity_label />
           </div>
         </div>
       </.async_result>
@@ -392,6 +443,81 @@ defmodule SiteWeb.HomeLive.Components do
       title={@title}
       {@rest}
     >
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def activity_label(assigns) do
+    ~H"""
+    <div
+      class={["flex items-center justify-between mt-1.5 text-xs text-content-40/80", @class]}
+      {@rest}
+    >
+      <div class="hidden md:flex items-center">
+        <.icon name="hero-information-circle-mini" class="size-3 mr-1.5 text-content-40/60" />
+        Site and Github updates
+      </div>
+
+      <div class="flex items-center gap-1">
+        <span class="">Less</span>
+        <div class={["size-2 rounded-[2px]", level_class(0)]}></div>
+        <div class={["size-2 rounded-[2px]", level_class(1)]}></div>
+        <div class={["size-2 rounded-[2px]", level_class(2)]}></div>
+        <div class={["size-2 rounded-[2px]", level_class(3)]}></div>
+        <div class={["size-2 rounded-[2px]", level_class(4)]}></div>
+        <span class="">More</span>
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def activity_label_loading(assigns) do
+    ~H"""
+    <div
+      class={["flex items-center justify-between mt-1.5 text-xs text-content-40/80", @class]}
+      {@rest}
+    >
+      <div class="mt-1.5 text-xs text-content-40/60 animate-pulse">Loading...</div>
+
+      <div class="flex items-center gap-1">
+        <span class="">Less</span>
+        <div
+          class="size-2 rounded-[2px] bg-surface-40 animate-pulse"
+          style="animation-delay: 0ms;"
+        >
+        </div>
+        <div
+          class="size-2 rounded-[2px] bg-surface-40 animate-pulse"
+          style="animation-delay: 75ms;"
+        >
+        </div>
+        <div
+          class="size-2 rounded-[2px] bg-surface-40 animate-pulse"
+          style="animation-delay: 150ms;"
+        >
+        </div>
+        <div
+          class="size-2 rounded-[2px] bg-surface-40 animate-pulse"
+          style="animation-delay: 225ms;"
+        >
+        </div>
+        <div
+          class="size-2 rounded-[2px] bg-surface-40 animate-pulse"
+          style="animation-delay: 300ms;"
+        >
+        </div>
+        <span class="">More</span>
+      </div>
     </div>
     """
   end
