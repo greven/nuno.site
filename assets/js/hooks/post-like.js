@@ -70,7 +70,7 @@ export const PostLike = {
   },
 
   addLikeAnimation() {
-    if (!this.likedIcon) return;
+    if (!this.likedIcon || !this.unlikedIcon) return;
 
     // Add pulse animation
     this.likedIcon.classList.add('animate-pulse');
@@ -82,6 +82,11 @@ export const PostLike = {
 
   // Append a floating heart
   appendFloatingElement() {
+    // Bailout if no like icon
+    if (!this.likedIcon || !this.el) {
+      return;
+    }
+
     const icon = this.likedIcon.cloneNode(true);
     const floatingEl = document.createElement('span');
 
@@ -153,19 +158,19 @@ export const PostLike = {
 
     this.isThrottled = true;
 
-    // Optimistic UI update
+    // Toggle like state
     this.isLiked = !this.isLiked;
+
+    // Optimistic UI update
     this.updateUI();
     this.storeLikeState();
+    this.addLikeAnimation();
 
     // Send to server
     this.pushEvent('toggle-like', {
       post_slug: this.postSlug,
       action: this.isLiked ? 'like' : 'unlike',
     });
-
-    // Add visual feedback
-    this.addLikeAnimation();
 
     // Reset throttle after delay
     setTimeout(() => {
