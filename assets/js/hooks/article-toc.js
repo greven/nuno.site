@@ -37,17 +37,25 @@ export const ArticleTableOfContents = {
 
     this.setupIntersectionObserver();
 
+    // Event handlers
+    this.scrollHandler = this.handleScroll.bind(this);
+    this.resizeHandler = this.handleResize.bind(this);
+    this.keydownHandler = this.handleKeydown.bind(this);
+    this.outsideClickHandler = this.handleOutsideClick.bind(this);
+    this.hideTocHandler = this.hideToc.bind(this);
+    this.navigatorClickHandler = this.handleNavigatorClick.bind(this);
+
     // Setup event listeners
-    window.addEventListener('scroll', this.handleScroll.bind(this), {
+    window.addEventListener('scroll', this.scrollHandler, {
       passive: true,
     });
-    window.addEventListener('resize', this.handleResize.bind(this));
+    window.addEventListener('resize', this.resizeHandler);
 
-    document.addEventListener('keydown', this.handleKeydown.bind(this));
-    document.addEventListener('pointerdown', this.handleOutsideClick.bind(this));
+    document.addEventListener('keydown', this.keydownHandler);
+    document.addEventListener('pointerdown', this.outsideClickHandler);
 
-    this.el.addEventListener('hide-toc', this.hideToc.bind(this));
-    this.navigator.addEventListener('pointerdown', this.handleNavigatorClick.bind(this));
+    this.el.addEventListener('hide-toc', this.hideTocHandler);
+    this.navigator.addEventListener('pointerdown', this.navigatorClickHandler);
   },
 
   updated() {
@@ -68,15 +76,25 @@ export const ArticleTableOfContents = {
     if (this.hideTimeout) clearTimeout(this.hideTimeout);
     if (this.clickThroughTimeout) clearTimeout(this.clickThroughTimeout);
 
-    // Remove all event listeners
-    window.removeEventListener('scroll', this.handleScroll.bind(this));
-    window.removeEventListener('resize', this.handleResize.bind(this));
-
-    document.removeEventListener('keydown', this.handleKeydown.bind(this));
-    document.removeEventListener('pointerdown', this.handleOutsideClick.bind(this));
-
-    this.el.removeEventListener('hide-toc', this.hideToc.bind(this));
-    this.navigator?.removeEventListener('pointerdown', this.handleNavigatorClick.bind(this));
+    // Remove all event listeners using stored references
+    if (this.scrollHandler) {
+      window.removeEventListener('scroll', this.scrollHandler);
+    }
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+    }
+    if (this.keydownHandler) {
+      document.removeEventListener('keydown', this.keydownHandler);
+    }
+    if (this.outsideClickHandler) {
+      document.removeEventListener('pointerdown', this.outsideClickHandler);
+    }
+    if (this.hideTocHandler) {
+      this.el.removeEventListener('hide-toc', this.hideTocHandler);
+    }
+    if (this.navigatorClickHandler && this.navigator) {
+      this.navigator.removeEventListener('pointerdown', this.navigatorClickHandler);
+    }
   },
 
   setupIntersectionObserver() {

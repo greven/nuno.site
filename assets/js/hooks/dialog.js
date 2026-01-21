@@ -3,16 +3,23 @@ export const Dialog = {
     this.isOpen = this.el.hasAttribute('open');
     this.closeOnClickOutside = this.el.hasAttribute('data-close-on-click-outside');
 
-    window.addEventListener('show-dialog', this.show.bind(this));
-    window.addEventListener('hide-dialog', this.hide.bind(this));
-    window.addEventListener('toggle-dialog', this.toggle.bind(this));
+    // Event handlers
+    this.showHandler = this.show.bind(this);
+    this.hideHandler = this.hide.bind(this);
+    this.toggleHandler = this.toggle.bind(this);
+    this.clickOutsideHandler = this.handleClickOutside.bind(this);
+    this.closeHandler = this.handleClose.bind(this);
+
+    window.addEventListener('show-dialog', this.showHandler);
+    window.addEventListener('hide-dialog', this.hideHandler);
+    window.addEventListener('toggle-dialog', this.toggleHandler);
 
     // Close on click outside
-    this.el.addEventListener('click', this.handleClickOutside.bind(this));
+    this.el.addEventListener('click', this.clickOutsideHandler);
 
     // Close events
-    this.el.addEventListener('close', this.handleClose.bind(this));
-    this.el.addEventListener('cancel', this.handleClose.bind(this));
+    this.el.addEventListener('close', this.closeHandler);
+    this.el.addEventListener('cancel', this.closeHandler);
 
     // Oberve open attribute changes (since there's no open event)
     this.openObserver = new MutationObserver((mutations) => {
@@ -26,14 +33,29 @@ export const Dialog = {
     this.openObserver.observe(this.el, { attributes: true });
   },
 
-  destroy() {
+  destroyed() {
     // Remove event listeners
-    window.removeEventListener('show-dialog', this.show.bind(this));
-    window.removeEventListener('hide-dialog', this.hide.bind(this));
-    window.removeEventListener('toggle-dialog', this.toggle.bind(this));
-    this.el.removeEventListener('click', this.handleClickOutside.bind(this));
-    this.el.removeEventListener('close', this.handleClose.bind(this));
-    this.el.removeEventListener('cancel', this.handleClose.bind(this));
+    if (this.showHandler) {
+      window.removeEventListener('show-dialog', this.showHandler);
+    }
+    if (this.hideHandler) {
+      window.removeEventListener('hide-dialog', this.hideHandler);
+    }
+    if (this.toggleHandler) {
+      window.removeEventListener('toggle-dialog', this.toggleHandler);
+    }
+    if (this.clickOutsideHandler) {
+      this.el.removeEventListener('click', this.clickOutsideHandler);
+    }
+    if (this.closeHandler) {
+      this.el.removeEventListener('close', this.closeHandler);
+      this.el.removeEventListener('cancel', this.closeHandler);
+    }
+
+    // Disconnect observer
+    if (this.openObserver) {
+      this.openObserver.disconnect();
+    }
   },
 
   show(event) {

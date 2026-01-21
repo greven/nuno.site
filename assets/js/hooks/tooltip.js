@@ -13,16 +13,24 @@ export const Tooltip = {
       return;
     }
 
-    this.anchor.addEventListener('mouseenter', this.handleEnter.bind(this));
-    this.anchor.addEventListener('mouseleave', this.handleLeave.bind(this));
+    // Event handlers
+    this.enterHandler = this.handleEnter.bind(this);
+    this.leaveHandler = this.handleLeave.bind(this);
+
+    this.anchor.addEventListener('mouseenter', this.enterHandler);
+    this.anchor.addEventListener('mouseleave', this.leaveHandler);
 
     // DEBUG: REMOVE
     // this.tooltip.showPopover();
   },
 
   destroyed() {
-    this.anchor.removeEventListener('mouseenter', this.handleEnter.bind(this));
-    this.anchor.removeEventListener('mouseleave', this.handleLeave.bind(this));
+    if (this.anchor && this.enterHandler) {
+      this.anchor.removeEventListener('mouseenter', this.enterHandler);
+    }
+    if (this.anchor && this.leaveHandler) {
+      this.anchor.removeEventListener('mouseleave', this.leaveHandler);
+    }
   },
 
   handleEnter() {

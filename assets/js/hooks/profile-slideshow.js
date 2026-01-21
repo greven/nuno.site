@@ -11,45 +11,50 @@ export const ProfileSlideshow = {
     this.startProgress();
     this.startSlideshow();
 
+    // Event handlers
+    this.mouseEnterHandler = this.handleMouseEnter.bind(this);
+    this.mouseLeaveHandler = this.handleMouseLeave.bind(this);
+    this.visibilityChangeHandler = this.handleVisibilityChange.bind(this);
+    this.previousClickHandler = this.handlePreviousClick.bind(this);
+    this.nextClickHandler = this.handleNextClick.bind(this);
+
     // Add hover events to pause/resume slideshow
-    this.el.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
-    this.el.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
+    this.el.addEventListener('mouseenter', this.mouseEnterHandler);
+    this.el.addEventListener('mouseleave', this.mouseLeaveHandler);
 
     // Add navigation button event listeners
-    const prevButton = this.el.querySelector('.slideshow-nav-prev');
-    const nextButton = this.el.querySelector('.slideshow-nav-next');
+    this.prevButton = this.el.querySelector('.slideshow-nav-prev');
+    this.nextButton = this.el.querySelector('.slideshow-nav-next');
 
-    if (prevButton) {
-      prevButton.addEventListener('click', this.handlePreviousClick.bind(this));
+    if (this.prevButton) {
+      this.prevButton.addEventListener('click', this.previousClickHandler);
     }
 
-    if (nextButton) {
-      nextButton.addEventListener('click', this.handleNextClick.bind(this));
+    if (this.nextButton) {
+      this.nextButton.addEventListener('click', this.nextClickHandler);
     }
 
     // Pause slideshow when tab is not visible
-    document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
-
-    // Clean up on destroy
-    this.onDestroy = () => {
-      this.stopSlideshow();
-      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-      this.el.removeEventListener('mouseenter', this.handleMouseEnter);
-      this.el.removeEventListener('mouseleave', this.handleMouseLeave);
-
-      if (prevButton) {
-        prevButton.removeEventListener('click', this.handlePreviousClick);
-      }
-
-      if (nextButton) {
-        nextButton.removeEventListener('click', this.handleNextClick);
-      }
-    };
+    document.addEventListener('visibilitychange', this.visibilityChangeHandler);
   },
 
   destroyed() {
-    if (this.onDestroy) {
-      this.onDestroy();
+    this.stopSlideshow();
+
+    if (this.visibilityChangeHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityChangeHandler);
+    }
+    if (this.mouseEnterHandler) {
+      this.el.removeEventListener('mouseenter', this.mouseEnterHandler);
+    }
+    if (this.mouseLeaveHandler) {
+      this.el.removeEventListener('mouseleave', this.mouseLeaveHandler);
+    }
+    if (this.prevButton && this.previousClickHandler) {
+      this.prevButton.removeEventListener('click', this.previousClickHandler);
+    }
+    if (this.nextButton && this.nextClickHandler) {
+      this.nextButton.removeEventListener('click', this.nextClickHandler);
     }
   },
 

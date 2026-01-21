@@ -4,12 +4,15 @@ const THEME_KEY = 'phx:theme';
 
 export const ThemeSwitcher = {
   mounted() {
-    this.el.addEventListener('click', this.handleClick.bind(this));
+    this.clickHandler = this.handleClick.bind(this);
+    this.el.addEventListener('click', this.clickHandler);
     this.svg = this.el.querySelector('svg');
   },
 
   destroyed() {
-    this.el.removeEventListener('click', this.handleClick.bind(this));
+    if (this.clickHandler) {
+      this.el.removeEventListener('click', this.clickHandler);
+    }
   },
 
   toggleTheme() {

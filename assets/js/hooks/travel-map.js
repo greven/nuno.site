@@ -98,14 +98,19 @@ export const TravelMap = {
     this.data = JSON.parse(this.el.getAttribute('data-trips'));
     this.listItems = document.querySelectorAll('[data-item="trip"]');
 
+    // Event handlers
+    this.listItemHoverHandler = this.onListItemHover.bind(this);
+    this.listItemLeaveHandler = this.onListItemLeave.bind(this);
+    this.resetHandler = this.onReset.bind(this);
+
     // List items hover events
     this.listItems.forEach((item) => {
-      item.addEventListener('mouseenter', this.onListItemHover.bind(this));
-      item.addEventListener('mouseleave', this.onListItemLeave.bind(this));
+      item.addEventListener('mouseenter', this.listItemHoverHandler);
+      item.addEventListener('mouseleave', this.listItemLeaveHandler);
     });
 
     // Map reset click event
-    window.addEventListener('phx:map-reset', this.onReset.bind(this));
+    window.addEventListener('phx:map-reset', this.resetHandler);
   },
 
   handleLoadError() {
@@ -123,12 +128,16 @@ export const TravelMap = {
 
   destroyed() {
     // Remove event listeners
-    this.listItems.forEach((item) => {
-      item.removeEventListener('mouseenter', this.onListItemHover.bind(this));
-      item.removeEventListener('mouseleave', this.onListItemLeave.bind(this));
-    });
+    if (this.listItems && this.listItemHoverHandler && this.listItemLeaveHandler) {
+      this.listItems.forEach((item) => {
+        item.removeEventListener('mouseenter', this.listItemHoverHandler);
+        item.removeEventListener('mouseleave', this.listItemLeaveHandler);
+      });
+    }
 
-    this.el.removeEventListener('phx:map-reset', this.onReset.bind(this));
+    if (this.resetHandler) {
+      window.removeEventListener('phx:map-reset', this.resetHandler);
+    }
   },
 
   async initMap() {

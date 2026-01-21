@@ -20,8 +20,9 @@ export const CardStack = {
 
     if (this.showNav) {
       this.navButtons = Array.from(this.el.querySelectorAll("[data-part='nav-button']"));
+      this.navClickHandler = this.handleNavClick.bind(this);
       this.navButtons.forEach((button) => {
-        button.addEventListener('click', this.handleNavClick.bind(this));
+        button.addEventListener('click', this.navClickHandler);
       });
     }
 
@@ -32,6 +33,14 @@ export const CardStack = {
 
     this.updateCards();
     this.updateNavButtons();
+  },
+
+  destroyed() {
+    if (this.showNav && this.navButtons && this.navClickHandler) {
+      this.navButtons.forEach((button) => {
+        button.removeEventListener('click', this.navClickHandler);
+      });
+    }
   },
 
   updateCards() {

@@ -1,15 +1,15 @@
 export const Layout = {
   mounted() {
-    this.updateCSSVariables = this.updateCSSVariables.bind(this);
-    this.handleResize = this.handleResize.bind(this);
+    this.updateCSSVariablesHandler = this.updateCSSVariables.bind(this);
+    this.resizeHandler = this.handleResize.bind(this);
 
     // Initial CSS variables update
-    this.updateCSSVariables();
+    this.updateCSSVariablesHandler();
 
     // Set up ResizeObserver for more efficient resize detection
     if (window.ResizeObserver) {
       this.resizeObserver = new ResizeObserver(() => {
-        this.updateCSSVariables();
+        this.updateCSSVariablesHandler();
       });
 
       // Observe the page content element
@@ -22,22 +22,24 @@ export const Layout = {
       this.resizeObserver.observe(document.body);
     } else {
       // Fallback to window resize event
-      window.addEventListener('resize', this.handleResize);
+      window.addEventListener('resize', this.resizeHandler);
     }
 
     // Also listen for orientation changes on mobile
-    window.addEventListener('orientationchange', this.handleResize);
+    window.addEventListener('orientationchange', this.resizeHandler);
   },
 
   destroyed() {
     // Clean up observers and event listeners
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
-    } else {
-      window.removeEventListener('resize', this.handleResize);
+    } else if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
     }
 
-    window.removeEventListener('orientationchange', this.handleResize);
+    if (this.resizeHandler) {
+      window.removeEventListener('orientationchange', this.resizeHandler);
+    }
   },
 
   updateCSSVariables() {
@@ -70,7 +72,7 @@ export const Layout = {
     // Debounce resize events
     clearTimeout(this.resizeTimeout);
     this.resizeTimeout = setTimeout(() => {
-      this.updateCSSVariables();
+      this.updateCSSVariablesHandler();
     }, 16); // ~60fps
   },
 };

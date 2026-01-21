@@ -11,12 +11,17 @@ export const PostLike = {
 
     this.isLiked = this.getStoredLikeState();
 
+    // Event handlers
+    this.likeToggleHandler = this.handleLikeToggle.bind(this);
+    this.likesUpdatedHandler = this.handleLikesUpdated.bind(this);
+    this.likesErrorHandler = this.handleLikesError.bind(this);
+
     // Add click event listener
-    this.likeButton.addEventListener('click', this.handleLikeToggle.bind(this));
+    this.likeButton.addEventListener('click', this.likeToggleHandler);
 
     // Listen for server responses
-    this.handleEvent('likes-updated', this.handleLikesUpdated.bind(this));
-    this.handleEvent('likes-error', this.handleLikesError.bind(this));
+    this.handleEvent('likes-updated', this.likesUpdatedHandler);
+    this.handleEvent('likes-error', this.likesErrorHandler);
 
     this.updateUI();
   },
@@ -27,8 +32,8 @@ export const PostLike = {
   },
 
   destroyed() {
-    if (this.likeButton) {
-      this.likeButton.removeEventListener('click', this.handleLikeToggle.bind(this));
+    if (this.likeButton && this.likeToggleHandler) {
+      this.likeButton.removeEventListener('click', this.likeToggleHandler);
     }
   },
 
