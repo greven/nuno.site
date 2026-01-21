@@ -337,6 +337,19 @@ defmodule Site.Services.Lastfm do
     end
   end
 
+  # Generate a signature for API requests (https://www.last.fm/api/webauth#_6-sign-your-calls)
+  defp generate_api_method_signature(shared_secret, params) do
+    params
+    |> Enum.reject(fn {k, v} -> is_nil(v) or v == "" or k == "format" end)
+    |> Enum.sort()
+    |> Enum.map_join(fn {k, v} -> "#{k}#{v}" end, "")
+    |> Kernel.<>(shared_secret)
+    |> then(&:crypto.hash(:md5, &1))
+    |> Base.encode16()
+  end
+
+  ## Requests
+
   defp get_request(params) do
     case Req.get(@api_endpoint, params: params) do
       {:ok, %Req.Response{status: 200, body: body}} -> {:ok, body}
@@ -352,17 +365,6 @@ defmodule Site.Services.Lastfm do
       signed_params = Map.put(params, "api_sig", signature)
       get_request(signed_params)
     end
-  end
-
-  # Generate a signature for API requests (https://www.last.fm/api/webauth#_6-sign-your-calls)
-  defp generate_api_method_signature(shared_secret, params) do
-    params
-    |> Enum.reject(fn {k, v} -> is_nil(v) or v == "" or k == "format" end)
-    |> Enum.sort()
-    |> Enum.map_join(fn {k, v} -> "#{k}#{v}" end, "")
-    |> Kernel.<>(shared_secret)
-    |> then(&:crypto.hash(:md5, &1))
-    |> Base.encode16()
   end
 
   ## Credentials
