@@ -122,7 +122,7 @@ defmodule Mix.Tasks.Images do
 
   # Optimize the image using ImageMagick and pngquant
   defp optimize_image(image_path, opts) do
-    quality = Keyword.get(opts, :quality, 80)
+    quality = Keyword.get(opts, :quality, 85)
 
     # Resize the image if the resize option is provided
     maybe_resize(image_path, opts[:resize])
