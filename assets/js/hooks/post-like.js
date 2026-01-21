@@ -80,9 +80,25 @@ export const PostLike = {
     }, 600);
   },
 
-  // Append a floating heart
+  // Create particle effect with multiple floating hearts
   appendFloatingElement() {
     // Bailout if no like icon
+    if (!this.likedIcon || !this.el) {
+      return;
+    }
+
+    // Generate 3-5 particles
+    const particleCount = 3 + Math.floor(Math.random() * 3);
+
+    for (let i = 0; i < particleCount; i++) {
+      setTimeout(() => {
+        this.createParticle(i, particleCount);
+      }, i * 50); // Stagger by 50ms
+    }
+  },
+
+  // Create individual particle
+  createParticle(index, total) {
     if (!this.likedIcon || !this.el) {
       return;
     }
@@ -93,31 +109,47 @@ export const PostLike = {
     floatingEl.appendChild(icon);
     icon.classList.remove('hidden');
 
-    // Set a random x position shift between -8 and +8px
-    const shiftX = Math.floor(Math.random() * 17) - 8;
-    // Scale between 0.25 and 0.75
-    const scale = 0.25 + Math.random() * 0.5;
-    // Random distance between 12 and 32;
-    const distance = 12 + Math.random() * 20;
+    // Calculate angle for radial distribution
+    const baseAngle = -90;
+    const spread = 120;
+    const angleOffset = (spread / (total - 1)) * index - spread / 2;
+    const angle = (baseAngle + angleOffset) * (Math.PI / 180);
+
+    // Add some randomness
+    const angleVariation = (Math.random() - 0.5) * 0.3;
+    const finalAngle = angle + angleVariation;
+
+    // Smaller scale for particles (0.3 to 0.5)
+    const scale = 0.3 + Math.random() * 0.2;
+
+    // Distance particles travel (40-70px)
+    const distance = 40 + Math.random() * 30;
+
+    // Calculate x and y movement based on angle
+    const moveX = Math.cos(finalAngle) * distance;
+    const moveY = Math.sin(finalAngle) * distance;
+
+    // Add slight rotation
+    const rotation = (Math.random() - 0.5) * 30;
 
     floatingEl.style.cssText = `
       position: absolute;
       top: 4px;
-      left: ${12 + shiftX}px;
+      left: 12px;
       opacity: 1;
-      transform: scale(${scale}) translateY(0);
-      transition: opacity 1s ease-out, transform 1s ease-out;
+      transform: scale(${scale}) translate(0, 0) rotate(0deg);
+      transition: opacity 1.5s ease-out, transform 1.2s ease-out;
       pointer-events: none;
       z-index: 10;
     `;
 
     this.el.appendChild(floatingEl);
 
-    // Animation
+    // Trigger animation
     setTimeout(() => {
       floatingEl.style.opacity = '0';
-      floatingEl.style.transform = `translateY(-${distance}px)`;
-      setTimeout(() => floatingEl.remove(), 1000);
+      floatingEl.style.transform = `scale(${scale}) translate(${moveX}px, ${moveY}px) rotate(${rotation}deg)`;
+      setTimeout(() => floatingEl.remove(), 1500);
     }, 10);
   },
 
