@@ -416,7 +416,7 @@ defmodule SiteWeb.HomeLive.Components do
     >
       <.activity_item
         :for={week_update <- @activity}
-        class={activity_level(week_update.weight) |> level_class()}
+        weight={week_update.weight}
         title={format_tooltip(week_update.date, week_update.count)}
       />
 
@@ -433,13 +433,21 @@ defmodule SiteWeb.HomeLive.Components do
   @doc false
 
   attr :class, :any, default: nil
+  attr :weight, :integer, default: nil
   attr :title, :string, default: nil
   attr :rest, :global
 
   defp activity_item(assigns) do
+    assigns = assign(assigns, :level, activity_level(assigns.weight))
+
     ~H"""
     <div
-      class={["mt-4 w-1 h-10 md:h-12 lg:h-14 rounded-[2px]", @class]}
+      class={[
+        "relative mt-4 w-1 h-10 md:h-12 lg:h-14 rounded-[2px] shadow-sm",
+        @level && activity_level_class(@level),
+        @level && activity_border_class(@level),
+        @class
+      ]}
       title={@title}
       {@rest}
     >
@@ -465,11 +473,31 @@ defmodule SiteWeb.HomeLive.Components do
 
       <div class="flex items-center gap-1">
         <span class="">Less</span>
-        <div class={["size-2 rounded-[2px]", level_class(0)]}></div>
-        <div class={["size-2 rounded-[2px]", level_class(1)]}></div>
-        <div class={["size-2 rounded-[2px]", level_class(2)]}></div>
-        <div class={["size-2 rounded-[2px]", level_class(3)]}></div>
-        <div class={["size-2 rounded-[2px]", level_class(4)]}></div>
+        <div class={[
+          "size-2 rounded-[2px] outline outline-neutral-400 dark:outline-neutral-900",
+          activity_level_class(0)
+        ]}>
+        </div>
+        <div class={[
+          "size-2 rounded-[2px] outline outline-red-900/30",
+          activity_level_class(1)
+        ]}>
+        </div>
+        <div class={[
+          "size-2 rounded-[2px] outline outline-red-900/50",
+          activity_level_class(2)
+        ]}>
+        </div>
+        <div class={[
+          "size-2 rounded-[2px] outline outline-red-900/70",
+          activity_level_class(3)
+        ]}>
+        </div>
+        <div class={[
+          "size-2 rounded-[2px] outline outline-red-900/90",
+          activity_level_class(4)
+        ]}>
+        </div>
         <span class="">More</span>
       </div>
     </div>
@@ -487,32 +515,32 @@ defmodule SiteWeb.HomeLive.Components do
       class={["flex items-center justify-between mt-1.5 text-xs text-content-40/80", @class]}
       {@rest}
     >
-      <div class="mt-1.5 text-xs text-content-40/60 animate-pulse">Loading...</div>
+      <div class="text-xs text-content-40/60 animate-pulse">Loading...</div>
 
       <div class="flex items-center gap-1">
         <span class="">Less</span>
         <div
-          class="size-2 rounded-[2px] bg-surface-40 animate-pulse"
+          class="size-2 rounded-[2px] bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
           style="animation-delay: 0ms;"
         >
         </div>
         <div
-          class="size-2 rounded-[2px] bg-surface-40 animate-pulse"
+          class="size-2 rounded-[2px] bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
           style="animation-delay: 75ms;"
         >
         </div>
         <div
-          class="size-2 rounded-[2px] bg-surface-40 animate-pulse"
+          class="size-2 rounded-[2px] bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
           style="animation-delay: 150ms;"
         >
         </div>
         <div
-          class="size-2 rounded-[2px] bg-surface-40 animate-pulse"
+          class="size-2 rounded-[2px] bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
           style="animation-delay: 225ms;"
         >
         </div>
         <div
-          class="size-2 rounded-[2px] bg-surface-40 animate-pulse"
+          class="size-2 rounded-[2px] bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
           style="animation-delay: 300ms;"
         >
         </div>
@@ -522,12 +550,17 @@ defmodule SiteWeb.HomeLive.Components do
     """
   end
 
-  defp level_class(0), do: "bg-surface-40"
-  defp level_class(1), do: "bg-primary/20"
-  defp level_class(2), do: "bg-primary/40"
-  defp level_class(3), do: "bg-primary/60"
-  defp level_class(4), do: "bg-primary"
+  defp activity_level_class(0), do: "bg-surface-40"
+  defp activity_level_class(1), do: "bg-primary/20"
+  defp activity_level_class(2), do: "bg-primary/40"
+  defp activity_level_class(3), do: "bg-primary/60"
+  defp activity_level_class(4), do: "bg-primary"
 
+  defp activity_border_class(0), do: "outline outline-neutral-400 dark:outline-neutral-900"
+  defp activity_border_class(1), do: "outline outline-red-900/30 dark:outline-red-950/30"
+  defp activity_border_class(2), do: "outline outline-red-900/50 dark:outline-red-950/30"
+  defp activity_border_class(3), do: "outline outline-red-900/70 dark:outline-red-950/30"
+  defp activity_border_class(4), do: "outline outline-red-900/90 dark:outline-red-950/30"
   # Determine activity level based on total weight
   defp activity_level(nil), do: 0
   defp activity_level(0), do: 0
