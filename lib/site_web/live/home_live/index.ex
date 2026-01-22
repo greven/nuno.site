@@ -99,20 +99,7 @@ defmodule SiteWeb.HomeLive.Index do
               icon="lucide-music-duotone"
             >
               <Components.now_playing track={@track} />
-
-              <%!-- Artwork --%>
-              <div :if={@track && !@track.loading} class="absolute inset-1 -z-1 rounded-md">
-                <%= if @track.result.now_playing do %>
-                  <.image
-                    src={@track.result.image}
-                    width={1000}
-                    height={1000}
-                    alt="Album artwork"
-                    crossorigin="anonymous"
-                    class="rounded-md object-cover opacity-8"
-                  />
-                <% end %>
-              </div>
+              <Components.now_playing_cover track={@track} />
             </Components.bento_card>
 
             <%!-- Multi-card --%>

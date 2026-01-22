@@ -283,6 +283,34 @@ defmodule SiteWeb.HomeLive.Components do
     """
   end
 
+  @doc false
+
+  attr :track, AsyncResult, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def now_playing_cover(assigns) do
+    ~H"""
+    <div class={["absolute inset-1 -z-1 rounded-md", @class]} {@rest}>
+      <.async_result :let={track} assign={@track}>
+        <.image
+          :if={track.image && track.now_playing}
+          src={@track.result.image}
+          width={1000}
+          height={1000}
+          alt="Album artwork"
+          crossorigin="anonymous"
+          class={[
+            "rounded-md object-cover opacity-10 transition-all duration-400 blur-xs brightness-75",
+            "group-hover/card:brightness-100 group-hover/card:blur-none group-hover/card:opacity-15",
+            @class
+          ]}
+        />
+      </.async_result>
+    </div>
+    """
+  end
+
   @doc """
   Activity graph component that displays a GitHub-style contribution
   graph showing activity over the last 365 days with each bar representing a week.

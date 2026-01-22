@@ -109,7 +109,7 @@ defmodule SiteWeb.BooksLive.Components do
         </:loading>
 
         <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-          <.table id="recent-books" class="w-full text-sm" rows={@books}>
+          <.table id="recent-books" class="w-full text-sm table-auto" rows={@books}>
             <:empty>
               <.icon name="lucide-book-dashed" class="text-content-40/40 mr-3" />
               <span class="text-lg text-content-40">No books...</span>
@@ -130,7 +130,7 @@ defmodule SiteWeb.BooksLive.Components do
                 >
                   <div class="flex flex-col gap-1">
                     <div class="flex gap-0.5 items-center">
-                      <div class="max-w-[32ch] sm:max-w-[48ch] md:max-w-[60ch] lg:max-w-[72ch] truncate">
+                      <div class="max-w-[32ch] sm:max-w-[48ch] md:max-w-[60ch] lg:max-w-[64ch] truncate">
                         {book.title}
                       </div>
                       <.icon
