@@ -286,6 +286,7 @@ defmodule SiteWeb.HomeLive.Components do
   @doc false
 
   attr :track, AsyncResult, required: true
+  attr :show_vignette, :boolean, default: true
   attr :class, :string, default: nil
   attr :rest, :global
 
@@ -293,6 +294,11 @@ defmodule SiteWeb.HomeLive.Components do
     ~H"""
     <div class={["absolute inset-1 -z-1 rounded-md", @class]} {@rest}>
       <.async_result :let={track} assign={@track}>
+        <div
+          :if={@show_vignette}
+          class="absolute inset-0 size-full rounded-md bg-radial from-transparent from-40% to-neutral-900/60 blur-xs"
+        >
+        </div>
         <.image
           :if={track.image && track.now_playing}
           src={@track.result.image}
