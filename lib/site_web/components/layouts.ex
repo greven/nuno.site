@@ -311,7 +311,7 @@ defmodule SiteWeb.Layouts do
       phx-hook="Layout"
       class={[
         "relative mt-8 md:mt-16 lg:mt-32",
-        "[--page-gap:2rem] md:[--page-gap:4rem] lg:[--page-gap:8rem]",
+        "[--page-gap:4rem] md:[--page-gap:6rem] lg:[--page-gap:8rem]",
         @class
       ]}
       {@rest}
