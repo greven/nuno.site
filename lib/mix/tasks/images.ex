@@ -12,7 +12,8 @@ defmodule Mix.Tasks.Images do
   - `--image` - Path to a single image to optimize.
   - `--quality` - Set the quality of the optimized image (default: 80).
   - `--resize` - Resize the image using ImageMagick resize syntax.
-  - `--thumbnail` - Create a thumbnail for the image.
+  - `--thumbnail` - Create thumbnailss for the image.
+  - `--gravity` - Set the gravity for thumbnail creation (default: center).
   - `--blur` - Create a blurred placeholder for the image.
 
   Usage:
@@ -21,8 +22,8 @@ defmodule Mix.Tasks.Images do
       mix images --resize "300x200"
       mix images --resize "300"
       mix images --resize "x200"
-      mix images --quality 75 --blur --thumbnail
       mix images --dir "priv/static/images" --quality 85
+      mix images --dir "tmp/images" --blur --thumbnail
       mix images --image "priv/static/images/example.png"
       mix images --image "priv/static/images/example.png" --quality 75 --blur
   """
@@ -33,6 +34,7 @@ defmodule Mix.Tasks.Images do
     quality: :integer,
     resize: :string,
     thumbnail: :boolean,
+    gravity: :string,
     blur: :boolean
   ]
 
@@ -123,6 +125,7 @@ defmodule Mix.Tasks.Images do
   # Optimize the image using ImageMagick and pngquant
   defp optimize_image(image_path, opts) do
     quality = Keyword.get(opts, :quality, 85)
+    gravity = Keyword.get(opts, :gravity, "center")
 
     # Resize the image if the resize option is provided
     maybe_resize(image_path, opts[:resize])
@@ -147,7 +150,7 @@ defmodule Mix.Tasks.Images do
     end
 
     # Create thumbnail if requested
-    opts[:thumbnail] && create_thumbnail(image_path)
+    opts[:thumbnail] && create_thumbnails(image_path, gravity)
   end
 
   defp maybe_resize(image_path, resize) do
@@ -215,14 +218,44 @@ defmodule Mix.Tasks.Images do
     System.cmd("sh", ["-c", cmd])
   end
 
-  defp create_thumbnail(image_path) do
+  defp create_thumbnails(image_path, gravity) do
+    sizes = ["200x200", "400x200"]
+
+    for size <- sizes do
+      create_thumbnail(image_path, size, gravity)
+    end
+  end
+
+  defp create_thumbnail(image_path, size, gravity) do
+    {width, height} = get_dimensions_from_size(size)
+
+    dimension =
+      cond do
+        width && height -> if width >= height, do: "#{width}w", else: "#{height}h"
+        width -> "#{width}w"
+        height -> "#{height}h"
+        true -> ""
+      end
+
     cmd =
       "magick #{image_path} \
-      -resize 200x200^ \
-      -gravity center \
-      -extent 200x200 \
-      #{Path.rootname(image_path)}_thumbnail#{Path.extname(image_path)}"
+      -quality 80 \
+      -resize #{size}^ \
+      -extent #{size}^ \
+      -gravity #{gravity} \
+      #{Path.rootname(image_path)}_thumbnail_#{dimension}#{Path.extname(image_path)}"
 
     System.cmd("sh", ["-c", cmd])
+  end
+
+  # Helper to parse resize dimensions from string
+  # Examples: "300x200" -> {300, 200}, "300" -> {300, nil}, "x200" -> {nil, 200}
+  defp get_dimensions_from_size(size) do
+    case String.split(size, "x") do
+      [w, h] when w != "" and h != "" -> {String.to_integer(w), String.to_integer(h)}
+      [w, ""] when w != "" -> {String.to_integer(w), nil}
+      ["", h] when h != "" -> {nil, String.to_integer(h)}
+      _ -> {nil, nil}
+    end
   end
 end

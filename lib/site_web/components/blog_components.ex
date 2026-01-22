@@ -97,7 +97,8 @@ defmodule SiteWeb.BlogComponents do
           "md:w-44 md:aspect-square md:shrink-0"
         ]
       )
-      |> assign(:image, article_thumbnail_url(assigns.post))
+      |> assign(:image, article_thumbnail_url(assigns.post, "400w"))
+      |> assign(:image_sm, article_thumbnail_url(assigns.post, "200w"))
 
     ~H"""
     <.image
@@ -106,17 +107,21 @@ defmodule SiteWeb.BlogComponents do
       width={@size}
       height={@size}
       class={[@base_class, !@post.image && "bg-surface-10/60"]}
+      use_picture
       {@rest}
-    />
+    >
+      <:source srcset={@image} type="image/jpeg" media="(max-width: 768px)" />
+      <:source srcset={@image_sm} type="image/jpeg" media="(min-width: 769px)" />
+    </.image>
     """
   end
 
-  defp article_thumbnail_url(%Blog.Post{image: nil} = post), do: cdn_image_url(post)
+  defp article_thumbnail_url(%Blog.Post{image: nil} = post, _size), do: cdn_image_url(post)
 
-  defp article_thumbnail_url(%Blog.Post{image: image_path}) do
+  defp article_thumbnail_url(%Blog.Post{image: image_path}, size) do
     image_path
     |> Helpers.cdn_image_url()
-    |> String.replace(~r/\.(jpg|jpeg|png|gif)$/, "_thumbnail.jpg")
+    |> String.replace(~r/\.(jpg|jpeg|png|gif)$/, "_thumbnail_#{size}.jpg")
   end
 
   defp cdn_image_url(%Blog.Post{image: nil} = post) do

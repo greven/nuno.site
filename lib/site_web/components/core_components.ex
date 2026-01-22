@@ -1406,9 +1406,10 @@ defmodule SiteWeb.CoreComponents do
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(loading crossorigin)
 
-  slot :source do
+  slot :source, doc: "Source elements for the <picture> tag" do
     attr :type, :string
     attr :srcset, :string
+    attr :media, :string
     attr :sizes, :string
   end
 
@@ -1427,7 +1428,12 @@ defmodule SiteWeb.CoreComponents do
       <picture>
         <%= if @source != [] do %>
           <%= for source <- @source do %>
-            <source type={source.type} srcset={source.srcset} sizes={source.sizes} />
+            <source
+              type={source[:type]}
+              srcset={source[:srcset]}
+              sizes={source[:sizes]}
+              media={source[:media]}
+            />
           <% end %>
         <% else %>
           <%= for ext <- @source_ext do %>
