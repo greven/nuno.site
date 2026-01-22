@@ -97,6 +97,7 @@ defmodule Site.Services.Bluesky do
     new_posts =
       stream_author_feed(handle, opts)
       |> Stream.flat_map(& &1)
+      |> Stream.filter(fn %Post{author_handle: author_handle} -> author_handle == handle end)
       |> Stream.take_while(fn %Post{} = post ->
         case post.created_at do
           %DateTime{} = dt -> DateTime.compare(dt, cutoff_date) == :gt
