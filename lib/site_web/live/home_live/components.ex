@@ -296,7 +296,7 @@ defmodule SiteWeb.HomeLive.Components do
       <.async_result :let={track} assign={@track}>
         <div
           :if={@show_vignette}
-          class="absolute inset-0 size-full rounded-md bg-radial from-transparent from-40% to-neutral-900/60 blur-xs"
+          class="absolute inset-0 size-full rounded-md bg-radial from-transparent from-40% to-black/95 blur-xs"
         >
         </div>
         <.image
