@@ -295,7 +295,7 @@ defmodule SiteWeb.HomeLive.Components do
     <div class={["absolute inset-1 -z-1 rounded-md", @class]} {@rest}>
       <.async_result :let={track} assign={@track}>
         <div
-          :if={@show_vignette}
+          :if={@show_vignette && track.now_playing}
           class="absolute inset-0 size-full rounded-md bg-radial from-transparent from-40% to-black/95 blur-xs"
         >
         </div>

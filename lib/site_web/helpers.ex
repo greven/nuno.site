@@ -3,7 +3,9 @@ defmodule SiteWeb.Helpers do
   A collection of helper functions for use throughout the site.
   """
 
-  ## Utils
+  # ------------------------------------------
+  #  Utils
+  # ------------------------------------------
 
   def use_id(prefix \\ "ns") do
     "#{prefix}-"
@@ -22,7 +24,9 @@ defmodule SiteWeb.Helpers do
     Base.url_encode64(binary)
   end
 
-  ## Markdown
+  # ------------------------------------------
+  #  Markdown
+  # ------------------------------------------
 
   def render_markdown!(text) do
     text
@@ -30,7 +34,9 @@ defmodule SiteWeb.Helpers do
     |> Phoenix.HTML.raw()
   end
 
-  ## Dates
+  # ------------------------------------------
+  #  Dates
+  # ------------------------------------------
 
   def format_date(date, format)
 
@@ -40,7 +46,9 @@ defmodule SiteWeb.Helpers do
     Calendar.strftime(date, format)
   end
 
-  ## CDN
+  # ------------------------------------------
+  #  CDN
+  # ------------------------------------------
 
   def cdn_image_url(image_path) do
     cdn_base_url = Application.get_env(:site, :cdn_url, "https://cdn.nuno.site")

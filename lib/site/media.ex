@@ -1,6 +1,6 @@
 defmodule Site.Media do
   @moduledoc """
-  Media-related utilities and functions.
+  Media-related functionality.
   """
 
   @doc """
@@ -50,8 +50,8 @@ defmodule Site.Media do
     |> File.exists?()
   end
 
-  def site_cdn_host do
-    Application.get_env(:site, :cdn_url, "https://cdn.nuno.site")
+  defp site_cdn_host do
+    Site.CDN.config()[:base_url]
     |> URI.new!()
     |> Map.get(:host)
   end

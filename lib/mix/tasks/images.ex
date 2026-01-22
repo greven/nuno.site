@@ -38,7 +38,7 @@ defmodule Mix.Tasks.Images do
     blur: :boolean
   ]
 
-  @ignore_pattern ~r/(_blur|\.webp|\.avif|\.svg)/
+  @ignore_pattern ~r/(_blur|_thumbnail|\.webp|\.avif|\.svg)/
 
   @ignored_files ~w(
     favicon.ico favicon.svg favicon-16x16.png favicon-32x32.png

@@ -57,6 +57,7 @@ defmodule Site.MixProject do
       # Utilities
       {:oban, "~> 2.20"},
       {:uniq, "~> 0.6"},
+      {:req_s3, "~> 0.2"},
       {:nebulex, "~> 2.6"},
       {:decorator, "~> 1.4"},
       {:nimble_csv, "~> 1.3"},
@@ -66,10 +67,10 @@ defmodule Site.MixProject do
       {:dotenvy, "~> 1.1"},
       {:recase, "~> 0.9"},
       {:mdex, "~> 0.11"},
-      {:sweet_xml, "~> 0.7"},
       {:geocalc, "~> 0.8"},
-      {:owl, "~> 0.6"},
+      {:sweet_xml, "~> 0.7"},
       {:ogi, "~> 0.2"},
+      {:owl, "~> 0.6"},
       # {:litestream, "~> 0.3.0"},
       # {:image, "~> 0.62.1"},
 
