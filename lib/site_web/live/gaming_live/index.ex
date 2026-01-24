@@ -12,7 +12,7 @@ defmodule SiteWeb.GamingLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="flex flex-col gap-16">
-        <.header tag="h2">
+        <.header tag="h1">
           Games
           <:subtitle>
             Games I 🎮 on
@@ -21,7 +21,7 @@ defmodule SiteWeb.GamingLive.Index do
         </.header>
 
         <section>
-          <.header tag="h3">
+          <.header tag="h2">
             <.icon name="lucide-history" class="hidden md:inline-block mr-2.5 text-content-40" />
             Recently Played
             <:subtitle>
@@ -37,7 +37,7 @@ defmodule SiteWeb.GamingLive.Index do
         </section>
 
         <section>
-          <.header tag="h3">
+          <.header tag="h2">
             <.icon name="lucide-star" class="hidden md:inline-block mr-2.5 text-content-40" />
             Favourite Games
             <:subtitle>

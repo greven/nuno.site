@@ -10,6 +10,7 @@ defmodule SiteWeb.Layouts do
   use SiteWeb, :html
 
   alias SiteWeb.Components.Theming
+  alias SiteWeb.LiveComponents
 
   embed_templates "layouts/*"
 
@@ -47,7 +48,7 @@ defmodule SiteWeb.Layouts do
 
       <.site_footer />
 
-      <.live_component id="finder" module={SiteWeb.FinderComponent} />
+      <LiveComponents.finder id="finder" />
       <.flash_group flash={@flash} />
     </div>
     """

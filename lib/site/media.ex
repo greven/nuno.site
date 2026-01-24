@@ -32,15 +32,7 @@ defmodule Site.Media do
         true
 
       _ ->
-        case Site.Cache.get({:image_blur_exists, src}) do
-          nil ->
-            exists? = blur_image_exists_in_static?(src)
-            Site.Cache.put({:image_blur_exists, src}, exists?, ttl: :timer.hours(48))
-            exists?
-
-          exists ->
-            exists
-        end
+        get_image_blur_cache(src)
     end
   end
 
@@ -50,7 +42,25 @@ defmodule Site.Media do
     |> File.exists?()
   end
 
-  defp site_cdn_host do
+  defp get_image_blur_cache(src) do
+    if cache_available?() do
+      case Site.Cache.get({:image_blur_exists, src}) do
+        nil ->
+          exists? = blur_image_exists_in_static?(src)
+          Site.Cache.put({:image_blur_exists, src}, exists?, ttl: :timer.hours(48))
+          exists?
+
+        exists ->
+          exists
+      end
+    end
+  end
+
+  defp cache_available? do
+    Code.ensure_loaded?(Site.Cache) and function_exported?(Site.Cache, :get, 1)
+  end
+
+  def site_cdn_host do
     Site.CDN.config()[:base_url]
     |> URI.new!()
     |> Map.get(:host)

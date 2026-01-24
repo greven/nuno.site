@@ -19,7 +19,7 @@ defmodule SiteWeb.AdminLive.Index do
     >
       <Layouts.page_content class="flex flex-col gap-16">
         <section>
-          <.header tag="h2">
+          <.header tag="h1">
             Admin Dashboard
             <:actions>
               <.button variant="light" color="primary" href={~p"/admin/log-out"} method="delete">

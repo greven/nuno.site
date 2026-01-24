@@ -33,7 +33,6 @@ config :site, :spotify,
 config :site, :github, access_token: env!("GITHUB_ACCESS_TOKEN", :string!, "github-access-token")
 
 config :site, :cdn,
-  base_url: env!("CDN_BASE_URL", :string!, "https://cdn.nuno.site"),
   access_key_id: env!("R2_ACCESS_KEY_ID", :string, "access-key-id"),
   secret_access_key: env!("R2_SECRET_ACCESS_KEY", :string, "secret-key"),
   endpoint_url: env!("R2_ENDPOINT_URL", :string!, "public-endpoint-url"),

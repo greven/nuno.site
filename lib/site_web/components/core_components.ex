@@ -44,7 +44,7 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <.dynamic_tag
       tag_name={@tag}
-      class={[@class, @bg, @border, @shadow, @radius, @padding, @focus]}
+      class={["overflow-hidden", @class, @bg, @border, @shadow, @radius, @padding, @focus]}
       {@rest}
     >
       {render_slot(@inner_block)}
@@ -60,7 +60,7 @@ defmodule SiteWeb.CoreComponents do
   attr :bg, :string, default: "bg-surface-10/80 hover:bg-surface-10"
   attr :padding, :string, default: "p-4"
 
-  attr :border, :string, default: "border border-border border-dashed hover:border-solid"
+  attr :border, :string, default: "border border-border hover:border-solid"
 
   attr :radius, :string, default: "rounded-lg"
   attr :shadow, :string, default: "hover:shadow-drop"
@@ -1502,6 +1502,34 @@ defmodule SiteWeb.CoreComponents do
 
     ~H"""
     <time datetime={@date} class={@class}>{@formatted_date}</time>
+    """
+  end
+
+  @doc """
+  Renders an external link with an arrow icon.
+  This is to be used for links that navigate away from the current site.
+  """
+
+  attr :href, :string, required: true
+  attr :class, :any, default: "link"
+  attr :target, :string, default: "_blank"
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def external_link(assigns) do
+    ~H"""
+    <.link
+      href={@href}
+      class={["group inline-flex items-center gap-1", @class]}
+      target={@target}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+      <.icon
+        name="lucide-arrow-up-right"
+        class="size-5 text-content-40/50 group-hover:text-content-40 transition-colors"
+      />
+    </.link>
     """
   end
 

@@ -89,13 +89,12 @@ config :site, Site.Cache,
   gc_interval: :timer.hours(48)
 
 config :site, :site_url, "https://nuno.site"
+config :site, :cdn_url, "https://cdn.nuno.site"
 
 config :site, :seo,
   default_title: "Nuno Moço - Software Engineer",
-  default_description:
-    "Personal website of Nuno Moço, a Software Engineer from Lisbon focused on web technologies.",
-  default_keywords:
-    "software engineer, web development, elixir, phoenix, css, javascript, programming",
+  default_description: "Personal website of Nuno Moço, a Software Engineer from Lisbon.",
+  default_keywords: "web development, elixir, phoenix, css, javascript, software, programming",
   title_suffix: " · Nuno's Site"
 
 # OG Image Generation

@@ -101,7 +101,7 @@ defmodule SiteWeb.OpenGraph do
         #set text(size: 28pt, weight: "medium")
         <%= for tag <- tags do %>#text(fill: rgb("#6b7280"), "\#")#text(fill: rgb("#d1d5db"), "<%= tag %>")#h(20pt)<% end %>
       ]
-      
+
       #v(24pt)
     ]
 

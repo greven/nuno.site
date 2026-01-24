@@ -13,7 +13,7 @@ defmodule SiteWeb.BookmarksLive.Components do
     <section class="flex flex-col gap-4" {@rest}>
       <div class="w-full flex items-center gap-2">
         <.icon name="lucide-corner-down-right" class="size-5 text-primary/80" />
-        <.header :if={@title != []} tag="h3" padding_class="pb-0">
+        <.header :if={@title != []} tag="h2" padding_class="pb-0">
           {render_slot(@title)}
         </.header>
       </div>

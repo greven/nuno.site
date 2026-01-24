@@ -12,7 +12,7 @@ defmodule SiteWeb.BooksLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="flex flex-col gap-16">
-        <.header tag="h2">
+        <.header tag="h1">
           Books
           <:subtitle>
             Books I've read or am currently reading
@@ -20,15 +20,15 @@ defmodule SiteWeb.BooksLive.Index do
         </.header>
 
         <section>
-          <.header tag="h3">Currently Reading</.header>
+          <.header tag="h2">Currently Reading</.header>
           <Components.reading_list async={@books} books={@streams.books} class="mt-8" />
         </section>
 
         <section class={["flex flex-col gap-4", @want_books.loading && "opacity-50"]}>
-          <.header tag="h3">
+          <.header tag="h2">
             <.icon
               name="lucide-arrow-down"
-              class="mr-1.5 size-5 text-content-40"
+              class="mr-1.5 text-content-40"
             /> Want to read
             <:subtitle>Some books I want to read (or re-read), eventually...</:subtitle>
           </.header>
@@ -37,10 +37,10 @@ defmodule SiteWeb.BooksLive.Index do
         </section>
 
         <section class={["flex flex-col gap-6", @recent_books.loading && "opacity-50"]}>
-          <.header tag="h3">
+          <.header tag="h2">
             <.icon
               name="lucide-arrow-down"
-              class="mr-1.5 size-5 text-content-40"
+              class="mr-1.5 text-content-40"
             /> Books Read
             <:subtitle>Latest books I've finished reading</:subtitle>
           </.header>

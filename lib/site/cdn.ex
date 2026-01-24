@@ -48,7 +48,7 @@ defmodule Site.CDN do
   """
   def config do
     %{
-      base_url: Application.get_env(:site, :cdn)[:base_url],
+      base_url: Application.get_env(:site, :cdn_url, "https://cdn.nuno.site"),
       access_key_id: Application.get_env(:site, :cdn)[:access_key_id],
       secret_access_key: Application.get_env(:site, :cdn)[:secret_access_key],
       endpoint_url: Application.get_env(:site, :cdn)[:endpoint_url],
