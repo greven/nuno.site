@@ -1,6 +1,7 @@
 # Nuno's Site
 
-This is my personal website built in [Elixir](https://elixir-lang.org/).
+This is my personal website built with [Elixir](https://elixir-lang.org/)
+and [Phoenix](https://www.phoenixframework.org).
 
 Notable libraries and frameworks used:
 

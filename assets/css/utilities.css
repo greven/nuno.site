@@ -82,11 +82,11 @@
   }
 }
 
+/* Layout */
+
 @utility scroll-header {
   scroll-margin-block: calc(var(--header-height) + 2rem);
 }
-
-/* Layout */
 
 @utility wrapper {
   @apply mx-auto w-screen px-5 not-print:container not-print:max-w-6xl sm:px-20 lg:px-24;
@@ -116,4 +116,25 @@
 
 @utility header-link {
   @apply text-content-40/20 scroll-header group-hover:text-content-40/40 absolute top-0 -left-[1.85em] hidden cursor-pointer bg-transparent capitalize no-underline shadow-none sm:inline-block;
+}
+
+/* Elements */
+
+@utility emphasis {
+  @apply decoration-content-40/40 decoration-dashed underline-offset-3;
+}
+
+@utility list {
+  list-style-type: disc;
+  padding-inline-start: 1.5em;
+
+  & > li {
+    padding-inline-start: 0.45em;
+    margin-block: 0.5em;
+  }
+
+  & > li::marker {
+    font-weight: 400;
+    color: var(--color-primary);
+  }
 }
