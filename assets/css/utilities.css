@@ -89,7 +89,7 @@
 }
 
 @utility wrapper {
-  @apply mx-auto w-screen px-5 not-print:container not-print:max-w-6xl sm:px-20 lg:px-24;
+  @apply mx-auto w-screen px-5 not-print:container not-print:max-w-5xl sm:px-20 lg:px-24;
 }
 
 @utility wide-wrapper {
