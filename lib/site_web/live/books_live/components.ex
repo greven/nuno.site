@@ -130,7 +130,7 @@ defmodule SiteWeb.BooksLive.Components do
                 >
                   <div class="flex flex-col gap-1">
                     <div class="flex gap-0.5 items-center">
-                      <div class="max-w-[32ch] sm:max-w-[48ch] md:max-w-[60ch] lg:max-w-[64ch] truncate">
+                      <div class="max-w-[32ch] sm:max-w-[46ch] md:max-w-[50ch] truncate">
                         {book.title}
                       </div>
                       <.icon

@@ -18,7 +18,7 @@ defmodule SiteWeb.LiveComponents do
   @doc false
 
   attr :id, :string, required: true
-  attr :class, :string, default: "w-full md:w-2xs"
+  attr :class, :string, default: "w-full md:w-3xs"
   attr :href, :string, required: true
   attr :text, :string
   attr :rest, :global, include: ~w(download hreflang referrerpolicy rel target type)

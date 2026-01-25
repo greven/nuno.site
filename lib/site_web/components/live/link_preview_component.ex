@@ -24,7 +24,7 @@ defmodule SiteWeb.LinkPreviewComponent do
       >
         <.async_result :let={preview} assign={@preview}>
           <:loading>
-            <div class="flex items-center justify-center w-full h-48 bg-surface-20">
+            <div class="flex items-center justify-center w-full h-44 bg-surface-20">
               <.icon
                 name="lucide-loader-circle"
                 class="size-4/6 max-w-10 max-h-10 bg-surface-30 animate-spin"
@@ -36,10 +36,10 @@ defmodule SiteWeb.LinkPreviewComponent do
 
           <.image
             src={preview.image || "/images/link-placeholder.png"}
-            width={318}
-            height={192}
+            width={254}
+            height={176}
             alt={preview.title || "Link preview image"}
-            class="w-full h-48 object-cover"
+            class="w-full h-44 object-cover"
           />
 
           <.link_body link={@href} text={@text || preview.title || @href} />
