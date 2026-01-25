@@ -131,29 +131,29 @@
 /* View Transitions */
 
 /* Basic view transition styles */
-::view-transition-group(root) {
+/* ::view-transition-group(root) {
   animation-duration: 250ms;
-}
+} */
 
 /* Disable animations when theme is transitioning */
-:root[data-theme-transitioning]::view-transition-group(root) {
+/* :root[data-theme-transitioning]::view-transition-group(root) {
   animation: none;
-}
+} */
 
 /* Exclude Finder from page view transitions */
-:active-view-transition-type(page) #finder-dialog {
+/* :active-view-transition-type(page) #finder-dialog {
   view-transition-name: finder-dialog;
-}
+} */
 
-::view-transition-group(finder-dialog),
+/* ::view-transition-group(finder-dialog),
 ::view-transition-old(finder-dialog),
 ::view-transition-new(finder-dialog) {
   animation: none;
-}
+} */
 
-@media screen and (prefers-reduced-motion: no-preference) {
+/* @media screen and (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
     types: page;
   }
-}
+} */

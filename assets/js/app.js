@@ -37,30 +37,21 @@ const liveSocket = new LiveSocket('/live', Socket, {
   params: { _csrf_token: csrfToken },
   hooks: hooks,
   dom: {
-    onDocumentPatch(start) {
-      // View Transitions integration
-      if (typeof document.startViewTransition === 'function') {
-        const update = () => {
-          transitionEls.forEach((el) => (el.style.viewTransitionName = ''));
-          transitionEls = [];
-          transitionTypes = [];
+    // Note: Disable View Transitions for now since there are still some issues with it.
+    // onDocumentPatch(start) {
+    //   // View Transitions integration
+    //   if (typeof document.startViewTransition === 'function') {
+    //     const update = () => {
+    //       transitionEls.forEach((el) => (el.style.viewTransitionName = ''));
+    //       transitionEls = [];
+    //       transitionTypes = [];
 
-          start();
-        };
-
-        // Browsers that don't support callbackOptions (Firefox 144...)
-        try {
-          document.startViewTransition({
-            update: update,
-            types: transitionTypes.length ? transitionTypes : ['same-document'],
-          });
-        } catch (e) {
-          document.startViewTransition(update);
-        }
-      } else {
-        start();
-      }
-    },
+    //       start();
+    //     };
+    //   } else {
+    //     start();
+    //   }
+    // },
 
     onBeforeElUpdated(from, to) {
       // Keep element attributes starting with data-js-* which we set on the client.
