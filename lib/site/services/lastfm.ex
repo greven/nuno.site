@@ -94,7 +94,7 @@ defmodule Site.Services.Lastfm do
   end
 
   # Recently played tracks
-  defp fetch_recent_tracks(config, limit \\ 20) do
+  defp fetch_recent_tracks(config, limit \\ 10) do
     %{
       "method" => "user.getRecentTracks",
       "user" => config.username,

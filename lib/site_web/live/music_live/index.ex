@@ -8,7 +8,8 @@ defmodule SiteWeb.MusicLive.Index do
 
   alias SiteWeb.MusicLive.Components
 
-  @refresh_interval 10_000
+  @refresh_playing_interval 10_000
+  @refresh_recent_interval 30_000
 
   @impl true
   def render(assigns) do
@@ -108,7 +109,8 @@ defmodule SiteWeb.MusicLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      Process.send_after(self(), :refresh_music, @refresh_interval)
+      Process.send_after(self(), :refresh_playing, @refresh_playing_interval)
+      Process.send_after(self(), :refresh_recent, @refresh_recent_interval)
     end
 
     time_range_options = [
@@ -141,13 +143,18 @@ defmodule SiteWeb.MusicLive.Index do
   end
 
   @impl true
-  def handle_info(:refresh_music, socket) do
-    Process.send_after(self(), :refresh_music, @refresh_interval)
+  def handle_info(:refresh_playing, socket) do
+    Process.send_after(self(), :refresh_playing, @refresh_playing_interval)
+    socket = assign_async(socket, :track, &get_currently_playing/0)
+
+    {:noreply, socket}
+  end
+
+  def handle_info(:refresh_recent, socket) do
+    Process.send_after(self(), :refresh_recent, @refresh_recent_interval)
 
     socket =
-      socket
-      |> assign_async(:track, &get_currently_playing/0)
-      |> stream_async(:recent_tracks, fn -> get_recent_tracks(limit: 10, reset: true) end)
+      stream_async(socket, :recent_tracks, fn -> get_recent_tracks(limit: 10, reset: true) end)
 
     {:noreply, socket}
   end
