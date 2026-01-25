@@ -113,7 +113,7 @@ defmodule SiteWeb.UsesLive.Index do
               </.external_link>
             </li>
             <li>
-              My <u class="emphasis">Password Manager</u>
+              The <u class="emphasis">Password Manager</u> I use
               is <.external_link href="https://1password.com/">1Password</.external_link>
             </li>
             <li>
@@ -162,9 +162,17 @@ defmodule SiteWeb.UsesLive.Index do
               <:spec label="Monitor">MSI 321URX</:spec>
             </Components.hardware_item>
 
+            <Components.hardware_item icon="lucide-keyboard">
+              <:name>Keyboard</:name>
+              <:description>Mechanical</:description>
+              <:spec label="Case">Ginkgo65 White</:spec>
+              <:spec label="Switches">Gateron Silent Ink</:spec>
+              <:spec label="Keycaps">Nuphy Gem Black</:spec>
+            </Components.hardware_item>
+
             <Components.hardware_item icon="lucide-headphones">
-              <:name>Audio Setup</:name>
-              <:description>Headphones &amp; DAC/Amp</:description>
+              <:name>Audio</:name>
+              <:description>Setup</:description>
               <:spec label="Headphones">Sennheiser HD 560S</:spec>
               <:spec label="DAC">Schitt Modi 3E</:spec>
               <:spec label="Amp">Schitt Magni 3+</:spec>
@@ -178,6 +186,18 @@ defmodule SiteWeb.UsesLive.Index do
               <:spec label="Lens">Sony 16-50mm</:spec>
             </Components.hardware_item>
           </div>
+
+          <p class="mt-4">
+            I also use an
+            <u class="emphasis">
+              Apple Magic Trackpad
+            </u>
+            when working on my MacBook Pro and a
+            <u class="emphasis">
+              Logitech Pro Superlight
+            </u>
+            when gaming or when a mouse is a better fit.
+          </p>
         </Components.section>
       </Layouts.page_content>
     </Layouts.app>
