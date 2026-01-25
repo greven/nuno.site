@@ -152,7 +152,7 @@ defmodule SiteWeb.UsesLive.Index do
               <:spec label="Storage">1TB SSD</:spec>
             </Components.hardware_item>
 
-            <Components.hardware_item icon="lucide-computer">
+            <Components.hardware_item icon="hero-computer-desktop">
               <:name>Mainframe</:name>
               <:description>Desktop</:description>
               <:spec label="CPU">AMD 5600X</:spec>
@@ -162,7 +162,7 @@ defmodule SiteWeb.UsesLive.Index do
               <:spec label="Monitor">MSI 321URX</:spec>
             </Components.hardware_item>
 
-            <Components.hardware_item icon="lucide-camera">
+            <Components.hardware_item icon="hero-camera">
               <:name>Sony Alpha 6000</:name>
               <:description>Camera</:description>
               <:spec label="Lens">Sony Zeiss 24mm</:spec>
