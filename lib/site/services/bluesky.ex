@@ -11,6 +11,7 @@ defmodule Site.Services.Bluesky do
   use Nebulex.Caching
 
   alias Site.Repo
+  alias Site.Blog
   alias Site.Services.Bluesky.Post
 
   @base_url "https://bsky.social/xrpc"
@@ -171,30 +172,52 @@ defmodule Site.Services.Bluesky do
     )
   end
 
-  defp map_author_post(%{"post" => post}) do
-    %Post{
-      did: get_in(post, ["author", "did"]),
-      rkey: extract_rkey_from_uri!(post["uri"]),
-      cid: post["cid"],
-      uri: post["uri"],
-      url: post_url(post),
-      text: get_in(post, ["record", "text"]),
-      created_at: parse_datetime(get_in(post, ["record", "createdAt"])),
-      like_count: post["likeCount"],
-      repost_count: post["repostCount"],
-      reply_count: post["replyCount"],
-      author_handle: get_in(post, ["author", "handle"]),
-      author_name: get_in(post, ["author", "displayName"]),
-      avatar_url: get_in(post, ["author", "avatar"]),
-      embed: extract_embed(post)
-    }
+  @doc """
+  Creates a new BlueSky post for the configured handle
+  with the provided text content.
+
+  Returns {:ok, %Post{}} on success or {:error, reason} on failure.
+  """
+  def create_bluesky_post(text) do
+    with {:ok, config} <- get_config(),
+         {:ok, session} <- create_session(config),
+         {:ok, did} <- resolve_did(config.handle) do
+      req = Req.new(base_url: @base_url)
+
+      headers = [
+        {"Authorization", "Bearer #{session.access_jwt}"},
+        {"Content-Type", "application/json"}
+      ]
+
+      now = DateTime.utc_now()
+      body = post_body(did, text, created_at: now)
+
+      case Req.post(req, url: "/com.atproto.repo.createRecord", headers: headers, json: body) do
+        {:ok, %{status: 200, body: %{"uri" => uri, "cid" => cid}}} ->
+          rkey = extract_rkey_from_uri!(uri)
+
+          {:ok,
+           %Post{
+             did: did,
+             rkey: rkey,
+             cid: cid,
+             uri: uri,
+             url: "https://bsky.app/profile/#{config.handle}/post/#{rkey}",
+             text: text,
+             created_at: now,
+             author_handle: config.handle
+           }}
+
+        {:ok, %{status: status, body: body}} ->
+          Logger.error("Create post failed with status: #{status} - #{inspect(body)}")
+          {:error, {:create_failed, status, body}}
+
+        {:error, reason} ->
+          Logger.error("Create post request failed: #{inspect(reason)}")
+          {:error, {:request_failed, reason}}
+      end
+    end
   end
-
-  defp map_author_post(_), do: nil
-
-  # Add this new function
-  defp extract_embed(%{"embed" => embed}) when is_map(embed), do: embed
-  defp extract_embed(_), do: nil
 
   @doc """
   Fetches the author feed for a given BlueSky actor (handle or DID).
@@ -338,6 +361,10 @@ defmodule Site.Services.Bluesky do
 
   ## Private functions
 
+  # Add this new function
+  defp extract_embed(%{"embed" => embed}) when is_map(embed), do: embed
+  defp extract_embed(_), do: nil
+
   # Extracts the record key (rkey) from a Bluesky AT URI
   # Example: "at://did:plc:abc123/app.bsky.feed.post/3k44dkosfji2y" -> "3k44dkosfji2y"
   defp extract_rkey_from_uri(uri) when is_binary(uri) do
@@ -357,6 +384,45 @@ defmodule Site.Services.Bluesky do
       {:ok, rkey} -> rkey
       :error -> raise "Invalid Bluesky URI: #{uri}"
     end
+  end
+
+  # Maps a BlueSky post JSON structure to a %Post{} struct
+  defp map_author_post(%{"post" => post}) do
+    %Post{
+      did: get_in(post, ["author", "did"]),
+      rkey: extract_rkey_from_uri!(post["uri"]),
+      cid: post["cid"],
+      uri: post["uri"],
+      url: post_url(post),
+      text: get_in(post, ["record", "text"]),
+      created_at: parse_datetime(get_in(post, ["record", "createdAt"])),
+      like_count: post["likeCount"],
+      repost_count: post["repostCount"],
+      reply_count: post["replyCount"],
+      author_handle: get_in(post, ["author", "handle"]),
+      author_name: get_in(post, ["author", "displayName"]),
+      avatar_url: get_in(post, ["author", "avatar"]),
+      embed: extract_embed(post)
+    }
+  end
+
+  defp map_author_post(_), do: nil
+
+  # Bluesky post body helper
+  defp post_body(did, text, opts) do
+    created_at =
+      Keyword.get(opts, :created_at, DateTime.utc_now())
+      |> DateTime.to_iso8601()
+
+    %{
+      repo: did,
+      collection: "app.bsky.feed.post",
+      record: %{
+        "text" => text,
+        "createdAt" => created_at,
+        "$type" => "app.bsky.feed.post"
+      }
+    }
   end
 
   @spec create_session(map()) :: {:ok, %{access_jwt: String.t()}} | {:error, term()}
@@ -401,6 +467,53 @@ defmodule Site.Services.Bluesky do
         {:ok, %{handle: handle, app_password: app_password}}
     end
   end
+
+  # ------------------------------------------
+  #  Blog Post Publishing
+  # ------------------------------------------
+
+  @blog_post_marker "#BlogPost"
+
+  @doc """
+  Publishes a blog article to BlueSky.
+  """
+  def publish_blog_article(%Blog.Post{} = blog_post, post_url) do
+    post_text = post_template(blog_post, post_url)
+
+    with {:ok, post} <- create_bluesky_post(post_text) do
+      {:ok, post}
+    end
+  end
+
+  @doc """
+  Generates a post template for publishing a blog article to BlueSky.
+
+  ## Examples
+
+      iex> post_template(post, &post_url/1)
+      "I published a new article: My First Post
+      http://example.com/blog/my-first-post
+
+      #elixir #programming #BlogPost"
+  """
+  def post_template(%Blog.Post{} = blog_post, post_url) do
+    """
+    I published a new article: #{blog_post.title}
+    #{post_url}
+
+    #{post_tags(blog_post)}
+    """
+  end
+
+  # Extracts blog post tags and add the marker for identifying blog posts.
+  defp post_tags(%Blog.Post{tags: tags}) when is_list(tags) do
+    tags
+    |> Enum.map(fn tag -> "##{tag}" end)
+    |> Enum.join(" ")
+    |> Kernel.<>(" " <> @blog_post_marker)
+  end
+
+  ## Helpers
 
   @spec parse_datetime(String.t() | nil) :: DateTime.t()
   defp parse_datetime(nil), do: DateTime.utc_now()

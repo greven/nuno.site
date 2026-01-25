@@ -23,6 +23,8 @@ defmodule Site.Services.Bluesky.Post do
     author_name
     avatar_url
     embed
+    blog_post_id
+    blog_post_path
   )a
 
   @type t :: %{
@@ -41,7 +43,9 @@ defmodule Site.Services.Bluesky.Post do
           author_handle: String.t() | nil,
           author_name: String.t() | nil,
           avatar_url: String.t() | nil,
-          embed: map() | nil
+          embed: map() | nil,
+          blog_post_id: String.t() | nil,
+          blog_post_path: String.t() | nil
         }
 
   schema "bluesky_posts" do
@@ -62,12 +66,15 @@ defmodule Site.Services.Bluesky.Post do
     field :avatar_url, :string
     field :embed, :map
 
+    # Blog post metadata
+    field :blog_post_id, :string
+    field :blog_post_path, :string
+
     timestamps(type: :utc_datetime)
   end
 
   def changeset(post, attrs) do
     post
     |> cast(attrs, @fields)
-    |> validate_required([:did, :rkey, :cid, :uri])
   end
 end
