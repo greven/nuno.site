@@ -162,6 +162,14 @@ defmodule SiteWeb.UsesLive.Index do
               <:spec label="Monitor">MSI 321URX</:spec>
             </Components.hardware_item>
 
+            <Components.hardware_item icon="lucide-headphones">
+              <:name>Audio Setup</:name>
+              <:description>Headphones &amp; DAC/Amp</:description>
+              <:spec label="Headphones">Sennheiser HD 560S</:spec>
+              <:spec label="DAC">Schitt Modi 3E</:spec>
+              <:spec label="Amp">Schitt Magni 3+</:spec>
+            </Components.hardware_item>
+
             <Components.hardware_item icon="hero-camera">
               <:name>Sony Alpha 6000</:name>
               <:description>Camera</:description>
