@@ -45,13 +45,7 @@ const liveSocket = new LiveSocket('/live', Socket, {
           transitionEls = [];
           transitionTypes = [];
 
-          return new Promise((resolve) =>
-            // Small delay to ensure DOM is ready
-            setTimeout(() => {
-              start();
-              resolve();
-            }, 50)
-          );
+          start();
         };
 
         // Browsers that don't support callbackOptions (Firefox 144...)

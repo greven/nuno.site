@@ -140,17 +140,6 @@
   animation: none;
 }
 
-/* Exclude Finder from page view transitions */
-:active-view-transition-type(page) #finder-dialog {
-  view-transition-name: finder-dialog;
-}
-
-::view-transition-group(finder-dialog),
-::view-transition-old(finder-dialog),
-::view-transition-new(finder-dialog) {
-  animation: none;
-}
-
 @media screen and (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
