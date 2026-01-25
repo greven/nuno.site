@@ -140,8 +140,8 @@
   animation: none;
 }
 
-/* Exclude Finder from view transitions */
-#finder-dialog {
+/* Exclude Finder from page view transitions */
+:active-view-transition-type(page) #finder-dialog {
   view-transition-name: finder-dialog;
 }
 
