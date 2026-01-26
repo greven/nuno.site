@@ -77,6 +77,12 @@ defmodule Site.Blog.Post do
     struct!(__MODULE__, fields)
   end
 
+  @doc """
+  Returns the path for the given blog post.
+  """
+  def path(%__MODULE__{year: year, slug: slug}), do: "/blog/#{year}/#{slug}"
+  def path_regex, do: ~r"^/blog/(?<year>\d{4})/(?<slug>[-a-zA-Z0-9_]+)$"
+
   # Given a filename, extract the year, month, day, and id.
   defp split_post_attrs(filename) do
     [year, month_day_id] = filename |> Path.rootname() |> Path.split() |> Enum.take(-2)

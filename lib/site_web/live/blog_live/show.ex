@@ -6,8 +6,7 @@ defmodule SiteWeb.BlogLive.Show do
   alias Phoenix.LiveView.AsyncResult
 
   alias Site.Blog
-
-  alias SiteWeb.BlogComponents
+  alias SiteWeb.BlogLive.Components
 
   @impl true
   def render(assigns) do
@@ -18,13 +17,13 @@ defmodule SiteWeb.BlogLive.Show do
       active_link={@active_link}
     >
       <Layouts.page_content class="relative post" data-cateogry={@post.category}>
-        <BlogComponents.post_header post={@post} readers={@readers} page_views={@page_views} />
-        <BlogComponents.post_content
+        <Components.post_header post={@post} readers={@readers} page_views={@page_views} />
+        <Components.post_content
           body={@post.body}
           headers={@post.headers}
           show_toc={@post.show_toc}
         />
-        <BlogComponents.post_footer
+        <Components.post_footer
           post={@post}
           likes={@likes}
           next_post={@next_post}

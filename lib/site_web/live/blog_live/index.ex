@@ -3,7 +3,7 @@ defmodule SiteWeb.BlogLive.Index do
 
   alias Site.Blog
 
-  alias SiteWeb.BlogComponents
+  alias SiteWeb.BlogLive.Components
 
   defmodule Category do
     defstruct id: nil, name: nil, icon: nil, enabled?: true
@@ -59,7 +59,7 @@ defmodule SiteWeb.BlogLive.Index do
 
         <%!-- Posts --%>
         <div id="articles" class="mt-8 flex flex-col gap-12 md:gap-6" phx-update="stream">
-          <BlogComponents.article :for={{dom_id, post} <- @streams.posts} id={dom_id} post={post} />
+          <Components.article :for={{dom_id, post} <- @streams.posts} id={dom_id} post={post} />
         </div>
       </Layouts.page_content>
     </Layouts.app>

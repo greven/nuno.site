@@ -5,16 +5,19 @@ defmodule Site.Services.Bluesky do
   Handles authentication and fetching of posts from BlueSky accounts.
   """
 
+  use Nebulex.Caching
   require Logger
+
   import Ecto.Query
 
-  use Nebulex.Caching
+  alias __MODULE__.Post
 
   alias Site.Repo
   alias Site.Blog
-  alias Site.Services.Bluesky.Post
 
   @base_url "https://bsky.social/xrpc"
+
+  @blog_post_marker "#BlogPost"
 
   @doc """
   Lists BlueSky posts from the database.
@@ -80,9 +83,17 @@ defmodule Site.Services.Bluesky do
   Delete all posts.
   Primarily for development and testing purposes.
   """
-
   def delete_all_posts! do
     Repo.delete_all(Post)
+  end
+
+  @doc """
+  Create a new Bluesky post record in the database.
+  """
+  def create_post(%Post{} = post) do
+    %Post{}
+    |> Post.changeset(Map.from_struct(post))
+    |> Repo.insert()
   end
 
   @doc """
@@ -105,6 +116,7 @@ defmodule Site.Services.Bluesky do
           _ -> false
         end
       end)
+      |> Stream.map(&maybe_update_blog_metadata/1)
       |> Enum.to_list()
 
     upsert_posts!(new_posts)
@@ -170,53 +182,6 @@ defmodule Site.Services.Bluesky do
           end
       end
     )
-  end
-
-  @doc """
-  Creates a new BlueSky post for the configured handle
-  with the provided text content.
-
-  Returns {:ok, %Post{}} on success or {:error, reason} on failure.
-  """
-  def create_bluesky_post(text) do
-    with {:ok, config} <- get_config(),
-         {:ok, session} <- create_session(config),
-         {:ok, did} <- resolve_did(config.handle) do
-      req = Req.new(base_url: @base_url)
-
-      headers = [
-        {"Authorization", "Bearer #{session.access_jwt}"},
-        {"Content-Type", "application/json"}
-      ]
-
-      now = DateTime.utc_now()
-      body = post_body(did, text, created_at: now)
-
-      case Req.post(req, url: "/com.atproto.repo.createRecord", headers: headers, json: body) do
-        {:ok, %{status: 200, body: %{"uri" => uri, "cid" => cid}}} ->
-          rkey = extract_rkey_from_uri!(uri)
-
-          {:ok,
-           %Post{
-             did: did,
-             rkey: rkey,
-             cid: cid,
-             uri: uri,
-             url: "https://bsky.app/profile/#{config.handle}/post/#{rkey}",
-             text: text,
-             created_at: now,
-             author_handle: config.handle
-           }}
-
-        {:ok, %{status: status, body: body}} ->
-          Logger.error("Create post failed with status: #{status} - #{inspect(body)}")
-          {:error, {:create_failed, status, body}}
-
-        {:error, reason} ->
-          Logger.error("Create post request failed: #{inspect(reason)}")
-          {:error, {:request_failed, reason}}
-      end
-    end
   end
 
   @doc """
@@ -307,6 +272,131 @@ defmodule Site.Services.Bluesky do
       end
     end
   end
+
+  @doc """
+  Creates a new post on BlueSky for the configured handle
+  with the provided text content.
+
+  Returns {:ok, %Post{}} on success or {:error, reason} on failure.
+  """
+  def create_post_on_bluesky(text) do
+    with {:ok, config} <- get_config(),
+         {:ok, session} <- create_session(config),
+         {:ok, did} <- resolve_did(config.handle) do
+      req = Req.new(base_url: @base_url)
+
+      headers = [
+        {"Authorization", "Bearer #{session.access_jwt}"},
+        {"Content-Type", "application/json"}
+      ]
+
+      now = DateTime.utc_now()
+      body = post_body(did, text, created_at: now)
+
+      case Req.post(req, url: "/com.atproto.repo.createRecord", headers: headers, json: body) do
+        {:ok, %{status: 200, body: %{"uri" => uri, "cid" => cid}}} ->
+          rkey = extract_rkey_from_uri!(uri)
+
+          {:ok,
+           %Post{
+             did: did,
+             rkey: rkey,
+             cid: cid,
+             uri: uri,
+             url: "https://bsky.app/profile/#{config.handle}/post/#{rkey}",
+             text: text,
+             created_at: now,
+             author_handle: config.handle
+           }}
+
+        {:ok, %{status: status, body: body}} ->
+          Logger.error("Create post failed with status: #{status} - #{inspect(body)}")
+          {:error, {:create_failed, status, body}}
+
+        {:error, reason} ->
+          Logger.error("Create post request failed: #{inspect(reason)}")
+          {:error, {:request_failed, reason}}
+      end
+    end
+  end
+
+  @doc """
+  For the given BlueSky post, detects if it contains a blog post marker/pattern.
+  If so, extracts and populates the `blog_post_id` and `blog_post_path` fields
+  given the present post URL.
+
+  Returns the updated `%Post{}` struct or the original post if no marker is found.
+  """
+  def maybe_update_blog_metadata(%Post{text: text} = post) when is_binary(text) do
+    case extract_blog_post_metadata(text) do
+      {:ok, blog_post_id, blog_post_path} ->
+        post
+        |> Map.put(:blog_post_id, blog_post_id)
+        |> Map.put(:blog_post_path, blog_post_path)
+
+      :not_found ->
+        post
+    end
+  end
+
+  @doc """
+  Extracts blog post metadata from the given text if it contains the blog post marker.
+  Check for pattern: `@blog_post_marker` + URL matching nuno.site/blog/...
+  """
+  def extract_blog_post_metadata(text) when is_binary(text) do
+    with true <- String.contains?(text, @blog_post_marker),
+         {:ok, url} <- extract_blog_url(text),
+         {:ok, blog_post_id, blog_post_path} <- parse_blog_path(url) do
+      {:ok, blog_post_id, blog_post_path}
+    else
+      _ -> :not_found
+    end
+  end
+
+  @doc """
+  Extracts the blog post URL from the given text.
+  Looks for a URL matching the pattern `https://nuno.site/blog/year/slug`.
+  """
+  def extract_blog_url(text) do
+    blog_url_regex = ~r/https?:\/\/(?:www\.)?nuno\.site\/blog\/\d{4}\/[\w-]+/
+
+    case Regex.run(blog_url_regex, text) do
+      [url | _] -> {:ok, url}
+      nil -> :error
+    end
+  end
+
+  def extract_blog_url(_), do: :error
+
+  @doc """
+  Parses a full blog URL into just the year and slug components.
+  Example: "https://nuno.site/blog/2026/life-is-hardmode" -> {:ok, 2026, "life-is-hardmode"}
+
+  Returns :error if the URL does not match the expected pattern.
+  """
+  def parse_blog_path(url) when is_binary(url) do
+    uri = URI.parse(url)
+    post_path_regex = Blog.Post.path_regex()
+
+    case uri.path do
+      "/blog/" <> _ = path ->
+        case Regex.run(post_path_regex, path) do
+          [_, year_str, slug] ->
+            case Integer.parse(year_str) do
+              {year, ""} -> {:ok, year, slug}
+              _ -> :error
+            end
+
+          _ ->
+            :error
+        end
+
+      _ ->
+        :error
+    end
+  end
+
+  def parse_blog_path(_), do: :error
 
   @doc """
   Resolves a BlueSky handle to its corresponding DID given an actor string.
@@ -472,16 +562,20 @@ defmodule Site.Services.Bluesky do
   #  Blog Post Publishing
   # ------------------------------------------
 
-  @blog_post_marker "#BlogPost"
-
   @doc """
   Publishes a blog article to BlueSky.
   """
   def publish_blog_article(%Blog.Post{} = blog_post, post_url) do
     post_text = post_template(blog_post, post_url)
 
-    with {:ok, post} <- create_bluesky_post(post_text) do
-      {:ok, post}
+    with {:ok, bluesky_post} <- create_post_on_bluesky(post_text),
+         post_path <- Blog.Post.path(blog_post) do
+      bluesky_post
+      |> Map.put(:blog_post_id, blog_post.id)
+      |> Map.put(:blog_post_path, post_path)
+      |> create_post()
+
+      {:ok, bluesky_post}
     end
   end
 
