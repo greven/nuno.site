@@ -253,7 +253,7 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign_async(:reading_stats, fn -> {:ok, %{reading_stats: get_reading_stats()}} end)
       |> stream_async(:activity, fn -> {:ok, Activity.list_yearly_activity_grouped_by_month()} end)
       |> stream_async(:activity_redux, fn ->
-        {:ok, Activity.list_yearly_activity_grouped_by_month(), limit: -10}
+        {:ok, Activity.list_yearly_activity_grouped_by_month(), limit: -9}
       end)
 
     {:ok, socket, temporary_assigns: [posts: []]}
