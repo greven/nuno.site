@@ -9,6 +9,73 @@ defmodule SiteWeb.BlogComponents do
   alias Site.Support
   alias SiteWeb.SiteComponents
 
+  @doc """
+  Renders an image for an article given an image name (including path) or image URL.
+  If a URL is given, it will use it as is. If an image name/path is given it will resolve to a full URL using
+  the site's image CDN base URL. If the site CDN is used, we will use the image optimization parameters.
+  """
+
+  attr :image, :string, required: true
+  attr :size, :integer, default: 1000
+  attr :alt, :string, required: true
+  attr :caption, :string, default: nil
+  attr :class, :string, default: nil
+
+  def article_image(assigns) do
+    assigns = assign(assigns, :url, cdn_image_url(assigns.image))
+
+    ~H"""
+    <figure>
+      <.image
+        src={@url}
+        alt={@alt}
+        width={@size}
+        height={@size}
+        class={@class}
+        title={@caption}
+        use_picture
+        use_blur
+      />
+      <figcaption :if={@caption}>{@caption}</figcaption>
+    </figure>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
+  attr :size, :integer, default: 250
+  attr :rest, :global
+
+  def article_thumbnail(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :base_class,
+        [
+          "w-full max-h-[200px] aspect-video rounded-md border border-border/50 shadow-sm object-cover",
+          "md:w-44 md:aspect-square md:shrink-0"
+        ]
+      )
+      |> assign(:image, article_thumbnail_url(assigns.post, "400w"))
+      |> assign(:image_sm, article_thumbnail_url(assigns.post, "200w"))
+
+    ~H"""
+    <.image
+      src={@image}
+      alt={@post.title}
+      width={@size}
+      height={@size}
+      class={[@base_class, !@post.image && "bg-surface-10/60"]}
+      use_picture
+      {@rest}
+    >
+      <:source srcset={@image} type="image/jpeg" media="(max-width: 768px)" />
+      <:source srcset={@image_sm} type="image/jpeg" media="(min-width: 769px)" />
+    </.image>
+    """
+  end
+
   @doc false
 
   attr :articles, :map,
@@ -365,73 +432,6 @@ defmodule SiteWeb.BlogComponents do
     <.post_meta_item tag="time" icon={@show_icon && "lucide-calendar-fold"} class={@class}>
       {@date}
     </.post_meta_item>
-    """
-  end
-
-  @doc """
-  Renders an image for an article given an image name (including path) or image URL.
-  If a URL is given, it will use it as is. If an image name/path is given it will resolve to a full URL using
-  the site's image CDN base URL. If the site CDN is used, we will use the image optimization parameters.
-  """
-
-  attr :image, :string, required: true
-  attr :size, :integer, default: 1000
-  attr :alt, :string, required: true
-  attr :caption, :string, default: nil
-  attr :class, :string, default: nil
-
-  def article_image(assigns) do
-    assigns = assign(assigns, :url, cdn_image_url(assigns.image))
-
-    ~H"""
-    <figure>
-      <.image
-        src={@url}
-        alt={@alt}
-        width={@size}
-        height={@size}
-        class={@class}
-        title={@caption}
-        use_picture
-        use_blur
-      />
-      <figcaption :if={@caption}>{@caption}</figcaption>
-    </figure>
-    """
-  end
-
-  @doc false
-
-  attr :post, Blog.Post, required: true
-  attr :size, :integer, default: 250
-  attr :rest, :global
-
-  def article_thumbnail(assigns) do
-    assigns =
-      assigns
-      |> assign(
-        :base_class,
-        [
-          "w-full max-h-[200px] aspect-video rounded-md border border-border/50 shadow-sm object-cover",
-          "md:w-44 md:aspect-square md:shrink-0"
-        ]
-      )
-      |> assign(:image, article_thumbnail_url(assigns.post, "400w"))
-      |> assign(:image_sm, article_thumbnail_url(assigns.post, "200w"))
-
-    ~H"""
-    <.image
-      src={@image}
-      alt={@post.title}
-      width={@size}
-      height={@size}
-      class={[@base_class, !@post.image && "bg-surface-10/60"]}
-      use_picture
-      {@rest}
-    >
-      <:source srcset={@image} type="image/jpeg" media="(max-width: 768px)" />
-      <:source srcset={@image_sm} type="image/jpeg" media="(min-width: 769px)" />
-    </.image>
     """
   end
 
