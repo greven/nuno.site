@@ -6,6 +6,8 @@ defmodule Site.Blog do
   alias __MODULE__
 
   alias Site.Repo
+  alias Site.Services.Bluesky
+
   alias Site.Blog.PostLike
   alias Site.Blog.Event
 
@@ -221,15 +223,15 @@ defmodule Site.Blog do
 
   @doc """
   Get the post by id.
-  The post `id` is a string with the format `"{year}-{post_id}"`.
+  The post `id` is a string with the format `"{year}_{post_slug}"`.
 
   Examples:
 
-      iex> get_post_by_id!(2025, "hello_world")
+      iex> get_post_by_id!("2025_hello-world")
       %Post{}
 
-      iex> get_post_by_id!(2025, "i-do-not-exist")
-      ** (Site.Blog.NotFoundError) post with year=2025 and id=i-do-not-exist not found
+      iex> get_post_by_id!("1982_i-do-not-exist")
+      ** (Site.Blog.NotFoundError) post id=1982_i-do-not-exist not found
   """
   def get_post_by_id!(id) do
     Enum.find(all_posts(), &(&1.id == id)) || raise NotFoundError, "post id=#{id} not found"
@@ -239,15 +241,25 @@ defmodule Site.Blog do
   Similar to `get_post_by_id!/2`, where the year is part of the identifier but retrieves
   the post by slug. This is generally used for fetching posts from the URL params.
   """
-  def get_post_by_year_and_slug!(year, slug) do
-    Enum.find(all_posts(), &(&1.slug == slug and &1.year == String.to_integer(year))) ||
+  def get_post_by_year_and_slug(year, slug) when is_binary(slug) do
+    Enum.find(all_posts(), &(&1.slug == slug and to_string(&1.year) == to_string(year)))
+    |> case do
+      nil -> {:error, :not_found}
+      post -> {:ok, post}
+    end
+  end
+
+  @doc """
+  Like `get_post_by_year_and_slug/2` but raises if the post is not found.
+  """
+  def get_post_by_year_and_slug!(year, slug) when is_binary(slug) do
+    Enum.find(all_posts(), &(&1.slug == slug and to_string(&1.year) == to_string(year))) ||
       raise NotFoundError, "post with year=#{year} and slug=#{slug} not found"
   end
 
   @doc """
   Get the count of published posts for each post category.
   """
-
   def count_posts_by_category do
     posts = list_published_posts()
 
@@ -437,6 +449,36 @@ defmodule Site.Blog do
 
   def subscribe_post_likes(%Blog.Post{slug: slug, year: year}),
     do: Phoenix.PubSub.subscribe(Site.PubSub, "post_likes:#{year}-#{slug}")
+
+  # ------------------------------------------
+  #  Bluesky Comments
+  # ------------------------------------------
+
+  @doc """
+  Get the comments for a given Bluesky post.
+  Returns a list of Bluesky comments.
+  """
+  def get_post_comments(%Bluesky.Post{} = bsky_post) do
+    Bluesky.fetch_post_comments(bsky_post)
+  end
+
+  def get_post_comments(_), do: {:error, :invalid_bsky_post}
+
+  @doc """
+  Get corresponding Bluesky record given a blog post.
+  If there is an associated Bluesky post row with the `blog_post_path`
+  matching given the blog post path.
+
+  Returns the bluesky post or nil if not found.
+  """
+  def get_bluesky_post_for_article(%__MODULE__.Post{} = post) do
+    with blog_post_path when not is_nil(blog_post_path) <- __MODULE__.Post.path(post),
+         %Bluesky.Post{} = bsky_post <- Bluesky.get_post_by_blog_post_path(blog_post_path) do
+      bsky_post
+    else
+      _ -> nil
+    end
+  end
 
   # ------------------------------------------
   #  Helpers

@@ -2,7 +2,6 @@
   :root {
     color-scheme: light dark;
 
-    --header-position: sticky;
     --header-height: 64px;
     --header-mb: 0px;
   }
@@ -70,10 +69,6 @@
 
   /* Disable dialog body scroll */
   html:has(dialog:open) {
-    overflow: hidden;
-  }
-
-  html[data-dialog-open] body {
     overflow: hidden;
   }
 

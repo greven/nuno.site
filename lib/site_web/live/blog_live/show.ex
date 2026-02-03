@@ -6,8 +6,7 @@ defmodule SiteWeb.BlogLive.Show do
   alias Phoenix.LiveView.AsyncResult
 
   alias Site.Blog
-
-  alias SiteWeb.BlogComponents
+  alias SiteWeb.BlogLive.Components
 
   @impl true
   def render(assigns) do
@@ -18,17 +17,21 @@ defmodule SiteWeb.BlogLive.Show do
       active_link={@active_link}
     >
       <Layouts.page_content class="relative post" data-cateogry={@post.category}>
-        <BlogComponents.post_header post={@post} readers={@readers} page_views={@page_views} />
-        <BlogComponents.post_content
+        <Components.post_header post={@post} readers={@readers} page_views={@page_views} />
+        <Components.post_content
           body={@post.body}
           headers={@post.headers}
           show_toc={@post.show_toc}
         />
-        <BlogComponents.post_footer
+
+        <Components.post_footer
           post={@post}
           likes={@likes}
           next_post={@next_post}
           prev_post={@prev_post}
+          bsky_post={@bsky_post}
+          comments={@streams.comments}
+          comments_async={@comments}
         />
       </Layouts.page_content>
     </Layouts.app>
@@ -42,6 +45,8 @@ defmodule SiteWeb.BlogLive.Show do
     post = Blog.get_post_by_year_and_slug!(year, slug)
     {next_post, prev_post} = Blog.get_post_pagination(post)
 
+    bsky_post = Blog.get_bluesky_post_for_article(post)
+
     # Raise not found exception if post status is not published and no current_user
     if post.status != :published and !current_user do
       raise Site.Blog.NotFoundError, "Post not found!"
@@ -51,13 +56,20 @@ defmodule SiteWeb.BlogLive.Show do
       :ok,
       socket
       |> assign_seo(post)
+      |> assign(:post, post)
       |> assign(:page_title, post.title)
       |> assign(:next_post, next_post)
       |> assign(:prev_post, prev_post)
-      |> assign(:post, post)
+      |> assign(:bsky_post, bsky_post)
+      |> assign(:bsky_likes, (bsky_post && bsky_post.like_count) || 0)
+      |> stream_async(:comments, fn -> Blog.get_post_comments(bsky_post) end)
       |> track_readers(post)
       |> track_likes(post),
-      temporary_assigns: [next_post: nil, prev_post: nil]
+      temporary_assigns: [
+        bsky_post: bsky_post,
+        next_post: nil,
+        prev_post: nil
+      ]
     }
   end
 
@@ -75,12 +87,14 @@ defmodule SiteWeb.BlogLive.Show do
   end
 
   defp track_likes(socket, post) do
+    %{bsky_likes: bsky_likes} = socket.assigns
+
     if connected?(socket) do
       Blog.subscribe_post_likes(post)
     end
 
     assign_async(socket, :likes, fn ->
-      {:ok, %{likes: Blog.get_post_likes_count(post)}}
+      {:ok, %{likes: Blog.get_post_likes_count(post) + bsky_likes}}
     end)
   end
 
@@ -110,7 +124,10 @@ defmodule SiteWeb.BlogLive.Show do
   end
 
   def handle_info(%Blog.Event{type: "post_likes_update", payload: %{likes: likes}}, socket) do
+    %{bsky_likes: bsky_likes} = socket.assigns
+
     diff = likes - socket.assigns.likes.result
+    likes = likes + bsky_likes
 
     socket =
       socket
@@ -122,10 +139,14 @@ defmodule SiteWeb.BlogLive.Show do
 
   @impl true
   def handle_event("toggle-like", %{"post_slug" => post_slug, "action" => action}, socket) do
+    %{bsky_likes: bsky_likes} = socket.assigns
+
     case action do
       "like" ->
         case Blog.increment_post_likes(post_slug) do
           {:ok, likes} ->
+            likes = likes + bsky_likes
+
             {:noreply,
              socket
              |> assign(:likes, AsyncResult.ok(likes))
@@ -140,6 +161,8 @@ defmodule SiteWeb.BlogLive.Show do
       "unlike" ->
         case Blog.decrement_post_likes(post_slug) do
           {:ok, likes} ->
+            likes = likes + bsky_likes
+
             {:noreply,
              socket
              |> assign(:likes, AsyncResult.ok(likes))

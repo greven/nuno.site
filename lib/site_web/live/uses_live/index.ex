@@ -24,7 +24,8 @@ defmodule SiteWeb.UsesLive.Index do
             <u class="emphasis">Macbook Pro</u>
             14&quot; M2 Max <span class="text-content-30">(2023)</span>. But I also have a small form factor
             <u class="emphasis">Desktop PC</u>
-            that I use to run Linux (Arch, by the way!) and dual boot Microslop Windows 11 for gaming and other tasks.
+            that I use to run Linux <span class="text-content-30">(Arch, by the way!)</span>
+            gaming and other tasks.
           </p>
         </section>
 

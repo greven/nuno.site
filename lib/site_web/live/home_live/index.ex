@@ -173,6 +173,17 @@ defmodule SiteWeb.HomeLive.Index do
             </Components.bento_card>
 
             <Components.bento_card
+              navigate={~p"/bookmarks"}
+              class="col-span-1 row-span-1 aspect-square"
+              icon="lucide-bookmark-duotone"
+            >
+              <Components.card_content loading={is_nil(@post_count)}>
+                <:label>Bookmarks</:label>
+                <:value>My Blogroll</:value>
+              </Components.card_content>
+            </Components.bento_card>
+
+            <Components.bento_card
               navigate={~p"/uses"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-layers-duotone"
@@ -182,17 +193,6 @@ defmodule SiteWeb.HomeLive.Index do
                 <:value>
                   What I use
                 </:value>
-              </Components.card_content>
-            </Components.bento_card>
-
-            <Components.bento_card
-              navigate={~p"/bookmarks"}
-              class="col-span-1 row-span-1 aspect-square"
-              icon="lucide-bookmark-duotone"
-            >
-              <Components.card_content loading={is_nil(@post_count)}>
-                <:label>Bookmarks</:label>
-                <:value>My Blogroll</:value>
               </Components.card_content>
             </Components.bento_card>
           </div>
@@ -253,7 +253,7 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign_async(:reading_stats, fn -> {:ok, %{reading_stats: get_reading_stats()}} end)
       |> stream_async(:activity, fn -> {:ok, Activity.list_yearly_activity_grouped_by_month()} end)
       |> stream_async(:activity_redux, fn ->
-        {:ok, Activity.list_yearly_activity_grouped_by_month(), limit: -10}
+        {:ok, Activity.list_yearly_activity_grouped_by_month(), limit: -9}
       end)
 
     {:ok, socket, temporary_assigns: [posts: []]}

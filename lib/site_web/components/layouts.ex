@@ -70,6 +70,32 @@ defmodule SiteWeb.Layouts do
 
   @doc false
 
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def page_content(assigns) do
+    ~H"""
+    <div
+      id="page-content"
+      phx-hook="Layout"
+      class={[
+        "relative",
+        "mt-[calc(12*var(--spacing)+var(--header-height))]",
+        "md:mt-[calc(20*var(--spacing)+var(--header-height))]",
+        "lg:mt-[calc(32*var(--spacing)+var(--header-height))]",
+        @class
+      ]}
+      style="--page-gap:4rem; --page-gap-md:6rem; --page-gap-lg:8rem"
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  @doc false
+
   attr :is_home, :boolean, default: false
 
   def site_logo(assigns) do
@@ -121,13 +147,13 @@ defmodule SiteWeb.Layouts do
       id="site-header"
       phx-hook="SiteHeader"
       class={[
-        "relative top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
+        "fixed w-full top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
         "bg-surface/30 border-b border-dashed border-transparent shadow-gray-900/5 supports-backdrop-filter:blur(0)",
         "data-scrolled:bg-surface/95 data-scrolled:supports-backdrop-filter:bg-surface/80 data-scrolled:border-surface-40
          data-scrolled:shadow-sm data-scrolled:backdrop-blur-sm",
         "print:hidden"
       ]}
-      style="position:var(--header-position);height:var(--header-height);margin-bottom:var(--header-mb)"
+      style="height:var(--header-height); margin-bottom:var(--header-mb)"
       data-progress={if(@show_progress, do: "true", else: "false")}
       {@rest}
     >
@@ -294,30 +320,6 @@ defmodule SiteWeb.Layouts do
           Ctrl&nbsp;K
         </kbd>
       </button>
-    </div>
-    """
-  end
-
-  @doc false
-
-  attr :class, :string, default: nil
-  attr :rest, :global
-
-  slot :inner_block, required: true
-
-  def page_content(assigns) do
-    ~H"""
-    <div
-      id="page-content"
-      phx-hook="Layout"
-      class={[
-        "relative mt-8 md:mt-16 lg:mt-32",
-        "[--page-gap:4rem] md:[--page-gap:6rem] lg:[--page-gap:8rem]",
-        @class
-      ]}
-      {@rest}
-    >
-      {render_slot(@inner_block)}
     </div>
     """
   end

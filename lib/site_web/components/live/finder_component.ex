@@ -214,7 +214,7 @@ defmodule SiteWeb.FinderComponent do
     <div
       class={[
         "fixed -bottom-px left-1 right-1 md:max-w-xl md:relative md:mx-auto rounded-t-md md:rounded-md bg-surface-10/95 shadow-2xl overflow-hidden",
-        "animate-slide-out-down data-open:animate-slide-in-up md:animate-none md:data-open:animate-none",
+        "animate-slide-out-down data-dialog-open:animate-slide-in-up md:animate-none md:data-dialog-open:animate-none",
         "outline-1 outline-black/5 backdrop-blur-md backdrop-filter",
         "divide-y divide-neutral-500/10 dark:divide-white/5",
         "dark:-outline-offset-1 dark:outline-white/10",

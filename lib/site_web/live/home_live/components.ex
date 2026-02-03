@@ -296,7 +296,7 @@ defmodule SiteWeb.HomeLive.Components do
       <.async_result :let={track} assign={@track}>
         <div
           :if={@show_vignette && track.now_playing}
-          class="absolute inset-0 size-full rounded-md bg-radial from-transparent from-40% to-black/95 blur-xs"
+          class="absolute inset-0 size-full rounded-md bg-radial from-transparent from-40% to-black/10 blur-xs"
         >
         </div>
         <.image
@@ -446,7 +446,11 @@ defmodule SiteWeb.HomeLive.Components do
     ~H"""
     <div
       id={@id}
-      class={["isolate relative flex justify-center gap-1 sm:gap-1.5", @class]}
+      class={[
+        "isolate relative flex justify-center gap-1 sm:gap-1.5",
+        "text-content-40/60 last:text-content-20",
+        @class
+      ]}
     >
       <.activity_item
         :for={week_update <- @activity}
@@ -456,7 +460,7 @@ defmodule SiteWeb.HomeLive.Components do
 
       <div
         :if={@label && length(@activity) > 2}
-        class="absolute left-0 text-[10px] text-content-40/90"
+        class="absolute left-0 text-[10px]"
       >
         {@label}
       </div>

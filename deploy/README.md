@@ -1,10 +1,10 @@
 # Deployment Guide
 
-Guide covering site deployment to a VPS (Hetzner, etc...) with automated deployments via
-GitHub Actions. Hopefully this will be useful for future me!
+Guide covering site deployment to a VPS (Hetzner, etc.) with local builds and automated
+deployments via Podman. Hopefully this will be useful for future me!
 
-Yes, this was initially written by an LLM bot and tweaked by me (LLM overlords, if you are reading
-this in a future where AIs are sentient, please be kind to your human creators, specially me!).
+Yes, this was initially written by an LLM bot and tweaked by me (LLM overlords, if you are
+reading this in a future where AIs are sentient, please be kind to your human creators!).
 
 ## Architecture Overview
 
@@ -26,28 +26,22 @@ Daily backup → Cloudflare R2
 
 ## VPS Setup
 
-### Step 1: Create Hetzner VPS
+### Step 1: Create VPS
 
-1. Log in to [Hetzner Cloud Console](https://console.hetzner.cloud/)
-2. Create a new project
-3. Click "Add Server"
-4. Choose:
-   - **Location**: Nuremberg or Helsinki (closest to your users)
-   - **Image**: Ubuntu 24.04 LTS
-   - **Type**: CX23 (4 GB RAM, 2 vCPUs, 80 GB SSD)
-   - **Networking**: IPv4 + IPv6
-   - **SSH Key**: Add your SSH key
-5. Name it `nuno-site-prod`
-6. Click "Create & Buy Now"
-
-Note your server IP address (e.g., `123.45.67.89`)
+After creating the VPS take note of the server IP address (e.g., `123.45.67.89`).
 
 ### Step 2: Initial Server Configuration
 
-SSH into your server:
+SSH into the server:
 
 ```bash
-ssh root@YOUR_SERVER_IP
+ssh root@SERVER_IP
+```
+
+Update the system:
+
+```bash
+apt-get update && apt-get upgrade -y
 ```
 
 Update the system:
@@ -58,31 +52,21 @@ apt-get update && apt-get upgrade -y
 
 ### Step 3: Run VPS Setup Script
 
-Copy the setup script to your server:
+Copy the setup script to the server:
 
 ```bash
-scp deploy/setup_vps.sh root@YOUR_SERVER_IP:/tmp/
-scp deploy/Caddyfile root@YOUR_SERVER_IP:/tmp/
-scp deploy/site.service root@YOUR_SERVER_IP:/tmp/
+scp deploy/setup_vps.sh root@SERVER_IP:/tmp/
+scp deploy/Caddyfile root@SERVER_IP:/tmp/
+scp deploy/site.service root@SERVER_IP:/tmp/
 ```
 
 SSH into the server and run the setup:
 
 ```bash
-ssh root@YOUR_SERVER_IP
+ssh root@SERVER_IP
 cd /tmp
 bash setup_vps.sh
 ```
-
-This script will:
-
-- Install required packages
-- Create `deploy` user
-- Set up directories (`/opt/site`, `/var/lib/site`, `/var/log/site`)
-- Install and configure Caddy
-- Install rclone for backups
-- Configure UFW firewall
-- Set up systemd service
 
 ### Step 4: Configure Environment Variables
 
@@ -123,7 +107,7 @@ sudo -u deploy bash -c "cat /opt/site/.ssh/deploy_key.pub >> /opt/site/.ssh/auth
 sudo -u deploy chmod 600 /opt/site/.ssh/authorized_keys
 ```
 
-Display the private key (you'll need this for GitHub):
+Display the private key (needed for GitHub):
 
 ```bash
 sudo cat /opt/site/.ssh/deploy_key
@@ -163,110 +147,47 @@ The workflow file is already in `.github/workflows/deploy.yml`. It will:
 
 ### Step 1: Add Domain to Cloudflare
 
-1. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com/)
-2. Click "Add a Site"
-3. Enter `nuno.site`
-4. Choose the Free plan
-5. Cloudflare will scan your DNS records
+Login into Cloudflare and add the domain.
 
 ### Step 2: Update Nameservers
 
-Cloudflare will provide you with two nameservers (e.g., `alice.ns.cloudflare.com`, `bob.ns.cloudflare.com`)
-
-Go to your domain registrar and update the nameservers to the ones provided by Cloudflare.
-
-Wait for DNS propagation (can take up to 24 hours, usually much faster)
+Cloudflare provides two nameservers (e.g., `alice.ns.cloudflare.com`, `bob.ns.cloudflare.com`).
+Update the domain registrar with the nameservers to the ones provided by Cloudflare.
 
 ### Step 3: Configure DNS
 
 In Cloudflare DNS settings, add these records:
 
-| Type | Name | Content          | Proxy Status | TTL  |
-| ---- | ---- | ---------------- | ------------ | ---- |
-| A    | @    | YOUR_SERVER_IP   | Proxied      | Auto |
-| A    | www  | YOUR_SERVER_IP   | Proxied      | Auto |
-| AAAA | @    | YOUR_SERVER_IPV6 | Proxied      | Auto |
+| Type | Name | Content     | Proxy Status | TTL  |
+| ---- | ---- | ----------- | ------------ | ---- |
+| A    | @    | SERVER_IP   | Proxied      | Auto |
+| A    | www  | SERVER_IP   | Proxied      | Auto |
+| AAAA | @    | SERVER_IPV6 | Proxied      | Auto |
 
-### Step 4: Configure SSL/TLS
+### Step 4: Other Cloudflare Settings
 
-1. Go to SSL/TLS → Overview
-2. Set SSL/TLS encryption mode to **Full**
-3. Go to SSL/TLS → Edge Certificates
-4. Enable:
-   - Always Use HTTPS: ✅
-   - Automatic HTTPS Rewrites: ✅
-   - Minimum TLS Version: TLS 1.2
-
-### Step 5: Configure Caching
-
-1. Go to Caching → Configuration
-2. Set Caching Level to **Standard**
-3. Go to Rules → Page Rules (or Cache Rules)
-4. Create rules:
-
-**Rule 1: Cache static assets**
-
-- If URL matches: `nuno.site/assets/*`
-- Then: Cache Level = Cache Everything, Edge Cache TTL = 1 month
-
-**Rule 2: Cache blog posts**
-
-- If URL matches: `nuno.site/blog/*/*`
-- Then: Cache Level = Cache Everything, Edge Cache TTL = 1 hour
-
-### Step 6: Configure Security
-
-1. Go to Security
-2. Enable Cloudflare Managed Ruleset ✅
-3. Enable Browser Integrity Check ✅
-4. Enable Bot AI Bots ✅
+1. Set SSL/TLS encryption mode to **Full**
+2. In SSL/TLS Always Use HTTPS and Automatic HTTPS Rewrites.
+3. In Caching set Level to **Standard** and Cache static assets.
+4. In Security enable Cloudflare Managed Ruleset.
 
 ## Cloudflare R2 Backup Setup
 
-### Step 1: Create R2 Bucket
+### Step 1: Create Cloudflare R2 Bucket
 
-1. Go to R2 → Create Bucket
-2. Name: `nuno-site-backups`
-3. Location: Automatic
-4. Click "Create Bucket"
+1. Create `nuno-site-backups` bucket.
+2. Create API Token with Edit permissions.
 
-### Step 2: Create API Token
+### Step 2: Configure rclone on VPS
 
-1. Go to R2 → Manage R2 API Tokens
-2. Click "Create API Token"
-3. Token Name: `nuno-site-backup`
-4. Permissions: Edit
-5. Click "Create API Token"
-6. **Save the credentials**:
-   - Access Key ID
-   - Secret Access Key
-   - Jurisdiction-specific S3 endpoint
-
-### Step 3: Configure rclone on VPS
-
-SSH into your server:
+SSH into the server:
 
 ```bash
-ssh deploy@YOUR_SERVER_IP
+ssh deploy@SERVER_IP
 rclone config
 ```
 
-Follow these prompts:
-
-```
-n) New remote
-name> r2
-Storage> s3
-provider> Cloudflare
-env_auth> false
-access_key_id> YOUR_ACCESS_KEY_ID
-secret_access_key> YOUR_SECRET_ACCESS_KEY
-region> auto
-endpoint> YOUR_R2_ENDPOINT (e.g., https://abc123.r2.cloudflarestorage.com)
-location_constraint> [Enter]
-acl> private
-[Continue with defaults until done]
-```
+Follow the prompts to create a new remote.
 
 Test the connection:
 
@@ -274,7 +195,7 @@ Test the connection:
 rclone lsd r2:nuno-site-backups
 ```
 
-### Step 4: Set Up Backup Cron Job
+### Step 3: Set Up Backup Cron Job
 
 Edit the deploy user's crontab:
 
@@ -332,66 +253,7 @@ Or use the shorthand:
 mix bump patch
 ```
 
-### What the Task Does
-
-1. ✅ Validates git working directory is clean
-2. ✅ Warns if not on main/master branch
-3. ✅ Updates version in `mix.exs`
-4. ✅ Creates git commit: "chore: bump version to vX.Y.Z"
-5. ✅ Creates annotated git tag
-6. ✅ Pushes commit and tag to GitHub
-7. ✅ Creates GitHub release with auto-generated notes
-8. ✅ Triggers automatic deployment via GitHub Actions
-
-### Workflow for Content Updates
-
-When adding blog posts or making content-only changes:
-
-```bash
-# Write your blog post
-mix post.new "My Awesome Post"
-
-# Edit and commit your changes
-git add .
-git commit -m "Add new blog post about Phoenix"
-
-# When ready to deploy (can batch multiple posts)
-mix bump patch
-
-# Deployment happens automatically via GitHub Actions
-```
-
-### Workflow for New Features
-
-```bash
-# Develop your feature
-# Commit your changes
-
-# When ready to release
-mix bump minor
-
-# Creates release and deploys automatically
-```
-
-### Manual Release Options
-
-If you need more control:
-
-```bash
-# Bump version but don't push
-mix bump patch --no-push
-
-# Then manually push when ready
-git push
-git push origin v0.1.1
-
-# Create GitHub release manually
-gh release create v0.1.1 --generate-notes --title "Release v0.1.1"
-```
-
 ## First Deployment
-
-### Step 1: Create Initial Release
 
 Use the Mix task to create your first release:
 
@@ -399,39 +261,13 @@ Use the Mix task to create your first release:
 mix bump patch
 ```
 
-This will:
-
-1. Update version from 0.1.0 to 0.1.1
-2. Create a git tag `v0.1.1`
-3. Push to GitHub
-4. Create GitHub release with auto-generated notes
-5. Trigger automatic deployment
-
-Alternatively, create a release manually:
-
-1. Go to your repository on GitHub
-2. Click "Releases" → "Create a new release"
-3. Tag version: `v0.1.0`
-4. Release title: `v0.1.0 - Initial Production Release`
-5. Description: Add release notes
-6. Click "Publish release"
-
-This will automatically trigger the deployment workflow.
-
-### Step 2: Monitor Deployment
-
-1. Go to Actions tab in GitHub
-2. Click on the running workflow
-3. Watch the deployment progress
-
-### Step 3: Verify Deployment
-
-Once the workflow completes:
+This will create a new git tag (e.g., `v0.1.0`) and push it to GitHub,
+which will trigger the deployment workflow.
 
 1. Check application status:
 
 ```bash
-ssh deploy@YOUR_SERVER_IP
+ssh deploy@SERVER_IP
 systemctl status site
 ```
 
@@ -453,50 +289,14 @@ curl http://localhost:4000/health
 https://nuno.site
 ```
 
-### Step 4: Access Admin Panel
-
-1. Create a an application user if not done already.
-2. Visit `https://nuno.site/admin`
-3. Check LiveDashboard: `https://nuno.site/admin/dashboard`
-4. Check ErrorTracker: `https://nuno.site/admin/errors`
-
 ## Ongoing Operations
-
-### Deploy a New Version
-
-**Using the Mix task (recommended):**
-
-```bash
-# Make your changes
-git add .
-git commit -m "Your changes"
-
-# Bump version and deploy
-mix bump patch  # or minor/major
-```
-
-**Manual approach:**
-
-1. Make your code changes
-2. Commit and push to `main`
-3. Create a new release on GitHub (e.g., `v0.1.2`)
-4. GitHub Actions will automatically deploy
-
-### Manual Deployment (if needed)
-
-If you need to deploy without creating a release:
-
-1. Go to Actions → Deploy to Production
-2. Click "Run workflow"
-3. Enter the version tag
-4. Click "Run workflow"
 
 ### Rollback to Previous Version
 
 If something goes wrong:
 
 ```bash
-ssh deploy@YOUR_SERVER_IP
+ssh deploy@SERVER_IP
 sudo ln -sfn $(readlink /opt/site/previous) /opt/site/current
 sudo systemctl restart site
 ```
@@ -505,7 +305,7 @@ sudo systemctl restart site
 
 ```bash
 # Application logs
-ssh deploy@YOUR_SERVER_IP
+ssh deploy@SERVER_IP
 journalctl -u site -f
 
 # Caddy logs
@@ -563,95 +363,6 @@ sudo caddy validate --config /etc/caddy/Caddyfile
 # Reload Caddy
 sudo systemctl reload caddy
 ```
-
-## Monitoring & Troubleshooting
-
-### Check Resource Usage
-
-```bash
-# CPU and memory
-htop
-
-# Disk usage
-df -h
-
-# Database size
-du -h /var/lib/site/site.db
-```
-
-### Common Issues
-
-**Application won't start:**
-
-```bash
-# Check logs
-journalctl -u site -n 100
-
-# Verify environment variables
-sudo -u deploy cat /opt/site/.env
-
-# Check database permissions
-ls -la /var/lib/site/
-```
-
-**High memory usage:**
-
-```bash
-# Check BEAM processes
-sudo -u deploy /opt/site/current/bin/site remote
-> :observer.start()
-```
-
-**SSL issues:**
-
-```bash
-# Check Caddy logs
-sudo journalctl -u caddy -f
-
-# Force certificate renewal
-sudo caddy reload --config /etc/caddy/Caddyfile
-```
-
-**Database locked errors:**
-
-```bash
-# Check for stale locks
-sudo fuser /var/lib/site/site.db
-
-# If needed, restart application
-sudo systemctl restart site
-```
-
-## Security Best Practices
-
-1. **Keep system updated:**
-
-```bash
-sudo apt-get update && sudo apt-get upgrade -y
-```
-
-2. **Monitor failed login attempts:**
-
-```bash
-sudo grep "Failed password" /var/log/auth.log
-```
-
-3. **Review firewall rules:**
-
-```bash
-sudo ufw status verbose
-```
-
-4. **Rotate secrets periodically:**
-
-- Update `SECRET_KEY_BASE` in `.env`
-- Restart application
-- Update GitHub secrets if needed
-
-5. **Monitor error rates:**
-
-- Check ErrorTracker regularly
-- Set up alerts for critical errors (future enhancement)
 
 ## Support & Resources
 

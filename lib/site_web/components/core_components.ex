@@ -37,6 +37,10 @@ defmodule SiteWeb.CoreComponents do
       "has-focus-visible:outline-1 has-focus-visible:-outline-offset-1 has-focus-visible:outline-primary **:outline-none",
     doc: "the focus classes to apply to the box element"
 
+  attr :with_pattern, :boolean,
+    default: false,
+    doc: "whether to show a diagonal pattern background"
+
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the box"
   slot :inner_block, required: true
 
@@ -44,9 +48,19 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <.dynamic_tag
       tag_name={@tag}
-      class={["overflow-hidden", @class, @bg, @border, @shadow, @radius, @padding, @focus]}
+      class={[
+        "relative isolate overflow-hidden",
+        @class,
+        @bg,
+        @border,
+        @shadow,
+        @radius,
+        @padding,
+        @focus
+      ]}
       {@rest}
     >
+      <.diagonal_pattern :if={@with_pattern} class="absolute inset-0 -z-10" />
       {render_slot(@inner_block)}
     </.dynamic_tag>
     """
@@ -77,7 +91,7 @@ defmodule SiteWeb.CoreComponents do
           radius={@radius}
           padding={@padding}
           shadow={@shadow}
-          class={["group/card isolate relative overflow-hidden", @content_class]}
+          class={["group/card relative overflow-hidden", @content_class]}
           data-part="card"
         >
           <.link
@@ -911,7 +925,7 @@ defmodule SiteWeb.CoreComponents do
   end
 
   @doc """
-  Renders a tabs component with a list of tabs and panels.
+  Renders a tabs component with a list of tabs and drawers.
   """
 
   attr :id, :string, required: true
@@ -938,7 +952,7 @@ defmodule SiteWeb.CoreComponents do
     attr :class, :any
   end
 
-  slot :panel do
+  slot :drawer do
     attr :name, :string
     attr :class, :any
   end
@@ -973,7 +987,7 @@ defmodule SiteWeb.CoreComponents do
           ]}
           role="tab"
           aria-selected={tab[:name] == @default}
-          aria-controls={"#{@id}-panel-#{tab[:name]}"}
+          aria-controls={"#{@id}-drawer-#{tab[:name]}"}
           tabindex={if(tab[:name] == @default, do: "0", else: "-1")}
         >
           {render_slot(tab, tab[:name] == @default)}
@@ -981,15 +995,15 @@ defmodule SiteWeb.CoreComponents do
       </nav>
 
       <div
-        :for={panel <- @panel}
-        id={"#{@id}-panel-#{panel[:name]}"}
-        role="tabpanel"
-        aria-labelledby={panel[:name]}
-        aria-hidden={panel[:name] != @default}
-        hidden={panel[:name] != @default}
-        class={panel[:class]}
+        :for={drawer <- @drawer}
+        id={"#{@id}-drawer-#{drawer[:name]}"}
+        role="tabdrawer"
+        aria-labelledby={drawer[:name]}
+        aria-hidden={drawer[:name] != @default}
+        hidden={drawer[:name] != @default}
+        class={drawer[:class]}
       >
-        {render_slot(panel)}
+        {render_slot(drawer)}
       </div>
     </div>
     """
@@ -1587,6 +1601,221 @@ defmodule SiteWeb.CoreComponents do
   end
 
   @doc """
+  Renders a sliding drawer component that can slide from any edge of the viewport.
+
+  The drawer component uses the native HTML <dialog> element and supports sliding
+  from left, right, top, or bottom. It includes support for header, body, and footer
+  sections, as well as offset from viewport edges.
+
+  ## Examples
+
+      <.drawer id="settings-drawer" show={@show_settings}>
+        <:header title="Settings" />
+        <p>Your settings content here</p>
+        <:footer>
+          <.button phx-click={hide_drawer("#settings-drawer")}>Close</.button>
+        </:footer>
+      </.drawer>
+
+      <.drawer id="nav-drawer" position="left" size="sm" offset={8}>
+        <nav>Navigation items...</nav>
+      </.drawer>
+  """
+
+  attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  attr :position, :string, values: ~w(left right top bottom), default: "left"
+  attr :size, :string, values: ~w(sm md lg xl full), default: "md"
+  attr :offset, :integer, default: 0, doc: "offset from viewport edge in pixels"
+  attr :close_on_click_outside, :boolean, default: true
+  attr :on_cancel, JS, default: %JS{}
+  attr :class, :any, default: nil
+  attr :rest, :global
+
+  slot :header do
+    attr :title, :string
+    attr :show_close_button, :boolean
+    attr :class, :string
+  end
+
+  slot :inner_block, required: true
+
+  slot :footer do
+    attr :class, :string
+  end
+
+  def drawer(assigns) do
+    ~H"""
+    <dialog
+      id={@id}
+      phx-hook="Drawer"
+      phx-mounted={@show && show_drawer("##{@id}")}
+      phx-remove={hide_drawer("##{@id}")}
+      data-cancel={JS.exec(@on_cancel, "phx-remove")}
+      data-position={@position}
+      data-close-on-click-outside={@close_on_click_outside}
+      aria-labelledby={"#{@id}-drawer-title"}
+      style={["--drawer-offset: #{assigns.offset}px"] |> Enum.join("; ")}
+      class={[
+        "starting:open:opacity-0 starting:open:backdrop:bg-transparent starting:open:backdrop:opacity-0",
+        "group opacity-0 border-none outline-none bg-transparent transition ease-out duration-200 transition-discrete",
+        "backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-opacity backdrop:ease-out backdrop:duration-200 backdrop:transition-discrete",
+        "open:opacity-100 open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100",
+        drawer_dialog_position_class(@position),
+        @class
+      ]}
+      {@rest}
+    >
+      <div
+        tabindex="0"
+        class={[
+          "fixed flex flex-col bg-surface-10 shadow-xl border border-surface-30 focus:outline-none",
+          "transition-transform duration-200 ease-out will-change-transform",
+          "group-open:translate-x-0 group-open:translate-y-0",
+          drawer_position_class(@position, @offset),
+          drawer_size_class(@position, @size),
+          drawer_radius_class(@position, @offset),
+          drawer_transform_class(@position)
+        ]}
+        data-part="drawer-container"
+        data-state="close"
+      >
+        <%!-- Header --%>
+        <div
+          :for={header <- @header}
+          :if={@header != []}
+          data-part="drawer-header"
+          class={[
+            "flex items-center gap-4 px-6 py-4 border-b border-surface-30 shrink-0",
+            header[:class]
+          ]}
+        >
+          <h2
+            :if={header[:title]}
+            id={"#{@id}-drawer-title"}
+            class="text-lg font-semibold text-content-10"
+          >
+            {header[:title]}
+          </h2>
+
+          <%= if header[:inner_block] do %>
+            {render_slot(header)}
+          <% end %>
+
+          <button
+            :if={Map.get(header, :show_close_button, true)}
+            type="button"
+            phx-click={hide_drawer("##{@id}")}
+            aria-label="Close drawer"
+            class={[
+              "ml-auto shrink-0 rounded-lg p-2 text-content-40 transition-colors",
+              "hover:bg-surface-20 hover:text-content-10 hover:cursor-pointer"
+            ]}
+          >
+            <.icon name="hero-x-mark" class="size-5" />
+          </button>
+        </div>
+
+        <%!-- Body --%>
+        <div data-part="drawer-body" class="flex-1 overflow-y-auto px-6 py-4">
+          {render_slot(@inner_block, hide_drawer("##{@id}"))}
+        </div>
+
+        <%!-- Footer --%>
+        <div
+          :for={footer <- @footer}
+          :if={@footer != []}
+          data-part="drawer-footer"
+          class={[
+            "flex items-center justify-end gap-3 px-6 py-4 border-t border-surface-30 shrink-0",
+            footer[:class]
+          ]}
+        >
+          {render_slot(footer)}
+        </div>
+      </div>
+    </dialog>
+    """
+  end
+
+  defp drawer_dialog_position_class(position) do
+    case position do
+      "left" -> "items-center justify-start"
+      "right" -> "items-center justify-end"
+      "top" -> "items-start justify-center"
+      "bottom" -> "items-end justify-center"
+    end
+  end
+
+  defp drawer_position_class(position, offset) do
+    case position do
+      "left" ->
+        if offset > 0 do
+          "top-(--drawer-offset) bottom-(--drawer-offset) left-(--drawer-offset) right-(--drawer-offset) md:right-0 h-[calc(100vh-var(--drawer-offset)*2)]"
+        else
+          "inset-y-0 left-0 right-0 md:right-0 h-screen"
+        end
+
+      "right" ->
+        if offset > 0 do
+          "top-(--drawer-offset) bottom-(--drawer-offset) right-(--drawer-offset) left-(--drawer-offset) md:left-auto h-[calc(100vh-var(--drawer-offset)*2)]"
+        else
+          "inset-y-0 right-0 left-0 md:left-auto h-screen"
+        end
+
+      "top" ->
+        if offset > 0 do
+          "top-(--drawer-offset) left-(--drawer-offset) right-(--drawer-offset) w-[calc(100vw-var(--drawer-offset)*2)]"
+        else
+          "top-0 inset-x-0 w-screen"
+        end
+
+      "bottom" ->
+        if offset > 0 do
+          "bottom-(--drawer-offset) left-(--drawer-offset) right-(--drawer-offset) w-[calc(100vw-var(--drawer-offset)*2)]"
+        else
+          "bottom-0 inset-x-0 w-screen"
+        end
+    end
+  end
+
+  defp drawer_size_class(position, size) when position in ["left", "right"] do
+    case size do
+      "sm" -> "md:w-80 md:max-w-[calc(100vw-2rem)]"
+      "md" -> "md:w-112 md:max-w-[calc(100vw-2rem)]"
+      "lg" -> "md:w-160 md:max-w-[calc(100vw-2rem)]"
+      "xl" -> "md:w-192 md:max-w-[calc(100vw-2rem)]"
+      "full" -> "w-[calc(100vw-var(--drawer-offset)*2)]"
+    end
+  end
+
+  defp drawer_size_class(position, size) when position in ["top", "bottom"] do
+    case size do
+      "sm" -> "h-[30vh] max-h-[calc(100vh-2rem)]"
+      "md" -> "h-[50vh] max-h-[calc(100vh-2rem)]"
+      "lg" -> "h-[70vh] max-h-[calc(100vh-2rem)]"
+      "xl" -> "h-[85vh] max-h-[calc(100vh-2rem)]"
+      "full" -> "h-[calc(100vh-var(--drawer-offset)*2)]"
+    end
+  end
+
+  defp drawer_radius_class(_position, 0), do: "rounded-none"
+  defp drawer_radius_class(_position, offset) when offset > 0, do: "rounded-xl"
+  defp drawer_radius_class("left", _), do: "rounded-r-xl"
+  defp drawer_radius_class("right", _), do: "rounded-l-xl"
+  defp drawer_radius_class("top", _), do: "rounded-b-xl"
+  defp drawer_radius_class("bottom", _), do: "rounded-t-xl"
+
+  defp drawer_transform_class(position) do
+    case position do
+      "left" -> "-translate-x-full"
+      "right" -> "translate-x-full"
+      "top" -> "-translate-y-full"
+      "bottom" -> "translate-y-full"
+    end
+  end
+
+  @doc """
   Renders a tooltip component.
 
   The tooltip component displays a small popup with additional information when hovering over an element.
@@ -1722,6 +1951,18 @@ defmodule SiteWeb.CoreComponents do
 
   def hide_dialog(js \\ %JS{}, selector) do
     JS.dispatch(js, "hide-dialog", to: selector)
+  end
+
+  def show_drawer(js \\ %JS{}, selector) do
+    JS.dispatch(js, "show-drawer", to: selector)
+  end
+
+  def hide_drawer(js \\ %JS{}, selector) do
+    JS.dispatch(js, "hide-drawer", to: selector)
+  end
+
+  def toggle_drawer(js \\ %JS{}, selector) do
+    JS.dispatch(js, "toggle-drawer", to: selector)
   end
 
   @doc """

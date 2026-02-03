@@ -54,6 +54,7 @@ $RECYCLE.BIN/
 .env.*
 *.env
 !example.env
+!.env.example
 
 # VS Code
 .vscode/*
@@ -113,3 +114,8 @@ npm-debug.log
 # Project specific
 screenshots/
 priv/content/images/uploads/
+
+# Deployment artifacts
+*.tar.gz
+site-*.tar.gz
+/release/

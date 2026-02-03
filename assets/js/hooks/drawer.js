@@ -1,4 +1,4 @@
-export const Dialog = {
+export const Drawer = {
   mounted() {
     this.isOpen = this.el.hasAttribute('open');
     this.closeOnClickOutside = this.el.hasAttribute('data-close-on-click-outside');
@@ -10,9 +10,10 @@ export const Dialog = {
     this.clickOutsideHandler = this.handleClickOutside.bind(this);
     this.closeHandler = this.handleClose.bind(this);
 
-    window.addEventListener('show-dialog', this.showHandler);
-    window.addEventListener('hide-dialog', this.hideHandler);
-    window.addEventListener('toggle-dialog', this.toggleHandler);
+    // Register event listeners
+    window.addEventListener('show-drawer', this.showHandler);
+    window.addEventListener('hide-drawer', this.hideHandler);
+    window.addEventListener('toggle-drawer', this.toggleHandler);
 
     // Close on click outside
     this.el.addEventListener('click', this.clickOutsideHandler);
@@ -21,11 +22,11 @@ export const Dialog = {
     this.el.addEventListener('close', this.closeHandler);
     this.el.addEventListener('cancel', this.closeHandler);
 
-    // Oberve open attribute changes (since there's no open event)
+    // Observe open attribute changes
     this.openObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'open') {
-          this.handleOpenMutation(mutation);
+          this.handleOpenMutation();
         }
       });
     });
@@ -34,15 +35,15 @@ export const Dialog = {
   },
 
   destroyed() {
-    // Remove event listeners
+    // Cleanup event listeners
     if (this.showHandler) {
-      window.removeEventListener('show-dialog', this.showHandler);
+      window.removeEventListener('show-drawer', this.showHandler);
     }
     if (this.hideHandler) {
-      window.removeEventListener('hide-dialog', this.hideHandler);
+      window.removeEventListener('hide-drawer', this.hideHandler);
     }
     if (this.toggleHandler) {
-      window.removeEventListener('toggle-dialog', this.toggleHandler);
+      window.removeEventListener('toggle-drawer', this.toggleHandler);
     }
     if (this.clickOutsideHandler) {
       this.el.removeEventListener('click', this.clickOutsideHandler);
@@ -58,16 +59,22 @@ export const Dialog = {
     }
 
     // Cleanup body overflow
-    document.documentElement.removeAttribute('data-dialog-open');
+    document.documentElement.removeAttribute('data-drawer-open');
     document.body.style.removeProperty('overflow');
   },
 
   show(event) {
-    event.target?.showModal();
+    // Check if the event is targeting this specific drawer
+    if (event.target === this.el || event.target?.id === this.el.id) {
+      this.el.showModal();
+    }
   },
 
   hide(event) {
-    event.target?.close();
+    // Check if the event is targeting this specific drawer
+    if (event.target === this.el || event.target?.id === this.el.id) {
+      this.el.close();
+    }
   },
 
   toggle() {
@@ -79,8 +86,8 @@ export const Dialog = {
   },
 
   handleClose() {
-    // Remove the attribute that marks a dialog is open
-    document.documentElement.removeAttribute('data-dialog-open');
+    // Remove the attribute that marks a drawer is open
+    document.documentElement.removeAttribute('data-drawer-open');
     document.body.style.removeProperty('overflow');
   },
 
@@ -89,17 +96,18 @@ export const Dialog = {
 
     if (this.isOpen) {
       // Add an attribute to mark the drawer is open
-      document.documentElement.setAttribute('data-dialog-open', '');
+      document.documentElement.setAttribute('data-drawer-open', '');
       // Prevent body scroll when drawer is open
       document.body.style.overflow = 'hidden';
     } else {
-      document.documentElement.removeAttribute('data-dialog-open');
+      document.documentElement.removeAttribute('data-drawer-open');
       document.body.style.removeProperty('overflow');
     }
   },
 
   handleClickOutside(event) {
-    if (this.closeOnClickOutside && event.target.getAttribute('data-part') === 'dialog-container') {
+    // Only close if clicking directly on the dialog element (the backdrop area)
+    if (this.closeOnClickOutside && event.target === this.el) {
       this.el.close('dismiss');
     }
   },
