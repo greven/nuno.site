@@ -116,7 +116,7 @@ defmodule Site.Services.Steam do
     }
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:steam_lists}, opts: [ttl: :timer.hours(24)])
+  @decorate cacheable(cache: Site.Cache, key: :steam_lists, opts: [ttl: :timer.hours(24)])
   def games_lists do
     Path.join([:code.priv_dir(:site), "content/games.json"])
     |> File.read!()

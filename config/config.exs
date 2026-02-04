@@ -85,7 +85,8 @@ config :site, Oban,
 # Application configuration
 config :site, Site.Cache,
   max_size: 1_000_000,
-  allocated_memory: 100 * 1_000_000,
+  # Max size of 1 GB
+  allocated_memory: 1_000_000_000,
   gc_interval: :timer.hours(48)
 
 config :site, :site_url, "https://nuno.site"

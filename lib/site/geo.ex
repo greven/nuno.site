@@ -25,14 +25,14 @@ defmodule Site.Geo do
 
   def list_countries_codes(alpha \\ :alpha2)
 
-  @decorate cacheable(cache: Site.Cache, key: {:codes_alpha2})
+  @decorate cacheable(cache: Site.Cache, key: :codes_alpha2)
   def list_countries_codes(:alpha2) do
     list_countries()
     |> Stream.map(fn country -> {country.name, country.alpha2} end)
     |> Enum.sort_by(fn {name, _} -> :unicode.characters_to_nfd_binary(name) end)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:codes_alpha3})
+  @decorate cacheable(cache: Site.Cache, key: :codes_alpha3)
   def list_countries_codes(:alpha3) do
     list_countries()
     |> Stream.map(fn country -> {country.name, country.alpha3} end)

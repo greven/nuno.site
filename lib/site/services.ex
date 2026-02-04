@@ -65,14 +65,14 @@ defmodule Site.Services do
 
   @decorate cacheable(
               cache: Site.Cache,
-              key: {:recently_played_tracks},
+              key: :recently_played_tracks,
               opts: [ttl: :timer.minutes(1)]
             )
   def get_recently_played_tracks do
     Lastfm.get_recently_played()
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_artists}, opts: [ttl: :timer.minutes(10)])
+  @decorate cacheable(cache: Site.Cache, key: :top_artists, opts: [ttl: :timer.minutes(10)])
   def get_top_artists do
     Lastfm.get_top_artists("overall", @music_top_artists_limit)
   end
@@ -168,7 +168,7 @@ defmodule Site.Services do
 
   @decorate cacheable(
               cache: Site.Cache,
-              key: {:recently_played_games},
+              key: :recently_played_games,
               opts: [ttl: :timer.hours(1)]
             )
   def get_recently_played_games, do: Steam.get_recently_played_games()

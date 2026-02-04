@@ -23,7 +23,7 @@ defmodule Site.Travel do
     |> Enum.sort_by(fn %Visit{date: date} -> date end, {:asc, Date})
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:visited_countries})
+  @decorate cacheable(cache: Site.Cache, key: :visited_countries)
   def visited_countries do
     list_trips()
     |> extract_countries()
@@ -31,7 +31,7 @@ defmodule Site.Travel do
     |> Enum.sort_by(fn {_, freq} -> freq end, :desc)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:visited_cities})
+  @decorate cacheable(cache: Site.Cache, key: :visited_cities)
   def visited_cities do
     list_trips()
     |> extract_cities()
@@ -39,7 +39,7 @@ defmodule Site.Travel do
     |> Enum.sort_by(fn {_, freq} -> freq end, :desc)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:travel_stats})
+  @decorate cacheable(cache: Site.Cache, key: :travel_stats)
   def travel_stats do
     km_traveled =
       list_trips()

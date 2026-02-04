@@ -22,7 +22,7 @@ defmodule Site.Resume do
     |> Enum.filter(fn {_, favourite} -> favourite end)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:resume})
+  @decorate cacheable(cache: Site.Cache, key: :resume_data)
   def data do
     resume_path()
     |> File.read!()
