@@ -181,7 +181,7 @@ defmodule Site.BlogTest do
       [tag | _] = Blog.all_tags()
       grouped = Blog.list_published_posts_by_tag_grouped_by_year(tag)
 
-      assert is_map(grouped)
+      assert is_list(grouped)
 
       Enum.each(grouped, fn {year, posts} ->
         assert is_integer(year)

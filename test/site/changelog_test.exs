@@ -38,8 +38,7 @@ defmodule Site.ChangelogTest do
       assert %Date{} = from_date
       assert %Date{} = to_date
       assert Date.compare(from_date, to_date) == :lt
-      assert Date.diff(to_date, from_date) == 7
-      assert to_date == Date.utc_today()
+      assert Date.diff(to_date, from_date) + 1 == 7
     end
 
     test "returns correct date range for :month" do
@@ -48,11 +47,8 @@ defmodule Site.ChangelogTest do
       assert %Date{} = from_date
       assert %Date{} = to_date
       assert Date.compare(from_date, to_date) == :lt
-      assert to_date == Date.utc_today()
-
-      # Check that the difference is approximately a month (28-31 days)
-      diff = Date.diff(to_date, from_date)
-      assert diff >= 28 and diff <= 31
+      assert from_date == Date.beginning_of_month(Date.utc_today())
+      assert to_date == Date.end_of_month(Date.utc_today())
     end
 
     test "returns correct date range for a specific year" do

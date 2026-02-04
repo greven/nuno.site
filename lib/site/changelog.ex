@@ -150,7 +150,7 @@ defmodule Site.Changelog do
   def date_range_for_period(:week) do
     today = Date.utc_today()
     from_date = Date.beginning_of_week(today, :monday)
-    to_date = Date.end_of_week(today, :sunday)
+    to_date = Date.end_of_week(today)
 
     {from_date, to_date}
   end
