@@ -4,7 +4,6 @@ defmodule Site.Services.Steam do
   """
 
   use Nebulex.Caching
-  require Logger
 
   defp api_endpoint, do: "http://api.steampowered.com"
   defp steam_cdn_url, do: "https://cdn.cloudflare.steamstatic.com"
