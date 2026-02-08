@@ -4,6 +4,7 @@ This is a web application written using the Phoenix web framework.
 
 - Use `mix precommit` alias when you are done with all changes and fix any pending issues
 - Use the already included and available `:req` (`Req`) library for HTTP requests, **avoid** `:httpoison`, `:tesla`, and `:httpc`. Req is included by default and is the preferred HTTP client for Phoenix apps
+
 ### Phoenix v1.8 guidelines
 
 - **Always** begin your LiveView templates with `<Layouts.app flash={@flash} ...>` which wraps all inner content
@@ -15,10 +16,11 @@ This is a web application written using the Phoenix web framework.
 - Out of the box, `core_components.ex` imports an `<.icon name="hero-x-mark" class="w-5 h-5"/>` component for for hero icons. **Always** use the `<.icon>` component for icons, **never** use `Heroicons` modules or similar
 - **Always** use the imported `<.input>` component for form inputs from `core_components.ex` when available. `<.input>` is imported and using it will will save steps and prevent errors
 - If you override the default input classes (`<.input class="myclass px-2 py-1 rounded-lg">)`) class with your own values, no default classes are inherited, so your
-custom classes must fully style the input
+  custom classes must fully style the input
 
 <!-- usage-rules-start -->
 <!-- phoenix:elixir-start -->
+
 ## Elixir guidelines
 
 - Elixir lists **do not support index based access via the access syntax**
@@ -36,7 +38,7 @@ custom classes must fully style the input
       Enum.at(mylist, i)
 
 - Elixir variables are immutable, but can be rebound, so for block expressions like `if`, `case`, `cond`, etc
-  you *must* bind the result of the expression to a variable if you want to use it and you CANNOT rebind the result inside the expression, ie:
+  you _must_ bind the result of the expression to a variable if you want to use it and you CANNOT rebind the result inside the expression, ie:
 
       # INVALID: we are rebinding inside the `if` and the result never gets assigned
       if connected?(socket) do
@@ -62,8 +64,9 @@ custom classes must fully style the input
 - Read the docs and options before using tasks (by using `mix help task_name`)
 - To debug test failures, run tests in a specific file with `mix test test/my_test.exs` or run all previously failed tests with `mix test --failed`
 - `mix deps.clean --all` is **almost never needed**. **Avoid** using it unless you have good reason
-<!-- phoenix:elixir-end -->
-<!-- phoenix:phoenix-start -->
+  <!-- phoenix:elixir-end -->
+  <!-- phoenix:phoenix-start -->
+
 ## Phoenix guidelines
 
 - Remember Phoenix router `scope` blocks include an optional alias which is prefixed for all routes within the scope. **Always** be mindful of this when creating routes within a scope to avoid duplicate module prefixes.
@@ -79,8 +82,9 @@ custom classes must fully style the input
   the UserLive route would point to the `AppWeb.Admin.UserLive` module
 
 - `Phoenix.View` no longer is needed or included with Phoenix, don't use it
-<!-- phoenix:phoenix-end -->
-<!-- phoenix:ecto-start -->
+  <!-- phoenix:phoenix-end -->
+  <!-- phoenix:ecto-start -->
+
 ## Ecto Guidelines
 
 - **Always** preload Ecto associations in queries when they'll be accessed in templates, ie a message that needs to reference the `message.user.email`
@@ -89,8 +93,9 @@ custom classes must fully style the input
 - `Ecto.Changeset.validate_number/2` **DOES NOT SUPPORT the `:allow_nil` option**. By default, Ecto validations only run if a change for the given field exists and the change value is not nil, so such as option is never needed
 - You **must** use `Ecto.Changeset.get_field(changeset, :field)` to access changeset fields
 - Fields which are set programatically, such as `user_id`, must not be listed in `cast` calls or similar for security purposes. Instead they must be explicitly set when creating the struct
-<!-- phoenix:ecto-end -->
-<!-- phoenix:html-start -->
+  <!-- phoenix:ecto-end -->
+  <!-- phoenix:html-start -->
+
 ## Phoenix HTML guidelines
 
 - Phoenix templates **always** use `~H` or .html.heex files (known as HEEx), **never** use `~E`
@@ -99,7 +104,7 @@ custom classes must fully style the input
 - **Always** add unique DOM IDs to key elements (like forms, buttons, etc) when writing templates, these IDs can later be used in tests (`<.form for={@form} id="product-form">`)
 - For "app wide" template imports, you can import/alias into the `my_app_web.ex`'s `html_helpers` block, so they will be available to all LiveViews, LiveComponent's, and all modules that do `use MyAppWeb, :html` (replace "my_app" by the actual app name)
 
-- Elixir supports `if/else` but **does NOT support `if/else if` or `if/elsif`. **Never use `else if` or `elseif` in Elixir**, **always** use `cond` or `case` for multiple conditionals.
+- Elixir supports `if/else` but **does NOT support `if/else if` or `if/elsif`. **Never use `else if` or `elseif` in Elixir**, **always\*\* use `cond` or `case` for multiple conditionals.
 
   **Never do this (invalid)**:
 
@@ -120,7 +125,7 @@ custom classes must fully style the input
           ...
       <% end %>
 
-- HEEx require special tag annotation if you want to insert literal curly's like `{` or `}`. If you want to show a textual code snippet on the page in a `<pre>` or `<code>` block you *must* annotate the parent tag with `phx-no-curly-interpolation`:
+- HEEx require special tag annotation if you want to insert literal curly's like `{` or `}`. If you want to show a textual code snippet on the page in a `<pre>` or `<code>` block you _must_ annotate the parent tag with `phx-no-curly-interpolation`:
 
       <code phx-no-curly-interpolation>
         let obj = {key: "val"}
@@ -153,25 +158,27 @@ custom classes must fully style the input
 
   **Always** do this:
 
-      <div id={@id}>
-        {@my_assign}
-        <%= if @some_block_condition do %>
-          {@another_assign}
-        <% end %>
-      </div>
+        <div id={@id}>
+          {@my_assign}
+          <%= if @some_block_condition do %>
+            {@another_assign}
+          <% end %>
+        </div>
 
   and **Never** do this – the program will terminate with a syntax error:
 
-      <%!-- THIS IS INVALID NEVER EVER DO THIS --%>
-      <div id="<%= @invalid_interpolation %>">
-        {if @invalid_block_construct do}
-        {end}
-      </div>
-<!-- phoenix:html-end -->
-<!-- phoenix:liveview-start -->
+        <%!-- THIS IS INVALID NEVER EVER DO THIS --%>
+        <div id="<%= @invalid_interpolation %>">
+          {if @invalid_block_construct do}
+          {end}
+        </div>
+
+  <!-- phoenix:html-end -->
+  <!-- phoenix:liveview-start -->
+
 ## Phoenix LiveView guidelines
 
-- **Never** use the deprecated `live_redirect` and `live_patch` functions, instead **always** use the `<.link navigate={href}>` and  `<.link patch={href}>` in templates, and `push_navigate` and `push_patch` functions LiveViews
+- **Never** use the deprecated `live_redirect` and `live_patch` functions, instead **always** use the `<.link navigate={href}>` and `<.link patch={href}>` in templates, and `push_navigate` and `push_patch` functions LiveViews
 - **Avoid LiveComponent's** unless you have a strong, specific need for them
 - LiveViews should be named like `AppWeb.WeatherLive`, with a `Live` suffix. When you go to add LiveView routes to the router, the default `:browser` scope is **already aliased** with the `AppWeb` module, so you can just do `live "/weather", WeatherLive`
 - Remember anytime you use `phx-hook="MyHook"` and that js hook manages its own DOM, you **must** also set the `phx-update="ignore"` attribute
@@ -193,7 +200,7 @@ custom classes must fully style the input
         </div>
       </div>
 
-- LiveView streams are *not* enumerable, so you cannot use `Enum.filter/2` or `Enum.reject/2` on them. Instead, if you want to filter, prune, or refresh a list of items on the UI, you **must refetch the data and re-stream the entire stream collection, passing reset: true**:
+- LiveView streams are _not_ enumerable, so you cannot use `Enum.filter/2` or `Enum.reject/2` on them. Instead, if you want to filter, prune, or refresh a list of items on the UI, you **must refetch the data and re-stream the entire stream collection, passing reset: true**:
 
       def handle_event("filter", %{"filter" => filter}, socket) do
         # re-fetch the messages based on the filter
@@ -206,7 +213,7 @@ custom classes must fully style the input
         |> stream(:messages, messages, reset: true)}
       end
 
-- LiveView streams *do not support counting or empty states*. If you need to display a count, you must track it using a separate assign. For empty states, you can use Tailwind classes:
+- LiveView streams _do not support counting or empty states_. If you need to display a count, you must track it using a separate assign. For empty states, you can use Tailwind classes:
 
       <div id="tasks" phx-update="stream">
         <div class="hidden only:block">No tasks yet</div>
@@ -297,5 +304,12 @@ And **never** do this:
 
 - You are FORBIDDEN from accessing the changeset in the template as it will cause errors
 - **Never** use `<.form let={f} ...>` in the template, instead **always use `<.form for={@form} ...>`**, then drive all form references from the form assign as in `@form[:field]`. The UI should **always** be driven by a `to_form/2` assigned in the LiveView module that is derived from a changeset
-<!-- phoenix:liveview-end -->
-<!-- usage-rules-end -->
+  <!-- phoenix:liveview-end -->
+  <!-- usage-rules-end -->
+
+## MCP Servers
+
+### Tidewave Tools
+
+Always use Tidewave's tools for evaluating code, querying the database, and accessing logs.
+Use `get_docs` to access documentation and the `get_source_location` tool to find module/function definitions.
