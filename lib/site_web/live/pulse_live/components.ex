@@ -52,7 +52,8 @@ defmodule SiteWeb.PulseLive.Components do
                 href={item.url}
                 target="_blank"
                 class={[
-                  "text-sm text-content-10 underline underline-offset-3 decoration-dashed decoration-content-40/40 transition-colors",
+                  "text-sm text-content-10 line-clamp-1 transition-colors",
+                  "underline underline-offset-3 decoration-dashed decoration-content-40/40",
                   "hover:decoration-solid hover:decoration-primary hover:bg-primary/4"
                 ]}
               >

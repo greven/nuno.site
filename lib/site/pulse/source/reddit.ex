@@ -32,7 +32,9 @@ defmodule Site.Pulse.Source.Reddit do
     req =
       Req.get(to_string(url),
         params: %{"limit" => limit},
-        headers: [{"User-Agent", "SitePulseBot/0.1 by greven"}]
+        headers: [
+          {"User-Agent", "NunoSite/1.0 by #{reddit_username()}"}
+        ]
       )
 
     case req do
@@ -56,4 +58,6 @@ defmodule Site.Pulse.Source.Reddit do
         {:error, reason}
     end
   end
+
+  defp reddit_username, do: System.get_env("REDDIT_USERNAME") || "nuno_site_bot"
 end

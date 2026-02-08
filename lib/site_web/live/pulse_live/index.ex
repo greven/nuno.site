@@ -17,7 +17,7 @@ defmodule SiteWeb.PulseLive.Index do
           <.icon name="lucide-activity" class="size-10 text-primary mr-3" /> Pulse
         </.header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 auto-rows-[275px] gap-x-16 gap-y-24 mb-8">
+        <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 auto-rows-[250px] gap-x-16 gap-y-16 lg:gap-y-28 mb-8">
           <Components.news_item
             id="reddit-pulse"
             title="Reddit r/programming"
