@@ -91,6 +91,30 @@
     }
   }
 
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: -1;
+
+    &:focus {
+      left: 50%;
+      top: 1rem;
+      transform: translateX(-50%);
+      width: auto;
+      height: auto;
+      padding: 0.5rem 1rem;
+      background-color: var(--color-primary);
+      color: var(--color-slate-50);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      z-index: 1000;
+    }
+  }
+
   /* Images */
 
   .image {
