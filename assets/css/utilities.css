@@ -93,7 +93,11 @@
 }
 
 @utility wide-wrapper {
-  @apply container mx-auto px-5 sm:px-20 lg:px-24;
+  @apply mx-auto px-5 not-print:container sm:px-20 lg:px-24;
+}
+
+@utility full-wrapper {
+  @apply mx-auto w-full px-5 sm:px-20 lg:px-24;
 }
 
 @utility breakout {
@@ -107,11 +111,11 @@
 }
 
 @utility link-subtle {
-  @apply text-content-10 decoration-content-40/20 hover:decoration-primary underline decoration-[1.5px] underline-offset-3 transition-colors;
+  @apply text-content-10 decoration-content-40/20 hover:decoration-primary hover:bg-primary/4 underline decoration-[1.5px] underline-offset-3 transition-colors;
 }
 
 @utility link-ghost {
-  @apply text-content-30 hover:text-content-10 hover:decoration-primary underline decoration-transparent decoration-[1.5px] underline-offset-3 transition-colors;
+  @apply text-content-30 hover:text-content-10 hover:decoration-primary hover:bg-primary/4 underline decoration-transparent decoration-[1.5px] underline-offset-3 transition-colors;
 }
 
 @utility header-link {

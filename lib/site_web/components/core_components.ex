@@ -1271,20 +1271,22 @@ defmodule SiteWeb.CoreComponents do
   attr :loading, :boolean, default: false
 
   attr :transition_duration, :integer,
-    default: 300,
+    default: 200,
     doc: "the duration of the expand/collapse transition in milliseconds"
 
-  attr :trigger_class, :string,
-    default: "text-sm font-medium text-primary text-center hover:underline hover:cursor-pointer"
-
-  attr :expand_label, :string,
+  attr :show_label, :string,
     default: gettext("Show more"),
     doc: "the label for the expand button"
 
-  attr :collapse_label, :string,
+  attr :hide_label, :string,
     default: gettext("Hide"),
     doc: "the label for the collapse button"
 
+  attr :trigger_class, :string,
+    default: "text-sm font-medium text-primary hover:underline",
+    doc: "the class for the expand/collapse button text"
+
+  attr :on_click, JS, default: %JS{}, doc: "the JS to run on the trigger click"
   attr :rest, :global
 
   slot :inner_block, required: true
@@ -1292,7 +1294,7 @@ defmodule SiteWeb.CoreComponents do
   def spoiler(assigns) do
     ~H"""
     <div {@rest}>
-      <div id={"spoiler-#{@id}"} data-open={@open} phx-hook="Spoiler">
+      <div id={"spoiler-#{@id}"} data-open={@open} data-max-height={@max_height} phx-hook="Spoiler">
         <div
           id={"spoiler-#{@id}-region"}
           style={"--spoiler-max-height: #{@max_height}; interpolate-size: allow-keywords;
@@ -1320,21 +1322,24 @@ defmodule SiteWeb.CoreComponents do
         <button
           type="button"
           class={[
-            "group mt-2 text-sm font-medium text-primary",
-            "hover:underline hover:cursor-pointer",
-            "disabled:opacity-50 disabled:text-content-10/50 disabled:cursor-not-allowed"
+            "group mt-2 rounded-xs hover:cursor-pointer",
+            "disabled:opacity-50 disabled:text-content-10/50 disabled:cursor-not-allowed",
+            "focus:outline-1 focus:outline-offset-2 focus:outline-dashed focus:outline-primary"
           ]}
           aria-expanded={@open}
           aria-controls={"spoiler-#{@id}-region"}
           data-part="spoiler-trigger"
+          data-on-click={@on_click}
           disabled={@loading}
         >
-          <span class="group-aria-expanded:hidden">
-            {@expand_label}
-          </span>
-          <span class="hidden group-aria-expanded:inline-block">
-            {@collapse_label}
-          </span>
+          <div class={@trigger_class}>
+            <span class="group-aria-expanded:hidden">
+              {@show_label}
+            </span>
+            <span class="hidden group-aria-expanded:inline-block">
+              {@hide_label}
+            </span>
+          </div>
         </button>
       </div>
     </div>

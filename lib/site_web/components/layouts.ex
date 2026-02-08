@@ -23,7 +23,12 @@ defmodule SiteWeb.Layouts do
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
 
   attr :active_link, :atom, default: nil, doc: "the active link for the header"
-  attr :wide, :boolean, default: false, doc: "whether to use the wide wrapper"
+
+  attr :max_width, :atom,
+    values: ~w(default wide full)a,
+    default: :default,
+    doc: "the wrapper max width"
+
   attr :show_progress, :boolean, default: false, doc: "whether to show the page progress bar"
   attr :progress_icon, :string, default: nil, doc: "the icon to show in the progress bar (if any)"
   attr :is_home, :boolean, default: false, doc: "whether the page is the home page"
@@ -33,15 +38,17 @@ defmodule SiteWeb.Layouts do
   def app(assigns) do
     ~H"""
     <div class="min-h-screen flex flex-col">
+      <a class="skip-link" href="#main">Skip to content</a>
       <.site_header
         active_link={@active_link}
         current_scope={@current_scope}
         show_progress={@show_progress}
         progress_icon={@progress_icon}
+        max_width={@max_width}
         is_home={@is_home}
       />
       <main class="relative flex-auto z-1">
-        <.wrapper wide={@wide}>
+        <.wrapper id="main" max_width={@max_width}>
           {render_slot(@inner_block)}
         </.wrapper>
       </main>
@@ -54,15 +61,35 @@ defmodule SiteWeb.Layouts do
     """
   end
 
+  @doc false
+
+  attr :class, :string, default: nil
+
+  attr :max_width, :atom,
+    values: ~w(default wide full)a,
+    default: :default,
+    doc: "the wrapper max width"
+
+  attr :rest, :global
+
+  slot :inner_block, required: true
+
   def wrapper(assigns) do
     assigns =
       assigns
       |> assign_new(:wide, fn -> false end)
       |> assign_new(:class, fn -> nil end)
-      |> assign(:wrapper_class, if(assigns[:wide], do: "wide-wrapper", else: "wrapper"))
+      |> assign(
+        :wrapper_class,
+        case assigns[:max_width] do
+          :wide -> "wide-wrapper"
+          :full -> "full-wrapper"
+          _ -> "wrapper"
+        end
+      )
 
     ~H"""
-    <div class={[@class, @wrapper_class]}>
+    <div class={[@class, @wrapper_class]} {@rest}>
       {render_slot(@inner_block)}
     </div>
     """
@@ -91,6 +118,80 @@ defmodule SiteWeb.Layouts do
     >
       {render_slot(@inner_block)}
     </div>
+    """
+  end
+
+  @doc false
+
+  attr :current_scope, :map, default: nil
+  attr :active_link, :atom, required: true
+  attr :class, :string, default: nil
+
+  attr :max_width, :atom,
+    values: ~w(default wide full)a,
+    default: :default,
+    doc: "the wrapper max width"
+
+  attr :show_progress, :boolean, default: false
+  attr :progress_icon, :string, default: nil
+  attr :is_home, :boolean, default: false
+  attr :rest, :global
+
+  def site_header(assigns) do
+    ~H"""
+    <header
+      id="site-header"
+      phx-hook="SiteHeader"
+      class={[
+        "fixed w-full top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
+        "bg-surface/30 border-b border-dashed border-transparent shadow-gray-900/5 supports-backdrop-filter:blur(0)",
+        "data-scrolled:bg-surface/95 data-scrolled:supports-backdrop-filter:bg-surface/80 data-scrolled:border-surface-40
+         data-scrolled:shadow-sm data-scrolled:backdrop-blur-sm",
+        "print:hidden"
+      ]}
+      style="height:var(--header-height); margin-bottom:var(--header-mb)"
+      data-progress={if(@show_progress, do: "true", else: "false")}
+      {@rest}
+    >
+      <div
+        :if={@show_progress}
+        id="page-progress"
+        class="absolute -bottom-[1.5px] left-0 h-[1.5px] w-(--page-progress) bg-primary shadow-gray-900/10 select-none"
+      >
+      </div>
+
+      <.icon
+        :if={@show_progress and @progress_icon}
+        id="page-progress-icon"
+        name={@progress_icon}
+        class="hidden absolute -bottom-2.5 left-(--page-progress) size-5 bg-content-40"
+      />
+
+      <.wrapper max_width={@max_width}>
+        <div class="flex items-center justify-between py-3">
+          <.site_logo is_home={@is_home} />
+          <.site_nav active_link={@active_link} current_scope={@current_scope} />
+        </div>
+      </.wrapper>
+    </header>
+    """
+  end
+
+  @doc false
+
+  def site_footer(assigns) do
+    ~H"""
+    <footer class="z-0 flex flex-col items-center gap-4 pt-8 pb-4 md:pt-12">
+      <.wrapper>
+        <div class="my-1 flex items-center gap-2 justify-center text-xs font-headings text-content-30">
+          <.footer_copyright />
+          <.footer_divider class="print:hidden" />
+          <span class="link-ghost print:hidden">
+            <a href={~p"/sitemap"}>Sitemap</a>
+          </span>
+        </div>
+      </.wrapper>
+    </footer>
     """
   end
 
@@ -128,74 +229,6 @@ defmodule SiteWeb.Layouts do
         </span>
       </span>
     </.link>
-    """
-  end
-
-  @doc false
-
-  attr :current_scope, :map, default: nil
-  attr :active_link, :atom, required: true
-  attr :show_progress, :boolean, default: false
-  attr :progress_icon, :string, default: nil
-  attr :class, :string, default: nil
-  attr :is_home, :boolean, default: false
-  attr :rest, :global
-
-  def site_header(assigns) do
-    ~H"""
-    <header
-      id="site-header"
-      phx-hook="SiteHeader"
-      class={[
-        "fixed w-full top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500",
-        "bg-surface/30 border-b border-dashed border-transparent shadow-gray-900/5 supports-backdrop-filter:blur(0)",
-        "data-scrolled:bg-surface/95 data-scrolled:supports-backdrop-filter:bg-surface/80 data-scrolled:border-surface-40
-         data-scrolled:shadow-sm data-scrolled:backdrop-blur-sm",
-        "print:hidden"
-      ]}
-      style="height:var(--header-height); margin-bottom:var(--header-mb)"
-      data-progress={if(@show_progress, do: "true", else: "false")}
-      {@rest}
-    >
-      <div
-        :if={@show_progress}
-        id="page-progress"
-        class="absolute -bottom-[1.5px] left-0 h-[1.5px] w-(--page-progress) bg-primary shadow-gray-900/10 select-none"
-      >
-      </div>
-
-      <.icon
-        :if={@show_progress and @progress_icon}
-        id="page-progress-icon"
-        name={@progress_icon}
-        class="hidden absolute -bottom-2.5 left-(--page-progress) size-5 bg-content-40"
-      />
-
-      <div class="wrapper">
-        <div class="flex items-center justify-between py-3">
-          <.site_logo is_home={@is_home} />
-          <.site_nav active_link={@active_link} current_scope={@current_scope} />
-        </div>
-      </div>
-    </header>
-    """
-  end
-
-  @doc false
-
-  def site_footer(assigns) do
-    ~H"""
-    <footer class="z-0 flex flex-col items-center gap-4 pt-8 pb-4 md:pt-12">
-      <.wrapper>
-        <div class="my-1 flex items-center gap-2 justify-center text-xs font-headings text-content-30">
-          <.footer_copyright />
-          <.footer_divider class="print:hidden" />
-          <span class="link-ghost print:hidden">
-            <a href={~p"/sitemap"}>Sitemap</a>
-          </span>
-        </div>
-      </.wrapper>
-    </footer>
     """
   end
 
