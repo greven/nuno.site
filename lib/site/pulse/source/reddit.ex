@@ -27,15 +27,9 @@ defmodule Site.Pulse.Source.Reddit do
       {"User-Agent", "NunoSite/1.0 by #{reddit_username()}"}
     ]
 
-    req =
-      api_url("programming", sort, limit)
-      |> Req.get(
-        params: %{"limit" => limit},
-        headers: headers,
-        retry: false
-      )
-
-    case req do
+    subreddit_url("programming", sort, limit)
+    |> Req.get(headers: headers, retry: false)
+    |> case do
       {:ok, %{status: 200, body: %{"data" => %{"children" => posts}}}} ->
         items =
           posts
@@ -57,7 +51,7 @@ defmodule Site.Pulse.Source.Reddit do
     end
   end
 
-  defp api_url(subreddit, sort, limit) do
+  defp subreddit_url(subreddit, sort, limit) do
     "#{base_url()}/r/#{subreddit}"
     |> URI.parse()
     |> URI.append_path("/#{sort}")
