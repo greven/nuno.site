@@ -4,7 +4,7 @@ defmodule Site.MixProject do
   def project do
     [
       app: :site,
-      version: "0.3.3",
+      version: "0.3.4",
       elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
