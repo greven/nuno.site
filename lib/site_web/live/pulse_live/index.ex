@@ -17,11 +17,12 @@ defmodule SiteWeb.PulseLive.Index do
           <.icon name="lucide-activity" class="size-10 text-primary mr-3" /> Pulse
         </.header>
 
-        <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 auto-rows-[250px] gap-x-16 gap-y-16 lg:gap-y-28 mb-8">
+        <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
           <Components.news_item
             id="reddit-pulse"
             title="Reddit r/programming"
             icon="si-reddit"
+            accent="#FF4500"
             link="https://www.reddit.com/r/programming"
             async={@reddit_news}
             news={@streams.reddit_news}
@@ -31,6 +32,7 @@ defmodule SiteWeb.PulseLive.Index do
             id="hacker-news-pulse"
             title="Hacker News"
             icon="lucide-square-chevron-right"
+            accent="#FF6600"
             link="https://news.ycombinator.com"
             async={@hacker_news}
             news={@streams.hacker_news}
@@ -40,6 +42,7 @@ defmodule SiteWeb.PulseLive.Index do
             id="slashdot-news-pulse"
             title="Slashdot"
             icon="lucide-copy-slash"
+            accent="#016765"
             link="https://slashdot.org"
             async={@slashdot_news}
             news={@streams.slashdot_news}
@@ -49,6 +52,7 @@ defmodule SiteWeb.PulseLive.Index do
             id="the-verge-news-pulse"
             title="The Verge"
             icon="lucide-circle-power"
+            accent="#5100FE"
             link="https://www.theverge.com"
             async={@the_verge_news}
             news={@streams.the_verge_news}
@@ -58,6 +62,7 @@ defmodule SiteWeb.PulseLive.Index do
             id="bbc-news-pulse"
             title="BBC News"
             icon="lucide-newspaper"
+            accent="#B80000"
             link="https://www.bbc.co.uk"
             async={@bbc_news}
             news={@streams.bbc_news}
@@ -67,6 +72,7 @@ defmodule SiteWeb.PulseLive.Index do
             id="twiv-pulse"
             title="This Week in Videogames"
             icon="lucide-gamepad-2"
+            accent="#0567DA"
             link="https://thisweekinvideogames.com"
             async={@twiv_news}
             news={@streams.twiv_news}

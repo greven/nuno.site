@@ -11,12 +11,13 @@ defmodule SiteWeb.PulseLive.Components do
   attr :title, :string, required: true
   attr :icon, :string, default: "lucide-box"
   attr :link, :string, default: nil
+  attr :accent, :string, default: nil
   attr :class, :string, default: nil
   attr :rest, :global
 
   def news_item(assigns) do
     ~H"""
-    <article id={@id} class={@class} {@rest}>
+    <article id={@id} class={@class} style={@accent && "--link-accent: #{@accent};"} {@rest}>
       <.async_result :let={_async} assign={@async}>
         <:loading>
           <div class="min-h-75">
@@ -34,34 +35,26 @@ defmodule SiteWeb.PulseLive.Components do
 
         <.item_header title={@title} icon={@icon} link={@link} />
 
-        <.spoiler
-          id={"#{@id}-spoiler"}
-          max_height="250px"
-          loading={@async.loading}
-          transition_duration={100}
-          trigger_class="text-xs font-medium text-primary uppercase hover:underline"
-          on_click={JS.toggle_class("row-span-2", to: "##{@id}")}
+        <ul
+          id={"#{@id}-list"}
+          class="flex flex-col ml-3 pl-6 border-l border-border/60"
+          phx-update={is_struct(@news, Phoenix.LiveView.LiveStream) && "stream"}
         >
-          <ul
-            id={"#{@id}-list"}
-            class="flex flex-col ml-3 pl-6 border-l border-border/60"
-            phx-update={is_struct(@news, Phoenix.LiveView.LiveStream) && "stream"}
-          >
-            <li :for={{dom_id, item} <- @news} id={dom_id} class="py-1.5">
-              <.link
-                href={item.url}
-                target="_blank"
-                class={[
-                  "text-sm text-content-10 line-clamp-1 transition-colors",
-                  "underline underline-offset-3 decoration-dashed decoration-content-40/40",
-                  "hover:decoration-solid hover:decoration-primary hover:bg-primary/4"
-                ]}
-              >
-                {item.title}
-              </.link>
-            </li>
-          </ul>
-        </.spoiler>
+          <li :for={{dom_id, item} <- @news} id={dom_id} class="py-2">
+            <.link
+              href={item.url}
+              target="_blank"
+              class={[
+                "text-sm text-content-10 line-clamp-2 transition-colors",
+                "underline underline-offset-3 decoration-dashed decoration-content-40/40",
+                "hover:decoration-solid hover:decoration-(--link-accent) hover:bg-primary/4",
+                "visited:text-content-40/75"
+              ]}
+            >
+              {item.title}
+            </.link>
+          </li>
+        </ul>
       </.async_result>
     </article>
     """
@@ -88,7 +81,7 @@ defmodule SiteWeb.PulseLive.Components do
         <a href={@link} target="_blank">{@title}</a>
         <.icon
           name="lucide-arrow-up-right"
-          class="size-5 ml-1 text-content-40/60 group-hover:text-primary transition-colors"
+          class="size-5 ml-1 text-content-40/60 group-hover:text-(--link-accent) transition-colors"
         />
       <% else %>
         {@title}

@@ -13,7 +13,7 @@ defmodule Site.Pulse do
   end
 
   def fetch_items(source_name, opts \\ []) do
-    limit = Keyword.get(opts, :limit, 15)
+    limit = Keyword.get(opts, :limit, 10)
     opts = Keyword.put(opts, :limit, limit)
 
     case source(source_name) do
