@@ -37,7 +37,7 @@ defmodule Site.MixProject do
     [
       # Phoenix Framework
       {:phoenix, "~> 1.8.3"},
-      {:phoenix_live_view, "~> 1.1.19"},
+      {:phoenix_live_view, "~> 1.1.22"},
       {:phoenix_ecto, "~> 4.7"},
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
@@ -63,6 +63,7 @@ defmodule Site.MixProject do
       {:nimble_csv, "~> 1.3"},
       {:nimble_publisher, "~> 1.1"},
       {:ecto_sqlite3_extras, "~> 1.2"},
+      {:html_sanitize_ex, "~> 1.4"},
       {:error_tracker, "~> 0.7"},
       {:dotenvy, "~> 1.1"},
       {:recase, "~> 0.9"},
@@ -78,7 +79,7 @@ defmodule Site.MixProject do
       {:igniter, "~> 0.7", only: [:dev]},
       {:credo, "~> 1.7", only: :dev, runtime: false},
       {:tidewave, "~> 0.5", only: [:dev]},
-      {:live_debugger, "~> 0.5", only: :dev},
+      {:live_debugger, "~> 0.6", only: :dev},
       # {:benchee, "~> 1.4", only: :dev},
 
       # Assets

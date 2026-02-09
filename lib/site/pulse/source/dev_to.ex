@@ -1,6 +1,6 @@
-defmodule Site.Pulse.Source.Slashdot do
+defmodule Site.Pulse.Source.DevTo do
   @moduledoc """
-  Fetches the latest news from Slashdot RSS feed.
+  Source module for fetching news from Dev Community RSS feed.
   """
 
   use Nebulex.Caching
@@ -12,33 +12,36 @@ defmodule Site.Pulse.Source.Slashdot do
   @impl true
   def meta do
     %Site.Pulse.Meta{
-      name: "Slashdot",
-      description: "Latest news from Slashdot.",
-      url: URI.parse("https://rss.slashdot.org/Slashdot/slashdotMain")
+      name: "Dev Community",
+      description: "Stories from Dev Community feed.",
+      url: URI.parse("https://www.dev.to/feed")
     }
   end
 
   @impl true
-  @decorate cacheable(cache: Site.Cache, key: :slashdot_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(cache: Site.Cache, key: :dev_community_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
     meta = meta()
 
-    case Req.get(to_string(meta.url)) do
+    req = Req.get(to_string(meta.url))
+
+    case req do
       {:ok, %{status: 200, body: body}} ->
         items =
           body
-          |> SweetXml.parse()
           |> SweetXml.xpath(
             ~x"//item"l,
+            id: ~x"./guid/text()"s,
             title: ~x"./title/text()"s,
-            url: ~x"./link/text()"s
+            link: ~x"./link/text()"s
           )
-          |> Enum.map(fn item ->
+          |> Enum.take(limit)
+          |> Enum.map(fn %{id: id, title: title, link: link} ->
             %Site.Pulse.Item{
-              id: item.url,
-              title: HtmlSanitizeEx.strip_tags(item.title),
-              url: item.url
+              id: id,
+              title: title,
+              url: link
             }
           end)
           |> Enum.take(limit)

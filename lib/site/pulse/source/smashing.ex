@@ -1,6 +1,6 @@
-defmodule Site.Pulse.Source.TheVerge do
+defmodule Site.Pulse.Source.Smashing do
   @moduledoc """
-  Source module for fetching news from The Verge RSS feed.
+  Source module for fetching news from Smashing Magazine RSS feed.
   """
 
   use Nebulex.Caching
@@ -12,14 +12,18 @@ defmodule Site.Pulse.Source.TheVerge do
   @impl true
   def meta do
     %Site.Pulse.Meta{
-      name: "The Verge",
-      description: "Stories from The Verge feed.",
-      url: URI.parse("https://www.theverge.com/rss/index.xml")
+      name: "Smashing Magazine",
+      description: "Stories from Smashing Magazine feed.",
+      url: URI.parse("https://www.smashingmagazine.com/feed")
     }
   end
 
   @impl true
-  @decorate cacheable(cache: Site.Cache, key: :the_verge_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(
+              cache: Site.Cache,
+              key: :smashing_magazine_pulse,
+              opts: [ttl: :timer.hours(1)]
+            )
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
     meta = meta()
@@ -31,10 +35,10 @@ defmodule Site.Pulse.Source.TheVerge do
         items =
           body
           |> SweetXml.xpath(
-            ~x"//entry"l,
-            id: ~x"./id/text()"s,
+            ~x"//item"l,
+            id: ~x"./guid/text()"s,
             title: ~x"./title/text()"s,
-            link: ~x"./link/@href"s
+            link: ~x"./link/text()"s
           )
           |> Enum.take(limit)
           |> Enum.map(fn %{id: id, title: title, link: link} ->

@@ -7,9 +7,8 @@ defmodule Site.Pulse.Item do
           id: String.t(),
           title: String.t(),
           url: String.t(),
-          description: String.t() | nil,
-          source: String.t() | nil
+          description: String.t() | nil
         }
 
-  defstruct [:id, :title, :url, :description, :source]
+  defstruct [:id, :title, :url, :description]
 end

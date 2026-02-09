@@ -119,3 +119,6 @@ priv/content/images/uploads/
 *.tar.gz
 site-*.tar.gz
 /release/
+
+# Cloudflare
+.wrangler/

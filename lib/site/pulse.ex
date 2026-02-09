@@ -26,9 +26,11 @@ defmodule Site.Pulse do
   defp source(:reddit), do: Site.Pulse.Source.Reddit
   defp source(:hacker_news), do: Site.Pulse.Source.HackerNews
   defp source(:slashdot), do: Site.Pulse.Source.Slashdot
-  defp source(:bbc), do: Site.Pulse.Source.BBC
+  defp source(:tnw), do: Site.Pulse.Source.TNW
+  defp source(:smashing), do: Site.Pulse.Source.Smashing
+  defp source(:dev_to), do: Site.Pulse.Source.DevTo
   defp source(:the_verge), do: Site.Pulse.Source.TheVerge
-  defp source(:wired), do: Site.Pulse.Source.Wired
+  defp source(:bbc), do: Site.Pulse.Source.BBC
   defp source(:twiv), do: Site.Pulse.Source.TWIV
   defp source(_), do: nil
 end

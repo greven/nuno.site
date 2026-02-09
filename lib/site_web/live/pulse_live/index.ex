@@ -10,7 +10,7 @@ defmodule SiteWeb.PulseLive.Index do
       flash={@flash}
       current_scope={@current_scope}
       active_link={@active_link}
-      max_width={:full}
+      max_width={:wide}
     >
       <Layouts.page_content class="flex flex-col gap-16">
         <.header tag="h1">
@@ -19,16 +19,6 @@ defmodule SiteWeb.PulseLive.Index do
 
         <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
           <Components.news_item
-            id="reddit-pulse"
-            title="Reddit r/programming"
-            icon="si-reddit"
-            accent="#FF4500"
-            link="https://www.reddit.com/r/programming"
-            async={@reddit_news}
-            news={@streams.reddit_news}
-          />
-
-          <Components.news_item
             id="hacker-news-pulse"
             title="Hacker News"
             icon="lucide-square-chevron-right"
@@ -36,6 +26,26 @@ defmodule SiteWeb.PulseLive.Index do
             link="https://news.ycombinator.com"
             async={@hacker_news}
             news={@streams.hacker_news}
+          />
+
+          <Components.news_item
+            id="smashing-news-pulse"
+            title="Smashing Magazine"
+            icon="lucide-blend"
+            accent="#D33A2C"
+            link="https://www.smashingmagazine.com"
+            async={@smashing_news}
+            news={@streams.smashing_news}
+          />
+
+          <Components.news_item
+            id="reddit-pulse"
+            title="Reddit r/programming"
+            icon="si-reddit"
+            accent="#FF4500"
+            link="https://www.reddit.com/r/programming"
+            async={@reddit_news}
+            news={@streams.reddit_news}
           />
 
           <Components.news_item
@@ -51,11 +61,31 @@ defmodule SiteWeb.PulseLive.Index do
           <Components.news_item
             id="the-verge-news-pulse"
             title="The Verge"
-            icon="lucide-circle-power"
+            icon="lucide-smartphone-charging"
             accent="#5100FE"
             link="https://www.theverge.com"
             async={@the_verge_news}
             news={@streams.the_verge_news}
+          />
+
+          <Components.news_item
+            id="the-next-web-news-pulse"
+            title="The Next Web"
+            icon="lucide-step-forward"
+            accent="#64F"
+            link="https://www.thenextweb.com"
+            async={@tnw_news}
+            news={@streams.tnw_news}
+          />
+
+          <Components.news_item
+            id="dev-to-news-pulse"
+            title="Dev Community"
+            icon="lucide-message-circle-code"
+            accent="#3B49DF"
+            link="https://dev.to"
+            async={@dev_to_news}
+            news={@streams.dev_to_news}
           />
 
           <Components.news_item
@@ -93,10 +123,13 @@ defmodule SiteWeb.PulseLive.Index do
       |> assign(:year_progress, year_progress)
       |> stream_async(:reddit_news, fn -> Site.Pulse.fetch_items(:reddit) end)
       |> stream_async(:hacker_news, fn -> Site.Pulse.fetch_items(:hacker_news) end)
+      |> stream_async(:smashing_news, fn -> Site.Pulse.fetch_items(:smashing) end)
       |> stream_async(:slashdot_news, fn -> Site.Pulse.fetch_items(:slashdot) end)
       |> stream_async(:the_verge_news, fn -> Site.Pulse.fetch_items(:the_verge) end)
+      |> stream_async(:tnw_news, fn -> Site.Pulse.fetch_items(:tnw) end)
       |> stream_async(:bbc_news, fn -> Site.Pulse.fetch_items(:bbc) end)
       |> stream_async(:twiv_news, fn -> Site.Pulse.fetch_items(:twiv) end)
+      |> stream_async(:dev_to_news, fn -> Site.Pulse.fetch_items(:dev_to) end)
 
     {:ok, socket}
   end
