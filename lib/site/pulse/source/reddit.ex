@@ -22,13 +22,9 @@ defmodule Site.Pulse.Source.Reddit do
     sort = Keyword.get(opts, :sort, "top")
     limit = Keyword.get(opts, :limit, 20)
 
-    headers = [
-      {"Accept", "application/json"},
-      {"User-Agent", "NunoSite/1.0 by #{reddit_username()}"}
-    ]
+    url = url("programming", sort, limit)
 
-    subreddit_url("programming", sort, limit)
-    |> Req.get(headers: headers, retry: false)
+    Req.get(url, headers: headers(), retry: false)
     |> case do
       {:ok, %{status: 200, body: %{"data" => %{"children" => posts}}}} ->
         items =
@@ -51,7 +47,7 @@ defmodule Site.Pulse.Source.Reddit do
     end
   end
 
-  defp subreddit_url(subreddit, sort, limit) do
+  defp url(subreddit, sort, limit) do
     "#{base_url()}/r/#{subreddit}"
     |> URI.parse()
     |> URI.append_path("/#{sort}")
@@ -60,7 +56,12 @@ defmodule Site.Pulse.Source.Reddit do
     |> to_string()
   end
 
-  defp reddit_username, do: System.get_env("REDDIT_USERNAME") || "nuno_site_bot"
+  defp headers do
+    [
+      {"Accept", "application/json"},
+      {"User-Agent", "NunoSite/1.0 by #{reddit_username()}"}
+    ] ++ proxy_auth_header()
+  end
 
   # In prod we want to Proxy the URL, but in dev we can hit Reddit directly
   defp base_url do
@@ -68,4 +69,18 @@ defmodule Site.Pulse.Source.Reddit do
       do: "#{System.get_env("REDDIT_PROXY_URL")}/proxy",
       else: "https://www.reddit.com"
   end
+
+  # Add authentication header when using the proxy in production
+  defp proxy_auth_header do
+    if Application.get_env(:site, :env) == :prod do
+      case System.get_env("REDDIT_PROXY_SECRET") do
+        nil -> []
+        secret -> [{"X-Proxy-Auth", secret}]
+      end
+    else
+      []
+    end
+  end
+
+  defp reddit_username, do: System.get_env("REDDIT_USERNAME") || "nuno_site_bot"
 end
