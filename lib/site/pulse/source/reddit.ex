@@ -21,10 +21,10 @@ defmodule Site.Pulse.Source.Reddit do
   def fetch_items(opts \\ []) do
     sort = Keyword.get(opts, :sort, "top")
     limit = Keyword.get(opts, :limit, 20)
-    meta = meta()
 
     url =
-      meta.url
+      "#{base_url()}/r/programming"
+      |> URI.parse()
       |> URI.append_path("/#{sort}")
       |> URI.append_path("/.json")
       |> URI.append_query("limit=#{limit}")
@@ -60,4 +60,11 @@ defmodule Site.Pulse.Source.Reddit do
   end
 
   defp reddit_username, do: System.get_env("REDDIT_USERNAME") || "nuno_site_bot"
+
+  # In prod we want to Proxy the URL, but in dev we can hit Reddit directly
+  defp base_url do
+    if Application.get_env(:site, :env) == :prod,
+      do: System.get_env("REDDIT_PROXY_URL"),
+      else: "https://www.reddit.com"
+  end
 end
