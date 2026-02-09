@@ -82,5 +82,6 @@ defmodule Site.Pulse.Source.Reddit do
     end
   end
 
-  defp reddit_username, do: System.get_env("REDDIT_USERNAME") || "nuno_site_bot"
+  defp reddit_username,
+    do: System.get_env("REDDIT_USERNAME") || "nuno_site_bot"
 end

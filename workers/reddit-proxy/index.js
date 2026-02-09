@@ -2,7 +2,12 @@
  * Cloudflare Worker: Reddit API Proxy
  *
  * Proxies requests to Reddit API to avoid IP blocking on the VPS.
+ * Supports caching to reduce API calls.
  *
+ * Security features:
+ * - Secret token authentication via X-Proxy-Auth header (primary security)
+ * - Rate limiting (100 requests per minute per IP)
+ * - Only allows GET requests
  */
 
 // In-memory rate limiting
@@ -34,31 +39,11 @@ export default {
     }
 
     if (!authToken || authToken !== expectedToken) {
-      console.warn("Unauthorized request: Invalid or missing auth token");
-      return new Response("Forbidden", { status: 403 });
-    }
-
-    // Validate ORIGIN/REFERER
-    const allowedDomains = ["nuno.site", "www.nuno.site"];
-    const origin = request.headers.get("Origin");
-    const referer = request.headers.get("Referer");
-
-    let isValidOrigin = false;
-
-    // Check Origin header
-    if (origin) {
-      const originHost = new URL(origin).hostname;
-      isValidOrigin = allowedDomains.includes(originHost);
-    }
-    // Fallback to Referer header if Origin is not present
-    else if (referer) {
-      const refererHost = new URL(referer).hostname;
-      isValidOrigin = allowedDomains.includes(refererHost);
-    }
-
-    if (!isValidOrigin) {
+      const origin = request.headers.get("Origin");
+      const referer = request.headers.get("Referer");
+      const ip = request.headers.get("CF-Connecting-IP");
       console.warn(
-        `Unauthorized request: Invalid origin/referer - Origin: ${origin}, Referer: ${referer}`,
+        `Unauthorized request: Invalid or missing auth token - IP: ${ip}, Origin: ${origin}, Referer: ${referer}`,
       );
       return new Response("Forbidden", { status: 403 });
     }
@@ -104,8 +89,7 @@ export default {
       }
     }
 
-    // Extract Reddit path from /proxy/...
-    // Example: /proxy/r/programming/top/.json becomes https://www.reddit.com/r/programming/top/.json
+    // Proxy request to Reddit API
     const redditPath = url.pathname.replace("/proxy/", "");
     const redditUrl = `https://www.reddit.com/${redditPath}${url.search}`;
 
@@ -143,9 +127,12 @@ export default {
       }
     }
 
-    // Add CORS headers to response (only for valid origin)
+    // Add CORS headers to response
     const newResponse = new Response(response.body, response);
-    newResponse.headers.set("Access-Control-Allow-Origin", origin || referer);
+    const origin = request.headers.get("Origin");
+    if (origin) {
+      newResponse.headers.set("Access-Control-Allow-Origin", origin);
+    }
     newResponse.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
     newResponse.headers.set(
       "Access-Control-Allow-Headers",
@@ -157,23 +144,14 @@ export default {
 };
 
 function handlePreflight(request) {
-  const allowedDomains = ["nuno.site", "www.nuno.site"];
   const origin = request.headers.get("Origin");
 
-  // Validate origin for preflight
-  if (origin) {
-    const originHost = new URL(origin).hostname;
-    if (allowedDomains.includes(originHost)) {
-      return new Response(null, {
-        headers: {
-          "Access-Control-Allow-Origin": origin,
-          "Access-Control-Allow-Methods": "GET, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, X-Proxy-Auth",
-          "Access-Control-Max-Age": "86400", // Cache preflight for 24 hours
-        },
-      });
-    }
-  }
-
-  return new Response("Forbidden", { status: 403 });
+  return new Response(null, {
+    headers: {
+      "Access-Control-Allow-Origin": origin || "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, X-Proxy-Auth",
+      "Access-Control-Max-Age": "86400", // Cache preflight for 24 hours
+    },
+  });
 }
