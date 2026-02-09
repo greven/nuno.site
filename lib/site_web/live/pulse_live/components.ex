@@ -40,14 +40,14 @@ defmodule SiteWeb.PulseLive.Components do
           class="flex flex-col ml-3 pl-6 border-l border-border/60"
           phx-update={is_struct(@news, Phoenix.LiveView.LiveStream) && "stream"}
         >
-          <li :for={{dom_id, item} <- @news} id={dom_id} class="py-2">
+          <li :for={{dom_id, item} <- @news} id={dom_id} class="py-1.5">
             <.link
               href={item.url}
               target="_blank"
               class={[
-                "text-sm text-content-10 line-clamp-2 transition-colors",
+                "inline-block text-sm text-content-10 line-clamp-2 transition-colors",
                 "underline underline-offset-3 decoration-dashed decoration-content-40/40",
-                "hover:decoration-solid hover:decoration-(--link-accent) hover:bg-primary/4",
+                "hover:decoration-solid hover:decoration-(--link-accent) hover:bg-(--link-accent)/4 dark:hover:bg-(--link-accent)/10",
                 "visited:text-content-40/75"
               ]}
             >
