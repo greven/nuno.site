@@ -2,12 +2,6 @@
  * Cloudflare Worker: Reddit API Proxy
  *
  * Proxies requests to Reddit API to avoid IP blocking on the VPS.
- * Supports caching to reduce API calls.
- *
- * Security features:
- * - Secret token authentication via X-Proxy-Auth header (primary security)
- * - Rate limiting (100 requests per minute per IP)
- * - Only allows GET requests
  */
 
 // In-memory rate limiting
