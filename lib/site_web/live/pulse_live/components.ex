@@ -20,14 +20,16 @@ defmodule SiteWeb.PulseLive.Components do
     <article id={@id} class={@class} style={@accent && "--link-accent: #{@accent};"} {@rest}>
       <.async_result :let={_async} assign={@async}>
         <:loading>
-          <div class="min-h-75">
+          <div class="flex flex-col min-h-80">
             <.item_header title={@title} icon={@icon} link={@link} />
-            <div class="mt-2 font-medium text-content-40/50 animate-pulse">Loading...</div>
+            <div class="flex-1 flex items-center justify-center">
+              <.spinner />
+            </div>
           </div>
         </:loading>
 
         <:failed>
-          <div class="min-h-75">
+          <div class="min-h-80">
             <.item_header title={@title} icon={@icon} link={@link} />
             <div class="mt-2 font-medium text-content-40/50">Failed to load source.</div>
           </div>
