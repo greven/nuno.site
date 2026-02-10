@@ -4,14 +4,16 @@ defmodule Site.Sitemap do
   def pages do
     [
       {"Home", "/"},
+      {"Blog", "/blog"},
       {"About", "/about"},
-      {"Blog", "/blog"}
+      {"Resume", "/resume"}
     ]
   end
 
   def other_pages do
     [
-      {"Resume", "/resume"},
+      {"Stack", "/uses"},
+      {"Pulse", "/pulse"},
       {"Music", "/music"},
       {"Books", "/books"},
       {"Gaming", "/gaming"},
@@ -20,10 +22,10 @@ defmodule Site.Sitemap do
       {"Photography", "/photos"},
       {"Bookmarks", "/bookmarks"},
       {"Tags", "/tags"},
-      {"Stack", "/stack"},
       {"Analytics", "/analytics"},
       {"Categories", "/categories"},
       {"Tags", "/tags"},
+      {"Kitchen Sink", "/sink"},
       {"RSS", "/rss"}
     ]
   end
