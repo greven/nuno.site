@@ -307,7 +307,7 @@ defmodule SiteWeb.HomeLive.Components do
           alt="Album artwork"
           crossorigin="anonymous"
           class={[
-            "rounded-md object-cover opacity-10 transition-all duration-400 blur-xs brightness-75",
+            "rounded-md object-cover opacity-10 transition-all duration-400 blur-xs brightness-70",
             "group-hover/card:brightness-100 group-hover/card:blur-none group-hover/card:opacity-15",
             @class
           ]}
