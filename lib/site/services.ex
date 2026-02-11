@@ -5,6 +5,7 @@ defmodule Site.Services do
 
   use Nebulex.Caching
 
+  alias Site.Services.Weather
   alias Site.Services.Bluesky
   alias Site.Services.Lastfm
   alias Site.Services.Goodreads
@@ -22,6 +23,18 @@ defmodule Site.Services do
     {"Post Rock", "5IkU9IYbSYiK31bjZJC4rm"},
     {"Heartful", "6h9TQZwSrow8mdw5YZKYN8"}
   ]
+
+  ## Weather
+
+  @decorate cacheable(cache: Site.Cache, key: :weather_forecast, opts: [ttl: :timer.minutes(20)])
+  def get_weather_forecast do
+    Weather.get_forecast()
+  end
+
+  @decorate cacheable(cache: Site.Cache, key: :air_quality, opts: [ttl: :timer.minutes(60)])
+  def get_weather_air_quality do
+    Weather.get_air_quality()
+  end
 
   ## Bluesky
 
@@ -58,7 +71,7 @@ defmodule Site.Services do
 
   ## Music
 
-  @decorate cacheable(cache: Site.Cache, key: {:now_playing}, opts: [ttl: :timer.seconds(30)])
+  @decorate cacheable(cache: Site.Cache, key: :now_playing, opts: [ttl: :timer.seconds(30)])
   def get_now_playing do
     Lastfm.get_now_playing()
   end

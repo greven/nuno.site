@@ -38,6 +38,8 @@ config :site, :cdn,
   endpoint_url: env!("R2_ENDPOINT_URL", :string!, "public-endpoint-url"),
   bucket: env!("R2_BUCKET_NAME", :string!, "bucket-name")
 
+config :site, :geo, coords: env!("COORDS", :string!, "latitude;longitude")
+
 # ------------------------------------------
 #  Production environment
 # ------------------------------------------

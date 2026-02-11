@@ -17,6 +17,12 @@ defmodule SiteWeb.PulseLive.Index do
           <.icon name="lucide-activity" class="size-10 text-primary mr-3" /> Pulse
         </.header>
 
+        <div class="w-full flex justify-end items-center gap-8">
+          <Components.clock />
+          <Components.calendar year_progress={@year_progress} />
+          <Components.weather weather={@weather} air_quality={@air_quality} />
+        </div>
+
         <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
           <Components.news_item
             id="hacker-news-pulse"
@@ -121,6 +127,8 @@ defmodule SiteWeb.PulseLive.Index do
     socket =
       socket
       |> assign(:year_progress, year_progress)
+      |> assign_async(:weather, fn -> {:ok, %{weather: get_weather()}} end)
+      |> assign_async(:air_quality, fn -> {:ok, %{air_quality: get_air_quality()}} end)
       |> stream_async(:reddit_news, fn -> Site.Pulse.fetch_items(:reddit) end)
       |> stream_async(:hacker_news, fn -> Site.Pulse.fetch_items(:hacker_news) end)
       |> stream_async(:smashing_news, fn -> Site.Pulse.fetch_items(:smashing) end)
@@ -132,5 +140,32 @@ defmodule SiteWeb.PulseLive.Index do
       |> stream_async(:dev_to_news, fn -> Site.Pulse.fetch_items(:dev_to) end)
 
     {:ok, socket}
+  end
+
+  defp get_weather do
+    case Site.Services.get_weather_forecast() do
+      {:ok, weather} ->
+        %{
+          temp: weather.current.temperature.value,
+          temp_unit: weather.current.temperature.unit,
+          apparent_temp: weather.current.apparent_temperature.value,
+          temp_max: weather.daily.temperature_max.values |> List.first(),
+          temp_min: weather.daily.temperature_min.values |> List.first(),
+          rain_chance: weather.daily.precipitation_probability_max.values |> List.first(),
+          condition: Site.Services.Weather.weather_code_description(weather.current.weather_code),
+          weather_code: weather.current.weather_code,
+          is_day: weather.current.is_day
+        }
+
+      {:error, _reason} ->
+        nil
+    end
+  end
+
+  defp get_air_quality do
+    case Site.Services.get_weather_air_quality() do
+      {:ok, air_quality} -> %{aqi: air_quality.aqi}
+      {:error, _reason} -> nil
+    end
   end
 end

@@ -57,7 +57,7 @@ config :bun,
     cd: Path.expand("../assets", __DIR__)
   ]
 
-# With bun, contrary to esbuild, we need to specify where colocated JS files should be placed
+# Bun needs to specify where colocated JS files should be placed
 config :phoenix_live_view, :colocated_js,
   target_directory: Path.expand("../assets/node_modules/phoenix-colocated", __DIR__)
 

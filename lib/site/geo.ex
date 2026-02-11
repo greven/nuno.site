@@ -14,6 +14,62 @@ defmodule Site.Geo do
   alias Site.Geo.Place
 
   # ------------------------------------------
+  #  My Location
+  # ------------------------------------------
+
+  @doc """
+  Returns my current location coordinates (latitude and longitude).
+  Requires a environment variable `COORDS` to be set with the format
+  "latitude;longitude", for example: "40.7128;-74.0060".
+  """
+  def current_coords do
+    Application.get_env(:site, :geo)[:coords]
+    |> case do
+      nil -> {:error, :empty_coords}
+      coords -> parse_coords(coords)
+    end
+  end
+
+  @doc """
+  Parses a coordinates string in the format "latitude;longitude".
+  It returns a tuple {:ok, {latitude, longitude}} if the format is valid,
+  or {:error, :invalid_format} if the format is invalid.
+
+  ## Examples
+
+      iex> Site.Geo.parse_coords("40.7128;-74.0060")
+      {:ok, {40.7128, -74.0060}}
+
+      iex> Site.Geo.parse_coords("invalid")
+      {:error, :invalid_format}
+
+      iex> Site.Geo.parse_coords("40.7128;invalid")
+      {:error, :invalid_format}
+
+      iex> Site.Geo.parse_coords("40.7128")
+      {:error, :invalid_format}
+
+      iex> Site.Geo.parse_coords(40.7128)
+      {:error, :invalid_format}
+  """
+  def parse_coords(coords) when is_binary(coords) do
+    case String.split(coords, ";", parts: 2, trim: true) do
+      [lat_str, lon_str] ->
+        with {lat, ""} <- Float.parse(lat_str),
+             {lon, ""} <- Float.parse(lon_str) do
+          {:ok, {lat, lon}}
+        else
+          _ -> {:error, :invalid_format}
+        end
+
+      _ ->
+        {:error, :invalid_format}
+    end
+  end
+
+  def parse_coords(_), do: {:error, :invalid_format}
+
+  # ------------------------------------------
   #  Countries
   # ------------------------------------------
 
@@ -168,6 +224,8 @@ defmodule Site.Geo do
       end
     end
   end
+
+  # Helpers
 
   defp tmp_dir, do: Path.join(System.tmp_dir!(), "/geodata")
 
