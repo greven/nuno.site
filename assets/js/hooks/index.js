@@ -21,6 +21,9 @@ import { ThemeSwitcher } from './theme-switcher';
 import { Tooltip } from './tooltip';
 import { TravelMap } from './travel-map';
 
+// Colocated hooks
+import { hooks as colocatedHooks } from 'phoenix-colocated/site';
+
 export default {
   ArticleTableOfContents,
   CardStack,
@@ -44,4 +47,5 @@ export default {
   ThemeSwitcher,
   Tooltip,
   TravelMap,
+  ...colocatedHooks,
 };
