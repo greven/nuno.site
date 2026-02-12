@@ -1,8 +1,6 @@
 defmodule Site.Services.Weather do
   @moduledoc """
   Weather information service using Open Meteo API (https://open-meteo.com).
-  We cache results to avoid hitting API limits and and also respect
-  the service providers as they allow free access to the API.
   """
 
   alias __MODULE__.Forecast
@@ -12,8 +10,6 @@ defmodule Site.Services.Weather do
 
   @doc """
   Fetches weather information for the configured location.
-  Results are cached for 20 minutes.
-
   Returns {:ok, weather_data} on success or {:error, reason} on failure.
   """
 
@@ -151,14 +147,14 @@ defmodule Site.Services.Weather do
   Translates the weather code from the API to a human-readable description.
   Source: https://open-meteo.com/en/docs#weather_variable_documentation
   """
-  def weather_code_description(code) when is_integer(code) do
+  def weather_description(code) when is_integer(code) do
     case code do
       0 -> "Clear sky"
       1 -> "Mainly clear"
       2 -> "Partly cloudy"
       3 -> "Overcast"
       45 -> "Fog"
-      48 -> "Depositing rime fog"
+      48 -> "Rime fog"
       51 -> "Light drizzle"
       53 -> "Moderate drizzle"
       55 -> "Dense drizzle"
@@ -181,6 +177,44 @@ defmodule Site.Services.Weather do
       95 -> "Thunderstorm"
       96 -> "Thunderstorm with slight hail"
       99 -> "Thunderstorm with heavy hail"
+      _ -> :unknown
+    end
+  end
+
+  @doc """
+  Like weather_description/1 but returns a shorter description
+  suitable for compact UI elements.
+  """
+  def weather_short_description(code) when is_integer(code) do
+    case code do
+      0 -> "Clear sky"
+      1 -> "Mainly clear"
+      2 -> "Partly cloudy"
+      3 -> "Overcast"
+      45 -> "Fog"
+      48 -> "Rime fog"
+      51 -> "Drizzle"
+      53 -> "Drizzle"
+      55 -> "Drizzle"
+      56 -> "Freezing drizzle"
+      57 -> "Freezing drizzle"
+      61 -> "Slight rain"
+      63 -> "Moderate rain"
+      65 -> "Heavy rain"
+      66 -> "Freezing rain"
+      67 -> "Freezing rain"
+      71 -> "Snow fall"
+      73 -> "Snow fall"
+      75 -> "Snow fall"
+      77 -> "Snow grains"
+      80 -> "Rain showers"
+      81 -> "Rain showers"
+      82 -> "Rain showers"
+      85 -> "Snow showers"
+      86 -> "Snow showers"
+      95 -> "Thunderstorm"
+      96 -> "Thunderstorm"
+      99 -> "Thunderstorm"
       _ -> :unknown
     end
   end

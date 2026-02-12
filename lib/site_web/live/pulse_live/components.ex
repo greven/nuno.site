@@ -3,20 +3,21 @@ defmodule SiteWeb.PulseLive.Components do
 
   alias Phoenix.LiveView.AsyncResult
 
+  alias Site.Services.Weather
+
   @doc false
 
-  attr :year_progress, :integer, required: true
+  attr :date, Date, required: true
   attr :rest, :global
 
-  def calendar(assigns) do
-    today = Date.utc_today()
-    day_of_week = Date.day_of_week(today)
+  def calendar(%{date: date} = assigns) do
+    day_of_week = Date.day_of_week(date)
     day_of_week = Enum.at(Site.Support.days_of_week_names(:en), day_of_week - 1)
 
     assigns =
       assigns
-      |> assign(:day, today.day)
-      |> assign(:month, Site.Support.month_abbr(today.month))
+      |> assign(:day, date.day)
+      |> assign(:month, Site.Support.month_abbr(date.month))
       |> assign(:day_of_week, day_of_week)
 
     ~H"""
@@ -27,7 +28,7 @@ defmodule SiteWeb.PulseLive.Components do
       >
         <div class="flex flex-col items-center">
           <div class="font-mono text-primary">{@day_of_week}</div>
-          <div class="font-medium text-content-10 text-3xl">
+          <div class="font-medium text-content-10 text-[26px]">
             {@day} <span class="text-content-30">{@month}</span>
           </div>
         </div>
@@ -41,15 +42,46 @@ defmodule SiteWeb.PulseLive.Components do
   attr :rest, :global
 
   def clock(assigns) do
+    assigns =
+      assigns
+      |> assign(:hours, Time.utc_now().hour |> to_string() |> String.pad_leading(2, "0"))
+      |> assign(:minutes, Time.utc_now().minute |> to_string() |> String.pad_leading(2, "0"))
+
     ~H"""
     <div {@rest}>
-      <.card class="text-2xl" id="clock" phx-hook=".Clock"></.card>
+      <.card
+        id="clock"
+        class="font-mono text-xl"
+        border="border border-border/60"
+        shadow="shadow-xs"
+        phx-hook=".Clock"
+      >
+        <div class="flex flex-col items-center gap-1">
+          <div class="flex items-center gap-2">
+            <span data-clock>{"#{@hours}:#{@minutes}"}</span>
+            <span class="text-primary">UTC</span>
+          </div>
+        </div>
+      </.card>
     </div>
 
     <script :type={Phoenix.LiveView.ColocatedHook} name=".Clock">
       export default {
         mounted() {
-            console.log("Clock hook mounted");
+          this.clockEl = this.el.querySelector("[data-clock]");
+          this.updateTime();
+          this.interval = setInterval(() => this.updateTime(), 1000);
+        },
+
+          destroyed() {
+            clearInterval(this.interval);
+          },
+
+          updateTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            this.clockEl.innerHTML = `${hours}<span class="animate-blink text-content-40/60">:</span>${minutes}`;
           }
         }
     </script>
@@ -66,52 +98,173 @@ defmodule SiteWeb.PulseLive.Components do
     ~H"""
     <div {@rest}>
       <.async_result :let={weather} assign={@weather}>
-        <:loading>Loading...</:loading>
+        <:loading>
+          <.card
+            class="min-w-46 animate-pulse"
+            content_class="h-full flex flex-col items-center justify-center gap-3"
+            border="border border-border/60"
+            shadow="shadow-xs"
+          >
+            <.diagonal_pattern use_transition={false} />
+            <.weather_body
+              class="animate-pulse"
+              location="Lisbon"
+              loading
+            >
+              <:icon>
+                <.icon name="lucide-cloud" class="size-14 text-content-40/60" />
+              </:icon>
+            </.weather_body>
+
+            <.weather_forecast class="mt-4 w-full" loading={@weather.loading} />
+          </.card>
+        </:loading>
 
         <.card
+          class="min-w-46"
+          content_class="h-full flex flex-col items-center justify-center gap-3"
           border="border border-border/60"
           shadow="shadow-xs"
         >
           <.diagonal_pattern use_transition={false} />
-
-          <div class="flex flex-col items-center justify-center gap-2">
-            <div class="flex items-center gap-1.5 text-sm text-content-40/60">
-              <.icon name="hero-map-pin-mini" class="size-4 text-content-40/50" /> Lisbon
-            </div>
-
-            <div class="flex gap-4 items-center">
+          <.weather_body
+            location="Lisbon"
+            temp={round(weather.temp)}
+            temp_max={round(weather.temp_max)}
+            temp_min={round(weather.temp_min)}
+            temp_unit={weather.temp_unit}
+            apparent_temp={"#{round(weather.apparent_temp)}°"}
+            rain_chance={"#{round(weather.rain_chance)}%"}
+            weather_code={weather.weather_code}
+          >
+            <:icon>
               <.weather_icon
                 weather_code={weather.weather_code}
                 is_day={weather.is_day}
                 class="z-1"
               />
+            </:icon>
+          </.weather_body>
 
-              <div class="flex items-start gap-1">
-                <div class="text-5xl">{round(weather.temp)}</div>
-                <div class="text-content-40/60">{weather.temp_unit}</div>
-              </div>
-            </div>
-
-            <div class="mt-2 text-sm text-content-40/80 line-clamp-1">
-              {weather.condition}
-            </div>
-
-            <div class="flex justify-between items-center gap-4 text-sm text-content-40 line-clamp-1">
-              <%!-- Rain chance --%>
-              <div class="flex items-center gap-1.5">
-                <.icon name="lucide-droplet" class="size-4 text-sky-500" />
-                {round(weather.rain_chance)}%
-              </div>
-
-              <%!-- Feels like --%>
-              <div class="flex items-center gap-1.5">
-                <.icon name="lucide-thermometer-snowflake" class="size-4 text-amber-500" />
-                {round(weather.apparent_temp)}°
-              </div>
-            </div>
-          </div>
+          <.weather_forecast class="mt-4 w-full" loading={@weather.loading} daily={weather.daily} />
         </.card>
       </.async_result>
+    </div>
+    """
+  end
+
+  attr :location, :string, required: true
+  attr :temp, :string, default: nil
+  attr :temp_max, :string, default: nil
+  attr :temp_min, :string, default: nil
+  attr :temp_unit, :string, default: "°C"
+  attr :apparent_temp, :string, default: nil
+  attr :rain_chance, :string, default: nil
+  attr :weather_code, :integer, default: nil
+  attr :class, :string, default: nil
+  attr :loading, :boolean, default: false
+  slot :icon
+
+  defp weather_body(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :condition,
+        if assigns.loading do
+          nil
+        else
+          Weather.weather_short_description(assigns.weather_code)
+        end
+      )
+
+    ~H"""
+    <div class="flex flex-col items-center justify-center gap-2">
+      <div class="flex gap-4 items-center">
+        {render_slot(@icon)}
+        <div class="flex justify-between gap-8">
+          <div class="leading-5">
+            <div class="max-w-48 text-lg line-clamp-1">
+              <%= if @loading do %>
+                <span class="text-content-40/60 animate-pulse">Loading...</span>
+              <% else %>
+                {@condition}
+              <% end %>
+            </div>
+            <div class="flex items-center text-sm text-content-40/80">
+              <.icon name="hero-map-pin-mini" class="size-4 mr-1" /> {@location}
+            </div>
+          </div>
+
+          <%!-- Temps --%>
+          <div class="leading-5">
+            <div class="flex items-start gap-1">
+              <div class="font-mono text-3xl">
+                <%= if @loading do %>
+                  <span class="text-content-40/20">69</span>
+                <% else %>
+                  {@temp}
+                <% end %>
+              </div>
+              <div class="text-content-40/60">{@temp_unit}</div>
+            </div>
+
+            <div class="text-xs text-content-40">
+              {@temp_max}° <span class="text-content-40/50">/</span> {@temp_min}°
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :daily, :map, default: nil
+  attr :loading, :boolean, default: false
+  attr :rest, :global
+
+  def weather_forecast(assigns) do
+    ~H"""
+    <div {@rest}>
+      <%= if @loading do %>
+        <ul class="flex justify-center items-center gap-4">
+          <li
+            :for={_ <- 1..5}
+            class="flex flex-col justify-center items-center gap-2 text-xs animate-pulse"
+          >
+            <div class="text-content-40/60">---</div>
+            <div class="flex flex-col items-center gap-2.5">
+              <.icon
+                name="lucide-cloud"
+                class="size-10 text-content-40/60"
+              />
+              <span class="text-content-40/60">--°</span>
+            </div>
+          </li>
+        </ul>
+      <% else %>
+        <ul class="flex justify-center items-center gap-4">
+          <li
+            :for={{day, index} <- Enum.with_index(@daily.days)}
+            class="flex flex-col justify-center items-center gap-2 text-xs"
+          >
+            <div class="text-content-30">{Calendar.strftime(day, "%a")}</div>
+            <div class="flex flex-col items-center gap-2.5">
+              <.weather_icon
+                weather_code={Enum.at(@daily.weather_code, index)}
+                size_class="size-10"
+              />
+
+              <%= if @loading do %>
+                <span class="text-content-40/60 animate-pulse">--°</span>
+              <% else %>
+                <div class="text-content-20">{round(Enum.at(@daily.temperature_max, index))}°</div>
+              <% end %>
+            </div>
+          </li>
+        </ul>
+      <% end %>
     </div>
     """
   end
@@ -148,22 +301,22 @@ defmodule SiteWeb.PulseLive.Components do
     """
   end
 
-  attr :async, AsyncResult, required: true
-  attr :rest, :global
+  # attr :async, AsyncResult, required: true
+  # attr :rest, :global
 
-  defp air_quality(assigns) do
-    ~H"""
-    <div {@rest}>
-      <.async_result :let={air_quality} assign={@async}>
-        <:loading>Loading...</:loading>
-        <div class="flex items-center gap-1 text-sm text-content-40">
-          <.icon name="lucide-wind" class="size-4" />
-          {air_quality.aqi}
-        </div>
-      </.async_result>
-    </div>
-    """
-  end
+  # defp air_quality(assigns) do
+  #   ~H"""
+  #   <div {@rest}>
+  #     <.async_result :let={air_quality} assign={@async}>
+  #       <:loading>Loading...</:loading>
+  #       <div class="flex items-center gap-1 text-sm text-content-40">
+  #         <.icon name="lucide-wind" class="size-4" />
+  #         {air_quality.aqi}
+  #       </div>
+  #     </.async_result>
+  #   </div>
+  #   """
+  # end
 
   @doc false
 

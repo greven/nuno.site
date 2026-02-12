@@ -26,12 +26,12 @@ defmodule Site.Services do
 
   ## Weather
 
-  @decorate cacheable(cache: Site.Cache, key: :weather_forecast, opts: [ttl: :timer.minutes(20)])
+  @decorate cacheable(cache: Site.Cache, key: :weather_forecast, opts: [ttl: :timer.minutes(15)])
   def get_weather_forecast do
     Weather.get_forecast()
   end
 
-  @decorate cacheable(cache: Site.Cache, key: :air_quality, opts: [ttl: :timer.minutes(60)])
+  @decorate cacheable(cache: Site.Cache, key: :air_quality, opts: [ttl: :timer.minutes(30)])
   def get_weather_air_quality do
     Weather.get_air_quality()
   end

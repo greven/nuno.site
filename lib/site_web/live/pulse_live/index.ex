@@ -17,9 +17,9 @@ defmodule SiteWeb.PulseLive.Index do
           <.icon name="lucide-activity" class="size-10 text-primary mr-3" /> Pulse
         </.header>
 
-        <div class="w-full flex justify-end items-center gap-8">
-          <Components.clock />
-          <Components.calendar year_progress={@year_progress} />
+        <div class="w-full flex justify-end items-center gap-4">
+          <Components.clock class="hidden md:block" />
+          <Components.calendar date={Date.utc_today()} />
           <Components.weather weather={@weather} air_quality={@air_quality} />
         </div>
 
@@ -152,9 +152,14 @@ defmodule SiteWeb.PulseLive.Index do
           temp_max: weather.daily.temperature_max.values |> List.first(),
           temp_min: weather.daily.temperature_min.values |> List.first(),
           rain_chance: weather.daily.precipitation_probability_max.values |> List.first(),
-          condition: Site.Services.Weather.weather_code_description(weather.current.weather_code),
           weather_code: weather.current.weather_code,
-          is_day: weather.current.is_day
+          is_day: weather.current.is_day,
+          daily: %{
+            days: Enum.take(weather.daily.days, 5),
+            temperature_min: Enum.take(weather.daily.temperature_min.values, 5),
+            temperature_max: Enum.take(weather.daily.temperature_max.values, 5),
+            weather_code: Enum.take(weather.daily.weather_code, 5)
+          }
         }
 
       {:error, _reason} ->
