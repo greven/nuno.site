@@ -14,7 +14,7 @@ defmodule Site.Pulse.Source.TNW do
     %Site.Pulse.Meta{
       name: "The Next Web",
       description: "Stories from The Next Web feed.",
-      url: URI.parse("https://www.thenextweb.com/feed")
+      url: URI.parse("https://thenextweb.com/feed")
     }
   end
 
