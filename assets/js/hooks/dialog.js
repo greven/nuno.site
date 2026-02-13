@@ -7,8 +7,8 @@ export const Dialog = {
     this.showHandler = this.show.bind(this);
     this.hideHandler = this.hide.bind(this);
     this.toggleHandler = this.toggle.bind(this);
-    this.clickOutsideHandler = this.handleClickOutside.bind(this);
     this.closeHandler = this.handleClose.bind(this);
+    this.clickOutsideHandler = this.handleClickOutside.bind(this);
 
     window.addEventListener('show-dialog', this.showHandler);
     window.addEventListener('hide-dialog', this.hideHandler);
