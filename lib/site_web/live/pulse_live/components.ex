@@ -104,7 +104,7 @@ defmodule SiteWeb.PulseLive.Components do
       <.async_result :let={weather} assign={@weather}>
         <:loading>
           <.card
-            class="min-w-46 animate-pulse"
+            class="w-full min-w-sm animate-pulse"
             content_class="h-full flex flex-col items-center justify-center gap-3"
             border="border border-border/60"
             shadow="shadow-xs"
@@ -125,13 +125,14 @@ defmodule SiteWeb.PulseLive.Components do
         </:loading>
 
         <.card
-          class="min-w-46 hover:cursor-pointer"
+          class="w-full min-w-sm hover:cursor-pointer"
           content_class="h-full flex flex-col items-center justify-center gap-3"
           border="border border-border/60"
           shadow="shadow-xs"
           phx-click={show_dialog("#weather-details")}
         >
           <.diagonal_pattern use_transition={false} class="-z-1" />
+
           <.weather_body
             location="Lisbon"
             temp={round(weather.temp)}
@@ -192,10 +193,10 @@ defmodule SiteWeb.PulseLive.Components do
       )
 
     ~H"""
-    <div class="flex flex-col items-center justify-center gap-2">
-      <div class="flex gap-4 items-center">
+    <div class="w-full max-w-md md:max-w-auto flex flex-col items-center justify-center gap-2">
+      <div class="w-full flex gap-4 items-center">
         {render_slot(@icon)}
-        <div class="flex justify-between gap-8">
+        <div class="w-full flex justify-between gap-8">
           <div class="leading-5">
             <div class="max-w-48 text-lg line-clamp-1">
               <%= if @loading do %>
@@ -242,7 +243,7 @@ defmodule SiteWeb.PulseLive.Components do
     ~H"""
     <div {@rest}>
       <%= if @loading do %>
-        <ul class="flex justify-center items-center gap-4">
+        <ul class="w-full mx-auto max-w-md md:max-w-auto flex justify-between items-center gap-4">
           <li
             :for={_ <- 1..5}
             class="flex flex-col justify-center items-center gap-2 text-xs animate-pulse"
@@ -258,7 +259,7 @@ defmodule SiteWeb.PulseLive.Components do
           </li>
         </ul>
       <% else %>
-        <ul class="flex justify-center items-center gap-4">
+        <ul class="w-full mx-auto max-w-md md:max-w-auto flex justify-between items-center gap-4">
           <li
             :for={{day, index} <- Enum.with_index(@daily.days)}
             class="flex flex-col justify-center items-center gap-2 text-xs"

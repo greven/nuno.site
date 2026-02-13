@@ -99,7 +99,10 @@ export const Dialog = {
   },
 
   handleClickOutside(event) {
-    if (this.closeOnClickOutside && event.target.getAttribute('data-part') === 'dialog-container') {
+    if (
+      (this.closeOnClickOutside && event.target === this.el) ||
+      event.target.getAttribute('data-part') === 'dialog-container'
+    ) {
       this.el.close('dismiss');
     }
   },
