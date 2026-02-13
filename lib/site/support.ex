@@ -35,6 +35,15 @@ defmodule Site.Support do
     end
   end
 
+  @doc """
+  Strip HTML tags from a string while preserving the text content.
+  """
+  def strip_tags(text) do
+    LazyHTML.from_fragment(text)
+    |> LazyHTML.text()
+    |> String.trim()
+  end
+
   ## Numbers
 
   @doc """

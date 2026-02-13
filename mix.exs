@@ -63,7 +63,6 @@ defmodule Site.MixProject do
       {:nimble_csv, "~> 1.3"},
       {:nimble_publisher, "~> 1.1"},
       {:ecto_sqlite3_extras, "~> 1.2"},
-      {:html_sanitize_ex, "~> 1.4"},
       {:error_tracker, "~> 0.7"},
       {:dotenvy, "~> 1.1"},
       {:recase, "~> 0.9"},

@@ -40,7 +40,7 @@ defmodule Site.Pulse.Source.TheVerge do
           |> Enum.map(fn %{id: id, title: title, link: link} ->
             %Site.Pulse.Item{
               id: id,
-              title: HtmlSanitizeEx.strip_tags(title),
+              title: Site.Support.strip_tags(title),
               url: link
             }
           end)

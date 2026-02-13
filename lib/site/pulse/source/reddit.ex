@@ -32,7 +32,7 @@ defmodule Site.Pulse.Source.Reddit do
           |> Enum.map(fn %{"data" => post_data} ->
             %Site.Pulse.Item{
               id: post_data["id"],
-              title: HtmlSanitizeEx.strip_tags(post_data["title"]),
+              title: Site.Support.strip_tags(post_data["title"]),
               url: "https://www.reddit.com" <> post_data["permalink"]
             }
           end)

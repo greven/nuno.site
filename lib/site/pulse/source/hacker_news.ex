@@ -57,7 +57,7 @@ defmodule Site.Pulse.Source.HackerNews do
         {:ok,
          %Site.Pulse.Item{
            id: to_string(id),
-           title: HtmlSanitizeEx.strip_tags(title),
+           title: Site.Support.strip_tags(title),
            url: url || "https://news.ycombinator.com/item?id=#{id}"
          }}
 

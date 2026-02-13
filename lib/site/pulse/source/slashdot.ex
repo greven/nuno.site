@@ -37,7 +37,7 @@ defmodule Site.Pulse.Source.Slashdot do
           |> Enum.map(fn item ->
             %Site.Pulse.Item{
               id: item.url,
-              title: HtmlSanitizeEx.strip_tags(item.title),
+              title: Site.Support.strip_tags(item.title),
               url: item.url
             }
           end)

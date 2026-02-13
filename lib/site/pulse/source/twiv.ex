@@ -40,7 +40,7 @@ defmodule Site.Pulse.Source.TWIV do
           |> Enum.map(fn item ->
             %Site.Pulse.Item{
               id: item.id,
-              title: HtmlSanitizeEx.strip_tags(item.title),
+              title: Site.Support.strip_tags(item.title),
               url: item.url,
               description: item.description
             }
