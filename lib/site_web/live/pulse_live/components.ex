@@ -26,9 +26,10 @@ defmodule SiteWeb.PulseLive.Components do
         border="border border-border/60"
         shadow="shadow-xs"
       >
+        <.diagonal_pattern use_transition={false} class="-z-1" />
         <div class="flex flex-col items-center">
           <div class="font-mono text-primary">{@day_of_week}</div>
-          <div class="font-medium text-content-10 text-[26px]">
+          <div class="font-medium text-content-10 text-3xl">
             {@day} <span class="text-content-30">{@month}</span>
           </div>
         </div>
@@ -55,7 +56,10 @@ defmodule SiteWeb.PulseLive.Components do
         border="border border-border/60"
         shadow="shadow-xs"
         phx-hook=".Clock"
+        href="https://www.timeanddate.com/worldclock"
+        target="_blank"
       >
+        <.diagonal_pattern use_transition={false} class="-z-1" />
         <div class="flex flex-col items-center gap-1">
           <div class="flex items-center gap-2">
             <span data-clock>{"#{@hours}:#{@minutes}"}</span>
@@ -105,7 +109,7 @@ defmodule SiteWeb.PulseLive.Components do
             border="border border-border/60"
             shadow="shadow-xs"
           >
-            <.diagonal_pattern use_transition={false} />
+            <.diagonal_pattern use_transition={false} class="-z-1" />
             <.weather_body
               class="animate-pulse"
               location="Lisbon"
@@ -121,12 +125,13 @@ defmodule SiteWeb.PulseLive.Components do
         </:loading>
 
         <.card
-          class="min-w-46"
+          class="min-w-46 hover:cursor-pointer"
           content_class="h-full flex flex-col items-center justify-center gap-3"
           border="border border-border/60"
           shadow="shadow-xs"
+          phx-click={show_dialog("#weather-details")}
         >
-          <.diagonal_pattern use_transition={false} />
+          <.diagonal_pattern use_transition={false} class="-z-1" />
           <.weather_body
             location="Lisbon"
             temp={round(weather.temp)}
@@ -149,6 +154,15 @@ defmodule SiteWeb.PulseLive.Components do
           <.weather_forecast class="mt-4 w-full" loading={@weather.loading} daily={weather.daily} />
         </.card>
       </.async_result>
+
+      <.modal id="weather-details" size="2xl" y_offset="25dvh">
+        <:header title="Weather Details" />
+        <div class="text-content-30 text-base">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore odit aperiam iure ad, accusamus unde qui quasi minima nam facere ab veniam in nostrum, est nihil, dolor beatae at! Sapiente!
+          Voluptatibus voluptatum asperiores blanditiis incidunt tempore assumenda quae dolore officiis maiores quis eos ullam dicta at veritatis, exercitationem necessitatibus unde placeat. Quod eos doloribus eligendi voluptatem dolorem iste sed alias?
+          Sit, voluptates praesentium sint quaerat ut iure eligendi aperiam neque unde officiis eos facere in molestiae quod perferendis cum laudantium architecto deserunt mollitia dicta aliquid minima exercitationem ratione officia! Minima.
+        </div>
+      </.modal>
     </div>
     """
   end

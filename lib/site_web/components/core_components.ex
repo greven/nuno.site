@@ -78,13 +78,13 @@ defmodule SiteWeb.CoreComponents do
 
   attr :radius, :string, default: "rounded-lg"
   attr :shadow, :string, default: "hover:shadow-drop"
-  attr :rest, :global, include: ~w(href navigate patch method disabled)
+  attr :rest, :global, include: ~w(href navigate patch method target)
   slot :inner_block, required: true
 
   def card(%{rest: rest} = assigns) do
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
-      <.dynamic_tag tag_name={@tag} class={["isolate", @class, @radius]}>
+      <.dynamic_tag tag_name={@tag} class={["isolate", @class, @radius]} {@rest}>
         <.box
           bg={@bg}
           border={@border}
@@ -96,7 +96,11 @@ defmodule SiteWeb.CoreComponents do
         >
           <.link
             class={["absolute inset-0 z-10 outline-none", @radius]}
-            {@rest}
+            href={@rest[:href]}
+            navigate={@rest[:navigate]}
+            patch={@rest[:patch]}
+            method={@rest[:method]}
+            target={@rest[:target]}
           >
           </.link>
           {render_slot(@inner_block)}
@@ -1618,13 +1622,61 @@ defmodule SiteWeb.CoreComponents do
 
   attr :id, :string, required: true
   attr :show, :boolean, default: false
+  attr :use_backdrop, :boolean, default: false
+
+  attr :size, :string,
+    default: "md",
+    doc: "dialog size, either sm, md, lg, xl or any valid CSS size value"
+
+  attr :fullscreen, :boolean,
+    default: false,
+    doc: "whether the dialog should take up the entire screen"
+
+  attr :centered, :boolean, default: false, doc: "center the dialog content vertically"
+
+  attr :x_offset, :string,
+    default: "5vw",
+    doc: "horizontal offset for the dialog content"
+
+  attr :y_offset, :string,
+    default: "5dvh",
+    doc: "vertical offset for the dialog content"
+
   attr :close_on_click_outside, :boolean, default: true
   attr :on_cancel, JS, default: %JS{}
   attr :class, :any, default: nil
+
+  attr :bg_class, :string, default: "bg-surface-10/95"
+  attr :shadow_class, :string, default: "shadow-2xl"
+
+  attr :outline_class, :string,
+    default: "outline-1 outline-black/5 dark:-outline-offset-1 dark:outline-surface-30/60"
+
+  attr :animation_class, :string,
+    default:
+      "animate-slide-out-down data-dialog-open:animate-slide-in-up md:animate-none md:data-dialog-open:animate-none"
+
   attr :rest, :global
   slot :inner_block, required: true
 
   def dialog(assigns) do
+    assigns =
+      assigns
+      |> assign_new(
+        :backdrop_class,
+        fn ->
+          "backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-opacity backdrop:ease-out backdrop:duration-250 backdrop:transition-discrete open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100"
+        end
+      )
+      |> assign(
+        :container_style,
+        [
+          !assigns.fullscreen && "--dialog-x-offset: #{assigns.x_offset};",
+          !assigns.fullscreen && "--dialog-y-offset: #{assigns.y_offset};"
+        ]
+        |> Enum.join(" ")
+      )
+
     ~H"""
     <dialog
       id={@id}
@@ -1633,15 +1685,172 @@ defmodule SiteWeb.CoreComponents do
       phx-remove={hide_dialog("##{@id}")}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       data-close-on-click-outside={@close_on_click_outside}
+      style={"--dialog-size: #{dialog_size(@size)};"}
       class={[
         "starting:open:opacity-0 starting:open:backdrop:bg-transparent starting:open:backdrop:opacity-0",
-        "border-none outline-none bg-transparent transition-discrete backdrop:transition-discrete",
-        @class
+        "opacity-0 open:opacity-100 border-none outline-none bg-transparent transition-discrete backdrop:transition-discrete transition ease-out duration-250",
+        @use_backdrop && @backdrop_class
       ]}
       {@rest}
     >
-      {render_slot(@inner_block, JS.exec("data-cancel", to: "##{@id}"))}
+      <div
+        tabindex="0"
+        style={@container_style}
+        class={[
+          "fixed flex justify-center overflow-y-auto focus:outline-none",
+          @centered && "items-center",
+          !@centered && "items-start",
+          !@fullscreen && "-bottom-px left-1 right-1",
+          !@fullscreen && "md:top-0 md:bottom-0 md:px-(--dialog-x-offset) md:py-(--dialog-y-offset)",
+          @fullscreen && "p-0"
+        ]}
+        data-part="dialog-container"
+      >
+        <section
+          tabindex="-1"
+          data-part="dialog-panel"
+          class={[
+            "w-full grow-0 shrink-0 basis-(--dialog-size) backdrop-blur-md backdrop-filter overflow-y-auto",
+            !@fullscreen && "max-w-full max-h-[calc(100dvh-2*var(--dialog-y-offset))]",
+            !@fullscreen && "rounded-t-md md:rounded-md",
+            @fullscreen && "h-full",
+            @animation_class,
+            @outline_class,
+            @shadow_class,
+            @bg_class,
+            @class
+          ]}
+          {@rest}
+        >
+          {render_slot(@inner_block, JS.exec("data-cancel", to: "##{@id}"))}
+        </section>
+      </div>
     </dialog>
+    """
+  end
+
+  defp dialog_size("sm"), do: "var(--container-sm)"
+  defp dialog_size("md"), do: "var(--container-md)"
+  defp dialog_size("lg"), do: "var(--container-lg)"
+  defp dialog_size("xl"), do: "var(--container-xl)"
+  defp dialog_size("2xl"), do: "var(--container-2xl)"
+  defp dialog_size("3xl"), do: "var(--container-3xl)"
+  defp dialog_size("4xl"), do: "var(--container-4xl)"
+  defp dialog_size("full"), do: "100%"
+  defp dialog_size(size), do: size
+
+  @doc """
+  Renders a modal dialog component. It uses the <.dialog> component under the hood and provides a structured layout with header, body, and footer sections, as well as built-in support for a backdrop and close button.
+
+  ## Examples
+
+      <.modal id="delete-confirmation" show={@show_modal} on_cancel={JS.push("cancel_delete")}>
+        <:header title="Confirm Deletion" show_close_button={true} />
+        <p>Are you sure you want to delete this item?</p>
+        <:footer>
+          <.button variant="outline" phx-click={JS.push("cancel_delete")}>Cancel</.button>
+          <.button color="danger" phx-click={JS.push("confirm_delete")}>Delete</.button>
+        </:footer>
+      </.modal>
+  """
+
+  attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  attr :close_on_click_outside, :boolean, default: true
+  attr :on_cancel, JS, default: %JS{}
+
+  attr :size, :string, values: ~w(sm md lg xl 2xl 3xl 4xl full), default: "md"
+  attr :fullscreen, :boolean, default: false
+  attr :centered, :boolean, default: false
+  attr :x_offset, :string, default: "5vw"
+  attr :y_offset, :string, default: "5dvh"
+
+  attr :class, :any, default: nil
+  attr :rest, :global
+
+  slot :header do
+    attr :title, :string
+    attr :show_close_button, :boolean
+    attr :show_border, :boolean
+    attr :class, :string
+  end
+
+  slot :inner_block, required: true
+
+  slot :footer do
+    attr :class, :string
+    attr :show_border, :boolean
+  end
+
+  def modal(assigns) do
+    ~H"""
+    <.dialog
+      id={@id}
+      size={@size}
+      fullscreen={@fullscreen}
+      centered={@centered}
+      x_offset={@x_offset}
+      y_offset={@y_offset}
+      data-cancel={JS.exec(@on_cancel, "phx-remove")}
+      data-close-on-click-outside={@close_on_click_outside}
+      use_backdrop
+    >
+      <%!-- Header --%>
+      <div
+        :for={header <- @header}
+        :if={@header != []}
+        data-part="modal-header"
+        class={[
+          "flex items-center gap-4 px-6 py-4 shrink-0",
+          header[:show_border] && "border-b border-surface-30/60",
+          header[:class]
+        ]}
+      >
+        <h2
+          :if={header[:title]}
+          id={"#{@id}-modal-title"}
+          class="text-lg font-semibold text-content-10"
+        >
+          {header[:title]}
+        </h2>
+
+        <%= if header[:inner_block] do %>
+          {render_slot(header)}
+        <% end %>
+
+        <button
+          :if={Map.get(header, :show_close_button, true)}
+          type="button"
+          phx-click={hide_dialog("##{@id}")}
+          aria-label="Close modal"
+          class={[
+            "size-10 ml-auto shrink-0 rounded-full text-content-40 transition-colors",
+            "hover:bg-surface-20 hover:text-content-10 hover:cursor-pointer"
+          ]}
+        >
+          <.icon name="hero-x-mark" class="size-5" />
+        </button>
+      </div>
+
+      <%!-- Body --%>
+      <div data-part="modal-body" class="flex-1 overflow-y-auto px-6 py-4">
+        {render_slot(@inner_block, JS.exec("data-cancel", to: "##{@id}"))}
+      </div>
+
+      <%!-- Footer --%>
+      <div
+        :for={footer <- @footer}
+        :if={@footer != []}
+        data-part="modal-footer"
+        class={[
+          "flex items-center justify-end gap-3 px-6 py-3 bg-surface-20/50 shrink-0",
+          footer[:show_border] && "border-t border-surface-30/60",
+          footer[:class]
+        ]}
+      >
+        {render_slot(footer, JS.exec("data-cancel", to: "##{@id}"))}
+      </div>
+    </.dialog>
     """
   end
 
@@ -1753,7 +1962,7 @@ defmodule SiteWeb.CoreComponents do
             phx-click={hide_drawer("##{@id}")}
             aria-label="Close drawer"
             class={[
-              "ml-auto shrink-0 rounded-lg p-2 text-content-40 transition-colors",
+              "size-10 ml-auto shrink-0 rounded-full text-content-40 transition-colors",
               "hover:bg-surface-20 hover:text-content-10 hover:cursor-pointer"
             ]}
           >

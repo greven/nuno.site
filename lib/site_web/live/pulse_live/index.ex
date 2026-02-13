@@ -17,10 +17,13 @@ defmodule SiteWeb.PulseLive.Index do
           <.icon name="lucide-activity" class="size-10 text-primary mr-3" /> Pulse
         </.header>
 
-        <div class="w-full flex justify-end items-center gap-4">
-          <Components.clock class="hidden md:block" />
-          <Components.calendar date={Date.utc_today()} />
-          <Components.weather weather={@weather} air_quality={@air_quality} />
+        <div class="w-full flex flex-wrap justify-end items-end gap-4">
+          <div class="flex flex-col flex-wrap gap-4">
+            <Components.calendar date={Date.utc_today()} />
+            <Components.clock class="hidden md:block" />
+          </div>
+
+          <Components.weather weather={@weather} air_quality={@air_quality} class="w-full md:w-auto" />
         </div>
 
         <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">

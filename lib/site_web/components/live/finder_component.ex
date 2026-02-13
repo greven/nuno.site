@@ -16,155 +16,146 @@ defmodule SiteWeb.FinderComponent do
     <div id="finder-component" class="finder" phx-hook="Finder" data-mode="default">
       <.dialog
         id="finder-dialog"
+        size="xl"
+        y_offset="15dvh"
         data-close={Finder.close()}
-        class={[
-          "opacity-0 transition ease-out duration-250",
-          "backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-opacity backdrop:ease-out backdrop:duration-250",
-          "open:opacity-100 open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100"
-        ]}
+        outline_class="outline-1 outline-black/5 dark:-outline-offset-1 dark:outline-white/5"
+        use_backdrop
       >
+        <%!-- Search input --%>
+        <.finder_search class="relative hidden md:flex" />
+
+        <%!-- Commands --%>
+        <.finder_commands class={[
+          "max-h-100 scroll-py-1 overflow-y-auto focus:outline-none",
+          "divide-y divide-neutral-500/10 dark:divide-white/5"
+        ]}>
+          <%!-- Theme switcher --%>
+          <.finder_section :if={@show_theme_switcher} id="theme-section">
+            <.finder_section_title>Theme</.finder_section_title>
+
+            <.finder_items_list id="finder-theme-switcher">
+              <.finder_item
+                id="set_theme_light"
+                type="command"
+                icon="lucide-sun"
+                description="Set light theme"
+                data-section="theme"
+                phx-click={
+                  JS.dispatch("phx:set-theme", detail: %{theme: "light"})
+                  |> JS.exec("data-close", to: "#finder-dialog")
+                }
+              >
+                Light Mode
+                <.icon
+                  name="lucide-check"
+                  class="hidden size-4.5 ml-1.5 text-secondary [[data-theme-mode=user][data-theme=light]_&]:block"
+                />
+              </.finder_item>
+              <.finder_item
+                id="set_theme_dark"
+                type="command"
+                icon="lucide-moon"
+                description="Set dark theme"
+                data-section="theme"
+                phx-click={
+                  JS.dispatch("phx:set-theme", detail: %{theme: "dark"})
+                  |> JS.exec("data-close", to: "#finder-dialog")
+                }
+              >
+                Dark Mode
+                <.icon
+                  name="lucide-check"
+                  class="hidden size-4.5 ml-1.5 text-secondary [[data-theme-mode=user][data-theme=dark]_&]:block"
+                />
+              </.finder_item>
+              <.finder_item
+                id="set_theme_system"
+                type="command"
+                icon="lucide-monitor"
+                description="Follow system theme settings"
+                data-section="theme"
+                phx-click={
+                  JS.dispatch("phx:set-theme", detail: %{theme: "system"})
+                  |> JS.exec("data-close", to: "#finder-dialog")
+                }
+              >
+                System Mode
+                <.icon
+                  name="lucide-check"
+                  class="hidden size-4.5 ml-1.5 text-secondary in-data-[theme-mode=system]:block"
+                />
+              </.finder_item>
+            </.finder_items_list>
+          </.finder_section>
+
+          <%!-- Commands --%>
+          <.finder_section :for={section <- @commands} id={"#{section.id}-section"}>
+            <.finder_section_title>{section.title}</.finder_section_title>
+
+            <.finder_items_list id={"finder-#{section.id}"}>
+              <.finder_item
+                :for={{id, opts} <- section.commands}
+                id={id}
+                icon={opts[:icon]}
+                description={opts[:description]}
+                data-section={section.id}
+                phx-click={opts[:push] && Finder.exec(id) |> Finder.close()}
+              >
+                {opts[:name]}
+              </.finder_item>
+            </.finder_items_list>
+          </.finder_section>
+        </.finder_commands>
+
+        <%!-- Content search results --%>
         <div
-          tabindex="0"
-          class="fixed inset-0 w-screen p-0 sm:p-6 md:p-20 overflow-y-auto focus:outline-none"
-          data-part="dialog-container"
+          id="finder-search-results"
+          class="max-h-100 scroll-py-1 overflow-y-auto"
+          data-part="items-container"
+          tabindex="-1"
+          hidden
         >
-          <.finder_panel>
-            <%!-- Search input --%>
-            <.finder_search class="relative hidden md:flex" />
+          <ul id="finder-search-items" class="p-2 text-sm"></ul>
+        </div>
 
-            <%!-- Commands --%>
-            <.finder_commands class={[
-              "max-h-100 scroll-py-1 overflow-y-auto focus:outline-none",
-              "divide-y divide-neutral-500/10 dark:divide-white/5"
-            ]}>
-              <%!-- Theme switcher --%>
-              <.finder_section :if={@show_theme_switcher} id="theme-section">
-                <.finder_section_title>Theme</.finder_section_title>
+        <%!-- No results --%>
+        <.finder_no_results>
+          <:title>No results found.</:title>
+          <:description>
+            We couldn't find anything with that term. Please try again.
+          </:description>
+        </.finder_no_results>
 
-                <.finder_items_list id="finder-theme-switcher">
-                  <.finder_item
-                    id="set_theme_light"
-                    type="command"
-                    icon="lucide-sun"
-                    description="Set light theme"
-                    data-section="theme"
-                    phx-click={
-                      JS.dispatch("phx:set-theme", detail: %{theme: "light"})
-                      |> JS.exec("data-close", to: "#finder-dialog")
-                    }
-                  >
-                    Light Mode
-                    <.icon
-                      name="lucide-check"
-                      class="hidden size-4.5 ml-1.5 text-secondary [[data-theme-mode=user][data-theme=light]_&]:block"
-                    />
-                  </.finder_item>
-                  <.finder_item
-                    id="set_theme_dark"
-                    type="command"
-                    icon="lucide-moon"
-                    description="Set dark theme"
-                    data-section="theme"
-                    phx-click={
-                      JS.dispatch("phx:set-theme", detail: %{theme: "dark"})
-                      |> JS.exec("data-close", to: "#finder-dialog")
-                    }
-                  >
-                    Dark Mode
-                    <.icon
-                      name="lucide-check"
-                      class="hidden size-4.5 ml-1.5 text-secondary [[data-theme-mode=user][data-theme=dark]_&]:block"
-                    />
-                  </.finder_item>
-                  <.finder_item
-                    id="set_theme_system"
-                    type="command"
-                    icon="lucide-monitor"
-                    description="Follow system theme settings"
-                    data-section="theme"
-                    phx-click={
-                      JS.dispatch("phx:set-theme", detail: %{theme: "system"})
-                      |> JS.exec("data-close", to: "#finder-dialog")
-                    }
-                  >
-                    System Mode
-                    <.icon
-                      name="lucide-check"
-                      class="hidden size-4.5 ml-1.5 text-secondary in-data-[theme-mode=system]:block"
-                    />
-                  </.finder_item>
-                </.finder_items_list>
-              </.finder_section>
-
-              <%!-- Commands --%>
-              <.finder_section :for={section <- @commands} id={"#{section.id}-section"}>
-                <.finder_section_title>{section.title}</.finder_section_title>
-
-                <.finder_items_list id={"finder-#{section.id}"}>
-                  <.finder_item
-                    :for={{id, opts} <- section.commands}
-                    id={id}
-                    icon={opts[:icon]}
-                    description={opts[:description]}
-                    data-section={section.id}
-                    phx-click={opts[:push] && Finder.exec(id) |> Finder.close()}
-                  >
-                    {opts[:name]}
-                  </.finder_item>
-                </.finder_items_list>
-              </.finder_section>
-            </.finder_commands>
-
-            <%!-- Content search results --%>
-            <div
-              id="finder-search-results"
-              class="max-h-100 scroll-py-1 overflow-y-auto"
-              data-part="items-container"
-              tabindex="-1"
-              hidden
-            >
-              <ul id="finder-search-items" class="p-2 text-sm"></ul>
+        <%!-- Footer --%>
+        <.finder_footer class="hidden md:flex justify-between bg-surface-30/40 px-4 py-2.5 text-xs text-content-40">
+          <div class="flex items-center gap-8">
+            <div class="flex flex-wrap items-center gap-2">
+              <.kbd><.icon name="hero-arrow-up" class="size-3" /></.kbd>
+              <.kbd><.icon name="hero-arrow-down" class="size-3" /></.kbd>
+              Move
             </div>
 
-            <%!-- No results --%>
-            <.finder_no_results>
-              <:title>No results found.</:title>
-              <:description>
-                We couldn't find anything with that term. Please try again.
-              </:description>
-            </.finder_no_results>
+            <div class="flex flex-wrap items-center">
+              <.kbd class={[
+                "mx-2 sm:mx-2 px-1",
+                "in-data-[mode=search]:bg-secondary/5 in-data-[mode=search]:border-secondary in-data-[mode=search]:text-secondary"
+              ]}>
+                &gt;
+              </.kbd>
+              Search
+            </div>
+          </div>
 
-            <%!-- Footer --%>
-            <.finder_footer class="hidden md:flex justify-between bg-surface-30/40 px-4 py-2.5 text-xs text-content-40">
-              <div class="flex items-center gap-8">
-                <div class="flex flex-wrap items-center gap-2">
-                  <.kbd><.icon name="hero-arrow-up" class="size-3" /></.kbd>
-                  <.kbd><.icon name="hero-arrow-down" class="size-3" /></.kbd>
-                  Move
-                </div>
-
-                <div class="flex flex-wrap items-center">
-                  <.kbd class={[
-                    "mx-2 sm:mx-2 px-1",
-                    "in-data-[mode=search]:bg-secondary/5 in-data-[mode=search]:border-secondary in-data-[mode=search]:text-secondary"
-                  ]}>
-                    &gt;
-                  </.kbd>
-                  Search
-                </div>
-              </div>
-
-              <div class="flex flex-wrap items-center">
-                <.kbd class="mx-2 sm:mx-2 px-1">esc</.kbd>
-                Clear <span class="ml-3 mr-1 text-content-40/30">|</span>
-                <.kbd class="mx-2 sm:mx-2 px-1">
-                  <.icon name="lucide-corner-down-left" class="size-3" />
-                </.kbd>
-                Select
-              </div>
-            </.finder_footer>
-          </.finder_panel>
-        </div>
+          <div class="flex flex-wrap items-center">
+            <.kbd class="mx-2 sm:mx-2 px-1">esc</.kbd>
+            Clear <span class="ml-3 mr-1 text-content-40/30">|</span>
+            <.kbd class="mx-2 sm:mx-2 px-1">
+              <.icon name="lucide-corner-down-left" class="size-3" />
+            </.kbd>
+            Select
+          </div>
+        </.finder_footer>
       </.dialog>
     </div>
     """
@@ -204,28 +195,6 @@ defmodule SiteWeb.FinderComponent do
   def handle_event("finder:" <> _event, _params, socket), do: {:noreply, socket}
 
   ## Components
-
-  attr :class, :any, default: nil
-  attr :rest, :global
-  slot :inner_block, required: true
-
-  defp finder_panel(assigns) do
-    ~H"""
-    <div
-      class={[
-        "fixed -bottom-px left-1 right-1 md:max-w-xl md:relative md:mx-auto rounded-t-md md:rounded-md bg-surface-10/95 shadow-2xl overflow-hidden",
-        "animate-slide-out-down data-dialog-open:animate-slide-in-up md:animate-none md:data-dialog-open:animate-none",
-        "outline-1 outline-black/5 backdrop-blur-md backdrop-filter",
-        "divide-y divide-neutral-500/10 dark:divide-white/5",
-        "dark:-outline-offset-1 dark:outline-white/10",
-        @class
-      ]}
-      {@rest}
-    >
-      {render_slot(@inner_block)}
-    </div>
-    """
-  end
 
   attr :id, :string, default: "finder-commands"
   attr :class, :any, default: nil
