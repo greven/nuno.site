@@ -53,7 +53,7 @@ defmodule Site.Geo do
       {:error, :invalid_format}
   """
   def parse_coords(coords) when is_binary(coords) do
-    case String.split(coords, ";", parts: 2, trim: true) do
+    case String.split(coords, ",", parts: 2, trim: true) do
       [lat_str, lon_str] ->
         with {lat, ""} <- Float.parse(lat_str),
              {lon, ""} <- Float.parse(lon_str) do
