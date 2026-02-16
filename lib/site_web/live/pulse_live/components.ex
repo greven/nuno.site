@@ -99,7 +99,7 @@ defmodule SiteWeb.PulseLive.Components do
     </div>
 
     <%!-- Weather Details Modal --%>
-    <.modal id="weather-details" size="lg" y_offset="20dvh" show>
+    <.modal id="weather-details" size="lg" y_offset="20dvh">
       <:header title="Weather Details" />
       <div class="flex flex-col gap-8">
         <.weather_header weather={@weather}>
