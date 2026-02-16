@@ -30,7 +30,9 @@ defmodule Site.Pulse do
   defp source(:smashing), do: Site.Pulse.Source.Smashing
   defp source(:dev_to), do: Site.Pulse.Source.DevTo
   defp source(:the_verge), do: Site.Pulse.Source.TheVerge
-  defp source(:bbc), do: Site.Pulse.Source.BBC
   defp source(:twiv), do: Site.Pulse.Source.TWIV
+  defp source(:bbc), do: Site.Pulse.Source.BBC
+  defp source(:publico), do: Site.Pulse.Source.Publico
+  defp source(:expresso), do: Site.Pulse.Source.Expresso
   defp source(_), do: nil
 end

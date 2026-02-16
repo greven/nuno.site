@@ -11,7 +11,7 @@ image: "hollow_knight.jpg"
 
 <!-- lead -->
 
-I'm often asked why I enjoy playing games that are hard and punishing, like _Elden Ring_, _Hades_, or _Hollow Knight_.
+I'm often asked (maybe at least once...) why I enjoy playing games that are hard and punishing, like _Elden Ring_, _Hades_, or _Hollow Knight_.
 
 One could argue that life itself is already on hard mode, where effort doesn't always translate into reward.
 So why seek out difficulty in games, especially when they're supposed to offer escapism and relaxation?

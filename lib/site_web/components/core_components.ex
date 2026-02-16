@@ -71,13 +71,14 @@ defmodule SiteWeb.CoreComponents do
   attr :tag, :string, default: "div"
   attr :class, :any, default: nil
   attr :content_class, :any, default: "h-full flex flex-col gap-3"
-  attr :bg, :string, default: "bg-surface-10/80 hover:bg-surface-10"
+  attr :bg, :string, default: "bg-surface-10/80 dark:bg-surface-20/60 hover:bg-surface-10"
   attr :padding, :string, default: "p-4"
 
   attr :border, :string, default: "border border-border hover:border-solid"
 
   attr :radius, :string, default: "rounded-lg"
   attr :shadow, :string, default: "hover:shadow-drop"
+  attr :disabled, :boolean, default: false
   attr :rest, :global, include: ~w(href navigate patch method target)
   slot :inner_block, required: true
 
@@ -91,7 +92,11 @@ defmodule SiteWeb.CoreComponents do
           radius={@radius}
           padding={@padding}
           shadow={@shadow}
-          class={["group/card relative overflow-hidden", @content_class]}
+          class={[
+            "group/card relative overflow-hidden",
+            @disabled && "opacity-50 pointer-events-none",
+            @content_class
+          ]}
           data-part="card"
         >
           <.link
@@ -116,7 +121,11 @@ defmodule SiteWeb.CoreComponents do
           radius={@radius}
           padding={@padding}
           shadow={@shadow}
-          class={["group/card isolate relative overflow-hidden", @content_class]}
+          class={[
+            "group/card isolate relative overflow-hidden",
+            @disabled && "opacity-50 pointer-events-none",
+            @content_class
+          ]}
           data-part="card"
         >
           {render_slot(@inner_block)}
@@ -1644,17 +1653,29 @@ defmodule SiteWeb.CoreComponents do
 
   attr :close_on_click_outside, :boolean, default: true
   attr :on_cancel, JS, default: %JS{}
-  attr :class, :any, default: nil
 
-  attr :bg_class, :string, default: "bg-surface-10/95"
-  attr :shadow_class, :string, default: "shadow-2xl"
+  attr :class, :any,
+    default: nil,
+    doc: "additional classes for the dialog panel, not including the backdrop"
 
-  attr :outline_class, :string,
+  attr :backdrop_class, :string,
+    default:
+      "backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-opacity backdrop:ease-out
+      backdrop:duration-250 backdrop:transition-discrete open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100"
+
+  attr :dialog_animation_class, :string,
+    default: "open:opacity-100 transition ease-out duration-250",
+    doc: "the animation classes to apply to the dialog element"
+
+  attr :panel_bg_class, :string, default: "bg-surface-10/90"
+  attr :panel_shadow_class, :string, default: "shadow-2xl"
+
+  attr :panel_outline_class, :string,
     default: "outline-1 outline-black/5 dark:-outline-offset-1 dark:outline-surface-30/60"
 
-  attr :animation_class, :string,
-    default:
-      "animate-slide-out-down data-dialog-open:animate-slide-in-up md:animate-none md:data-dialog-open:animate-none"
+  attr :panel_animation_class, :string,
+    default: "animate-slide-out-down data-dialog-open:animate-slide-in-up
+      md:animate-scale-out md:data-dialog-open:animate-scale-in"
 
   attr :rest, :global
   slot :inner_block, required: true
@@ -1662,12 +1683,6 @@ defmodule SiteWeb.CoreComponents do
   def dialog(assigns) do
     assigns =
       assigns
-      |> assign_new(
-        :backdrop_class,
-        fn ->
-          "backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-opacity backdrop:ease-out backdrop:duration-250 backdrop:transition-discrete open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100"
-        end
-      )
       |> assign(
         :container_style,
         [
@@ -1687,8 +1702,9 @@ defmodule SiteWeb.CoreComponents do
       data-close-on-click-outside={@close_on_click_outside}
       style={"--dialog-size: #{dialog_size(@size)};"}
       class={[
+        "opacity-0 border-none outline-none bg-transparent transition-discrete backdrop:transition-discrete",
         "starting:open:opacity-0 starting:open:backdrop:bg-transparent starting:open:backdrop:opacity-0",
-        "opacity-0 open:opacity-100 border-none outline-none bg-transparent transition-discrete backdrop:transition-discrete transition ease-out duration-250",
+        @dialog_animation_class,
         @use_backdrop && @backdrop_class
       ]}
       {@rest}
@@ -1696,6 +1712,7 @@ defmodule SiteWeb.CoreComponents do
       <div
         tabindex="0"
         style={@container_style}
+        data-part="dialog-container"
         class={[
           "fixed flex justify-center overflow-y-auto focus:outline-none",
           @centered && "items-center",
@@ -1704,7 +1721,6 @@ defmodule SiteWeb.CoreComponents do
           !@fullscreen && "md:top-0 md:bottom-0 md:px-(--dialog-x-offset) md:py-(--dialog-y-offset)",
           @fullscreen && "p-0"
         ]}
-        data-part="dialog-container"
       >
         <section
           tabindex="-1"
@@ -1714,10 +1730,10 @@ defmodule SiteWeb.CoreComponents do
             !@fullscreen && "max-w-full max-h-[calc(100dvh-2*var(--dialog-y-offset))]",
             !@fullscreen && "rounded-t-md md:rounded-md",
             @fullscreen && "h-full",
-            @animation_class,
-            @outline_class,
-            @shadow_class,
-            @bg_class,
+            @panel_animation_class,
+            @panel_outline_class,
+            @panel_shadow_class,
+            @panel_bg_class,
             @class
           ]}
           {@rest}
@@ -1786,6 +1802,7 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <.dialog
       id={@id}
+      show={@show}
       size={@size}
       fullscreen={@fullscreen}
       centered={@centered}

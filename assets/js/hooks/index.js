@@ -11,6 +11,7 @@ import { Layout } from './layout';
 import { PostLike } from './post-like';
 import { PostMeta } from './post-meta';
 import { ProfileSlideshow } from './profile-slideshow';
+import { PulseClock } from './pulse-clock';
 import { Resume } from './resume';
 import { SharePost } from './share-post';
 import { SiteHeader } from './site-header';
@@ -38,6 +39,7 @@ export default {
   PostLike,
   PostMeta,
   ProfileSlideshow,
+  PulseClock,
   Resume,
   SharePost,
   SiteHeader,

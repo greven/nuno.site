@@ -19,7 +19,7 @@ defmodule SiteWeb.FinderComponent do
         size="xl"
         y_offset="15dvh"
         data-close={Finder.close()}
-        outline_class="outline-1 outline-black/5 dark:-outline-offset-1 dark:outline-white/5"
+        panel_outline_class="outline-1 outline-black/5 dark:-outline-offset-1 dark:outline-white/5"
         use_backdrop
       >
         <%!-- Search input --%>
