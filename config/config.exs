@@ -58,8 +58,8 @@ config :bun,
   ]
 
 # Bun needs to specify where colocated JS files should be placed
-# config :phoenix_live_view, :colocated_js,
-#   target_directory: Path.expand("../assets/node_modules/phoenix-colocated", __DIR__)
+config :phoenix_live_view, :colocated_js,
+  target_directory: Path.expand("../assets/node_modules/phoenix-colocated", __DIR__)
 
 # Configures Elixir's Logger
 config :logger, :default_formatter,
