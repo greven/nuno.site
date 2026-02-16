@@ -297,14 +297,9 @@ defmodule Site.Services.Weather do
   defp air_quality_endpoint, do: "https://air-quality-api.open-meteo.com/v1/air-quality"
 
   defp coords do
-    with coords_str <- Application.fetch_env!(:site, :geo)[:coords],
-         [lat, long] <- String.split(coords_str, ";") do
-      %{
-        latitude: String.to_float(lat),
-        longitude: String.to_float(long)
-      }
-    else
-      _ -> [38.71667, -9.13333]
+    case Site.Geo.current_coords() do
+      {:ok, {lat, long}} -> %{latitude: lat, longitude: long}
+      error -> error
     end
   end
 end

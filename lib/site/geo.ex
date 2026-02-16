@@ -20,7 +20,7 @@ defmodule Site.Geo do
   @doc """
   Returns my current location coordinates (latitude and longitude).
   Requires a environment variable `COORDS` to be set with the format
-  "latitude;longitude", for example: "40.7128;-74.0060".
+  "latitude,longitude", for example: "40.7128,-74.0060".
   """
   def current_coords do
     Application.get_env(:site, :geo)[:coords]
@@ -31,19 +31,22 @@ defmodule Site.Geo do
   end
 
   @doc """
-  Parses a coordinates string in the format "latitude;longitude".
+  Parses a coordinates string in the format "latitude,longitude".
   It returns a tuple {:ok, {latitude, longitude}} if the format is valid,
   or {:error, :invalid_format} if the format is invalid.
 
   ## Examples
 
-      iex> Site.Geo.parse_coords("40.7128;-74.0060")
+      iex> Site.Geo.parse_coords("40.7128,-74.0060")
       {:ok, {40.7128, -74.0060}}
+
+      iex> Site.Geo.parse_coords("40.7128;-74.0060")
+      {:error, :invalid_format}
 
       iex> Site.Geo.parse_coords("invalid")
       {:error, :invalid_format}
 
-      iex> Site.Geo.parse_coords("40.7128;invalid")
+      iex> Site.Geo.parse_coords("40.7128,invalid")
       {:error, :invalid_format}
 
       iex> Site.Geo.parse_coords("40.7128")

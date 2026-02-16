@@ -23,7 +23,7 @@ defmodule SiteWeb.PulseLive.Index do
             <Components.calendar date={Date.utc_today()} />
           </div>
 
-          <Components.weather weather={@weather} air_quality={@air_quality} class="w-full md:w-auto" />
+          <Components.weather weather={@weather} class="w-full md:w-auto" />
         </div>
 
         <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
@@ -152,7 +152,7 @@ defmodule SiteWeb.PulseLive.Index do
       |> assign(:page_title, "Pulse")
       |> assign(:year_progress, year_progress)
       |> assign_async(:weather, fn -> {:ok, %{weather: get_weather()}} end)
-      |> assign_async(:air_quality, fn -> {:ok, %{air_quality: get_air_quality()}} end)
+      # |> assign_async(:air_quality, fn -> {:ok, %{air_quality: get_air_quality()}} end)
       |> stream_async(:reddit_news, fn -> Site.Pulse.fetch_items(:reddit) end)
       |> stream_async(:hacker_news, fn -> Site.Pulse.fetch_items(:hacker_news) end)
       |> stream_async(:smashing_news, fn -> Site.Pulse.fetch_items(:smashing) end)
@@ -212,10 +212,10 @@ defmodule SiteWeb.PulseLive.Index do
     end
   end
 
-  defp get_air_quality do
-    case Site.Services.get_weather_air_quality() do
-      {:ok, air_quality} -> %{aqi: air_quality.aqi}
-      {:error, _reason} -> nil
-    end
-  end
+  # defp get_air_quality do
+  #   case Site.Services.get_weather_air_quality() do
+  #     {:ok, air_quality} -> %{aqi: air_quality.aqi}
+  #     {:error, _reason} -> nil
+  #   end
+  # end
 end

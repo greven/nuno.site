@@ -74,7 +74,6 @@ defmodule SiteWeb.PulseLive.Components do
   @doc false
 
   attr :weather, AsyncResult, required: true
-  attr :air_quality, AsyncResult, required: true
   attr :rest, :global
 
   def weather(assigns) do
@@ -158,6 +157,30 @@ defmodule SiteWeb.PulseLive.Components do
               </div>
             </div>
           </:loading>
+
+          <:failed>
+            <div class="w-full flex gap-4 items-center">
+              <.icon name="lucide-cloud-off" class="size-14 text-content-40/20" />
+
+              <div class="w-full flex justify-between gap-8">
+                <div class="leading-7">
+                  <span class="text-content-40/60">Failed to load weather!</span>
+                  <div class="flex items-center text-sm text-content-40/20">
+                    <.icon name="hero-map-pin-mini" class="size-4 -ml-1 mr-1" /> N/A
+                  </div>
+                </div>
+
+                <div class="leading-5">
+                  <div class="flex items-start gap-1">
+                    <div class="font-mono text-3xl">
+                      <span class="text-content-40/20">!!</span>
+                    </div>
+                    <div class="text-content-40/10">C°</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </:failed>
 
           <div class="w-full flex gap-4 items-center">
             <.weather_icon
