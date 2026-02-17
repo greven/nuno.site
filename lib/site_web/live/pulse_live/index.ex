@@ -191,6 +191,7 @@ defmodule SiteWeb.PulseLive.Index do
 
         %{
           time: weather.current.time,
+          weather_code: weather.current.weather_code,
           temp: weather.current.temperature.value,
           temp_unit: weather.current.temperature.unit,
           apparent_temp: weather.current.apparent_temperature.value,
@@ -201,8 +202,11 @@ defmodule SiteWeb.PulseLive.Index do
           rain_unit: weather.current.precipitation.unit,
           pressure: weather.current.surface_pressure.value,
           pressure_unit: weather.current.surface_pressure.unit,
+          wind_speed: weather.current.wind_speed.value,
+          wind_speed_unit: weather.current.wind_speed.unit,
           uv_index: weather.daily.uv_index_max |> hd(),
-          weather_code: weather.current.weather_code,
+          sunrise: weather.daily.sunrise |> hd() |> Calendar.strftime("%H:%M"),
+          sunset: weather.daily.sunset |> hd() |> Calendar.strftime("%H:%M"),
           is_day: weather.current.is_day,
           daily: daily
         }

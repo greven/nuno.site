@@ -98,7 +98,11 @@ defmodule SiteWeb.PulseLive.Components do
     </div>
 
     <%!-- Weather Details Modal --%>
-    <.modal id="weather-details" size="lg" y_offset="20dvh">
+    <.modal
+      id="weather-details"
+      size="lg"
+      y_offset="20dvh"
+    >
       <:header title="Weather Details" />
       <div class="flex flex-col gap-8">
         <.weather_header weather={@weather}>
@@ -238,30 +242,36 @@ defmodule SiteWeb.PulseLive.Components do
       <.async_result :let={weather} assign={@weather}>
         <:loading>Loading...</:loading>
 
-        <dl class="w-full grid grid-cols-2 gap-x-12 gap-y-3 text-sm text-content-40">
+        <dl class="w-full grid grid-cols-2 gap-x-12 gap-y-2 text-sm text-content-40">
           <.weather_detail_item
             title="Feels like"
             value={"#{round(weather.apparent_temp)}°"}
             icon="lucide-thermometer"
-            icon_class="size-4 text-red-400"
           />
           <.weather_detail_item
             title="Humidity"
             value={"#{weather.humidity}%"}
             icon="lucide-droplet"
-            icon_class="size-4 text-sky-400"
           />
           <.weather_detail_item
             title="UV Index"
             value={"#{round(weather.uv_index)}"}
             icon="lucide-sun"
-            icon_class="size-4 text-amber-400"
           />
           <.weather_detail_item
-            title="Pressure"
-            value={"#{round(weather.pressure)} #{weather.pressure_unit}"}
-            icon="lucide-gauge"
-            icon_class="size-4 text-emerald-400"
+            title="Wind Speed"
+            value={"#{round(weather.wind_speed)} #{weather.wind_speed_unit}"}
+            icon="lucide-wind"
+          />
+          <.weather_detail_item
+            title="Sunrise"
+            value={"#{weather.sunrise}"}
+            icon="lucide-sunrise"
+          />
+          <.weather_detail_item
+            title="Sunset"
+            value={"#{weather.sunset}"}
+            icon="lucide-sunset"
           />
         </dl>
       </.async_result>
@@ -276,7 +286,7 @@ defmodule SiteWeb.PulseLive.Components do
 
   defp weather_detail_item(assigns) do
     ~H"""
-    <div class="flex items-center justify-between gap-12 border-b border-border/60 pb-2">
+    <div class="flex items-center justify-between gap-12 pb-1.5">
       <dt class="flex items-center gap-2 text-content-20">
         <.icon :if={@icon} name={@icon} class={@icon_class} /> {@title}
       </dt>

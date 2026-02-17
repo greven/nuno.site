@@ -1667,7 +1667,7 @@ defmodule SiteWeb.CoreComponents do
     default: "open:opacity-100 transition ease-out duration-250",
     doc: "the animation classes to apply to the dialog element"
 
-  attr :panel_bg_class, :string, default: "bg-surface-10/90"
+  attr :panel_bg_class, :string, default: "bg-surface-10/95"
   attr :panel_shadow_class, :string, default: "shadow-2xl"
 
   attr :panel_outline_class, :string,
@@ -1803,6 +1803,7 @@ defmodule SiteWeb.CoreComponents do
     <.dialog
       id={@id}
       show={@show}
+      class={@class}
       size={@size}
       fullscreen={@fullscreen}
       centered={@centered}
@@ -1811,6 +1812,7 @@ defmodule SiteWeb.CoreComponents do
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       data-close-on-click-outside={@close_on_click_outside}
       use_backdrop
+      {@rest}
     >
       <%!-- Header --%>
       <div
