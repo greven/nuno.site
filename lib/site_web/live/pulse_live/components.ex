@@ -249,14 +249,14 @@ defmodule SiteWeb.PulseLive.Components do
             icon="lucide-thermometer"
           />
           <.weather_detail_item
-            title="Humidity"
-            value={"#{weather.humidity}%"}
-            icon="lucide-droplet"
-          />
-          <.weather_detail_item
             title="UV Index"
             value={"#{round(weather.uv_index)}"}
             icon="lucide-sun"
+          />
+          <.weather_detail_item
+            title="Humidity"
+            value={"#{weather.humidity}%"}
+            icon="lucide-droplet"
           />
           <.weather_detail_item
             title="Wind Speed"

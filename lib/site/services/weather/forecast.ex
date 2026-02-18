@@ -7,6 +7,7 @@ defmodule Site.Services.Weather.Forecast do
   defstruct [
     :current,
     :daily,
+    :hourly,
     :elevation,
     :latitude,
     :longitude,

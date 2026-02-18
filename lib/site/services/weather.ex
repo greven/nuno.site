@@ -6,6 +6,7 @@ defmodule Site.Services.Weather do
   alias __MODULE__.Forecast
   alias __MODULE__.Current
   alias __MODULE__.Daily
+  alias __MODULE__.Hourly
   alias __MODULE__.AirQuality
 
   @doc """
@@ -35,6 +36,7 @@ defmodule Site.Services.Weather do
     %Forecast{
       current: map_current_weather(body),
       daily: map_daily_weather(body),
+      hourly: map_hourly_weather(body),
       elevation: body["elevation"],
       latitude: body["latitude"],
       longitude: body["longitude"],
@@ -100,6 +102,19 @@ defmodule Site.Services.Weather do
       sunrise: Enum.map(values["sunrise"], &parse_datetime(&1, utc_offset_seconds)),
       sunset: Enum.map(values["sunset"], &parse_datetime(&1, utc_offset_seconds)),
       weather_code: values["weather_code"]
+    }
+  end
+
+  defp map_hourly_weather(body) do
+    values = body["hourly"]
+    units = body["hourly_units"]
+
+    utc_offset_seconds = body["utc_offset_seconds"]
+
+    %Hourly{
+      time: Enum.map(values["time"], &parse_datetime(&1, utc_offset_seconds)),
+      rain: %{unit: units["rain"], values: values["rain"]},
+      uv_index: %{unit: units["uv_index"], values: values["uv_index"]}
     }
   end
 
@@ -240,7 +255,9 @@ defmodule Site.Services.Weather do
       latitude: coords()[:latitude],
       longitude: coords()[:longitude],
       current: current_params(),
-      daily: daily_params()
+      daily: daily_params(),
+      hourly: hourly_params(),
+      forecast_hours: 24
     ]
   end
 
@@ -280,6 +297,14 @@ defmodule Site.Services.Weather do
       "sunrise",
       "sunset",
       "weather_code"
+    ]
+    |> Enum.join(",")
+  end
+
+  defp hourly_params do
+    [
+      "rain",
+      "uv_index"
     ]
     |> Enum.join(",")
   end
