@@ -28,10 +28,11 @@ defmodule Site.Pulse do
   defp source(:slashdot), do: Site.Pulse.Source.Slashdot
   defp source(:tnw), do: Site.Pulse.Source.TNW
   defp source(:smashing), do: Site.Pulse.Source.Smashing
-  defp source(:dev_to), do: Site.Pulse.Source.DevTo
+  defp source(:changelog), do: Site.Pulse.Source.Changelog
   defp source(:the_verge), do: Site.Pulse.Source.TheVerge
   defp source(:twiv), do: Site.Pulse.Source.TWIV
   defp source(:bbc), do: Site.Pulse.Source.BBC
+  defp source(:independent), do: Site.Pulse.Source.Independent
   defp source(:publico), do: Site.Pulse.Source.Publico
   defp source(:expresso), do: Site.Pulse.Source.Expresso
   defp source(_), do: nil

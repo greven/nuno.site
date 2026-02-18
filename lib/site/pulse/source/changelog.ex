@@ -1,6 +1,6 @@
-defmodule Site.Pulse.Source.DevTo do
+defmodule Site.Pulse.Source.Changelog do
   @moduledoc """
-  Source module for fetching news from Dev Community RSS feed.
+  Source module for fetching news from the Changelog feed.
   """
 
   use Nebulex.Caching
@@ -12,14 +12,14 @@ defmodule Site.Pulse.Source.DevTo do
   @impl true
   def meta do
     %Site.Pulse.Meta{
-      name: "Dev Community",
-      description: "Stories from Dev Community feed.",
-      url: URI.parse("https://www.dev.to/feed")
+      name: "Changelog",
+      description: "Stories from the Changelog feed.",
+      url: URI.parse("https://changelog.com/feed")
     }
   end
 
   @impl true
-  @decorate cacheable(cache: Site.Cache, key: :dev_community_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(cache: Site.Cache, key: :changelog_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
     meta = meta()

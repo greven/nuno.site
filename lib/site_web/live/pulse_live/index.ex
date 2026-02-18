@@ -15,6 +15,7 @@ defmodule SiteWeb.PulseLive.Index do
       <Layouts.page_content class="flex flex-col gap-16">
         <.header tag="h1">
           <.icon name="lucide-activity" class="size-10 text-primary mr-3" /> Pulse
+          <:subtitle>My Internet Start Page</:subtitle>
         </.header>
 
         <div class="w-full flex flex-wrap justify-end items-end gap-4">
@@ -40,7 +41,7 @@ defmodule SiteWeb.PulseLive.Index do
           <Components.news_item
             id="smashing-news-pulse"
             title="Smashing Magazine"
-            icon="lucide-blend"
+            icon="si-smashingmagazine"
             accent="#D33A2C"
             link="https://www.smashingmagazine.com"
             async={@smashing_news}
@@ -60,11 +61,21 @@ defmodule SiteWeb.PulseLive.Index do
           <Components.news_item
             id="slashdot-news-pulse"
             title="Slashdot"
-            icon="lucide-copy-slash"
+            icon="si-slashdot"
             accent="#016765"
             link="https://slashdot.org"
             async={@slashdot_news}
             news={@streams.slashdot_news}
+          />
+
+          <Components.news_item
+            id="changelog-news-pulse"
+            title="Changelog"
+            icon="lucide-message-circle-code"
+            accent="#59B287"
+            link="https://changelog.com"
+            async={@changelog_news}
+            news={@streams.changelog_news}
           />
 
           <Components.news_item
@@ -88,16 +99,6 @@ defmodule SiteWeb.PulseLive.Index do
           />
 
           <Components.news_item
-            id="dev-to-news-pulse"
-            title="Dev Community"
-            icon="lucide-message-circle-code"
-            accent="#3B49DF"
-            link="https://dev.to"
-            async={@dev_to_news}
-            news={@streams.dev_to_news}
-          />
-
-          <Components.news_item
             id="twiv-pulse"
             title="This Week in Videogames"
             icon="lucide-gamepad-2"
@@ -105,6 +106,16 @@ defmodule SiteWeb.PulseLive.Index do
             link="https://thisweekinvideogames.com"
             async={@twiv_news}
             news={@streams.twiv_news}
+          />
+
+          <Components.news_item
+            id="independent-news-pulse"
+            title="Independent"
+            icon="lucide-bird"
+            accent="#EB1425"
+            link="https://www.independent.co.uk"
+            async={@independent_news}
+            news={@streams.independent_news}
           />
 
           <Components.news_item
@@ -120,8 +131,8 @@ defmodule SiteWeb.PulseLive.Index do
           <Components.news_item
             id="publico-news-pulse"
             title="Publico"
-            icon="lucide-ampersand"
-            accent="#B80000"
+            icon="lucide-users-round"
+            accent="#D10018"
             link="https://www.publico.pt"
             async={@publico_news}
             news={@streams.publico_news}
@@ -131,7 +142,7 @@ defmodule SiteWeb.PulseLive.Index do
             id="expresso-news-pulse"
             title="Expresso"
             icon="lucide-mailbox"
-            accent="#B80000"
+            accent="#005782"
             link="https://www.expresso.pt"
             async={@expresso_news}
             news={@streams.expresso_news}
@@ -160,7 +171,8 @@ defmodule SiteWeb.PulseLive.Index do
       |> stream_async(:the_verge_news, fn -> Site.Pulse.fetch_items(:the_verge) end)
       |> stream_async(:tnw_news, fn -> Site.Pulse.fetch_items(:tnw) end)
       |> stream_async(:twiv_news, fn -> Site.Pulse.fetch_items(:twiv) end)
-      |> stream_async(:dev_to_news, fn -> Site.Pulse.fetch_items(:dev_to) end)
+      |> stream_async(:changelog_news, fn -> Site.Pulse.fetch_items(:changelog) end)
+      |> stream_async(:independent_news, fn -> Site.Pulse.fetch_items(:independent) end)
       |> stream_async(:bbc_news, fn -> Site.Pulse.fetch_items(:bbc) end)
       |> stream_async(:publico_news, fn -> Site.Pulse.fetch_items(:publico) end)
       |> stream_async(:expresso_news, fn -> Site.Pulse.fetch_items(:expresso) end)
