@@ -56,8 +56,8 @@ defmodule SiteWeb.HomeLive.Index do
           <div id="site-intro" class="text-center">
             <h1 class="flex flex-col font-headings leading-tight">
               <div class="-ml-1 md:-ml-2 text-6xl md:text-8xl tracking-tight">
-                <span class="text-content-20">I'm</span>
-                <strong class="contrast-125 font-semibold">Nuno</strong><span class="text-primary">.</span>
+                <span class="text-content-40">I'm</span>
+                <strong class="contrast-125 font-sans font-semibold">Nuno</strong><span class="text-primary">.</span>
               </div>
             </h1>
 
@@ -66,9 +66,10 @@ defmodule SiteWeb.HomeLive.Index do
             </div>
 
             <p class="mt-8 font-light text-base/7 md:text-xl/8 text-content-30 text-balance">
-              This site is where I share my knowledge and ideas with others. Here you'll find a
+              This is my personal site, where I share my <s>ramblings</s>
+              thoughts with others. Here you'll find a
               <.link navigate="/changelog" class="link-subtle">collection</.link>
-              of my <.link navigate="/blog?category=blog" class="link-subtle">articles</.link>, <.link
+              of my <.link navigate="/blog?category=article" class="link-subtle">articles</.link>, <.link
                 navigate="/blog?category=note"
                 class="link-subtle"
               >notes</.link>, and experiments.

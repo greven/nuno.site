@@ -15,7 +15,7 @@
   --font-sans:
     'Inter', 'Segoe UI', 'Noto Sans', Helvetica, Arial, ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-headings: 'Montserrat', Georgia, Cambria, 'Times New Roman', Times, ui-serif, serif;
+  --font-headings: 'Space Grotesk', Georgia, Cambria, 'Times New Roman', Times, ui-serif, serif;
 
   --animate-fade-in: fade-in 0.5s ease-out forwards;
   --animate-fade-out: fade-out 0.5s ease-out forwards;
