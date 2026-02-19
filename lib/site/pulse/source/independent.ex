@@ -2,7 +2,6 @@ defmodule Site.Pulse.Source.Independent do
   @moduledoc """
   Source module for fetching news from the Independent feed.
   """
-  alias Site.Pulse.Source.Independent
 
   use Nebulex.Caching
 

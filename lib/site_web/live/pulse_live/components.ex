@@ -259,7 +259,7 @@ defmodule SiteWeb.PulseLive.Components do
             icon="lucide-droplet"
           />
           <.weather_detail_item
-            title="Wind Speed"
+            title="Wind"
             value={"#{round(weather.wind_speed)} #{weather.wind_speed_unit}"}
             icon="lucide-wind"
           />
@@ -553,7 +553,7 @@ defmodule SiteWeb.PulseLive.Components do
       <% else %>
         <.icon
           name="lucide-circle-question-mark"
-          class={["text-content-40/60 opacity-20", @size_class]}
+          class={["text-content-40/80 opacity-20", @size_class]}
         />
       <% end %>
     </div>

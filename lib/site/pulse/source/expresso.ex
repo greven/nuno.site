@@ -19,7 +19,7 @@ defmodule Site.Pulse.Source.Expresso do
   end
 
   @impl true
-  @decorate cacheable(cache: Site.Cache, key: :publico_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(cache: Site.Cache, key: :expresso_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
     meta = meta()
