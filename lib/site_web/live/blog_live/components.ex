@@ -39,7 +39,7 @@ defmodule SiteWeb.BlogLive.Components do
         <.header tag="h2" class="mt-1" header_class="flex justify-between gap-8">
           <.link
             navigate={~p"/blog/#{@post.year}/#{@post}"}
-            class="link-subtle text-lg line-clamp-2"
+            class="link-subtle text-lg xl:text-xl line-clamp-2"
           >
             <span class="absolute inset-0 z-10"></span>
             <span class="font-medium">{@post.title}</span>
