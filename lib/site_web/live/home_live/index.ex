@@ -6,6 +6,7 @@ defmodule SiteWeb.HomeLive.Index do
   alias Site.Services
   alias Site.Services.MusicTrack
 
+  alias SiteWeb.SiteComponents
   alias SiteWeb.HomeLive.Components
 
   @refresh_interval 60_000
@@ -66,7 +67,7 @@ defmodule SiteWeb.HomeLive.Index do
             </div>
 
             <p class="mt-8 font-light text-base/7 md:text-xl/8 text-content-30 text-balance">
-              This is my personal site, where I share my <s>ramblings</s>
+              This is my <strong>personal site</strong>, where I share my <s>ramblings</s>
               thoughts with others. Here you'll find a
               <.link navigate="/changelog" class="link-subtle">collection</.link>
               of my <.link navigate="/blog?category=article" class="link-subtle">articles</.link>, <.link
@@ -80,7 +81,9 @@ defmodule SiteWeb.HomeLive.Index do
         <%!-- Content --%>
         <div class="flex flex-col gap-20 md:gap-28 last:mb-16">
           <%!-- Bento Grid --%>
-          <div class="relative grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:p-2">
+          <div class="relative grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:p-4">
+            <SiteComponents.box_chrome class="hidden sm:block" animated />
+
             <Components.bento_card
               navigate={~p"/blog"}
               class="col-span-1 row-span-1 aspect-square"

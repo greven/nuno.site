@@ -5,6 +5,159 @@ defmodule SiteWeb.SiteComponents do
 
   use SiteWeb, :html
 
+  @doc false
+
+  attr :color_class, :string,
+    default: "text-neutral-400 dark:text-neutral-700",
+    doc: "color of the lines"
+
+  attr :width, :string, default: "1px", doc: "the thickness of the dashed lines"
+  attr :gap, :string, default: "1px", doc: "the gap between dashes in the dashed lines"
+  attr :size, :string, default: "6px", doc: "the length of each dash in the dashed lines"
+
+  attr :offset, :string,
+    default: "100px",
+    doc: "the offset of the dashed lines from the edge of the container"
+
+  attr :animated, :boolean, default: false, doc: "whether to apply animation classes to the lines"
+  attr :class, :string, default: nil
+
+  def box_chrome(assigns) do
+    ~H"""
+    <.dashed_line
+      position="top"
+      class={@class}
+      width={@width}
+      gap={@gap}
+      size={@size}
+      offset={@offset}
+      color_class={@color_class}
+      animated={@animated}
+    />
+    <.dashed_line
+      position="bottom"
+      class={@class}
+      width={@width}
+      gap={@gap}
+      size={@size}
+      offset={@offset}
+      color_class={@color_class}
+      animated={@animated}
+    />
+    <.dashed_line
+      position="left"
+      class={@class}
+      width={@width}
+      gap={@gap}
+      size={@size}
+      offset={@offset}
+      color_class={@color_class}
+      animated={@animated}
+    />
+    <.dashed_line
+      position="right"
+      class={@class}
+      width={@width}
+      gap={@gap}
+      size={@size}
+      offset={@offset}
+      color_class={@color_class}
+      animated={@animated}
+    />
+    """
+  end
+
+  @doc """
+  Renders a dashed line in the specified position (top, bottom, left, right) with
+  customizable line width, color, offset, size and gap between dashes.
+  """
+
+  attr :position, :string, values: ~w(top bottom left right), required: true
+  attr :width, :string, default: "1px", doc: "the thickness of the dashed line"
+  attr :gap, :string, default: "1px", doc: "the gap between dashes in the dashed line"
+  attr :size, :string, default: "6px", doc: "the length of each dash in the dashed line"
+
+  attr :offset, :string,
+    default: "100px",
+    doc: "the offset of the dashed line from the edge of the container"
+
+  attr :color_class, :string,
+    default: "currentColor",
+    doc:
+      "to change the color of the line, use a text color class, by default it's `text-surface-40`"
+
+  attr :animated, :boolean, default: false, doc: "whether to apply the animation class"
+
+  attr :class, :string, default: nil
+
+  def dashed_line(%{position: position} = assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :height,
+        cond do
+          position in ["top", "bottom"] ->
+            "height: #{assigns.width};"
+
+          position in ["left", "right"] ->
+            "--to-height: calc(100% + #{assigns.offset}); height: #{if assigns.animated, do: "0", else: "var(--to-height)"};"
+        end
+      )
+      |> assign(
+        :width,
+        cond do
+          position in ["top", "bottom"] ->
+            "--to-width: calc(100% + #{assigns.offset}); width: #{if assigns.animated, do: "0", else: "var(--to-width)"};"
+
+          position in ["left", "right"] ->
+            "width: #{assigns.width};"
+        end
+      )
+      |> assign(
+        :pos_cx,
+        if(position in ["top", "bottom"],
+          do: "left: calc(-1 * #{assigns.offset} / 2);",
+          else: "top: calc(-1 * #{assigns.offset} / 2);"
+        )
+      )
+      |> assign(
+        :direction,
+        if(position in ["top", "bottom"], do: "to right", else: "to bottom")
+      )
+      |> assign(
+        :bg_size,
+        if(position in ["top", "bottom"],
+          do: "#{assigns.size} #{assigns.width}",
+          else: "#{assigns.width} #{assigns.size}"
+        )
+      )
+      |> assign(
+        :animation_class,
+        cond do
+          assigns.animated and position in ["top", "bottom"] -> "dash-hline-animation"
+          assigns.animated and position in ["left", "right"] -> "dash-vline-animation"
+          true -> nil
+        end
+      )
+
+    ~H"""
+    <div
+      class={[@color_class, @class, @animation_class]}
+      style={
+        [
+          ["position: absolute;", "#{@position}: 0;", @pos_cx, @height, @width],
+          "background: linear-gradient(#{@direction}, currentColor, currentColor 50%, transparent 0, transparent);",
+          "background-size: #{@bg_size};",
+          "mask: linear-gradient(#{@direction}, transparent, black calc(#{@offset} / 2), black calc(100% - #{@offset} / 2), transparent);"
+        ]
+        |> List.flatten()
+        |> Enum.join(" ")
+      }
+    >
+    </div>
+    """
+  end
+
   @doc """
   Renders a duotone SVG icon using CSS masks given an icon name.
   All the available icons are Lucide (a small subset) icons located in the static

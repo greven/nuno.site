@@ -26,7 +26,8 @@ defmodule SiteWeb.BlogLive.Index do
         </.header>
 
         <%!-- && @post_count > 1 --%>
-        <div :if={@has_posts?} class="mt-8 flex justify-between items-center">
+        <div :if={@has_posts?} class="relative p-1 mt-8 flex justify-between items-center">
+          <SiteWeb.SiteComponents.box_chrome offset="32px" color_class="text-surface-40" />
           <.segmented_control
             class="w-full sm:w-auto md:min-w-105"
             aria_label="Filter articles by category"

@@ -388,6 +388,38 @@
     border-right-color: var(--color-primary);
   }
 
+  /* Dashed lines animations */
+
+  @keyframes grow-horizontal {
+    from {
+      width: 0;
+      opacity: 1;
+    }
+    to {
+      width: var(--to-width);
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes grow-vertical {
+    from {
+      height: 0;
+      opacity: 1;
+    }
+    to {
+      height: var(--to-height);
+      opacity: 0.5;
+    }
+  }
+
+  .dash-hline-animation {
+    animation: grow-horizontal 1.25s ease-in-out forwards;
+  }
+
+  .dash-vline-animation {
+    animation: grow-vertical 1.25s ease-in-out forwards;
+  }
+
   .profile-picture {
     position: relative;
     width: fit-content;
