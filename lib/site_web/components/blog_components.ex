@@ -159,7 +159,7 @@ defmodule SiteWeb.BlogComponents do
         <h2 class="col-start-3 col-span-1">
           <.link
             navigate={~p"/blog/#{@post.year}/#{@post}"}
-            class="link-subtle font-medium text-lg line-clamp-2 text-pretty"
+            class="link-subtle w-fit font-medium text-lg line-clamp-2 text-pretty"
           >
             <span class="absolute inset-0"></span>
             {@post.title}

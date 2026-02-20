@@ -17,19 +17,24 @@ defmodule SiteWeb.AboutLive.Index do
           <%!-- Intro --%>
           <div class="w-full text-center md:text-left lg:order-first lg:row-span-2">
             <h1 class="text-3xl md:text-4xl font-headings font-light tracking-tight">
-              HEY! My name is <em class="font-medium underline not-italic decoration-4 decoration-primary underline-offset-4 text-content-10">Nuno</em>.
+              HEY! My name is
+              <em class="font-medium underline not-italic decoration-4 decoration-primary underline-offset-4 text-content-10">
+                Nuno
+              </em>
             </h1>
 
-            <p class="mt-2 text-lg md:text-xl font-light">
+            <p class="mt-2 text-lg md:text-xl font-light text-content-20">
               I'm a <span class="font-semibold">Software Engineer</span>
-              from <span class="font-normal uppercase">
-              <.icon
-                  name="lucide-map-pin"
+              from
+              <span class="font-normal uppercase">
+                <.icon
+                  name="lucide-map-pin text-secondary"
                   class="size-5 mr-1 mb-1.5 hidden md:inline-block"
-                />Lisbon</span>.
+                />Lisbon
+              </span>
             </p>
 
-            <div class="mt-8 space-y-4 text-base text-content-20">
+            <div class="mt-8 space-y-4 text-base text-content-20 underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6 decoration-1 decoration-surface-40/75">
               <SiteComponents.profile_picture
                 size={300}
                 class="w-full flex justify-center md:w-auto md:block md:ml-8 md:float-right [shape-outside:circle(50%)]"

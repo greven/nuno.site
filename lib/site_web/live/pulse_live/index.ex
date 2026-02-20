@@ -93,7 +93,7 @@ defmodule SiteWeb.PulseLive.Index do
             title="The Next Web"
             icon="lucide-step-forward"
             accent="#64F"
-            link="https://www.thenextweb.com"
+            link="https://thenextweb.com"
             async={@tnw_news}
             news={@streams.tnw_news}
           />
