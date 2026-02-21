@@ -23,11 +23,11 @@ Then the “agent era” arrived and things got muddier.
 I’m not writing this post to take a stand against AI, nor is this an anti-AI manifesto. I use it daily.
 Back then, before AI, as an already experienced developer, I rarely Googled basic things. StackOverflow, forums and Discord were for edge cases or unfamiliar territory. However, using Copilot paired with models like Anthropic’s Claude it has largely replaced the old “search-and-scan” workflow. LLM coding models are superior since:
 
-- It understands context.
-- It works with less than ideal text prompts.
-- It’s faster than traditional search (time spent evaluating results).
+- They understand context.
+- They work with less than ideal text prompts.
+- They’re faster than traditional search (time spent evaluating results).
 
-The problem isn’t assistance. The problem is _how it’s being sold_.
+The problem isn’t the use of AI assistance. The problem is _how it’s being sold_.
 
 ## The hidden costs of AI
 
