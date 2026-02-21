@@ -57,7 +57,7 @@ One could look at tools like OpenClaw as a massive productivity boost. Myself I 
 
 ## The real tradeoff
 
-AI didn’t emerge, it was unleashed. It went from research labs to global deployment almost overnight. It was released too soon (we can thank OpenAI for that), before we had clear legal frameworks in place. Before we had meaningful safeguards around intellectual property. Before we understood the economic and societal consequences of deploying systems at this scale.
+AI didn’t emerge, it was unleashed. It went from research labs to global deployment almost overnight. It was released too soon (thanks OpenAI!), before we had clear legal frameworks in place. Before we had meaningful safeguards around intellectual property. Before we understood the economic and societal consequences of deploying systems at this scale.
 
 Regulators are now scrambling to catch up. In Europe, legislation races against adoption curves. In the United States, it often feels like experimentation at planetary scale. AI investment is already the biggest endeavour of the human race to date (even surpassing the investments in The Manhattan Project and The Apollo program by several orders of magnitude). Yet, AI is being pushed from executives downward, searching for problems to justify its existence.
 
