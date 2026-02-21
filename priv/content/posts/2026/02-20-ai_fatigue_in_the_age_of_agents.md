@@ -46,6 +46,8 @@ Some major tech companies, including Microsoft, claim that AI now writes a signi
 
 Take Windows 11. In 2026, even [Notepad has had critical security issues](https://www.techradar.com/pro/security/microsoft-patches-concerning-windows-11-notepad-security-flaw). How could this even be possible? Well, because ~~Microsoft~~ Microslop decided to add AI features to Notepad, at the request of no one. Yet, here we are.
 
+<SiteWeb.BlogComponents.article_image image="https://imgs.xkcd.com/comics/machine_learning.png" alt="XKCD #1838" caption="Obligatory XKCD - #1838." width={371} heigh={439} rounded={false} centered />
+
 And then there’s the rise of tools like [OpenClaw](https://openclaw.ai/). An AI chatbot assistant, think _Siri_ but it can actually do something. In a whirlwind of developments, it was rebranded multiple times in the span of days. It was initially named _Clawdbot_, but ironically, Anthropic deemed it too similar to their Claude product. And as we all know, AI companies are notoriously ethical about intellectual property! OpenClaw runs local agents with persistent sessions, integrating with models like ChatGPT and Claude.
 
 It does sound powerful on paper. It can potentially fulfil the void left by the stagnated Google’s Assistant and the ever useless Apple’s Siri. In practice, it requires broad permissions across your accounts and services to be “useful”. Not that Google and Apple wouldn’t have access to your data anyway, but when considering security practices and code quality I still put my bet on Google or Apple over OpenClaw.

@@ -19,22 +19,37 @@ defmodule SiteWeb.BlogComponents do
   attr :image, :string, required: true
   attr :alt, :string, required: true
   attr :caption, :string, default: nil
+  attr :width, :integer, default: 832
+  attr :height, :integer, default: 468
+  attr :rounded, :boolean, default: true
+  attr :centered, :boolean, default: false
   attr :class, :string, default: nil
 
-  def article_image(assigns) do
-    assigns = assign(assigns, :url, cdn_image_url(assigns.image))
+  def article_image(%{image: image} = assigns) do
+    # It's a our own image if it's just an name with an extension or if it starts with our CDN base URL
+    cdn_image? =
+      cond do
+        String.starts_with?(image, Helpers.base_cdn_url()) -> true
+        String.match?(image, ~r/^[\w\/-]+\.(jpg|jpeg|png|gif)$/) -> true
+        true -> false
+      end
+
+    assigns =
+      assigns
+      |> assign(:is_cdn_image?, cdn_image?)
+      |> assign(:url, if(cdn_image?, do: cdn_image_url(image), else: image))
 
     ~H"""
-    <figure>
+    <figure class={@centered && "flex flex-col items-center"}>
       <.image
         src={@url}
         alt={@alt}
-        width={832}
-        height={468}
-        class={@class}
+        width={@width}
+        height={@height}
         title={@caption}
-        use_picture
-        use_blur
+        class={[@class, @rounded && "rounded-lg"]}
+        use_picture={@is_cdn_image?}
+        use_blur={@is_cdn_image?}
       />
       <figcaption :if={@caption}>{@caption}</figcaption>
     </figure>
