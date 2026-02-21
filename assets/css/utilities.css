@@ -107,15 +107,15 @@
 /* Links */
 
 @utility link {
-  @apply text-content-10 decoration-primary hover:decoration-content-30 hover:bg-surface-40/40 underline decoration-[1.5px] underline-offset-3 transition-colors;
+  @apply text-content-10 decoration-primary hover:decoration-content-30 hover:bg-surface-40/20 underline decoration-[1.5px] underline-offset-3 transition-colors;
 }
 
 @utility link-subtle {
-  @apply text-content-10 decoration-content-40/20 hover:decoration-primary hover:bg-primary/4 underline decoration-[1.5px] underline-offset-3 transition-colors;
+  @apply text-content-10 decoration-content-40/20 hover:decoration-primary underline decoration-[1.5px] underline-offset-3 transition-colors;
 }
 
 @utility link-ghost {
-  @apply text-content-30 hover:text-content-10 hover:decoration-primary hover:bg-primary/4 underline decoration-transparent decoration-[1.5px] underline-offset-3 transition-colors;
+  @apply text-content-30 hover:text-content-10 hover:decoration-primary underline decoration-transparent decoration-[1.5px] underline-offset-3 transition-colors;
 }
 
 @utility header-link {

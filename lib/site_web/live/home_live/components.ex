@@ -734,10 +734,11 @@ defmodule SiteWeb.HomeLive.Components do
   def featured_posts(assigns) do
     ~H"""
     <div class={@class}>
-      <ol id="featured-posts" class="mx-auto flex flex-col justify-center gap-0.5">
-        <%= for post <- @posts do %>
+      <ol id="featured-posts" class="mx-auto flex flex-col justify-center gap-0.5" phx-update="stream">
+        <%= for {dom_id, post} <- @posts do %>
           <.card
             tag="li"
+            id={dom_id}
             class="relative"
             content_class="w-full h-full px-0 sm:px-2.5 lg:px-3 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-6"
             padding="p-0"

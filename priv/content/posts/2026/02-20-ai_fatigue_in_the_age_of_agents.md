@@ -3,7 +3,8 @@ title: "AI Fatigue in the Age of Agents",
 tags: ~w(dev ai),
 excerpt: "I use AI every day. I find it useful. Sometimes even impressive. And yet, I’m tired.",
 category: :article,
-status: :published
+status: :published,
+featured: true
 }
 
 ---
@@ -52,7 +53,7 @@ And then there’s the rise of tools like [OpenClaw](https://openclaw.ai/). An A
 
 It does sound powerful on paper. It can potentially fulfil the void left by the stagnated Google’s Assistant and the ever useless Apple’s Siri. In practice, it requires broad permissions across your accounts and services to be “useful”. Not that Google and Apple wouldn’t have access to your data anyway, but when considering security practices and code quality I still put my bet on Google or Apple over OpenClaw.
 
-One could look at tools like OpenClaw as empowerment. Myself I lean on surveillance packaged as productivity. We all know the old saying: “the end doesn't justify the security clusterfuck”.
+One could look at tools like OpenClaw as a massive productivity boost. Myself I lean on surveillance packaged as productivity. We all know the old saying: “the end doesn't justify the security clusterf\*ck”.
 
 ## The real tradeoff
 

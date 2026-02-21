@@ -226,9 +226,11 @@ defmodule SiteWeb.HomeLive.Index do
           </section>
 
           <%!-- Featured Articles --%>
-          <section :if={@posts != []}>
-            <Components.section_title>Featured Articles</Components.section_title>
-            <Components.featured_posts posts={@posts} />
+          <section :if={@featured_post_count != 0}>
+            <Components.section_title>
+              <:icon name="lucide-signpost" class="text-primary" /> Featured Articles
+            </Components.section_title>
+            <Components.featured_posts posts={@streams.posts} />
           </section>
         </div>
       </Layouts.page_content>
@@ -239,6 +241,7 @@ defmodule SiteWeb.HomeLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     posts = Blog.list_featured_posts() |> Enum.take(3)
+    featured_posts_count = length(posts)
     published_posts_count = Blog.list_published_posts() |> length()
 
     if connected?(socket) do
@@ -251,6 +254,7 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign(:page_title, "Home")
       |> assign(:today, Date.utc_today())
       |> assign(:post_count, published_posts_count)
+      |> assign(:featured_post_count, featured_posts_count)
       |> assign(:photos_count, 0)
       |> stream(:posts, posts)
       |> assign_async(:track, &get_currently_playing/0)
