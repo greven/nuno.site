@@ -23,14 +23,14 @@ I’m not writing this post to take a stand against AI, nor is this an anti-AI m
 Back then, before AI, as an already experienced developer, I rarely Googled basic things. StackOverflow, forums and Discord were for edge cases or unfamiliar territory. However, using Copilot paired with models like Anthropic’s Claude it has largely replaced the old “search-and-scan” workflow. LLM coding models are superior since:
 
 - It understands context.
-- It works with partial prompts.
-- It’s faster than traditional search.
+- It works with less than ideal text prompts.
+- It’s faster than traditional search (time spent evaluating results).
 
 The problem isn’t assistance. The problem is _how it’s being sold_.
 
 ## The hidden costs of AI
 
-We’ve moved from “copilot” to “agentic AI”, then to vague promises of AGI — curing cancer, solving climate change, delivering world peace. Meanwhile, AI is being used to justify mass layoffs, rising energy costs and accelerating the flood of low-quality, low-effort synthetic content.
+We’ve moved from “copilot” to “agentic AI”, then to vague promises of AGI, curing cancer, solving climate change, delivering world peace. Meanwhile, AI is being used to justify mass layoffs, rising energy costs and accelerating the flood of low-quality, low-effort synthetic content.
 
 We were promised freedom from repetitive tasks. Instead, many of us have become human quality filters for AI-generated slop. That’s the promotion nobody asked for!
 
@@ -58,7 +58,6 @@ AI didn’t emerge, it was unleashed. It went from research labs to global deplo
 
 Regulators are now scrambling to catch up. In Europe, legislation races against adoption curves. In the United States, it often feels like experimentation at planetary scale. AI investment is already the biggest endeavour of the human race to date (it has [surpassed the investment in The Manhattan Project and The Apollo program](https://www.reuters.com/graphics/USA-ECONOMY/AI-INVESTMENT/gkvlqbgxkpb/) by several orders of magnitude). Yet, AI is being pushed from executives downward, searching for problems to justify its existence.
 
-I’m not against AI. I’m against hype replacing judgment.
-The cat is out of the bag. There’s no rewinding this.
+If “10x more efficiency” comes at the cost of privacy, trust and potential global economic collapse, maybe we should at least be honest about the tradeoff.
 
-But if “10x more efficiency” comes at the cost of privacy, trust and potential global economic collapse, maybe we should at least be honest about the tradeoff.
+The cat is out of the bag. There’s no rewinding this, but we can still slow down and let society catch up.
