@@ -249,7 +249,7 @@ defmodule SiteWeb.Layouts do
   def footer_copyright(assigns) do
     ~H"""
     <span class={["flex items-center gap-1", @class]}>
-      Copyright &copy; {Date.utc_today().year} <span class="ml-0.5">Nuno Moço</span>
+      &copy; {Date.utc_today().year} <span class="ml-0.5">Nuno Moço</span>
     </span>
     """
   end
