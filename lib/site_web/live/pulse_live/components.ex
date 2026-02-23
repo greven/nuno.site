@@ -622,9 +622,10 @@ defmodule SiteWeb.PulseLive.Components do
               target="_blank"
               class={[
                 "inline-block text-sm text-content-10 line-clamp-2 transition-colors",
-                "underline underline-offset-3 decoration-dashed decoration-content-40/40",
+                "underline underline-offset-2 decoration-dashed decoration-content-40/40",
                 "hover:decoration-solid hover:decoration-(--link-accent) hover:bg-(--link-accent)/4 dark:hover:bg-(--link-accent)/10",
-                "visited:text-content-40/75"
+                "not-hover:visited:text-neutral-400 not-hover:visited:decoration-neutral-300",
+                "not-hover:visited:dark:text-neutral-700 not-hover:visited:dark:decoration-neutral-700"
               ]}
             >
               {item.title}
