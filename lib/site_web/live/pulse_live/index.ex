@@ -79,16 +79,6 @@ defmodule SiteWeb.PulseLive.Index do
           />
 
           <Components.news_item
-            id="the-verge-news-pulse"
-            title="The Verge"
-            icon="lucide-smartphone-charging"
-            accent="#5100FE"
-            link="https://www.theverge.com"
-            async={@the_verge_news}
-            news={@streams.the_verge_news}
-          />
-
-          <Components.news_item
             id="the-next-web-news-pulse"
             title="The Next Web"
             icon="lucide-step-forward"
@@ -96,6 +86,16 @@ defmodule SiteWeb.PulseLive.Index do
             link="https://thenextweb.com"
             async={@tnw_news}
             news={@streams.tnw_news}
+          />
+
+          <Components.news_item
+            id="the-verge-news-pulse"
+            title="The Verge"
+            icon="lucide-smartphone-charging"
+            accent="#5100FE"
+            link="https://www.theverge.com"
+            async={@the_verge_news}
+            news={@streams.the_verge_news}
           />
 
           <Components.news_item

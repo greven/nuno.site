@@ -158,7 +158,10 @@ defmodule Site.Services do
 
   ## Github
 
-  @decorate cacheable(key: {:get_github_activity_by_date_range, from_date, to_date}, opts: [ttl: :timer.hours(3)])
+  @decorate cacheable(
+              key: {:get_github_activity_by_date_range, from_date, to_date},
+              opts: [ttl: :timer.hours(3)]
+            )
   def get_github_activity_by_date_range(from_date, to_date) do
     Site.Services.Github.get_contributions_by_date_range(from_date, to_date)
   end

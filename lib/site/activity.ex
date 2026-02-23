@@ -3,7 +3,7 @@ defmodule Site.Activity do
   My activity on the website and on GitHub.
   """
 
-use Nebulex.Caching, cache: Site.Cache
+  use Nebulex.Caching, cache: Site.Cache
 
   alias Site.Support
   alias Site.Activity.Update

@@ -305,11 +305,7 @@ defmodule Site.Services.Bluesky do
   The `depth` parameter controls how deep the comment thread should be fetched. Defaults to "3".
   """
 
-  @decorate cacheable(
-
-              key: {:bluesky_comments, did, rkey, depth},
-              opts: [ttl: :timer.minutes(20)]
-            )
+  @decorate cacheable(key: {:bluesky_comments, did, rkey, depth}, opts: [ttl: :timer.minutes(20)])
   def fetch_post_comments(%Post{did: did, rkey: rkey} = _bsky_post, depth \\ "3") do
     req = Req.new(base_url: "https://public.api.bsky.app/xrpc")
     post_uri = "at://#{did}/app.bsky.feed.post/#{rkey}"
