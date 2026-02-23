@@ -1,6 +1,6 @@
-defmodule Site.Pulse.Source.Expresso do
+defmodule Site.Pulse.Source.Spectrum do
   @moduledoc """
-  Fetches the latest news from Expresso RSS feed.
+  Fetches the latest news from IEEE Spectrum RSS feed.
   """
 
   use Nebulex.Caching, cache: Site.Cache
@@ -12,14 +12,14 @@ defmodule Site.Pulse.Source.Expresso do
   @impl true
   def meta do
     %Site.Pulse.Meta{
-      name: "Publico",
-      description: "Latest news from Publico.",
-      url: URI.parse("https://rss.impresa.pt/feed/latest/expresso.rss?type=ARTICLE&limit=20")
+      name: "IEEE Spectrum",
+      description: "Latest news from IEEE Spectrum.",
+      url: URI.parse("https://spectrum.ieee.org/feeds/feed.rss")
     }
   end
 
   @impl true
-  @decorate cacheable(key: :expresso_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(key: :ieee_spectrum_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
     meta = meta()

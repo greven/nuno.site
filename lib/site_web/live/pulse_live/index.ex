@@ -109,6 +109,16 @@ defmodule SiteWeb.PulseLive.Index do
           />
 
           <Components.news_item
+            id="ieee-spectrum-news-pulse"
+            title="IEEE Spectrum"
+            icon="lucide-rss"
+            accent="#005782"
+            link="https://spectrum.ieee.org"
+            async={@spectrum_news}
+            news={@streams.spectrum_news}
+          />
+
+          <Components.news_item
             id="independent-news-pulse"
             title="Independent"
             icon="lucide-bird"
@@ -136,16 +146,6 @@ defmodule SiteWeb.PulseLive.Index do
             link="https://www.publico.pt"
             async={@publico_news}
             news={@streams.publico_news}
-          />
-
-          <Components.news_item
-            id="expresso-news-pulse"
-            title="Expresso"
-            icon="lucide-mailbox"
-            accent="#005782"
-            link="https://www.expresso.pt"
-            async={@expresso_news}
-            news={@streams.expresso_news}
           />
         </div>
       </Layouts.page_content>
@@ -175,7 +175,7 @@ defmodule SiteWeb.PulseLive.Index do
       |> stream_async(:independent_news, fn -> Site.Pulse.fetch_items(:independent) end)
       |> stream_async(:bbc_news, fn -> Site.Pulse.fetch_items(:bbc) end)
       |> stream_async(:publico_news, fn -> Site.Pulse.fetch_items(:publico) end)
-      |> stream_async(:expresso_news, fn -> Site.Pulse.fetch_items(:expresso) end)
+      |> stream_async(:spectrum_news, fn -> Site.Pulse.fetch_items(:spectrum) end)
 
     {:ok, socket}
   end

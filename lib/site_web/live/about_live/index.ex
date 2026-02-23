@@ -46,7 +46,7 @@ defmodule SiteWeb.AboutLive.Index do
               </p>
 
               <p class="font-light text-base md:text-lg text-pretty">
-                I've always been passionate about design and user experience, so the web was a natural fit for me. I've been building web applications before they were called applications 🧙‍♂️.
+                I've always been passionate about design and user experience, so the web was a natural fit for me. I've been building web applications before they were called applications 🧙‍♂️...
               </p>
 
               <p class="font-light text-base md:text-lg text-pretty">

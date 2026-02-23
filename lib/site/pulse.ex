@@ -31,9 +31,9 @@ defmodule Site.Pulse do
   defp source(:changelog), do: Site.Pulse.Source.Changelog
   defp source(:the_verge), do: Site.Pulse.Source.TheVerge
   defp source(:twiv), do: Site.Pulse.Source.TWIV
+  defp source(:spectrum), do: Site.Pulse.Source.Spectrum
   defp source(:bbc), do: Site.Pulse.Source.BBC
   defp source(:independent), do: Site.Pulse.Source.Independent
   defp source(:publico), do: Site.Pulse.Source.Publico
-  defp source(:expresso), do: Site.Pulse.Source.Expresso
   defp source(_), do: nil
 end
