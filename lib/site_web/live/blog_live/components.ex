@@ -167,7 +167,7 @@ defmodule SiteWeb.BlogLive.Components do
         </:loading>
 
         <:failed :let={_failure}>
-          <.button variant="outline" size="sm" title="Comments error!" disabled>
+          <.button variant="outline" size="sm" title="No Comments" disabled>
             <.icon name="lucide-message-square-off" class="opacity-80" />
           </.button>
         </:failed>

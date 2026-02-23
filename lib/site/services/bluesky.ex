@@ -118,6 +118,7 @@ defmodule Site.Services.Bluesky do
       stream_author_feed(handle, opts)
       |> Stream.flat_map(& &1)
       |> Stream.filter(fn %Post{author_handle: author_handle} -> author_handle == handle end)
+      |> Stream.reject(fn %Post{reply?: reply?} -> reply? end)
       |> Stream.take_while(fn %Post{} = post ->
         case post.created_at do
           %DateTime{} = dt -> DateTime.compare(dt, cutoff_date) == :gt
@@ -151,6 +152,7 @@ defmodule Site.Services.Bluesky do
           author_name: post.author_name,
           avatar_url: post.avatar_url,
           embed: post.embed,
+          blog_post_path: post.blog_post_path,
           inserted_at: {:placeholder, :now},
           updated_at: {:placeholder, :now}
         }
@@ -408,8 +410,8 @@ defmodule Site.Services.Bluesky do
 
   Returns the updated `%Post{}` struct or the original post if no marker is found.
   """
-  def maybe_put_blog_metadata(%Post{text: text} = post) when is_binary(text) do
-    case extract_blog_post_metadata(text) do
+  def maybe_put_blog_metadata(%Post{} = post) do
+    case extract_blog_post_metadata(post) do
       {:ok, blog_post_path} ->
         Map.put(post, :blog_post_path, blog_post_path)
 
@@ -419,12 +421,29 @@ defmodule Site.Services.Bluesky do
   end
 
   @doc """
-  Extracts blog post path from the given text if it contains the blog post marker.
+  Extracts blog post path from the given Post text or embed uri if it contains the blog post marker.
   Check for pattern: `@blog_post_marker` + URL matching nuno.site/blog/<year>/<slug>.
   """
-  def extract_blog_post_metadata(text) when is_binary(text) do
-    with true <- text_has_blog_post_marker?(text),
-         {:ok, url} <- extract_blog_url(text),
+  def extract_blog_post_metadata(%Post{text: text, embed: embed}) do
+    post_path = extract_blog_post_path(text)
+    embed_path = extract_blog_post_embed_uri(embed) |> extract_blog_post_path()
+    has_post_marker? = text_has_blog_post_marker?(text)
+
+    case {has_post_marker?, post_path, embed_path} do
+      {true, {:ok, path}, _} -> {:ok, path}
+      {true, _, {:ok, path}} -> {:ok, path}
+      _ -> :not_found
+    end
+  end
+
+  def extract_blog_post_metadata(_), do: :not_found
+
+  @doc """
+  Extracts blog post path from the given text if it contains a valid blog post URL
+  and corresponding existing blog post, otherwise returns :not_found.
+  """
+  def extract_blog_post_path(text) when is_binary(text) do
+    with {:ok, url} <- extract_blog_url(text),
          {:ok, blog_post_year, blog_post_slug} <- parse_blog_path(url),
          {:ok, blog_post} <- Blog.get_post_by_year_and_slug(blog_post_year, blog_post_slug) do
       {:ok, Blog.Post.path(blog_post)}
@@ -433,7 +452,13 @@ defmodule Site.Services.Bluesky do
     end
   end
 
-  def extract_blog_post_metadata(_), do: nil
+  def extract_blog_post_path(_), do: :not_found
+
+  # If the post text is truncated, the blog post URL might be in the embed instead, so we check for that as well.
+  defp extract_blog_post_embed_uri(%{"$type" => "app.bsky.embed.external#view"} = embed)
+       when is_map(embed), do: get_in(embed, ["external", "uri"]) || ""
+
+  defp extract_blog_post_embed_uri(_), do: ""
 
   def text_has_blog_post_marker?(text) when is_binary(text) do
     String.contains?(text, @blog_post_marker)
@@ -595,6 +620,7 @@ defmodule Site.Services.Bluesky do
       author_name: get_in(post, ["author", "displayName"]),
       avatar_url: get_in(post, ["author", "avatar"]),
       embed: extract_embed(post),
+      reply?: not is_nil(get_in(post, ["record", "reply"])),
       replies: entry["replies"] || [],
       type: entry["$type"]
     }

@@ -28,7 +28,7 @@ defmodule SiteWeb.AboutLive.Index do
               from
               <span class="font-normal uppercase">
                 <.icon
-                  name="lucide-map-pin text-secondary"
+                  name="lucide-map-pin text-content-30"
                   class="size-5 mr-1 mb-1.5 hidden md:inline-block"
                 />Lisbon
               </span>

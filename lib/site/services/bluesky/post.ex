@@ -72,6 +72,7 @@ defmodule Site.Services.Bluesky.Post do
 
     # Virtual
     field :type, :string, virtual: true
+    field :reply?, :boolean, virtual: true, default: false
     field :replies, {:array, :map}, virtual: true, default: []
     field :index, :integer, virtual: true
 
