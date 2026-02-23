@@ -3,7 +3,7 @@ defmodule Site.Activity do
   My activity on the website and on GitHub.
   """
 
-  use Nebulex.Caching
+use Nebulex.Caching, cache: Site.Cache
 
   alias Site.Support
   alias Site.Activity.Update
@@ -22,11 +22,7 @@ defmodule Site.Activity do
   @doc """
   List yearly (with the start date of today) activity from all sources.
   """
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: :list_yearly_activity,
-              opts: [ttl: :timer.minutes(30)]
-            )
+  @decorate cacheable(key: :list_yearly_activity, opts: [ttl: :timer.minutes(30)])
   def list_yearly_activity do
     to_date = Date.utc_today()
     from_date = Date.shift(to_date, year: -1)
@@ -46,11 +42,7 @@ defmodule Site.Activity do
   grouped by week. See `group_activity_by_month/1`.
   """
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: :list_yearly_activity_grouped_by_week,
-              opts: [ttl: :timer.hours(1)]
-            )
+  @decorate cacheable(key: :list_yearly_activity_grouped_by_week, opts: [ttl: :timer.hours(1)])
   def list_yearly_activity_grouped_by_month do
     list_yearly_activity()
     |> group_activity_by_month()

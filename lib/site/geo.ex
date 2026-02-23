@@ -5,7 +5,7 @@ defmodule Site.Geo do
 
   # NimbleCSV.define(Site.Geo.TSVParser, separator: "\t", escape: "\"")
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
   import Ecto.Query
 
   alias Site.Repo
@@ -84,14 +84,14 @@ defmodule Site.Geo do
 
   def list_countries_codes(alpha \\ :alpha2)
 
-  @decorate cacheable(cache: Site.Cache, key: :codes_alpha2)
+  @decorate cacheable(key: :codes_alpha2)
   def list_countries_codes(:alpha2) do
     list_countries()
     |> Stream.map(fn country -> {country.name, country.alpha2} end)
     |> Enum.sort_by(fn {name, _} -> :unicode.characters_to_nfd_binary(name) end)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: :codes_alpha3)
+  @decorate cacheable(key: :codes_alpha3)
   def list_countries_codes(:alpha3) do
     list_countries()
     |> Stream.map(fn country -> {country.name, country.alpha3} end)
@@ -107,7 +107,7 @@ defmodule Site.Geo do
   @doc """
   Get a country by its country ISO-2 code (alpha2)
   """
-  @decorate cacheable(cache: Site.Cache, key: {:get_country, alpha2})
+  @decorate cacheable(key: {:get_country, alpha2})
   def get_country(alpha2) when is_binary(alpha2) do
     iso_code = String.upcase(alpha2)
 
@@ -175,7 +175,7 @@ defmodule Site.Geo do
   for example, a country might have more than one city with the same name,
   in this case the city with the biggest population is the one returned.
   """
-  @decorate cacheable(cache: Site.Cache, key: {:place, name, alpha2})
+  @decorate cacheable(key: {:place, name, alpha2})
   def find_place(name, alpha2) when is_binary(alpha2) do
     iso_code = String.upcase(alpha2)
 

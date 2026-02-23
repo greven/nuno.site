@@ -10,7 +10,7 @@ defmodule SiteWeb.SitemapLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content>
-        <.header>
+        <.header underlined>
           Sitemap
           <:subtitle>
             This is a list of all the pages on the site.

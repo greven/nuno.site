@@ -13,7 +13,7 @@ defmodule SiteWeb.PulseLive.Index do
       max_width={:wide}
     >
       <Layouts.page_content class="flex flex-col gap-16">
-        <.header tag="h1">
+        <.header underlined>
           <.icon name="lucide-activity" class="size-10 text-primary mr-3" /> Pulse
           <:subtitle>My Internet Start Page</:subtitle>
         </.header>

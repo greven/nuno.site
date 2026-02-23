@@ -12,7 +12,7 @@ defmodule SiteWeb.BookmarksLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="flex flex-col gap-16">
-        <.header>
+        <.header underlined>
           Bookmarks
           <:subtitle>
             Twenty years ago this was called a blogroll.

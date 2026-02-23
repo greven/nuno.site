@@ -3,7 +3,7 @@ defmodule Site.Pulse.Source.HackerNews do
   Hacker News source for the Pulse page.
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   @behaviour Site.Pulse.Source
 
@@ -17,7 +17,7 @@ defmodule Site.Pulse.Source.HackerNews do
   end
 
   @impl true
-  @decorate cacheable(cache: Site.Cache, key: :hacker_news_pulse, opts: [ttl: :timer.minutes(30)])
+  @decorate cacheable(key: :hacker_news_pulse, opts: [ttl: :timer.minutes(30)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
     meta = meta()

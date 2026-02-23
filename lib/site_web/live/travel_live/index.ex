@@ -17,7 +17,7 @@ defmodule SiteWeb.TravelLive.Index do
       show_progress
     >
       <Layouts.page_content class="travel">
-        <.header>
+        <.header underlined>
           Travel Log
           <:subtitle>Oh! The Places I've Been!</:subtitle>
         </.header>

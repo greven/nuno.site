@@ -44,7 +44,7 @@ defmodule Site.Media do
 
   defp get_image_blur_cache(src) do
     if cache_available?() do
-      case Site.Cache.get({:image_blur_exists, src}) do
+      case Site.Cache.get!({:image_blur_exists, src}) do
         nil ->
           exists? = blur_image_exists_in_static?(src)
           Site.Cache.put({:image_blur_exists, src}, exists?, ttl: :timer.hours(48))

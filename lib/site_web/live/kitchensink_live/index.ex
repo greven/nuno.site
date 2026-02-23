@@ -12,7 +12,7 @@ defmodule SiteWeb.KitchenSinkLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="my-16 flex flex-col gap-16">
-        <.header>
+        <.header underlined>
           Kitchen Sink
           <:subtitle>
             Collection of all the website components
@@ -237,7 +237,7 @@ defmodule SiteWeb.KitchenSinkLive.Index do
 
           <div>
             <h3 class="text-lg mb-2 text-content-20">Default</h3>
-            <div class="max-w-[564px] flex flex-wrap gap-2">
+            <div class="max-w-141 flex flex-wrap gap-2">
               <.badge>Badge</.badge>
               <.badge color="red">Red</.badge>
               <.badge color="orange">Orange</.badge>
@@ -261,7 +261,7 @@ defmodule SiteWeb.KitchenSinkLive.Index do
 
           <div>
             <h3 class="text-lg mb-2 text-content-20">Dot</h3>
-            <div class="max-w-[564px] flex flex-wrap gap-2">
+            <div class="max-w-141 flex flex-wrap gap-2">
               <.badge variant="dot">Badge</.badge>
               <.badge variant="dot" color="red">Red</.badge>
               <.badge variant="dot" color="orange">Orange</.badge>

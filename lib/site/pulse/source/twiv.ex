@@ -4,7 +4,7 @@ defmodule Site.Pulse.Source.TWIV do
   (https://thisweekinvideogames.com/).
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   import SweetXml
 
@@ -20,7 +20,7 @@ defmodule Site.Pulse.Source.TWIV do
   end
 
   @impl true
-  @decorate cacheable(cache: Site.Cache, key: :twiv_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(key: :twiv_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
     meta = meta()

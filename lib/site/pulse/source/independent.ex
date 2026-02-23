@@ -3,7 +3,7 @@ defmodule Site.Pulse.Source.Independent do
   Source module for fetching news from the Independent feed.
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   import SweetXml
 
@@ -19,7 +19,7 @@ defmodule Site.Pulse.Source.Independent do
   end
 
   @impl true
-  @decorate cacheable(cache: Site.Cache, key: :independent_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(key: :independent_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
     meta = meta()

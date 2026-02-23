@@ -568,6 +568,7 @@ defmodule SiteWeb.CoreComponents do
   attr :class, :any, default: "flex flex-col"
   attr :anchor, :string, default: nil
   attr :show_anchor_link, :boolean, default: false
+  attr :underlined, :boolean, default: false
   attr :tag, :string, default: "h1"
   attr :rest, :global
 
@@ -598,6 +599,8 @@ defmodule SiteWeb.CoreComponents do
               else: "flex items-center"
             ),
             "text-content-10",
+            @underlined &&
+              "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6 decoration-1 decoration-surface-40/75",
             @header_class
           ]}
         >

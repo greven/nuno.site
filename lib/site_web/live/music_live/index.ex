@@ -23,7 +23,7 @@ defmodule SiteWeb.MusicLive.Index do
         <Components.now_playing track={@track} />
 
         <section>
-          <.header tag="h2">
+          <.header tag="h2" underlined>
             <.icon name="lucide-list-music" class="hidden md:inline-block mr-2.5 text-content-40" />
             Spotify Playlists
           </.header>
@@ -36,7 +36,7 @@ defmodule SiteWeb.MusicLive.Index do
         </section>
 
         <section>
-          <.header tag="h2">
+          <.header tag="h2" underlined>
             <.icon name="lucide-history" class="hidden md:inline-block mr-2.5 text-content-40" />
             Recently Played
           </.header>
@@ -51,7 +51,7 @@ defmodule SiteWeb.MusicLive.Index do
         </section>
 
         <section>
-          <.header tag="h2">
+          <.header tag="h2" underlined>
             <.icon name="lucide-star" class="hidden md:inline-block mr-2.5 text-content-40" />
             Top Artists
             <:actions>
@@ -78,7 +78,7 @@ defmodule SiteWeb.MusicLive.Index do
         </section>
 
         <section>
-          <.header tag="h2">
+          <.header tag="h2" underlined>
             <.icon name="lucide-disc-album" class="hidden md:inline-block mr-2.5 text-content-40" />
             Top Albums
             <:actions>

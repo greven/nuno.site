@@ -4,7 +4,7 @@ defmodule Site.Changelog do
   to provide a unified view of recent activity on the site.
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   alias Site.Support
 
@@ -129,11 +129,7 @@ defmodule Site.Changelog do
 
   @doc """
   """
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: :count_updates_by_period,
-              opts: [ttl: :timer.minutes(5)]
-            )
+  @decorate cacheable(key: :count_updates_by_period, opts: [ttl: :timer.minutes(5)])
   def count_updates_by_period do
     list_periods()
     |> Enum.map(fn period ->

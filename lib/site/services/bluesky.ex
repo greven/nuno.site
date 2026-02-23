@@ -9,7 +9,7 @@ defmodule Site.Services.Bluesky do
   on the BlueSky platform and then inserts a new local record into the database.
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
   require Logger
 
   import Ecto.Query
@@ -306,7 +306,7 @@ defmodule Site.Services.Bluesky do
   """
 
   @decorate cacheable(
-              cache: Site.Cache,
+
               key: {:bluesky_comments, did, rkey, depth},
               opts: [ttl: :timer.minutes(20)]
             )
@@ -511,7 +511,6 @@ defmodule Site.Services.Bluesky do
   """
 
   @decorate cacheable(
-              cache: Site.Cache,
               key: {:resolve_did, actor_or_did},
               opts: [ttl: :timer.hours(12)]
             )

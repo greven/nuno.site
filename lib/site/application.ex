@@ -9,19 +9,15 @@ defmodule Site.Application do
   def start(_type, _args) do
     children = [
       SiteWeb.Telemetry,
+      Site.Cache,
       Site.Repo,
       {Ecto.Migrator,
        repos: Application.fetch_env!(:site, :ecto_repos), skip: skip_migrations?()},
       {Oban, Application.fetch_env!(:site, Oban)},
       {DNSCluster, query: Application.get_env(:site, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Site.PubSub},
-      # Start Phoenix Presence
       SiteWeb.Presence,
-      # Nebulex Cache adapter
-      Site.Cache,
-      # Site analytics
       Site.Analytics,
-      # Start to serve requests, typically the last entry
       SiteWeb.Endpoint
     ]
 

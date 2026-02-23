@@ -3,7 +3,7 @@ defmodule Site.Pulse.Source.Reddit do
   Fetches top posts from the Reddit's /r/programming subreddit.
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   @behaviour Site.Pulse.Source
 
@@ -17,7 +17,7 @@ defmodule Site.Pulse.Source.Reddit do
   end
 
   @impl true
-  @decorate cacheable(cache: Site.Cache, key: :reddit_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(key: :reddit_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     sort = Keyword.get(opts, :sort, "top")
     limit = Keyword.get(opts, :limit, 20)

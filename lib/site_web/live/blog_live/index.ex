@@ -18,7 +18,7 @@ defmodule SiteWeb.BlogLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="blog">
-        <.header>
+        <.header underlined>
           The Blog
           <:subtitle>
             Long-form <s>writing</s> ramblings (mostly) about web dev and programming.

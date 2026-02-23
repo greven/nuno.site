@@ -12,7 +12,7 @@ defmodule SiteWeb.BooksLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="flex flex-col gap-16">
-        <.header tag="h1">
+        <.header underlined>
           Books
           <:subtitle>
             Books I've read or am currently reading

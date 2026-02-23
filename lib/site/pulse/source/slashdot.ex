@@ -3,7 +3,7 @@ defmodule Site.Pulse.Source.Slashdot do
   Fetches the latest news from Slashdot RSS feed.
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   import SweetXml
 
@@ -19,7 +19,7 @@ defmodule Site.Pulse.Source.Slashdot do
   end
 
   @impl true
-  @decorate cacheable(cache: Site.Cache, key: :slashdot_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(key: :slashdot_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
     meta = meta()

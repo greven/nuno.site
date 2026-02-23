@@ -17,7 +17,7 @@ defmodule SiteWeb.ChangelogLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="flex flex-col gap-12 md:gap-16">
-        <.header>
+        <.header underlined>
           Changelog
           <:subtitle>
             Site changes and other updates

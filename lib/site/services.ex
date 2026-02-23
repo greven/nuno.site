@@ -3,7 +3,7 @@ defmodule Site.Services do
   This module is the context for all 3rd party services used in the application.
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   alias Site.Services.Weather
   alias Site.Services.Bluesky
@@ -26,12 +26,12 @@ defmodule Site.Services do
 
   ## Weather
 
-  @decorate cacheable(cache: Site.Cache, key: :weather_forecast, opts: [ttl: :timer.minutes(15)])
+  @decorate cacheable(key: :weather_forecast, opts: [ttl: :timer.minutes(15)])
   def get_weather_forecast do
     Weather.get_forecast()
   end
 
-  @decorate cacheable(cache: Site.Cache, key: :air_quality, opts: [ttl: :timer.minutes(30)])
+  @decorate cacheable(key: :air_quality, opts: [ttl: :timer.minutes(30)])
   def get_weather_air_quality do
     Weather.get_air_quality()
   end
@@ -71,67 +71,47 @@ defmodule Site.Services do
 
   ## Music
 
-  @decorate cacheable(cache: Site.Cache, key: :now_playing, opts: [ttl: :timer.seconds(30)])
+  @decorate cacheable(key: :now_playing, opts: [ttl: :timer.seconds(30)])
   def get_now_playing do
     Lastfm.get_now_playing()
   end
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: :recently_played_tracks,
-              opts: [ttl: :timer.minutes(1)]
-            )
+  @decorate cacheable(key: :recently_played_tracks, opts: [ttl: :timer.minutes(1)])
   def get_recently_played_tracks do
     Lastfm.get_recently_played()
   end
 
-  @decorate cacheable(cache: Site.Cache, key: :top_artists, opts: [ttl: :timer.minutes(10)])
+  @decorate cacheable(key: :top_artists, opts: [ttl: :timer.minutes(10)])
   def get_top_artists do
     Lastfm.get_top_artists("overall", @music_top_artists_limit)
   end
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: {:top_artists, period, limit},
-              opts: [ttl: :timer.hours(6)]
-            )
+  @decorate cacheable(key: {:top_artists, period, limit}, opts: [ttl: :timer.hours(6)])
   def get_top_artists(period, limit \\ @music_top_artists_limit) do
     Lastfm.get_top_artists(period, limit)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_albums}, opts: [ttl: :timer.minutes(10)])
+  @decorate cacheable(key: {:top_albums}, opts: [ttl: :timer.minutes(10)])
   def get_top_albums do
     Lastfm.get_top_albums("overall", @music_albums_limit)
   end
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: {:top_albums, period, limit},
-              opts: [ttl: :timer.hours(6)]
-            )
+  @decorate cacheable(key: {:top_albums, period, limit}, opts: [ttl: :timer.hours(6)])
   def get_top_albums(period, limit \\ @music_albums_limit) do
     Lastfm.get_top_albums(period, limit)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_tracks}, opts: [ttl: :timer.hours(6)])
+  @decorate cacheable(key: {:top_tracks}, opts: [ttl: :timer.hours(6)])
   def get_top_tracks do
     Lastfm.get_top_tracks("overall", @music_top_tracks_limit)
   end
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: {:top_tracks, period, limit},
-              opts: [ttl: :timer.hours(6)]
-            )
+  @decorate cacheable(key: {:top_tracks, period, limit}, opts: [ttl: :timer.hours(6)])
   def get_top_tracks(period, limit \\ @music_top_tracks_limit) do
     Lastfm.get_top_tracks(period, limit)
   end
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: :spotify_playlists,
-              opts: [ttl: :timer.hours(24)]
-            )
+  @decorate cacheable(key: :spotify_playlists, opts: [ttl: :timer.hours(24)])
   def get_spotify_playlists do
     playlists =
       @playlists
@@ -149,61 +129,36 @@ defmodule Site.Services do
 
   ## Books
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: :books,
-              opts: [ttl: :timer.hours(12)]
-            )
+  @decorate cacheable(key: :books, opts: [ttl: :timer.hours(12)])
   def get_currently_reading, do: Goodreads.get_currently_reading()
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: :recent_books,
-              opts: [ttl: :timer.hours(24 * 5)]
-            )
+  @decorate cacheable(key: :recent_books, opts: [ttl: :timer.hours(24 * 5)])
   def get_recent_books, do: Goodreads.get_recently_read()
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: :want_books,
-              opts: [ttl: :timer.hours(24)]
-            )
+  @decorate cacheable(key: :want_books, opts: [ttl: :timer.hours(24)])
   def get_want_to_read_books, do: Goodreads.get_want_to_read()
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: :reading_stats,
-              opts: [ttl: :timer.hours(24)]
-            )
+  @decorate cacheable(key: :reading_stats, opts: [ttl: :timer.hours(24)])
   def get_reading_stats, do: Goodreads.get_reading_stats()
 
   ## Games
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: :recently_played_games,
-              opts: [ttl: :timer.hours(1)]
-            )
+  @decorate cacheable(key: :recently_played_games, opts: [ttl: :timer.hours(1)])
   def get_recently_played_games, do: Steam.get_recently_played_games()
 
-  @decorate cacheable(cache: Site.Cache, key: {:top_played_games}, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(key: {:top_played_games}, opts: [ttl: :timer.hours(1)])
   def get_top_played_games do
     Steam.get_top_played_games()
   end
 
-  @decorate cacheable(cache: Site.Cache, key: {:favourite_games}, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(key: {:favourite_games}, opts: [ttl: :timer.hours(1)])
   def get_favourite_games do
     Steam.get_favourite_games()
   end
 
   ## Github
 
-  @decorate cacheable(
-              cache: Site.Cache,
-              key: {:get_github_activity_by_date_range, from_date, to_date},
-              opts: [ttl: :timer.hours(3)]
-            )
-
+  @decorate cacheable(key: {:get_github_activity_by_date_range, from_date, to_date}, opts: [ttl: :timer.hours(3)])
   def get_github_activity_by_date_range(from_date, to_date) do
     Site.Services.Github.get_contributions_by_date_range(from_date, to_date)
   end

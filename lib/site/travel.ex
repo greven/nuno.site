@@ -3,14 +3,14 @@ defmodule Site.Travel do
   Tracking of my travels (flights and road trips).
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   alias Site.Geo
   alias Site.Travel.Trip
   alias Site.Travel.Visit
   alias Site.Travel.Measures
 
-  @decorate cacheable(cache: Site.Cache, key: {:trips})
+  @decorate cacheable(key: {:trips})
   def list_trips do
     trips()
     |> Stream.map(&put_trip_id/1)
@@ -23,7 +23,7 @@ defmodule Site.Travel do
     |> Enum.sort_by(fn %Visit{date: date} -> date end, {:asc, Date})
   end
 
-  @decorate cacheable(cache: Site.Cache, key: :visited_countries)
+  @decorate cacheable(key: :visited_countries)
   def visited_countries do
     list_trips()
     |> extract_countries()
@@ -31,7 +31,7 @@ defmodule Site.Travel do
     |> Enum.sort_by(fn {_, freq} -> freq end, :desc)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: :visited_cities)
+  @decorate cacheable(key: :visited_cities)
   def visited_cities do
     list_trips()
     |> extract_cities()
@@ -39,7 +39,7 @@ defmodule Site.Travel do
     |> Enum.sort_by(fn {_, freq} -> freq end, :desc)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: :travel_stats)
+  @decorate cacheable(key: :travel_stats)
   def travel_stats do
     km_traveled =
       list_trips()

@@ -3,7 +3,7 @@ defmodule Site.Pulse.Source.Smashing do
   Source module for fetching news from Smashing Magazine RSS feed.
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   import SweetXml
 
@@ -20,7 +20,6 @@ defmodule Site.Pulse.Source.Smashing do
 
   @impl true
   @decorate cacheable(
-              cache: Site.Cache,
               key: :smashing_magazine_pulse,
               opts: [ttl: :timer.hours(1)]
             )

@@ -75,7 +75,7 @@ defmodule Site.Services.Spotify do
 
   def access_token do
     if Site.Cache.ttl(:spotify_access_token) do
-      {:ok, Site.Cache.get(:spotify_access_token)}
+      {:ok, Site.Cache.get!(:spotify_access_token)}
     else
       case get_access_token() do
         {:ok, response} ->

@@ -173,7 +173,7 @@ defmodule Site.Services.Goodreads do
   defp parse_want_to_read_response({:error, _} = error), do: error
 
   def get_reading_stats do
-    case Site.Cache.get(:reading_stats) do
+    case Site.Cache.get!(:reading_stats) do
       nil ->
         fetch_reading_stats()
 

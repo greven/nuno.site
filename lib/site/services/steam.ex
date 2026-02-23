@@ -3,7 +3,7 @@ defmodule Site.Services.Steam do
   Steam API service module.
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   defp api_endpoint, do: "http://api.steampowered.com"
   defp steam_cdn_url, do: "https://cdn.cloudflare.steamstatic.com"
@@ -116,7 +116,7 @@ defmodule Site.Services.Steam do
     }
   end
 
-  @decorate cacheable(cache: Site.Cache, key: :steam_lists, opts: [ttl: :timer.hours(24)])
+  @decorate cacheable(key: :steam_lists, opts: [ttl: :timer.hours(24)])
   def games_lists do
     Path.join([:code.priv_dir(:site), "content/games.json"])
     |> File.read!()

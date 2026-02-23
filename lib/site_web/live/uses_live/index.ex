@@ -13,7 +13,7 @@ defmodule SiteWeb.UsesLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="flex flex-col gap-16">
-        <.header tag="h1">
+        <.header underlined>
           Uses
           <:subtitle>Some of the things I use on a daily basis.</:subtitle>
         </.header>

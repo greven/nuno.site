@@ -4,7 +4,7 @@ defmodule SiteWeb.LinkPreviewComponent do
   """
 
   use SiteWeb, :live_component
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   import Phoenix.LiveView, only: [assign_async: 3]
 
@@ -62,7 +62,6 @@ defmodule SiteWeb.LinkPreviewComponent do
   end
 
   @decorate cacheable(
-              cache: Site.Cache,
               key: {:link_preview_metadata, url},
               ttl: :timer.hours(48)
             )

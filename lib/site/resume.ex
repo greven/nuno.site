@@ -3,7 +3,7 @@ defmodule Site.Resume do
   Load and transform my resume data.
   """
 
-  use Nebulex.Caching
+  use Nebulex.Caching, cache: Site.Cache
 
   def get_profile, do: Map.get(data(), "profile")
   def get_languages, do: Map.get(data(), "languages")
@@ -22,7 +22,7 @@ defmodule Site.Resume do
     |> Enum.filter(fn {_, favourite} -> favourite end)
   end
 
-  @decorate cacheable(cache: Site.Cache, key: :resume_data)
+  @decorate cacheable(key: :resume_data)
   def data do
     resume_path()
     |> File.read!()
