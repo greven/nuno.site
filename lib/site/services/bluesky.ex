@@ -101,7 +101,12 @@ defmodule Site.Services.Bluesky do
   Primarily for development and testing purposes.
   """
   def delete_all_posts! do
-    Repo.delete_all(Post)
+    Repo.transact(fn ->
+      result = Repo.delete_all(Post)
+      # Reset the auto-incrementing ID sequence for the posts table (SQLite specific)
+      Repo.query!("DELETE FROM sqlite_sequence WHERE name = 'bluesky_posts'")
+      {:ok, result}
+    end)
   end
 
   @doc """
@@ -126,7 +131,7 @@ defmodule Site.Services.Bluesky do
         end
       end)
       |> Stream.map(&maybe_put_blog_metadata/1)
-      |> Enum.to_list()
+      |> Enum.sort_by(& &1.created_at, {:asc, DateTime})
 
     upsert_posts!(new_posts)
     {:ok, length(new_posts)}

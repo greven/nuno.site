@@ -571,9 +571,9 @@ defmodule SiteWeb.BlogLive.Components do
   attr :rest, :global
 
   def post_updated_disclaimer(assigns) do
-    assigns =
-      assigns
-      |> assign(:post_updated?, Blog.post_updated?(assigns.post))
+    post_updated? = Site.Blog.post_updated?(assigns.post)
+
+    assigns = assign(assigns, :post_updated?, post_updated?)
 
     ~H"""
     <div :if={@post_updated?} {@rest}>
