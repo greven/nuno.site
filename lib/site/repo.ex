@@ -8,55 +8,6 @@ defmodule Site.Repo do
   alias Ecto.Query
   alias __MODULE__
 
-  ## Transactions
-
-  @doc """
-  A small wrapper around `Repo.transaction/2'.
-
-  Commits the transaction if the lambda returns `:ok` or `{:ok, result}`,
-  rolling it back if the lambda returns `:error` or `{:error, reason}`. In both
-  cases, the function returns the result of the lambda.
-
-  This function accepts the same options as `Ecto.Repo.transaction/2`.
-
-  Example:
-
-    def register_user(params) do
-      Repo.transaction_with(fn ->
-        with {:ok, user} <- Accounts.create_user(params),
-            {:ok, _log} <- Logs.log_action(:user_registered, user),
-            {:ok, _job} <- Mailer.enqueue_email_confirmation(user) do
-          {:ok, user}
-        end
-      end)
-    end
-  """
-  @spec transaction_with((-> any()), keyword()) :: {:ok, any()} | {:error, any()}
-  def transaction_with(fun, opts \\ []) do
-    transaction_result =
-      transaction(
-        fn repo ->
-          lambda_result =
-            case Function.info(fun, :arity) do
-              {:arity, 0} -> fun.()
-              {:arity, 1} -> fun.(repo)
-            end
-
-          case lambda_result do
-            :ok -> {__MODULE__, :transact, :ok}
-            :error -> rollback({__MODULE__, :transact, :error})
-            {:ok, result} -> result
-            {:error, reason} -> rollback(reason)
-          end
-        end,
-        opts
-      )
-
-    with {outcome, {__MODULE__, :transact, outcome}}
-         when outcome in [:ok, :error] <- transaction_result,
-         do: outcome
-  end
-
   ## Aggregations
 
   @doc """
