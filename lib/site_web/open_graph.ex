@@ -31,12 +31,12 @@ defmodule SiteWeb.OpenGraph do
       fill: rgb("#3a3a3c")
     )
 
-    #v(148pt)
+    #v(164pt)
 
     #align(center)[
     // Article Tag
     #box[
-      #set text(size: 24pt, weight: "regular")
+      #set text(size: 22pt, weight: "regular")
       #box(fill: rgb("#77777710"), stroke: (paint: rgb("#777777"), thickness: 1pt), inset: (x: 10pt, y: 6pt))[
         #upper[#text(fill: rgb("#777777"), "Article")]
       ]
@@ -45,7 +45,7 @@ defmodule SiteWeb.OpenGraph do
     // Tags section
       #if <%= Enum.count(tags) %> > 0 [
         #box[
-          #set text(size: 24pt, weight: "regular")
+          #set text(size: 22pt, weight: "regular")
           <%= for tag <- tags do %>#box(fill: rgb("#CE434610"), stroke: (paint: rgb("#CE4346"), thickness: 1pt), inset: (x: 10pt, y: 6pt))[
             #upper[#text(fill: rgb("#CE4346"), "#<%= tag %>")]
           ]
@@ -63,7 +63,7 @@ defmodule SiteWeb.OpenGraph do
         #underline(offset: 8pt, stroke: (paint: rgb("#333333"), thickness: 2pt), evade: true)[
           #text(
             font: "Space Grotesk",
-            size: 82pt,
+            size: 74pt,
             weight: "medium",
             fill: rgb("#eeeeee")
           )[<%= title %>]
