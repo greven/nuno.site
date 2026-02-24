@@ -21,7 +21,7 @@ defmodule SiteWeb.OpenGraph do
     #set page(
       width: 1200pt,
       height: 630pt,
-      margin: 34pt,
+      margin: 36pt,
       background: image("/images/bg.png", width: 100%, height: 100%, fit: "cover"),
       fill: none
     )
@@ -31,23 +31,31 @@ defmodule SiteWeb.OpenGraph do
       fill: rgb("#3a3a3c")
     )
 
-    #v(180pt)
+    #v(148pt)
 
+    #align(center)[
+    // Article Tag
+    #box[
+      #set text(size: 24pt, weight: "regular")
+      #box(fill: rgb("#77777710"), stroke: (paint: rgb("#777777"), thickness: 1pt), inset: (x: 10pt, y: 6pt))[
+        #upper[#text(fill: rgb("#777777"), "Article")]
+      ]
+      #h(16pt)
+    ]
     // Tags section
-    #if <%= Enum.count(tags) %> > 0 [
-      #align(center)[
+      #if <%= Enum.count(tags) %> > 0 [
         #box[
-          #set text(size: 18pt, weight: "regular")
-          <%= for tag <- tags do %>#box(stroke: (paint: rgb("#555555"), thickness: 1pt), inset: (x: 10pt, y: 6pt))[
-            #upper[#text(fill: rgb("#555555"), "<%= tag %>")]
+          #set text(size: 24pt, weight: "regular")
+          <%= for tag <- tags do %>#box(fill: rgb("#CE434610"), stroke: (paint: rgb("#CE4346"), thickness: 1pt), inset: (x: 10pt, y: 6pt))[
+            #upper[#text(fill: rgb("#CE4346"), "#<%= tag %>")]
           ]
           #h(12pt)
           <% end %>
         ]
       ]
-
-      #v(16pt)
     ]
+
+    #v(16pt)
 
     // Title - Large, bold, Space Grotesk
     #align(center)[
@@ -55,9 +63,9 @@ defmodule SiteWeb.OpenGraph do
         #underline(offset: 8pt, stroke: (paint: rgb("#333333"), thickness: 2pt), evade: true)[
           #text(
             font: "Space Grotesk",
-            size: 58pt,
+            size: 82pt,
             weight: "medium",
-            fill: rgb("#e1d8da")
+            fill: rgb("#eeeeee")
           )[<%= title %>]
         ]
       ]
@@ -67,7 +75,7 @@ defmodule SiteWeb.OpenGraph do
 
     // Footer - Reading time
     #place(bottom + right)[
-      #text(size: 24pt, weight: "regular", fill: rgb("#555555"))[<%= reading_time %>]
+      #text(size: 24pt, weight: "regular", fill: rgb("#777777"))[<%= reading_time %>]
     ]
     """
   end
