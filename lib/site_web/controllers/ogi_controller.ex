@@ -20,8 +20,11 @@ defmodule SiteWeb.OGIController do
   def show(conn, params) do
     case {params["year"], params["slug"]} do
       {nil, nil} ->
-        # No params - serve fallback
-        render_fallback(conn)
+        # No params - serve fallback image
+        conn
+        |> put_resp_content_type("image/png")
+        |> put_resp_header("cache-control", "public, max-age=3600")
+        |> send_file(200, OpenGraph.fallback_image_path())
 
       {year, slug} when is_binary(year) and is_binary(slug) ->
         # Try to fetch and render post
@@ -30,12 +33,18 @@ defmodule SiteWeb.OGIController do
           render_post_image(conn, post)
         rescue
           Blog.NotFoundError ->
-            render_fallback(conn)
+            conn
+            |> put_resp_content_type("image/png")
+            |> put_resp_header("cache-control", "public, max-age=3600")
+            |> send_file(200, OpenGraph.fallback_image_path())
         end
 
       _ ->
         # Invalid params
-        render_fallback(conn)
+        conn
+        |> put_resp_content_type("image/png")
+        |> put_resp_header("cache-control", "public, max-age=3600")
+        |> send_file(200, OpenGraph.fallback_image_path())
     end
   end
 
@@ -59,26 +68,6 @@ defmodule SiteWeb.OGIController do
     |> put_resp_content_type("image/png")
     |> put_resp_header("cache-control", "public, max-age=3600")
     |> Ogi.render_image("#{post.year}-#{post.slug}.png", OpenGraph.post_template(), assigns, opts)
-  end
-
-  # Renders the fallback OG image
-  defp render_fallback(conn) do
-    opts = [
-      typst_opts: [
-        root_dir: typst_root(),
-        extra_fonts: [fonts_dir()]
-      ]
-    ]
-
-    conn
-    |> put_resp_content_type("image/png")
-    |> put_resp_header("cache-control", "public, max-age=86400")
-    |> Ogi.render_image(
-      "og-fallback.png",
-      OpenGraph.fallback_template(),
-      OpenGraph.fallback_assigns(),
-      opts
-    )
   end
 
   # Formats reading time as "X min read"
