@@ -36,7 +36,7 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.3"},
+      {:phoenix, "~> 1.8.4"},
       {:phoenix_live_view, "~> 1.1.24"},
       {:phoenix_ecto, "~> 4.7"},
       {:phoenix_html, "~> 4.3"},
@@ -68,6 +68,7 @@ defmodule Site.MixProject do
       {:dotenvy, "~> 1.1"},
       {:recase, "~> 0.9"},
       {:mdex, "~> 0.11"},
+      {:forex, "~> 1.1"},
       {:geocalc, "~> 0.8"},
       {:sweet_xml, "~> 0.7"},
       {:ogi, "~> 0.2"},
@@ -102,6 +103,13 @@ defmodule Site.MixProject do
        github: "simple-icons/simple-icons",
        tag: "16.9.0",
        sparse: "icons",
+       app: false,
+       compile: false,
+       depth: 1},
+      {:flag_icons,
+       github: "lipis/flag-icons",
+       tag: "v7.5.0",
+       sparse: "flags",
        app: false,
        compile: false,
        depth: 1}

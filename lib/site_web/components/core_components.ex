@@ -1446,6 +1446,12 @@ defmodule SiteWeb.CoreComponents do
     """
   end
 
+  def icon(%{name: "flag-" <> _} = assigns) do
+    ~H"""
+    <span class={[@name, @class]} data-slot="icon" {@rest} />
+    """
+  end
+
   @doc false
 
   attr :src, :string, required: true
