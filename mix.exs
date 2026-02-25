@@ -68,7 +68,7 @@ defmodule Site.MixProject do
       {:dotenvy, "~> 1.1"},
       {:recase, "~> 0.9"},
       {:mdex, "~> 0.11"},
-      {:forex, "~> 1.1"},
+      {:forex, "~> 1.1.2"},
       {:geocalc, "~> 0.8"},
       {:sweet_xml, "~> 0.7"},
       {:ogi, "~> 0.2"},
