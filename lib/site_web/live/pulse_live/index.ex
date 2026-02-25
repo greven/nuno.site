@@ -25,6 +25,7 @@ defmodule SiteWeb.PulseLive.Index do
           </div>
 
           <Components.weather weather={@weather} class="w-full md:w-auto" />
+          <Components.forex forex={@rates} class="w-full md:w-auto" />
         </div>
 
         <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
@@ -162,6 +163,7 @@ defmodule SiteWeb.PulseLive.Index do
       socket
       |> assign(:page_title, "Pulse")
       |> assign(:year_progress, year_progress)
+      |> assign(:rates, get_exchange_rates())
       |> assign_async(:weather, fn -> {:ok, %{weather: get_weather()}} end)
       # |> assign_async(:air_quality, fn -> {:ok, %{air_quality: get_air_quality()}} end)
       |> stream_async(:reddit_news, fn -> Site.Pulse.fetch_items(:reddit) end)
@@ -178,6 +180,38 @@ defmodule SiteWeb.PulseLive.Index do
       |> stream_async(:spectrum_news, fn -> Site.Pulse.fetch_items(:spectrum) end)
 
     {:ok, socket}
+  end
+
+  defp get_exchange_rates do
+    case Forex.last_ninety_days_rates() do
+      {:ok, rates} ->
+        latest_rates = Enum.take(rates, 7)
+
+        %{
+          current: List.first(latest_rates),
+          change: %{
+            gbp: rate_change(latest_rates, :gbp),
+            usd: rate_change(latest_rates, :usd),
+            jpy: rate_change(latest_rates, :jpy),
+            chf: rate_change(latest_rates, :chf)
+          }
+        }
+
+      _ ->
+        nil
+    end
+  end
+
+  # Calculate the percentage change in exchange rate for a rates list and currency code
+  defp rate_change(rates, currency_code) do
+    # Most recent rate is the first in the list, oldest is the last
+    first_value = List.first(rates).rates |> Map.get(currency_code)
+    last_value = List.last(rates).rates |> Map.get(currency_code)
+
+    Decimal.div(Decimal.sub(first_value, last_value), last_value)
+    |> Decimal.mult(100)
+    |> Decimal.round(2)
+    |> Decimal.to_float()
   end
 
   defp get_weather do

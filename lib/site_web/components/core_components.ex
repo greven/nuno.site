@@ -1424,6 +1424,7 @@ defmodule SiteWeb.CoreComponents do
       <.icon name="si-github" class="size-6" />
       <.icon name="si-elixir" class="size-5 text-purple-600" />
   """
+
   attr :name, :string, required: true
   attr :class, :any, default: "size-5"
   attr :rest, :global
@@ -1449,6 +1450,56 @@ defmodule SiteWeb.CoreComponents do
   def icon(%{name: "flag-" <> _} = assigns) do
     ~H"""
     <span class={[@name, @class]} data-slot="icon" {@rest} />
+    """
+  end
+
+  @doc """
+  Renders a flag icon given a flag icon name (ex: "flag-us", "flag-fr", etc.).
+  It's an abstraction over the <.icon> component with specific attributes
+  related to flags such as styling options.
+
+  To respect the flag icons aspect ratio, size of the flag icon
+  should be set using width classes (ex: "w-5") rather than size or height classes.
+
+  There is two types of icons, the regular with aspect ratio of 4:3 and the square
+  with aspect ratio of 1:1:
+   - Regular icons should be named "flag-xx" where "xx" is the country code
+    (ex: "flag-us", "flag-fr", etc.).
+   - Square icons should be named "flag-xx-square" where "xx" is
+    the country code (ex: "flag-us-square", "flag-fr-square", etc.).
+  """
+
+  attr :name, :string, required: true
+  attr :overlay, :string, values: ~w(none linear wave), default: "none"
+  attr :border, :boolean, default: false
+  attr :shadow, :boolean, default: false
+  attr :rounded, :boolean, default: false
+  attr :class, :any, default: "w-6"
+  attr :rest, :global
+
+  def flag_icon(assigns) do
+    assigns =
+      assigns
+      |> assign(:effects_cx, [
+        "before:content-[''] before:absolute before:inset-0",
+        case assigns.overlay do
+          "linear" ->
+            "before:bg-linear-to-t before:from-black/30 from-2% before:to-white/70 to-98%"
+
+          "wave" ->
+            "before:bg-[linear-gradient(45deg,rgba(0,0,0,.2),rgba(39,39,39,.22)11%,hsla(0,0%,100%,.3)27%,rgba(0,0,0,.24)41%,rgba(0,0,0,.55)52%,hsla(0,0%,100%,.26)63%,rgba(0,0,0,.27)74%,hsla(0,0%,100%,.3))]"
+
+          _ ->
+            nil
+        end,
+        assigns.shadow && "shadow",
+        assigns.rounded && "rounded-[2px]",
+        assigns.border &&
+          "before:border before:border-black/40 before:rounded-px before:mix-blend-overlay"
+      ])
+
+    ~H"""
+    <.icon name={@name} class={["relative", @effects_cx, @rounded, @class]} />
     """
   end
 

@@ -73,6 +73,117 @@ defmodule SiteWeb.PulseLive.Components do
 
   @doc false
 
+  attr :forex, :map, required: true
+  attr :rest, :global
+
+  def forex(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :gbp_rate,
+        Map.get(assigns.forex.current.rates, :gbp) |> Decimal.round(2) |> Decimal.to_float()
+      )
+      |> assign(
+        :usd_rate,
+        Map.get(assigns.forex.current.rates, :usd) |> Decimal.round(2) |> Decimal.to_float()
+      )
+      |> assign(
+        :jpy_rate,
+        Map.get(assigns.forex.current.rates, :jpy) |> Decimal.round(2) |> Decimal.to_float()
+      )
+      |> assign(
+        :chf_rate,
+        Map.get(assigns.forex.current.rates, :chf) |> Decimal.round(2) |> Decimal.to_float()
+      )
+
+    ~H"""
+    <div {@rest}>
+      <.card
+        content_class="h-full flex flex-col items-start justify-center gap-3"
+        border="border border-border/60"
+        shadow="shadow-xs"
+      >
+        <.diagonal_pattern use_transition={false} class="-z-1" />
+        <.header tag="h3" header_class="flex items-center gap-2 text-2xl">
+          <.icon name="flag-eu-square" class="size-5 rounded-full" /> Forex
+          <:subtitle>EUR exchange rates</:subtitle>
+        </.header>
+
+        <ul class="mt-2 w-full space-y-3.5">
+          <.forex_rate_item
+            rate={@gbp_rate}
+            change={@forex.change.gbp}
+            currency_name="Pound"
+            currency_symbol="£"
+            icon_name="flag-gb"
+          />
+
+          <.forex_rate_item
+            rate={@usd_rate}
+            change={@forex.change.usd}
+            currency_name="Dollar"
+            currency_symbol="$"
+            icon_name="flag-us"
+          />
+
+          <.forex_rate_item
+            rate={@chf_rate}
+            change={@forex.change.chf}
+            currency_name="Franc"
+            currency_symbol="CHF"
+            icon_name="flag-ch"
+          />
+
+          <.forex_rate_item
+            rate={@jpy_rate}
+            change={@forex.change.jpy}
+            currency_name="Yen"
+            currency_symbol="¥"
+            icon_name="flag-jp"
+          />
+        </ul>
+      </.card>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders and exchange rate list item.
+  """
+
+  attr :rate, :float, required: true
+  attr :change, :float, required: true
+  attr :currency_name, :string, required: true
+  attr :currency_symbol, :string, required: true
+  attr :icon_name, :string, required: true
+
+  def forex_rate_item(assigns) do
+    ~H"""
+    <li class="flex items-center gap-2 text-sm">
+      <.flag_icon name={@icon_name} overlay="wave" rounded border shadow />
+      <div class="w-full md:min-w-64 flex items-center justify-between">
+        <div class="text-content-40">{@currency_name}</div>
+        <div class="font-mono grid grid-cols-2 gap-4">
+          <div class="text-right text-content-20">
+            {@rate}<span class="ml-1 text-content-40">{@currency_symbol}</span>
+          </div>
+          <.badge
+            color={if @change >= 0, do: "green", else: "red"}
+            badge_class="text-xs"
+          >
+            <.icon
+              name={if @change >= 0, do: "lucide-arrow-up", else: "lucide-arrow-down"}
+              class="size-3 -ml-0.5 mr-px"
+            />{abs(@change)}%
+          </.badge>
+        </div>
+      </div>
+    </li>
+    """
+  end
+
+  @doc false
+
   attr :weather, AsyncResult, required: true
   attr :rest, :global
 
