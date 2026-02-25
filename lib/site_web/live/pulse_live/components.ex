@@ -106,10 +106,19 @@ defmodule SiteWeb.PulseLive.Components do
         <.diagonal_pattern use_transition={false} class="-z-1" />
         <.header tag="h3" header_class="flex items-center gap-2 text-2xl">
           <.icon name="flag-eu-square" class="size-5 rounded-full" /> Forex
-          <:subtitle>EUR exchange rates</:subtitle>
+          <:subtitle>
+            Last updated
+            <span class="font-medium">{Calendar.strftime(@forex.current.date, "%d %b %Y")}</span>
+          </:subtitle>
         </.header>
 
-        <ul class="mt-2 w-full space-y-3.5">
+        <%!-- Labels --%>
+        <div class="mt-1 w-full px-0.5 flex items-center justify-end gap-9 text-sm text-content-40/80">
+          <div>Rate</div>
+          <div class="hidden md:inline-flex">Change</div>
+        </div>
+
+        <ul class="w-full space-y-3.5">
           <.forex_rate_item
             rate={@gbp_rate}
             change={@forex.change.gbp}
@@ -159,23 +168,29 @@ defmodule SiteWeb.PulseLive.Components do
 
   def forex_rate_item(assigns) do
     ~H"""
-    <li class="flex items-center gap-2 text-sm">
-      <.flag_icon name={@icon_name} overlay="wave" rounded border shadow />
-      <div class="w-full md:min-w-64 flex items-center justify-between">
-        <div class="text-content-40">{@currency_name}</div>
-        <div class="font-mono grid grid-cols-2 gap-4">
-          <div class="text-right text-content-20">
-            {@rate}<span class="ml-1 text-content-40">{@currency_symbol}</span>
+    <li class="flex flex-col items-center text-sm">
+      <div class="w-full flex items-center gap-2">
+        <div class="flex items-center justify-start gap-2">
+          <.flag_icon name={@icon_name} overlay="wave" rounded border shadow />
+          <div class="text-content-40">{@currency_name}</div>
+        </div>
+
+        <div class="w-full md:min-w-58 flex items-center justify-end">
+          <div class="font-mono flex md:grid md:grid-cols-2 md:gap-5">
+            <div class="text-right text-content-20">
+              {@rate}<span class="ml-1 text-content-40">{@currency_symbol}</span>
+            </div>
+            <.badge
+              color={if @change >= 0, do: "green", else: "red"}
+              class="hidden md:inline-flex"
+              badge_class="text-xs"
+            >
+              <.icon
+                name={if @change >= 0, do: "lucide-arrow-up", else: "lucide-arrow-down"}
+                class="size-3 -ml-0.5"
+              />{abs(@change)}%
+            </.badge>
           </div>
-          <.badge
-            color={if @change >= 0, do: "green", else: "red"}
-            badge_class="text-xs"
-          >
-            <.icon
-              name={if @change >= 0, do: "lucide-arrow-up", else: "lucide-arrow-down"}
-              class="size-3 -ml-0.5 mr-px"
-            />{abs(@change)}%
-          </.badge>
         </div>
       </div>
     </li>
