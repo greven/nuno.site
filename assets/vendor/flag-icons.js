@@ -38,7 +38,7 @@ export default plugin(function ({ matchComponents, theme }) {
           [`--flag-${name}`]: `url('data:image/svg+xml;utf8,${content}')`,
           'background-image': `var(--flag-${name})`,
           'background-repeat': 'no-repeat',
-          'background-size': 'contain',
+          'background-size': 'cover',
           'background-position': 'center',
           'vertical-align': 'middle',
           display: 'inline-block',
