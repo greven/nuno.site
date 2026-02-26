@@ -115,7 +115,7 @@ defmodule SiteWeb.PulseLive.Components do
         <%!-- Labels --%>
         <div class="mt-1 w-full px-0.5 flex items-center justify-end gap-9 text-sm text-content-40/80">
           <div>Rate</div>
-          <div class="hidden md:inline-flex">Change</div>
+          <div>Change</div>
         </div>
 
         <ul class="w-full space-y-3.5">
@@ -176,13 +176,12 @@ defmodule SiteWeb.PulseLive.Components do
         </div>
 
         <div class="w-full md:min-w-58 flex items-center justify-end">
-          <div class="font-mono flex md:grid md:grid-cols-2 md:gap-5">
+          <div class="font-mono grid grid-cols-2 gap-5">
             <div class="text-right text-content-20">
               {@rate}<span class="ml-1 text-content-40">{@currency_symbol}</span>
             </div>
             <.badge
               color={if @change >= 0, do: "green", else: "red"}
-              class="hidden md:inline-flex"
               badge_class="text-xs"
             >
               <.icon
