@@ -517,13 +517,13 @@ defmodule SiteWeb.Components.Theming do
   def flash_cx(%{kind: kind}) do
     case kind do
       :info ->
-        "border-blue-200 text-blue-800 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-800/30 dark:text-blue-200"
+        "bg-sky-50/90 border-sky-600 text-sky-900 dark:bg-sky-950/40 dark:border-sky-800/30 dark:text-sky-200 backdrop-blur-sm"
 
       :error ->
-        "border-red-200 text-red-800 bg-red-50 dark:bg-red-950/30 dark:border-red-800/30 dark:text-red-200"
+        "bg-rose-50/90 border-rose-600 text-rose-800 dark:bg-rose-950/40 dark:border-rose-800/30 dark:text-rose-200 backdrop-blur-sm"
 
       _ ->
-        "border-surface-30 text-content-10"
+        "border-surface-30 text-content-10 backdrop-blur-sm"
     end
   end
 

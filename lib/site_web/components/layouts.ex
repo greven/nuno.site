@@ -376,25 +376,28 @@ defmodule SiteWeb.Layouts do
       <.flash
         id="client-error"
         kind={:error}
-        title={gettext("We can't find the internet")}
-        phx-disconnected={show(".phx-client-error #client-error") |> JS.remove_attribute("hidden")}
-        phx-connected={hide("#client-error") |> JS.set_attribute({"hidden", ""})}
+        phx-disconnected={
+          show_flash(".phx-client-error #client-error") |> JS.remove_attribute("hidden")
+        }
+        phx-connected={hide_flash("#client-error") |> JS.set_attribute({"hidden", ""})}
         hidden
       >
-        {gettext("Attempting to reconnect")}
-        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 motion-safe:animate-spin" />
+        {gettext("Reconnecting")}
+        <.icon name="hero-arrow-path" class="ml-1.5 size-3 motion-safe:animate-spin" />
       </.flash>
 
       <.flash
         id="server-error"
         kind={:error}
         title={gettext("Something went wrong!")}
-        phx-disconnected={show(".phx-client-error #client-error") |> JS.remove_attribute("hidden")}
-        phx-connected={hide("#client-error") |> JS.set_attribute({"hidden", ""})}
+        phx-disconnected={
+          show_flash(".phx-client-error #client-error") |> JS.remove_attribute("hidden")
+        }
+        phx-connected={hide_flash("#client-error") |> JS.set_attribute({"hidden", ""})}
         hidden
       >
-        {gettext("Hang in there while we get back on track")}
-        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 motion-safe:animate-spin" />
+        {gettext("Getting back on track")}
+        <.icon name="hero-arrow-path" class="ml-1.5 size-3 motion-safe:animate-spin" />
       </.flash>
     </div>
     """

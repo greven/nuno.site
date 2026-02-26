@@ -269,6 +269,12 @@ defmodule SiteWeb.CoreComponents do
   attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
   attr :title, :string, default: nil
   attr :kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup"
+  attr :show_icon, :boolean, default: true, doc: "whether to show the icon for the flash message"
+
+  attr :class, :any,
+    default: "fixed bottom-4 left-4 w-fit z-50",
+    doc: "flash container base classes"
+
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the flash container"
 
   slot :inner_block, doc: "the optional inner block that renders the flash message"
@@ -283,25 +289,25 @@ defmodule SiteWeb.CoreComponents do
     <div
       :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
       id={@id}
-      phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
+      phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide_flash("##{@id}")}
       role="alert"
-      class="fixed top-4 right-4 z-50 w-80 sm:w-96 max-w-80 sm:max-w-96"
+      class={[@class, "cursor-pointer"]}
       {@rest}
     >
       <div class={[
-        "relative flex items-center gap-3 p-4 rounded-lg border text-sm shadow",
-        "bg-surface-10 backdrop-blur-sm",
+        "relative flex items-center gap-3 px-4 py-3.5",
+        "rounded-lg border text-sm shadow",
         @cx
       ]}>
         <.icon
-          :if={@kind == :info}
+          :if={@kind == :info && @show_icon}
           name="hero-information-circle-mini"
-          class="size-5 shrink-0 text-blue-600 dark:text-blue-400"
+          class="size-5 shrink-0 text-sky-600 dark:text-sky-400"
         />
         <.icon
-          :if={@kind == :error}
+          :if={@kind == :error && @show_icon}
           name="hero-exclamation-circle-mini"
-          class="size-5 shrink-0 text-red-600 dark:text-red-400"
+          class="size-5 shrink-0 text-rose-600 dark:text-rose-400"
         />
 
         <div class="flex-1 min-w-0">
@@ -2257,24 +2263,23 @@ defmodule SiteWeb.CoreComponents do
 
   ## JS Commands
 
-  def show(js \\ %JS{}, selector) do
+  def show_flash(js \\ %JS{}, selector) do
     JS.show(js,
       to: selector,
       time: 300,
       transition:
-        {"transition-all ease-out duration-300",
-         "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
-         "opacity-100 translate-y-0 sm:scale-100"}
+        {"transition-all ease-out duration-300", "opacity-0 translate-y-20",
+         "opacity-100 translate-y-0"}
     )
   end
 
-  def hide(js \\ %JS{}, selector) do
+  def hide_flash(js \\ %JS{}, selector) do
     JS.hide(js,
       to: selector,
       time: 200,
       transition:
-        {"transition-all ease-in duration-200", "opacity-100 translate-y-0 sm:scale-100",
-         "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
+        {"transition-all ease-in duration-200", "opacity-100 translate-y-0",
+         "opacity-0 translate-y-20"}
     )
   end
 
