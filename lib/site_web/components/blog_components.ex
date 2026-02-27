@@ -10,6 +10,8 @@ defmodule SiteWeb.BlogComponents do
 
   alias SiteWeb.SiteComponents
 
+  ## Article Components to render using MDEx (at compile time)
+
   @doc """
   Renders an image for an article given an image name (including path) or image URL.
   If a URL is given, it will use it as is. If an image name/path is given it will resolve to a full URL using
@@ -88,6 +90,23 @@ defmodule SiteWeb.BlogComponents do
       <:source srcset={@image} type="image/jpeg" media="(max-width: 768px)" />
       <:source srcset={@image_sm} type="image/jpeg" media="(min-width: 769px)" />
     </.image>
+    """
+  end
+
+  @doc false
+
+  attr :intent, :string, default: nil
+  attr :title, :string, default: nil
+  slot :inner_block, required: true
+
+  def article_aside(assigns) do
+    assigns = assign(assigns, :content, Helpers.slot_content_to_html!(assigns.inner_block))
+
+    ~H"""
+    <aside class={@intent}>
+      <h5 :if={@title}>{@title}</h5>
+      {Phoenix.HTML.raw(@content)}
+    </aside>
     """
   end
 

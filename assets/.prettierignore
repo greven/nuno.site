@@ -11,8 +11,5 @@ node_modules/
 dist/
 build/
 
-# Generated vendor files
-vendor/
-
 # TypeScript declarations
 *.d.ts

@@ -1411,10 +1411,11 @@ defmodule SiteWeb.CoreComponents do
   @doc """
   Renders an icon.
 
-  Supports three icon libraries:
+  Supports four icon libraries:
   - [Heroicons](https://heroicons.com) - prefixed with "hero-"
   - [Lucide](https://lucide.dev) - prefixed with "lucide-"
   - [Simple Icons](https://simpleicons.org) - prefixed with "si-"
+  - [Flag Icons](https://flagicons.lipis.dev) - prefixed with "flag-"
 
   You can customize the size and colors of the icons by setting
   width, height, and background color classes.
@@ -1429,34 +1430,24 @@ defmodule SiteWeb.CoreComponents do
       <.icon name="lucide-github" />
       <.icon name="si-github" class="size-6" />
       <.icon name="si-elixir" class="size-5 text-purple-600" />
+      <.icon name="flag-us" class="w-5" />
+      <.icon name="flag-fr-square" class="w-5" />
   """
 
   attr :name, :string, required: true
   attr :class, :any, default: "size-5"
   attr :rest, :global
 
-  def icon(%{name: "hero-" <> _} = assigns) do
-    ~H"""
-    <span class={[@name, @class]} data-slot="icon" {@rest} />
-    """
-  end
+  @icon_prefixes ~w(hero- lucide- si- flag-)
 
-  def icon(%{name: "lucide-" <> _} = assigns) do
-    ~H"""
-    <span class={[@name, @class]} data-slot="icon" {@rest} />
-    """
-  end
-
-  def icon(%{name: "si-" <> _} = assigns) do
-    ~H"""
-    <span class={[@name, @class]} data-slot="icon" {@rest} />
-    """
-  end
-
-  def icon(%{name: "flag-" <> _} = assigns) do
-    ~H"""
-    <span class={[@name, @class]} data-slot="icon" {@rest} />
-    """
+  def icon(%{name: icon_name} = assigns) do
+    if Enum.any?(@icon_prefixes, &String.starts_with?(icon_name, &1)) do
+      ~H"""
+      <span class={[@name, @class]} data-slot="icon" {@rest} />
+      """
+    else
+      raise ArgumentError, "Invalid icon name: #{icon_name}."
+    end
   end
 
   @doc """
@@ -1473,13 +1464,16 @@ defmodule SiteWeb.CoreComponents do
     (ex: "flag-us", "flag-fr", etc.).
    - Square icons should be named "flag-xx-square" where "xx" is
     the country code (ex: "flag-us-square", "flag-fr-square", etc.).
+
+  The overlay idea and style were inspired by the FlgPack icon set (https://flagpack.xyz/).
   """
 
   attr :name, :string, required: true
+  attr :label, :string, default: nil
+  attr :rounded, :string, default: "rounded-xs"
   attr :overlay, :string, values: ~w(none linear wave), default: "none"
   attr :border, :boolean, default: false
   attr :shadow, :boolean, default: false
-  attr :rounded, :boolean, default: false
   attr :class, :any, default: "w-6"
   attr :rest, :global
 
@@ -1487,7 +1481,7 @@ defmodule SiteWeb.CoreComponents do
     assigns =
       assigns
       |> assign(:effects_cx, [
-        "before:content-[''] before:absolute before:inset-0",
+        "before:content-[''] before:absolute before:inset-0 before:rounded-[inherit]",
         case assigns.overlay do
           "linear" ->
             "before:bg-linear-to-t before:from-black/30 from-2% before:to-white/70 to-98%"
@@ -1498,14 +1492,20 @@ defmodule SiteWeb.CoreComponents do
           _ ->
             nil
         end,
+        assigns.rounded,
         assigns.shadow && "shadow",
-        assigns.rounded && "rounded-[2px]",
         assigns.border &&
-          "before:border before:border-black/40 before:rounded-px before:mix-blend-overlay"
+          "before:border before:border-black/40 before:mix-blend-overlay"
       ])
 
     ~H"""
-    <.icon name={@name} class={["relative", @effects_cx, @rounded, @class]} />
+    <.icon
+      name={@name}
+      class={["relative", @effects_cx, @rounded, @class]}
+      aria-label={@label}
+      role="img"
+      {@rest}
+    />
     """
   end
 

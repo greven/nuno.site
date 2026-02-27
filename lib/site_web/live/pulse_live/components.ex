@@ -171,7 +171,7 @@ defmodule SiteWeb.PulseLive.Components do
     <li class="flex flex-col items-center text-sm">
       <div class="w-full flex items-center gap-2">
         <div class="flex items-center justify-start gap-2">
-          <.flag_icon name={@icon_name} overlay="wave" rounded border shadow />
+          <.flag_icon name={@icon_name} overlay="wave" border shadow />
           <div class="text-content-40">{@currency_name}</div>
         </div>
 

@@ -34,6 +34,23 @@ defmodule SiteWeb.Helpers do
     |> Phoenix.HTML.raw()
   end
 
+  @doc """
+  Converts the content of a slot to HTML. This is useful for cases where we want to
+  render the content of a slot as HTML but is VERY HACKY and should be changed
+  in the future if MDEx adds an API for this.
+  """
+  def slot_content_to_html!(slot_content) when is_list(slot_content) do
+    slot_content
+    |> Enum.flat_map(fn slot ->
+      case slot.inner_block do
+        %Phoenix.LiveView.Rendered{static: static} -> static
+        other -> [to_string(other)]
+      end
+    end)
+    |> Enum.join()
+    |> MDEx.to_html!()
+  end
+
   # ------------------------------------------
   #  Dates
   # ------------------------------------------

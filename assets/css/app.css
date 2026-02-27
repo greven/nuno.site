@@ -5,6 +5,8 @@
 @source '../../lib/site_web';
 @source '../css';
 @source '../js';
+/* Markdown posts */
+@source '../../priv/content/posts';
 
 @import './base.css';
 @import './fonts.css';
