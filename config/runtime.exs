@@ -73,5 +73,10 @@ if config_env() == :prod do
     http: [ip: {0, 0, 0, 0, 0, 0, 0, 0}, port: port],
     secret_key_base: secret_key_base
 
+  # Email configuration
+  config :site, Site.Mailer,
+    adapter: Swoosh.Adapters.Resend,
+    api_key: System.fetch_env!("RESEND_API_KEY")
+
   config :forex, dets_file_path: ~c"/var/lib/site/forex_cache"
 end
