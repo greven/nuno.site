@@ -391,12 +391,12 @@ defmodule SiteWeb.Layouts do
         kind={:error}
         title={gettext("Something went wrong!")}
         phx-disconnected={
-          show_flash(".phx-client-error #client-error") |> JS.remove_attribute("hidden")
+          show_flash(".phx-server-error #server-error") |> JS.remove_attribute("hidden")
         }
-        phx-connected={hide_flash("#client-error") |> JS.set_attribute({"hidden", ""})}
+        phx-connected={hide_flash("#server-error") |> JS.set_attribute({"hidden", ""})}
         hidden
       >
-        {gettext("Getting back on track")}
+        {gettext("Attempting to reconnect")}
         <.icon name="hero-arrow-path" class="ml-1.5 size-3 motion-safe:animate-spin" />
       </.flash>
     </div>
