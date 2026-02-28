@@ -18,7 +18,8 @@ defmodule Site.Application do
       {Phoenix.PubSub, name: Site.PubSub},
       SiteWeb.Presence,
       Site.Analytics,
-      SiteWeb.Endpoint
+      SiteWeb.Endpoint,
+      Site.BCD.Manager
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

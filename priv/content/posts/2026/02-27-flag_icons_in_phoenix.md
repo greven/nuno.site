@@ -16,7 +16,7 @@ Easily add country flag icons to your phoenix app using a Tailwind plugin.
 While I was writing this article I was thinking if I should write it at all. One thing that saddens me in the [Age of AI](https://nuno.site/blog/2026/ai-fatigue-in-the-age-of-agents) is
 that tutorial like content was made kind of irrelevant. It is specially ironic since the LLMs were trained on them in the first place.
 
-Anyway... In a world obsessed with adding yet another dependency, sometimes the cleanest solution is: generate exactly what you need.
+Anyway... In a world obsessed with adding yet another dependency, sometimes the cleanest solution is to **generate exactly what you need**.
 
 ## Libraries Galore
 
@@ -32,6 +32,62 @@ there are not silver bullets to anything (in coding and life). By using code gen
 you can modify it to your heart’s desire.
 
 So why not just add a flag icon library as a dependency? Because it is very easy to generate the exact code you need as we will see in the next section and you will own the solution.
+
+This is what we want to achieve:
+
+<div class="flex gap-6 flex-wrap">
+  <!-- Simple -->
+  <div class="flex gap-4">
+    <SiteWeb.CoreComponents.flag_icon name="flag-eu" class="w-24" />
+    <div class="flex flex-col gap-1 text-sm">
+      <div><span class="font-headings font-medium">Overlay:</span> <span class="text-content-20">none</span></div>
+      <div><span class="font-headings font-medium">Border:</span> <span class="text-content-20">no</span></div>
+      <div><span class="font-headings font-medium">Shadow:</span> <span class="text-content-20">no</span></div>
+    </div>
+  </div>
+
+  <!-- Linear with Border and Shadow -->
+ <div class="flex gap-4">
+    <SiteWeb.CoreComponents.flag_icon name="flag-eu" class="w-24" overlay="linear" border shadow />
+    <div class="flex flex-col gap-1 text-sm">
+      <div><span class="font-headings font-medium">Overlay:</span> <span class="text-content-20">linear</span></div>
+      <div><span class="font-headings font-medium">Border:</span> <span class="text-content-20">yes</span></div>
+      <div><span class="font-headings font-medium">Shadow:</span> <span class="text-content-20">yes</span></div>
+    </div>
+  </div>
+
+  <!-- Wave with Border and Shadow -->
+  <div class="flex gap-4">
+    <SiteWeb.CoreComponents.flag_icon name="flag-eu" class="w-24" overlay="wave" border shadow />
+    <div class="flex flex-col gap-1 text-sm">
+      <div><span class="font-headings font-medium">Overlay:</span> <span class="text-content-20">wave</span></div>
+      <div><span class="font-headings font-medium">Border:</span> <span class="text-content-20">yes</span></div>
+      <div><span class="font-headings font-medium">Shadow:</span> <span class="text-content-20">yes</span></div>
+    </div>
+  </div>
+</div>
+
+More Varations:
+
+<div class="flex gap-4 flex-wrap">
+  <SiteWeb.CoreComponents.flag_icon name="flag-ar" class="w-24" overlay="wave" border shadow />
+  <SiteWeb.CoreComponents.flag_icon name="flag-gb" class="w-24" overlay="linear" border shadow />
+  <SiteWeb.CoreComponents.flag_icon name="flag-ch" class="w-24" label="Switzerland" shadow />
+  <SiteWeb.CoreComponents.flag_icon name="flag-ca" class="w-24" overlay="wave" radius="rounded-lg" shadow />
+  <SiteWeb.CoreComponents.flag_icon name="flag-jp" class="w-24" overlay="linear" radius="rounded-lg" border />
+  <SiteWeb.CoreComponents.flag_icon name="flag-es" class="w-24" overlay="wave" radius="rounded" border />
+</div>
+
+<div class="mt-8 flex gap-4 flex-wrap">
+  <SiteWeb.CoreComponents.flag_icon name="flag-br-square" class="w-16" overlay="wave" radius="rounded-full" border />
+  <SiteWeb.CoreComponents.flag_icon name="flag-fr-square" class="w-16" overlay="wave" radius="rounded-full" border />
+  <SiteWeb.CoreComponents.flag_icon name="flag-so-square" class="w-16" overlay="wave" radius="rounded-full" border />
+  <SiteWeb.CoreComponents.flag_icon name="flag-bt-square" class="w-16" overlay="wave" radius="rounded-full" border />
+  <SiteWeb.CoreComponents.flag_icon name="flag-mz-square" class="w-16" overlay="wave" radius="rounded-full" border />
+  <SiteWeb.CoreComponents.flag_icon name="flag-vn-square" class="w-16" overlay="wave" radius="rounded-full" border />
+  <SiteWeb.CoreComponents.flag_icon name="flag-za-square" class="w-16" overlay="wave" radius="rounded-full" border />
+  <SiteWeb.CoreComponents.flag_icon name="flag-it-square" class="w-16" overlay="wave" radius="rounded-full" border />
+</div>
 
 ## The Recipe
 
@@ -169,7 +225,7 @@ I also created a HEEx component to add specific features to the flag icons that 
 ```elixir
 attr :name, :string, required: true
 attr :label, :string, default: nil
-attr :rounded, :string, default: "rounded-xs"
+attr :radius, :string, default: "rounded-xs"
 attr :overlay, :string, values: ~w(none linear wave), default: "none"
 attr :border, :boolean, default: false
 attr :shadow, :boolean, default: false
@@ -191,7 +247,7 @@ def flag_icon(assigns) do
         _ ->
           nil
       end,
-      assigns.rounded,
+      assigns.radius,
       assigns.shadow && "shadow",
       assigns.border &&
         "before:border before:border-black/40 before:mix-blend-overlay"
@@ -200,7 +256,7 @@ def flag_icon(assigns) do
   ~H"""
   <.icon
     name={@name}
-    class={["relative", @effects_cx, @rounded, @class]}
+    class={["relative", @effects_cx, @radius, @class]}
     aria-label={@label}
     role="img"
     {@rest}
@@ -212,14 +268,11 @@ end
 To display the flag of the European Union with a linear overlay and a border we can do:
 
 ```elixir
-<.flag_icon name="flag-eu" overlay="wave" class="w-24" rounded border shadow />
+<.flag_icon name="flag-pt" overlay="wave" class="w-24" radius="rounded-lg" border shadow />
 ```
 
-You can see the rendered flag icon below along with some different options.
+Which will render the following flag icon:
 
-<div class="flex gap-4 flex-wrap">
-  <SiteWeb.CoreComponents.flag_icon name="flag-eu" overlay="wave" class="w-24" border shadow />
-  <SiteWeb.CoreComponents.flag_icon name="flag-gb" overlay="linear" class="w-24" border shadow />
-  <SiteWeb.CoreComponents.flag_icon name="flag-ca" overlay="wave" class="w-24" rounded="rounded-lg" shadow />
-  <SiteWeb.CoreComponents.flag_icon name="flag-ch" class="w-24" label="Switzerland" shadow />
-</div>
+<SiteWeb.CoreComponents.flag_icon name="flag-pt" overlay="wave" class="w-24" radius="rounded-lg" border shadow />
+
+You know, I'm a bit of a vexillologist myself... 😏
