@@ -1470,7 +1470,7 @@ defmodule SiteWeb.CoreComponents do
 
   attr :name, :string, required: true
   attr :label, :string, default: nil
-  attr :rounded, :string, default: "rounded-xs"
+  attr :radius, :string, default: "rounded-xs"
   attr :overlay, :string, values: ~w(none linear wave), default: "none"
   attr :border, :boolean, default: false
   attr :shadow, :boolean, default: false
@@ -1492,7 +1492,7 @@ defmodule SiteWeb.CoreComponents do
           _ ->
             nil
         end,
-        assigns.rounded,
+        assigns.radius,
         assigns.shadow && "shadow",
         assigns.border &&
           "before:border before:border-black/40 before:mix-blend-overlay"
@@ -1501,7 +1501,7 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <.icon
       name={@name}
-      class={["relative", @effects_cx, @rounded, @class]}
+      class={["relative", @effects_cx, @radius, @class]}
       aria-label={@label}
       role="img"
       {@rest}
