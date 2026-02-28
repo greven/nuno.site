@@ -3,7 +3,7 @@ title: "Flag icons in Phoenix",
 tags: ~w(dev elixir phoenix),
 excerpt: "Easily add country flag icons to your phoenix app using a Tailwind plugin.",
 category: :article,
-status: :published,
+status: :draft,
 featured: true,
 }
 
@@ -13,8 +13,8 @@ featured: true,
 
 Easily add country flag icons to your phoenix app using a Tailwind plugin.
 
-While I was writing this article I was thinking if I should write it at all. One thing that saddens me in the [Age of AI](https://nuno.site/blog/2026/ai-fatigue-in-the-age-of-agents) is
-that tutorial like content was made kind of irrelevant. It is specially ironic since the LLMs were trained on them in the first place.
+While I was writing this article I was thinking if I should even write it at all. One thing that saddens me in the [Age of AI](https://nuno.site/blog/2026/ai-fatigue-in-the-age-of-agents)
+is that tutorial like content was made kind of irrelevant. It is specially ironic since the LLMs were trained on them in the first place.
 
 Anyway... In a world obsessed with adding yet another dependency, sometimes the cleanest solution is to **generate exactly what you need**.
 
@@ -23,7 +23,8 @@ Anyway... In a world obsessed with adding yet another dependency, sometimes the 
 Libraries have taken over development for a while now. What I mean by this is that no development ecosystem can thrive if it doesn’t provide you with a vast
 amount of library options. This is specially true in web development. Libraries provide “turn-key” solutions, they allow you to add features quickly to your application.
 Nonetheless there is a price to be paid by using someone’s else’s library. After all you are trusting someone else, most of the times a network of people (or AI agents… 😒),
-with your app security and long term maintainability. Delegation always has an associated cost. There are other issues with library obsession, but I will not be focusing on that.
+with your app security and long term maintainability. Delegation always has an associated cost. There are other issues with library obsession, but I will not
+be focusing on that, maybe in a future article.
 
 This is why I find refreshing the approach of generating code. One of the most popular UI component libraries on React, [shadcn](https://ui.shadcn.com/), does it.
 [Phoenix](https://www.phoenixframework.org/) in [Elixir](https://elixir-lang.org/) also does it, since Elixir has first class
