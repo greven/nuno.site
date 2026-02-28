@@ -4,7 +4,7 @@ defmodule Site.BCD.Manager do
   1. Configures and starts `Site.BCD.Repo` dynamically.
   2. Runs inline migrations to create the schema.
   3. Checks the stored data version against `@version`.
-  4. Downloads and ingests the web-features JSON data if the version is outdated.
+  4. Downloads and ingests web-features + caniuse-db data if outdated.
   """
 
   use GenServer
@@ -80,20 +80,27 @@ defmodule Site.BCD.Manager do
   end
 
   defp ingest do
-    case BCD.fetch_data() do
-      {:ok, body} ->
-        features = extract_features(body)
-        upsert_features(features)
-        store_version()
-        Logger.info("[BrowserData] Ingested #{length(features)} features.")
+    with {:ok, features_body} <- BCD.fetch_data(),
+         {:ok, caniuse_body} <- BCD.fetch_usage_data() do
+      features = extract_features(features_body)
+      upsert_features(features)
 
+      usage_rows = extract_usage(caniuse_body)
+      upsert_usage(usage_rows)
+
+      store_version()
+
+      Logger.info(
+        "[BrowserData] Ingested #{length(features)} features, #{length(usage_rows)} browser usage rows."
+      )
+    else
       {:error, reason} ->
-        Logger.error("[BrowserData] Failed to fetch data: #{reason}")
+        Logger.error("[BrowserData] Ingestion failed: #{reason}")
     end
   end
 
-  # The web-features JSON has a top-level "features" map where each key is a
-  # short slug (e.g. "css-grid") and each value contains the feature metadata.
+  ## Features
+
   defp extract_features(body) do
     body
     |> Map.get("features", %{})
@@ -102,14 +109,13 @@ defmodule Site.BCD.Manager do
 
   defp build_feature(key, entry) do
     status = entry["status"] || %{}
-    baseline = status["baseline"]
 
     %{
       key: key,
       name: entry["name"],
       description: entry["description"],
       spec_url: spec_url(entry),
-      status: baseline_status(baseline),
+      status: baseline_status(status["baseline"]),
       baseline_low_date: status["baseline_low_date"],
       baseline_high_date: status["baseline_high_date"],
       compat_features: entry["compat_features"] || [],
@@ -138,6 +144,40 @@ defmodule Site.BCD.Manager do
       )
     end)
   end
+
+  ## Browser usage
+
+  # Extracts only the browsers that web-features tracks (via @browser_key_map values),
+  # so we don't store IE, Opera Mini, etc. that are irrelevant for our use case.
+  @tracked_browsers Map.values(BCD.browser_key_map())
+
+  defp extract_usage(body) do
+    body
+    |> Map.get("agents", %{})
+    |> Enum.filter(fn {browser, _} -> browser in @tracked_browsers end)
+    |> Enum.flat_map(fn {browser, agent} ->
+      agent
+      |> Map.get("usage_global", %{})
+      |> Enum.filter(fn {_version, usage} -> is_number(usage) and usage > 0 end)
+      |> Enum.map(fn {version, usage} ->
+        %{browser: browser, version: version, usage: usage}
+      end)
+    end)
+  end
+
+  defp upsert_usage(rows) do
+    rows
+    |> Enum.chunk_every(500)
+    |> Enum.each(fn chunk ->
+      Repo.insert_all("browser_usage", chunk,
+        on_conflict: {:replace, [:usage]},
+        conflict_target: [:browser, :version],
+        log: false
+      )
+    end)
+  end
+
+  ## Version
 
   defp store_version do
     Repo.insert_all(
