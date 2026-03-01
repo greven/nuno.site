@@ -26,19 +26,24 @@ defmodule Site.BrowserData.Manager do
   @impl true
   def init(_args) do
     configure_repo()
-    {:ok, _pid} = start_repo()
-    :ok = run_migrations()
 
-    case check_version() do
-      :ok ->
-        Logger.info("[BrowserData] Database is up to date (v#{@version})")
+    with {:ok, _pid} <- start_repo(),
+         :ok <- run_migrations() do
+      case check_version() do
+        :ok ->
+          Logger.info("[BrowserData] Database is up to date (v#{@version})")
 
-      :outdated ->
-        Logger.info("[BrowserData] Fetching web-features data v#{@version}...")
-        ingest()
+        :outdated ->
+          Logger.info("[BrowserData] Fetching web-features data v#{@version}...")
+          ingest()
+      end
+
+      {:ok, %{version: @version, status: :ready}}
+    else
+      {:error, reason} ->
+        Logger.error("[BrowserData] Initialization failed: #{inspect(reason)}")
+        {:ok, %{version: @version, status: :error}}
     end
-
-    {:ok, %{version: @version}}
   end
 
   ## Private
@@ -52,9 +57,15 @@ defmodule Site.BrowserData.Manager do
 
   defp start_repo do
     case Repo.start_link() do
-      {:ok, pid} -> {:ok, pid}
-      {:error, {:already_started, pid}} -> {:ok, pid}
-      {:error, reason} -> raise "Failed to start Site.BrowserData.Repo: #{inspect(reason)}"
+      {:ok, pid} ->
+        {:ok, pid}
+
+      {:error, {:already_started, pid}} ->
+        {:ok, pid}
+
+      {:error, reason} ->
+        Logger.error("[BrowserData] Failed to start Repo: #{inspect(reason)}")
+        {:error, reason}
     end
   end
 
