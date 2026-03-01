@@ -1,4 +1,4 @@
-defmodule Site.BCD.Repo do
+defmodule Site.BrowserData.Repo do
   @moduledoc """
   Dedicated Ecto repo for the MDN Browser Compatibility Data SQLite database.
   Configured dynamically at startup.

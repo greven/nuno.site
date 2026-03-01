@@ -1,9 +1,9 @@
-defmodule Site.BCD.Feature do
+defmodule Site.BrowserData.Feature do
   @moduledoc """
   Ecto schema for a single web-features entry.
 
   Each feature corresponds to a high-level browser capability (e.g. "CSS Grid") and
-  maps to one or more BCD dotted keys via `compat_features`.
+  maps to one or more BrowserData dotted keys via `compat_features`.
 
   The `status` field can be `"baseline_high"`, `"baseline_low"`, or `"false"`,
   indicating the Baseline availability of the feature across major browsers.
@@ -23,7 +23,7 @@ defmodule Site.BCD.Feature do
     field :status, :string
     field :baseline_low_date, :string
     field :baseline_high_date, :string
-    # List of BCD dotted-path keys, e.g. ["css.properties.grid", ...]
+    # List of BrowserData dotted-path keys, e.g. ["css.properties.grid", ...]
     field :compat_features, {:array, :string}
     # Minimum browser versions: %{"chrome" => "57", "firefox" => "52", ...}
     field :browser_support, :map

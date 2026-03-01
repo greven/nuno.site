@@ -19,7 +19,7 @@ defmodule Site.Application do
       SiteWeb.Presence,
       Site.Analytics,
       SiteWeb.Endpoint,
-      Site.BCD.Manager
+      Site.BrowserData.Manager
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -1,4 +1,4 @@
-defmodule Site.BCD.CreateFeatures do
+defmodule Site.BrowserData.CreateFeatures do
   @moduledoc false
   use Ecto.Migration
 
@@ -16,7 +16,7 @@ defmodule Site.BCD.CreateFeatures do
       add :status, :string
       add :baseline_low_date, :string
       add :baseline_high_date, :string
-      # JSON array of BCD dotted-path keys
+      # JSON array of BrowserData dotted-path keys
       add :compat_features, :string
       # JSON map of minimum browser versions, e.g. %{"chrome" => "57", ...}
       add :browser_support, :map

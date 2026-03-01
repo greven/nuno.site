@@ -78,5 +78,7 @@ if config_env() == :prod do
     adapter: Swoosh.Adapters.Resend,
     api_key: System.fetch_env!("RESEND_API_KEY")
 
+  config :site, :temp_dir, System.get_env("TEMP_DIR") || "/var/lib/site/temp"
+
   config :forex, dets_file_path: ~c"/var/lib/site/forex_cache"
 end

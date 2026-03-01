@@ -1,7 +1,7 @@
-defmodule Site.BCD.Manager do
+defmodule Site.BrowserData.Manager do
   @moduledoc """
   GenServer that manages the BrowserData SQLite database lifecycle:
-  1. Configures and starts `Site.BCD.Repo` dynamically.
+  1. Configures and starts `Site.BrowserData.Repo` dynamically.
   2. Runs inline migrations to create the schema.
   3. Checks the stored data version against `@version`.
   4. Downloads and ingests web-features + caniuse-db data if outdated.
@@ -12,12 +12,12 @@ defmodule Site.BCD.Manager do
   require Logger
   import Ecto.Query
 
-  alias Site.BCD
-  alias Site.BCD.Repo
-  alias Site.BCD.Feature
+  alias Site.BrowserData
+  alias Site.BrowserData.Repo
+  alias Site.BrowserData.Feature
 
-  @version BCD.version()
-  @database_path BCD.database_path()
+  @version BrowserData.version()
+  @database_path BrowserData.database_path()
 
   def start_link(opts \\ []) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
@@ -44,7 +44,7 @@ defmodule Site.BCD.Manager do
   ## Private
 
   defp configure_repo do
-    Application.put_env(:site, Site.BCD.Repo,
+    Application.put_env(:site, Site.BrowserData.Repo,
       database: @database_path,
       pool_size: 2
     )
@@ -54,12 +54,12 @@ defmodule Site.BCD.Manager do
     case Repo.start_link() do
       {:ok, pid} -> {:ok, pid}
       {:error, {:already_started, pid}} -> {:ok, pid}
-      {:error, reason} -> raise "Failed to start Site.BCD.Repo: #{inspect(reason)}"
+      {:error, reason} -> raise "Failed to start Site.BrowserData.Repo: #{inspect(reason)}"
     end
   end
 
   defp run_migrations do
-    Ecto.Migrator.run(Repo, [{0, Site.BCD.CreateFeatures}], :up,
+    Ecto.Migrator.run(Repo, [{0, Site.BrowserData.CreateFeatures}], :up,
       all: true,
       log: false,
       log_migrations_sql: false
@@ -80,8 +80,8 @@ defmodule Site.BCD.Manager do
   end
 
   defp ingest do
-    with {:ok, features_body} <- BCD.fetch_data(),
-         {:ok, caniuse_body} <- BCD.fetch_usage_data() do
+    with {:ok, features_body} <- BrowserData.fetch_data(),
+         {:ok, caniuse_body} <- BrowserData.fetch_usage_data() do
       features = extract_features(features_body)
       upsert_features(features)
 
@@ -149,7 +149,7 @@ defmodule Site.BCD.Manager do
 
   # Extracts only the browsers that web-features tracks (via @browser_key_map values),
   # so we don't store IE, Opera Mini, etc. that are irrelevant for our use case.
-  @tracked_browsers Map.values(BCD.browser_key_map())
+  @tracked_browsers Map.values(BrowserData.browser_key_map())
 
   defp extract_usage(body) do
     body

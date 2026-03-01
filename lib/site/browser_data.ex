@@ -1,6 +1,6 @@
-defmodule Site.BCD do
+defmodule Site.BrowserData do
   @moduledoc """
-  Browser Compatibility Data (BCD) module.
+  Browser Compatibility Data (BrowserData) module.
 
   Download and provide functions to query Baseline feature data from the web-features
   package maintained by the W3C WebDX Community Group. Since the data is quite large,
@@ -14,7 +14,6 @@ defmodule Site.BCD do
 
   @version "3.18.0"
   @caniuse_version "1.0.30001774"
-  @database_path "./tmp/browser_data.db"
 
   # Maps web-features browser keys → caniuse agent keys.
   # Used when computing global support % from the browser_support map.
@@ -33,24 +32,26 @@ defmodule Site.BCD do
 
   import Ecto.Query
 
-  alias Site.BCD.Repo
-  alias Site.BCD.Feature
+  alias Site.BrowserData.Repo
+  alias Site.BrowserData.Feature
 
   def version, do: @version
 
   def caniuse_version, do: @caniuse_version
 
-  def database_path, do: @database_path
-
   def url, do: "https://unpkg.com/web-features@#{@version}/data.json"
 
   def caniuse_url, do: "https://unpkg.com/caniuse-db@#{@caniuse_version}/data.json"
 
-  def database_exists?, do: File.exists?(@database_path)
-
   def latest_version?, do: latest_version() == @version
 
   def browser_key_map, do: @browser_key_map
+
+  def database_path do
+    Application.get_env(:site, :temp_dir, "./tmp") <> "/browser_data.db"
+  end
+
+  def database_exists?, do: database_path() |> File.exists?()
 
   @doc """
   Fetch a single feature by its web-features slug, e.g. `"css-grid"`.
@@ -61,7 +62,7 @@ defmodule Site.BCD do
   end
 
   @doc """
-  Full-text search features by key, name, or a BCD compat key (case-insensitive substring match).
+  Full-text search features by key, name, or a BrowserData compat key (case-insensitive substring match).
   """
   def search(term, opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
@@ -104,8 +105,8 @@ defmodule Site.BCD do
 
   ## Example
 
-      feature = Site.BCD.get_feature("grid")
-      Site.BCD.global_support(feature)
+      feature = Site.BrowserData.get_feature("grid")
+      Site.BrowserData.global_support(feature)
       #=> 91.34
   """
   def global_support(%Feature{browser_support: support}) when is_map(support) do
