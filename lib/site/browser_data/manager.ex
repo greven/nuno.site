@@ -25,28 +25,63 @@ defmodule Site.BrowserData.Manager do
 
   @impl true
   def init(_args) do
-    configure_repo()
+    case check_database_path() do
+      :ok ->
+        configure_repo()
+        setup()
 
-    with {:ok, _pid} <- start_repo(),
-         :ok <- run_migrations() do
-      case check_version() do
-        :ok ->
-          Logger.info("[BrowserData] Database is up to date (v#{@version})")
-
-        :outdated ->
-          Logger.info("[BrowserData] Fetching web-features data v#{@version}...")
-          ingest()
-      end
-
-      {:ok, %{version: @version, status: :ready}}
-    else
       {:error, reason} ->
-        Logger.error("[BrowserData] Initialization failed: #{inspect(reason)}")
-        {:ok, %{version: @version, status: :error}}
+        Logger.error("[BrowserData] Skipping setup — database path not writable: #{reason}")
+        {:ok, %{version: @version, status: :unavailable}}
     end
   end
 
   ## Private
+
+  defp check_database_path do
+    path = BrowserData.database_path()
+    dir = Path.dirname(path)
+
+    cond do
+      not File.exists?(dir) ->
+        {:error, "directory #{dir} does not exist"}
+
+      File.stat!(dir).access not in [:read_write, :write] ->
+        {:error, "directory #{dir} is not writable (erofs or permissions issue)"}
+
+      true ->
+        :ok
+    end
+  end
+
+  defp setup do
+    configure_repo()
+
+    case start_repo() do
+      {:ok, _pid} ->
+        case run_migrations() do
+          :ok ->
+            case check_version() do
+              :ok ->
+                Logger.info("[BrowserData] Database is up to date (v#{@version})")
+
+              :outdated ->
+                Logger.info("[BrowserData] Fetching web-features data v#{@version}...")
+                ingest()
+            end
+
+            {:ok, %{version: @version, status: :ready}}
+
+          {:error, reason} ->
+            Logger.error("[BrowserData] Failed to run migrations: #{inspect(reason)}")
+            {:ok, %{version: @version, status: :error}}
+        end
+
+      {:error, reason} ->
+        Logger.error("[BrowserData] Failed to start repo: #{inspect(reason)}")
+        {:ok, %{version: @version, status: :error}}
+    end
+  end
 
   defp configure_repo do
     Application.put_env(:site, Site.BrowserData.Repo,
@@ -77,6 +112,8 @@ defmodule Site.BrowserData.Manager do
     )
 
     :ok
+  rescue
+    e -> {:error, e}
   end
 
   defp check_version do
