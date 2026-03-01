@@ -57,28 +57,21 @@ defmodule Site.BrowserData.Manager do
   defp setup do
     configure_repo()
 
-    case start_repo() do
-      {:ok, _pid} ->
-        case run_migrations() do
-          :ok ->
-            case check_version() do
-              :ok ->
-                Logger.info("[BrowserData] Database is up to date (v#{@version})")
+    with {:ok, _pid} <- start_repo(),
+         :ok <- run_migrations() do
+      case check_version() do
+        :ok ->
+          Logger.info("[BrowserData] Database is up to date (v#{@version})")
 
-              :outdated ->
-                Logger.info("[BrowserData] Fetching web-features data v#{@version}...")
-                ingest()
-            end
+        :outdated ->
+          Logger.info("[BrowserData] Fetching web-features data v#{@version}...")
+          ingest()
+      end
 
-            {:ok, %{version: @version, status: :ready}}
-
-          {:error, reason} ->
-            Logger.error("[BrowserData] Failed to run migrations: #{inspect(reason)}")
-            {:ok, %{version: @version, status: :error}}
-        end
-
+      {:ok, %{version: @version, status: :ready}}
+    else
       {:error, reason} ->
-        Logger.error("[BrowserData] Failed to start repo: #{inspect(reason)}")
+        Logger.error("[BrowserData] Setup failed: #{inspect(reason)}")
         {:ok, %{version: @version, status: :error}}
     end
   end
