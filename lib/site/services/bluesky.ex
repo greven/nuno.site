@@ -114,10 +114,10 @@ defmodule Site.Services.Bluesky do
 
   The options are the same that `Site.Services.Bluesky.list_author_feed/2` accepts
   plus an additional `cutoff_date` option to stop fetching posts older than the given date.
-  The `cutoff_date` should be a `DateTime` struct and it defaults to the last 7 days.
+  The `cutoff_date` should be a `DateTime` struct and it defaults to the last 60 days.
   """
   def sync_posts(handle, opts \\ []) do
-    cutoff_date = Keyword.get(opts, :cutoff_date, DateTime.shift(DateTime.utc_now(), day: -7))
+    cutoff_date = Keyword.get(opts, :cutoff_date, DateTime.shift(DateTime.utc_now(), day: -60))
 
     new_posts =
       stream_author_feed(handle, opts)
@@ -165,7 +165,7 @@ defmodule Site.Services.Bluesky do
 
     Repo.insert_all(Post, entries,
       conflict_target: [:did, :rkey],
-      on_conflict: {:replace, [:cid, :url, :text, :created_at, :updated_at]},
+      on_conflict: {:replace_all_except, [:id, :inserted_at]},
       placeholders: placeholders
     )
   end

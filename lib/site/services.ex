@@ -55,7 +55,7 @@ defmodule Site.Services do
 
   @doc """
   Incrementally sync BlueSky posts for the given handle into the database
-  till a given cutoff date (defaults to 7 days ago) unless the "caching" database
+  till a given cutoff date (defaults to 60 days ago) unless the "caching" database
   table is empty, so we override the cutoff date in that case to fetch all posts.
   """
   def sync_bluesky_posts(handle, opts \\ []) do
