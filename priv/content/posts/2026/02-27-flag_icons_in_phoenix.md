@@ -3,7 +3,7 @@ title: "Flag icons in Phoenix",
 tags: ~w(dev elixir phoenix),
 excerpt: "Easily add country flag icons to your phoenix app using a Tailwind plugin.",
 category: :article,
-status: :draft,
+status: :published,
 featured: true,
 }
 
