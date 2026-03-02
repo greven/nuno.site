@@ -1,4 +1,6 @@
 defmodule Site.Services.Weather.Daily do
+  @moduledoc false
+
   use Ecto.Schema
 
   # Measurement type

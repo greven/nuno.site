@@ -7,10 +7,9 @@ defmodule Site.Media do
   Given an image src path, return the corresponding blurred image path.
   """
   def image_blur_path(src) when is_binary(src) do
-    cond do
-      String.contains?(src, "_blur.") -> src
-      true -> String.replace(src, ~r/\.(jpg|jpeg|png|gif)$/, "_blur.jpg")
-    end
+    if String.contains?(src, "_blur."),
+      do: src,
+      else: String.replace(src, ~r/\.(jpg|jpeg|png|gif)$/, "_blur.jpg")
   end
 
   def image_blur_path(_), do: nil

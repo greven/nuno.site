@@ -1,4 +1,6 @@
 defmodule Site.Services.Weather.Current do
+  @moduledoc false
+
   use Ecto.Schema
 
   # Measurement type
