@@ -27,7 +27,6 @@ defmodule Site.BrowserData.Manager do
   def init(_args) do
     case check_database_path() do
       :ok ->
-        configure_repo()
         setup()
 
       {:error, reason} ->
@@ -36,25 +35,11 @@ defmodule Site.BrowserData.Manager do
     end
   end
 
-  ## Private
-
-  defp check_database_path do
-    path = BrowserData.database_path()
-    dir = Path.dirname(path)
-
-    cond do
-      not File.exists?(dir) ->
-        {:error, "directory #{dir} does not exist"}
-
-      File.stat!(dir).access not in [:read_write, :write] ->
-        {:error, "directory #{dir} is not writable (erofs or permissions issue)"}
-
-      true ->
-        :ok
-    end
-  end
-
-  defp setup do
+  @doc """
+  Checks the database version and ingests data if outdated.
+  Can be called manually to refresh data.
+  """
+  def setup do
     configure_repo()
 
     with {:ok, _pid} <- start_repo(),
@@ -76,11 +61,29 @@ defmodule Site.BrowserData.Manager do
     end
   end
 
+  ## Private
+
   defp configure_repo do
     Application.put_env(:site, Site.BrowserData.Repo,
       database: @database_path,
       pool_size: 2
     )
+  end
+
+  defp check_database_path do
+    path = BrowserData.database_path()
+    dir = Path.dirname(path)
+
+    cond do
+      not File.exists?(dir) ->
+        {:error, "directory #{dir} does not exist"}
+
+      File.stat!(dir).access not in [:read_write, :write] ->
+        {:error, "directory #{dir} is not writable (erofs or permissions issue)"}
+
+      true ->
+        :ok
+    end
   end
 
   defp start_repo do
