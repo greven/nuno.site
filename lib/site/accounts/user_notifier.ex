@@ -11,7 +11,7 @@ defmodule Site.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Site", "contact@example.com"})
+      |> from({"Nuno Site", "admin@nuno.site"})
       |> subject(subject)
       |> text_body(body)
 
