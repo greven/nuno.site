@@ -36,7 +36,7 @@ defmodule SiteWeb.OpenGraph do
     #align(center)[
     // Article Tag
     #box[
-      #set text(size: 22pt, weight: "regular")
+      #set text(size: 28pt, weight: "regular")
       #box(fill: rgb("#77777710"), stroke: (paint: rgb("#777777"), thickness: 1pt), inset: (x: 10pt, y: 6pt))[
         #upper[#text(fill: rgb("#777777"), "Article")]
       ]
@@ -45,7 +45,7 @@ defmodule SiteWeb.OpenGraph do
     // Tags section
       #if <%= Enum.count(tags) %> > 0 [
         #box[
-          #set text(size: 22pt, weight: "regular")
+          #set text(size: 28pt, weight: "regular")
           <%= for tag <- tags do %>#box(fill: rgb("#CE434610"), stroke: (paint: rgb("#CE4346"), thickness: 1pt), inset: (x: 10pt, y: 6pt))[
             #upper[#text(fill: rgb("#CE4346"), "#<%= tag %>")]
           ]
@@ -55,16 +55,16 @@ defmodule SiteWeb.OpenGraph do
       ]
     ]
 
-    #v(16pt)
+    #v(32pt)
 
-    // Title - Large, bold, Space Grotesk
+    // Title
     #align(center)[
       #block(width: 900pt)[
         #underline(offset: 8pt, stroke: (paint: rgb("#333333"), thickness: 2pt), evade: true)[
           #text(
-            font: "Space Grotesk",
+            font: "Inter",
             size: 74pt,
-            weight: "medium",
+            weight: "bold",
             fill: rgb("#eeeeee")
           )[<%= title %>]
         ]
@@ -75,7 +75,7 @@ defmodule SiteWeb.OpenGraph do
 
     // Footer - Reading time
     #place(bottom + right)[
-      #text(size: 24pt, weight: "regular", fill: rgb("#777777"))[<%= reading_time %>]
+      #text(size: 28pt, weight: "regular", fill: rgb("#777777"))[<%= reading_time %>]
     ]
     """
   end
