@@ -34,24 +34,30 @@ defmodule SiteWeb.AboutLive.Index do
               </span>
             </p>
 
-            <div class="mt-8 space-y-4 text-base text-content-20 underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6 decoration-1 decoration-surface-40/75">
+            <div class="mt-8">
               <SiteComponents.profile_picture
                 size={300}
-                class="w-full flex justify-center md:w-auto md:block md:ml-8 md:float-right [shape-outside:circle(50%)]"
+                class="w-full flex justify-center md:w-auto md:block md:ml-8 md:my-4 md:float-right [shape-outside:circle(50%)]"
               />
 
-              <p class="mt-12 font-light text-base md:text-lg text-pretty">
-                Hello fellow visitor! I'm Nuno Moço, a seasoned software developer focused on web technologies.
-                I love crafting web applications with a focus on <span class="font-medium">User Experience</span>.
-              </p>
+              <div class={[
+                "relative px-6 space-y-4 text-base text-content-20 text-left",
+                "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6 decoration-1 decoration-surface-40/75",
+                "before:content-[''] before:absolute before:top-0 before:right-full before:w-0.5 before:h-full before:bg-primary before:rounded-xs"
+              ]}>
+                <p class="mt-12 font-light text-base md:text-lg text-pretty">
+                  Hello fellow visitor! I'm Nuno Moço, a seasoned software developer focused on web technologies.
+                  I love crafting web applications with a focus on <span class="font-medium">User Experience</span>.
+                </p>
 
-              <p class="font-light text-base md:text-lg text-pretty">
-                I've always been passionate about design and user experience, so the web was a natural fit for me. I've been building web applications before they were called applications 🧙‍♂️...
-              </p>
+                <p class="font-light text-base md:text-lg text-pretty">
+                  I've always been passionate about design and user experience, so the web was a natural fit for me. I've been building web applications before they were called applications 🧙‍♂️...
+                </p>
 
-              <p class="font-light text-base md:text-lg text-pretty">
-                As a full-stack developer I enjoy working with various technologies. My main toolkit includes <span class="font-medium">Elixir</span>, <span class="font-medium">Phoenix</span>, <span class="font-medium">CSS</span>, <span class="font-medium">SQL</span>, <span class="font-medium">JavaScript</span>, and <span class="font-medium">React</span>.
-              </p>
+                <p class="font-light text-base md:text-lg text-pretty">
+                  As a full-stack developer I enjoy working with various technologies. My main toolkit includes <span class="font-medium">Elixir</span>, <span class="font-medium">Phoenix</span>, <span class="font-medium">CSS</span>, <span class="font-medium">SQL</span>, <span class="font-medium">JavaScript</span>, and <span class="font-medium">React</span>.
+                </p>
+              </div>
             </div>
 
             <Components.contact_links class="mt-10 flex flex-col items-center justify-center md:items-start gap-1" />

@@ -333,8 +333,8 @@ defmodule SiteWeb.AboutLive.Components do
       tag="h2"
       class={[
         "relative xl:block",
-        "before:content-['0'_counter(item-counter)] before:hidden lg:before:block before:absolute before:-left-28 before:top-0 before:text-7xl before:font-semibold before:font-headings
-            before:text-primary before:text-right before:opacity-10 dark:before:saturate-0",
+        "before:content-['0'_counter(item-counter)] before:hidden lg:before:block before:absolute before:-left-24 before:top-1",
+        "before:text-6xl before:font-semibold before:font-mono before:text-primary before:text-right before:opacity-10 dark:before:saturate-0",
         @class
       ]}
       style="counter-increment: item-counter;"
