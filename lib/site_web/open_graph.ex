@@ -62,7 +62,7 @@ defmodule SiteWeb.OpenGraph do
       #block(width: 900pt)[
         #underline(offset: 8pt, stroke: (paint: rgb("#333333"), thickness: 2pt), evade: true)[
           #text(
-            font: "Inter",
+            font: "Raleway",
             size: 74pt,
             weight: "bold",
             fill: rgb("#eeeeee")
@@ -75,7 +75,7 @@ defmodule SiteWeb.OpenGraph do
 
     // Footer - Reading time
     #place(bottom + right)[
-      #text(size: 28pt, weight: "regular", fill: rgb("#777777"))[<%= reading_time %>]
+      #text(size: 28pt, weight: "regular", fill: rgb("#666666"))[<%= reading_time %>]
     ]
     """
   end
