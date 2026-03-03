@@ -141,11 +141,26 @@ defmodule SiteWeb.HomeLive.Index do
               <%!-- </.tooltip> --%>
 
               <Components.bento_card
+                navigate={~p"/changelog"}
+                class="col-span-2 row-span-1"
+                icon="lucide-history"
+                size={:small}
+              >
+                <Components.card_content>
+                  <:label>Changelog</:label>
+                </Components.card_content>
+              </Components.bento_card>
+            </div>
+
+            <%!-- Multi-card --%>
+            <div class="hidden col-span-1 row-span-1 aspect-square lg:grid grid-cols-2 grid-rows-2 gap-4">
+              <div class="hidden lg:block col-span-1 row-span-1 aspect-square"></div>
+
+              <Components.bento_card
                 class="col-span-2 row-span-1 cursor-pointer"
                 variant={:subtle}
-                icon="lucide-search"
+                icon="lucide-search-duotone"
                 size={:small}
-                tag="button"
                 aria-label="Open command finder (Cmd+K)"
                 phx-click={SiteWeb.Finder.toggle()}
               >
@@ -154,8 +169,6 @@ defmodule SiteWeb.HomeLive.Index do
                 </Components.card_content>
               </Components.bento_card>
             </div>
-
-            <div class="hidden lg:block col-span-1 row-span-1 aspect-square"></div>
 
             <Components.bento_card
               navigate={~p"/books"}
