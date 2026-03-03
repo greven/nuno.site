@@ -81,8 +81,20 @@ defmodule SiteWeb.HomeLive.Index do
         <%!-- Content --%>
         <div class="flex flex-col gap-20 md:gap-28 last:mb-16">
           <%!-- Bento Grid --%>
-          <div class="relative grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:p-4">
+          <div class="group relative grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:p-4">
             <SiteComponents.box_chrome class="hidden sm:block" animated />
+            <div
+              aria-hidden
+              class={[
+                "absolute opacity-0 -bottom-8 left-0 right-0",
+                "h-8 flex items-center justify-center bg-surface-20/60",
+                "font-mono text-xs text-content-40/60 uppercase text-center tracking-wider",
+                "transition ease-in duration-300",
+                "group-hover:opacity-100"
+              ]}
+            >
+              <.diagonal_pattern class="z-1" /> Main Content
+            </div>
 
             <Components.bento_card
               navigate={~p"/blog"}
@@ -129,13 +141,16 @@ defmodule SiteWeb.HomeLive.Index do
               <%!-- </.tooltip> --%>
 
               <Components.bento_card
-                navigate={~p"/changelog"}
-                class="col-span-2 row-span-1"
-                icon="lucide-history"
+                class="col-span-2 row-span-1 cursor-pointer"
+                variant={:subtle}
+                icon="lucide-search"
                 size={:small}
+                tag="button"
+                aria-label="Open command finder (Cmd+K)"
+                phx-click={SiteWeb.Finder.toggle()}
               >
                 <Components.card_content>
-                  <:label>Changelog</:label>
+                  <:label>Search</:label>
                 </Components.card_content>
               </Components.bento_card>
             </div>

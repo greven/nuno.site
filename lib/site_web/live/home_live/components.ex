@@ -8,6 +8,7 @@ defmodule SiteWeb.HomeLive.Components do
 
   @doc false
 
+  attr :tag, :string, default: "div"
   attr :icon, :string, default: nil
   attr :variant, :atom, values: ~w(default static subtle)a, default: :default
   attr :size, :atom, values: ~w(small medium)a, default: :medium
@@ -64,6 +65,7 @@ defmodule SiteWeb.HomeLive.Components do
       border={@border}
       shadow={@shadow}
       class={@class}
+      tag={@tag}
       {@rest}
     >
       <.diagonal_pattern :if={@variant == :default} />

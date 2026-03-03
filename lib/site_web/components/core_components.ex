@@ -32,9 +32,11 @@ defmodule SiteWeb.CoreComponents do
   attr :radius, :string, default: "rounded-lg", doc: "the border radius of the box"
   attr :padding, :string, default: "p-4", doc: "the padding of the box"
 
-  attr :focus, :string,
-    default:
-      "has-focus-visible:outline-1 has-focus-visible:-outline-offset-1 has-focus-visible:outline-primary **:outline-none",
+  attr :focus, :any,
+    default: [
+      "focus-visible:outline focus-visible:outline-offset-1 focus-visible:outline-primary",
+      "has-focus-visible:outline has-focus-visible:-outline-offset-1 has-focus-visible:outline-primary **:outline-none"
+    ],
     doc: "the focus classes to apply to the box element"
 
   attr :with_pattern, :boolean,
@@ -49,7 +51,7 @@ defmodule SiteWeb.CoreComponents do
     <.dynamic_tag
       tag_name={@tag}
       class={[
-        "relative isolate overflow-hidden",
+        "relative isolate overflow-hidden appearance-none",
         @class,
         @bg,
         @border,
@@ -82,57 +84,40 @@ defmodule SiteWeb.CoreComponents do
   attr :rest, :global, include: ~w(href navigate patch method target)
   slot :inner_block, required: true
 
-  def card(%{rest: rest} = assigns) do
-    if rest[:href] || rest[:navigate] || rest[:patch] do
-      ~H"""
-      <.dynamic_tag tag_name={@tag} class={["isolate", @class, @radius]} {@rest}>
-        <.box
-          bg={@bg}
-          border={@border}
-          radius={@radius}
-          padding={@padding}
-          shadow={@shadow}
-          class={[
-            "group/card relative overflow-hidden",
-            @disabled && "opacity-50 pointer-events-none",
-            @content_class
-          ]}
-          data-part="card"
+  def card(assigns) do
+    ~H"""
+    <.box
+      tag={@tag}
+      bg={@bg}
+      border={@border}
+      radius={@radius}
+      padding={@padding}
+      shadow={@shadow}
+      data-part="card"
+      class={[
+        "group/card relative overflow-hidden",
+        @disabled && "opacity-50 pointer-events-none",
+        @content_class,
+        @class
+      ]}
+      {@rest}
+    >
+      <%= if @rest[:href] || @rest[:navigate] || @rest[:patch] do %>
+        <.link
+          class={["absolute inset-0 z-10 outline-none", @radius]}
+          href={@rest[:href]}
+          navigate={@rest[:navigate]}
+          patch={@rest[:patch]}
+          method={@rest[:method]}
+          target={@rest[:target]}
         >
-          <.link
-            class={["absolute inset-0 z-10 outline-none", @radius]}
-            href={@rest[:href]}
-            navigate={@rest[:navigate]}
-            patch={@rest[:patch]}
-            method={@rest[:method]}
-            target={@rest[:target]}
-          >
-          </.link>
-          {render_slot(@inner_block)}
-        </.box>
-      </.dynamic_tag>
-      """
-    else
-      ~H"""
-      <.dynamic_tag tag_name={@tag} class={@class} {@rest}>
-        <.box
-          bg={@bg}
-          border={@border}
-          radius={@radius}
-          padding={@padding}
-          shadow={@shadow}
-          class={[
-            "group/card isolate relative overflow-hidden",
-            @disabled && "opacity-50 pointer-events-none",
-            @content_class
-          ]}
-          data-part="card"
-        >
-          {render_slot(@inner_block)}
-        </.box>
-      </.dynamic_tag>
-      """
-    end
+        </.link>
+        {render_slot(@inner_block)}
+      <% else %>
+        {render_slot(@inner_block)}
+      <% end %>
+    </.box>
+    """
   end
 
   @doc """
@@ -2197,7 +2182,7 @@ defmodule SiteWeb.CoreComponents do
     doc: "the maximum width of the tooltip content when using multiline"
 
   attr :bg_class, :string, default: "bg-neutral-800 dark:bg-neutral-950"
-  attr :border_class, :string, default: "border-1 border-neutral-950 dark:border-neutral-800"
+  attr :border_class, :string, default: "border border-neutral-950 dark:border-neutral-800"
   attr :radius_class, :string, default: "rounded"
   attr :shadow_class, :string, default: "shadow-md"
 
@@ -2315,7 +2300,7 @@ defmodule SiteWeb.CoreComponents do
   Render an svg diagonal pattern.
   """
 
-  attr :class, :string, default: "border-1 border-surface-10 rounded-lg z-1"
+  attr :class, :string, default: "border border-surface-10 rounded-lg z-1"
   attr :use_transition, :boolean, default: true
 
   attr :hover_transition, :string,
