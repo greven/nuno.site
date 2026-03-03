@@ -80,6 +80,16 @@ defmodule SiteWeb.PulseLive.Index do
           />
 
           <Components.news_item
+            id="elixir-status-news-pulse"
+            title="Elixir Status"
+            icon="lucide-droplet"
+            accent="#4E2A8E"
+            link="https://elixirstatus.com"
+            async={@elixir_status_news}
+            news={@streams.elixir_status_news}
+          />
+
+          <Components.news_item
             id="the-next-web-news-pulse"
             title="The Next Web"
             icon="lucide-step-forward"
@@ -100,6 +110,16 @@ defmodule SiteWeb.PulseLive.Index do
           />
 
           <Components.news_item
+            id="ars-technica-news-pulse"
+            title="Ars Technica"
+            icon="si-arstechnica"
+            accent="#FF6600"
+            link="https://arstechnica.com"
+            async={@ars_technica_news}
+            news={@streams.ars_technica_news}
+          />
+
+          <Components.news_item
             id="twiv-pulse"
             title="This Week in Videogames"
             icon="lucide-gamepad-2"
@@ -112,8 +132,8 @@ defmodule SiteWeb.PulseLive.Index do
           <Components.news_item
             id="ieee-spectrum-news-pulse"
             title="IEEE Spectrum"
-            icon="lucide-rss"
-            accent="#005782"
+            icon="lucide-rainbow"
+            accent="#00629B"
             link="https://spectrum.ieee.org"
             async={@spectrum_news}
             news={@streams.spectrum_news}
@@ -171,9 +191,11 @@ defmodule SiteWeb.PulseLive.Index do
       |> stream_async(:smashing_news, fn -> Site.Pulse.fetch_items(:smashing) end)
       |> stream_async(:slashdot_news, fn -> Site.Pulse.fetch_items(:slashdot) end)
       |> stream_async(:the_verge_news, fn -> Site.Pulse.fetch_items(:the_verge) end)
+      |> stream_async(:ars_technica_news, fn -> Site.Pulse.fetch_items(:ars_technica) end)
       |> stream_async(:tnw_news, fn -> Site.Pulse.fetch_items(:tnw) end)
       |> stream_async(:twiv_news, fn -> Site.Pulse.fetch_items(:twiv) end)
       |> stream_async(:changelog_news, fn -> Site.Pulse.fetch_items(:changelog) end)
+      |> stream_async(:elixir_status_news, fn -> Site.Pulse.fetch_items(:elixir_status) end)
       |> stream_async(:independent_news, fn -> Site.Pulse.fetch_items(:independent) end)
       |> stream_async(:bbc_news, fn -> Site.Pulse.fetch_items(:bbc) end)
       |> stream_async(:publico_news, fn -> Site.Pulse.fetch_items(:publico) end)

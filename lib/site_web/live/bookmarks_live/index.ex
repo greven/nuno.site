@@ -85,6 +85,16 @@ defmodule SiteWeb.BookmarksLive.Index do
               url="https://dribbble.com/"
             />
           </Components.bookmarks_section>
+
+          <Components.bookmarks_section>
+            <:title>Tech</:title>
+
+            <Components.bookmark_item
+              title="TLDR Tech"
+              description="Curated tech news and insights in a concise format."
+              url="https://tldr.tech"
+            />
+          </Components.bookmarks_section>
         </div>
       </Layouts.page_content>
     </Layouts.app>

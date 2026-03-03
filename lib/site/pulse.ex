@@ -29,7 +29,9 @@ defmodule Site.Pulse do
   defp source(:tnw), do: Site.Pulse.Source.TNW
   defp source(:smashing), do: Site.Pulse.Source.Smashing
   defp source(:changelog), do: Site.Pulse.Source.Changelog
+  defp source(:elixir_status), do: Site.Pulse.Source.ElixirStatus
   defp source(:the_verge), do: Site.Pulse.Source.TheVerge
+  defp source(:ars_technica), do: Site.Pulse.Source.ArsTechnica
   defp source(:twiv), do: Site.Pulse.Source.TWIV
   defp source(:spectrum), do: Site.Pulse.Source.Spectrum
   defp source(:bbc), do: Site.Pulse.Source.BBC
