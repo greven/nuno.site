@@ -56,9 +56,9 @@ defmodule SiteWeb.HomeLive.Index do
 
           <div id="site-intro" class="text-center">
             <h1 class="flex flex-col font-headings leading-tight">
-              <div class="-ml-1 md:-ml-2 text-6xl md:text-8xl tracking-tight">
+              <div class="-ml-1 md:-ml-2 font-sans text-6xl md:text-8xl tracking-tight">
                 <span class="text-content-40">I'm</span>
-                <strong class="contrast-125 font-sans font-semibold">Nuno</strong><span class="text-primary">.</span>
+                <strong class="contrast-125 font-semibold">Nuno</strong><span class="text-primary">.</span>
               </div>
             </h1>
 

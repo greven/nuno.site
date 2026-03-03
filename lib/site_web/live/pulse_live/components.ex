@@ -113,9 +113,9 @@ defmodule SiteWeb.PulseLive.Components do
         </.header>
 
         <%!-- Labels --%>
-        <div class="mt-1 w-full px-0.5 flex items-center justify-end gap-9 text-sm text-content-40/80">
+        <div class="mt-1 w-full px-0.5 flex items-center justify-end gap-4 text-sm text-content-40/80">
           <div>Rate</div>
-          <div>Change</div>
+          <div>7D Change</div>
         </div>
 
         <ul class="w-full space-y-3.5">
