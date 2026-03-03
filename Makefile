@@ -12,7 +12,7 @@ APP      := site
 APP_DIR  := /opt/$(APP)
 DB_PATH  := /var/lib/$(APP)/$(APP).db
 
-.PHONY: help logs status restart current releases rollback console database health secrets
+.PHONY: help logs status restart current releases rollback console database health secrets deploy
 
 help: ## Show this help
 	@echo ""
@@ -88,3 +88,6 @@ secrets: ## Print all server .env secrets (values masked)
 		fi; \
 	done
 	@echo ""
+
+deploy: ## Deploy a new release (e.g. make deploy, make deploy TYPE=minor, make deploy TYPE=major)
+	mix bump $(or $(TYPE),patch)
