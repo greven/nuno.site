@@ -23,7 +23,7 @@ import { Tooltip } from './tooltip';
 import { TravelMap } from './travel-map';
 
 // Colocated hooks
-import { hooks as colocatedHooks } from 'phoenix-colocated/site';
+// import { hooks as colocatedHooks } from 'phoenix-colocated/site';
 
 export default {
   ArticleTableOfContents,
@@ -49,5 +49,5 @@ export default {
   ThemeSwitcher,
   Tooltip,
   TravelMap,
-  ...colocatedHooks,
+  // ...colocatedHooks,
 };
