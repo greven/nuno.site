@@ -12,7 +12,7 @@ APP      := site
 APP_DIR  := /opt/$(APP)
 DB_PATH  := /var/lib/$(APP)/$(APP).db
 
-.PHONY: help logs status restart rollback console health db secrets
+.PHONY: help logs status restart current releases rollback console database health secrets
 
 help: ## Show this help
 	@echo ""
@@ -29,6 +29,12 @@ status: ## Show current service status and active release
 
 restart: ## Restart the application service
 	$(SSH) "sudo systemctl restart $(APP) && sleep 2 && sudo systemctl is-active $(APP)"
+
+current: ## Show the currently active release
+	$(SSH) "basename \$$(readlink $(APP_DIR)/current)"
+
+releases: ## List all available releases on the server
+	$(SSH) "ls -1t $(APP_DIR)/releases/"
 
 rollback: ## Roll back to previous release, or to VERSION (e.g. make rollback VERSION=v1.2.3)
 	$(SSH) " \
@@ -61,11 +67,11 @@ rollback: ## Roll back to previous release, or to VERSION (e.g. make rollback VE
 console: ## Open a remote shell on the running node
 	$(SSH) "$(APP_DIR)/current/bin/$(APP) remote"
 
+database: ## Open an interactive SQLite shell on the production database
+	$(SSH) "sqlite3 $(DB_PATH)"
+
 health: ## Check the application health endpoint
 	$(SSH) "curl -sf http://localhost:4000/health && echo ' — healthy' || echo 'Health check failed'"
-
-db: ## Open an interactive SQLite shell on the production database
-	$(SSH) "sqlite3 $(DB_PATH)"
 
 secrets: ## Print all server .env secrets (values masked)
 	@echo ""
