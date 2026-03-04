@@ -5,10 +5,12 @@ defmodule Site.Pulse.Item do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          title: String.t(),
           url: String.t(),
-          description: String.t() | nil
+          title: String.t(),
+          date: DateTime.t() | nil,
+          description: String.t() | nil,
+          image_url: String.t() | nil
         }
 
-  defstruct [:id, :title, :url, :description]
+  defstruct [:id, :url, :title, :description, :date, :image_url]
 end

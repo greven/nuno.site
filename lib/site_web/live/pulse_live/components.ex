@@ -792,6 +792,75 @@ defmodule SiteWeb.PulseLive.Components do
     """
   end
 
+  @doc false
+
+  attr :class, :string, default: nil
+  slot :inner_block
+
+  def news_list(assigns) do
+    ~H"""
+    <ul class={[
+      "bg-surface-10 divide-y divide-border/60",
+      "rounded-l-xl border border-border",
+      @class
+    ]}>
+      {render_slot(@inner_block)}
+    </ul>
+    """
+  end
+
+  @doc false
+
+  attr :class, :string, default: nil
+  slot :inner_block
+
+  def news_list_detail(assigns) do
+    ~H"""
+    <article class={["rounded-r-xl border-y border-r border-border", @class]}>
+      {render_slot(@inner_block)}
+    </article>
+    """
+  end
+
+  @doc false
+
+  attr :id, :string, required: true
+  attr :title, :string, required: true
+  attr :description, :string, default: nil
+  attr :selected, :boolean, default: false
+
+  def news_list_item(assigns) do
+    ~H"""
+    <li
+      id={@id}
+      tab-index="-1"
+      aria-selected={@selected && "true"}
+      class={[
+        "group flex flex-col gap-1 p-2 select-none outline-none",
+        "first:rounded-t-xl last:rounded-b-xl"
+      ]}
+    >
+      <article
+        class={[
+          "relative flex flex-col gap-2 px-4 py-3",
+          "rounded-lg border border-transparent bg-transparent outline-none transition-all",
+          "group-aria-selected:bg-surface-30/40 group-aria-selected:border-border",
+          "focus-visible:bg-surface-30/40 focus-visible:border-primary"
+        ]}
+        tabindex="0"
+      >
+        <.diagonal_pattern
+          use_transition={false}
+          class="opacity-0 border border-surface-10 rounded-lg group-aria-selected:opacity-80 transition-opacity"
+        />
+
+        <div class="text-sm">{@title}</div>
+        <div class="text-xs text-content-40">{@description}</div>
+      </article>
+    </li>
+    """
+  end
+
   ## Helpers
 
   @doc """
