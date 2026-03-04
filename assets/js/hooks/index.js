@@ -12,6 +12,7 @@ import { PostLike } from './post-like';
 import { PostMeta } from './post-meta';
 import { ProfileSlideshow } from './profile-slideshow';
 import { PulseClock } from './pulse-clock';
+import { PulseNewsList } from './pulse-news-list';
 import { Resume } from './resume';
 import { SharePost } from './share-post';
 import { SiteHeader } from './site-header';
@@ -40,6 +41,7 @@ export default {
   PostMeta,
   ProfileSlideshow,
   PulseClock,
+  PulseNewsList,
   Resume,
   SharePost,
   SiteHeader,

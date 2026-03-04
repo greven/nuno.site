@@ -28,147 +28,213 @@ defmodule SiteWeb.PulseLive.Index do
           <Components.forex forex={@rates} class="w-full md:w-auto" />
         </div>
 
-        <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
-          <Components.news_item
-            id="hacker-news-pulse"
-            title="Hacker News"
-            icon="lucide-square-chevron-right"
-            accent="#FF6600"
-            link="https://news.ycombinator.com"
-            async={@hacker_news}
-            news={@streams.hacker_news}
-          />
+        <section>
+          <.header tag="h3" class="mb-8">
+            <.icon
+              name="lucide-arrow-down"
+              class="mr-1.5 size-5 text-primary"
+            /> The News
+            <:actions>
+              <div class="flex items-center gap-2">
+                <.button title="Sources" disabled>
+                  <.icon name="lucide-funnel" />
+                </.button>
+                <.button
+                  title="Grid View"
+                  phx-click={JS.show(to: "#news-grid") |> JS.hide(to: "#news-list")}
+                >
+                  <.icon name="lucide-layout-grid" />
+                </.button>
+                <.button
+                  title="List View"
+                  phx-click={JS.show(to: "#news-list") |> JS.hide(to: "#news-grid")}
+                >
+                  <.icon name="lucide-panel-left" />
+                </.button>
+              </div>
+            </:actions>
 
-          <Components.news_item
-            id="smashing-news-pulse"
-            title="Smashing Magazine"
-            icon="si-smashingmagazine"
-            accent="#D33A2C"
-            link="https://www.smashingmagazine.com"
-            async={@smashing_news}
-            news={@streams.smashing_news}
-          />
+            <:subtitle>Latest headlines from my favorite sources</:subtitle>
+          </.header>
 
-          <Components.news_item
-            id="reddit-pulse"
-            title="Reddit r/programming"
-            icon="si-reddit"
-            accent="#FF4500"
-            link="https://www.reddit.com/r/programming"
-            async={@reddit_news}
-            news={@streams.reddit_news}
-          />
+          <div id="news-grid" class="hidden">
+            <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
+              <Components.news_item
+                id="hacker-news-pulse"
+                title="Hacker News"
+                icon="lucide-square-chevron-right"
+                accent="#FF6600"
+                link="https://news.ycombinator.com"
+                async={@hacker_news}
+                news={@streams.hacker_news}
+              />
 
-          <Components.news_item
-            id="slashdot-news-pulse"
-            title="Slashdot"
-            icon="si-slashdot"
-            accent="#016765"
-            link="https://slashdot.org"
-            async={@slashdot_news}
-            news={@streams.slashdot_news}
-          />
+              <Components.news_item
+                id="smashing-news-pulse"
+                title="Smashing Magazine"
+                icon="si-smashingmagazine"
+                accent="#D33A2C"
+                link="https://www.smashingmagazine.com"
+                async={@smashing_news}
+                news={@streams.smashing_news}
+              />
 
-          <Components.news_item
-            id="changelog-news-pulse"
-            title="Changelog"
-            icon="lucide-message-circle-code"
-            accent="#59B287"
-            link="https://changelog.com"
-            async={@changelog_news}
-            news={@streams.changelog_news}
-          />
+              <Components.news_item
+                id="reddit-pulse"
+                title="Reddit r/programming"
+                icon="si-reddit"
+                accent="#FF4500"
+                link="https://www.reddit.com/r/programming"
+                async={@reddit_news}
+                news={@streams.reddit_news}
+              />
 
-          <Components.news_item
-            id="elixir-status-news-pulse"
-            title="Elixir Status"
-            icon="lucide-droplet"
-            accent="#4E2A8E"
-            link="https://elixirstatus.com"
-            async={@elixir_status_news}
-            news={@streams.elixir_status_news}
-          />
+              <Components.news_item
+                id="slashdot-news-pulse"
+                title="Slashdot"
+                icon="si-slashdot"
+                accent="#016765"
+                link="https://slashdot.org"
+                async={@slashdot_news}
+                news={@streams.slashdot_news}
+              />
 
-          <Components.news_item
-            id="the-next-web-news-pulse"
-            title="The Next Web"
-            icon="lucide-step-forward"
-            accent="#64F"
-            link="https://thenextweb.com"
-            async={@tnw_news}
-            news={@streams.tnw_news}
-          />
+              <Components.news_item
+                id="changelog-news-pulse"
+                title="Changelog"
+                icon="lucide-message-circle-code"
+                accent="#59B287"
+                link="https://changelog.com"
+                async={@changelog_news}
+                news={@streams.changelog_news}
+              />
 
-          <Components.news_item
-            id="the-verge-news-pulse"
-            title="The Verge"
-            icon="lucide-smartphone-charging"
-            accent="#5100FE"
-            link="https://www.theverge.com"
-            async={@the_verge_news}
-            news={@streams.the_verge_news}
-          />
+              <Components.news_item
+                id="elixir-status-news-pulse"
+                title="Elixir Status"
+                icon="lucide-droplet"
+                accent="#4E2A8E"
+                link="https://elixirstatus.com"
+                async={@elixir_status_news}
+                news={@streams.elixir_status_news}
+              />
 
-          <Components.news_item
-            id="ars-technica-news-pulse"
-            title="Ars Technica"
-            icon="si-arstechnica"
-            accent="#FF6600"
-            link="https://arstechnica.com"
-            async={@ars_technica_news}
-            news={@streams.ars_technica_news}
-          />
+              <Components.news_item
+                id="the-next-web-news-pulse"
+                title="The Next Web"
+                icon="lucide-step-forward"
+                accent="#64F"
+                link="https://thenextweb.com"
+                async={@tnw_news}
+                news={@streams.tnw_news}
+              />
 
-          <Components.news_item
-            id="twiv-pulse"
-            title="This Week in Videogames"
-            icon="lucide-gamepad-2"
-            accent="#0567DA"
-            link="https://thisweekinvideogames.com"
-            async={@twiv_news}
-            news={@streams.twiv_news}
-          />
+              <Components.news_item
+                id="the-verge-news-pulse"
+                title="The Verge"
+                icon="lucide-smartphone-charging"
+                accent="#5100FE"
+                link="https://www.theverge.com"
+                async={@the_verge_news}
+                news={@streams.the_verge_news}
+              />
 
-          <Components.news_item
-            id="ieee-spectrum-news-pulse"
-            title="IEEE Spectrum"
-            icon="lucide-rainbow"
-            accent="#00629B"
-            link="https://spectrum.ieee.org"
-            async={@spectrum_news}
-            news={@streams.spectrum_news}
-          />
+              <Components.news_item
+                id="ars-technica-news-pulse"
+                title="Ars Technica"
+                icon="si-arstechnica"
+                accent="#FF6600"
+                link="https://arstechnica.com"
+                async={@ars_technica_news}
+                news={@streams.ars_technica_news}
+              />
 
-          <Components.news_item
-            id="independent-news-pulse"
-            title="Independent"
-            icon="lucide-bird"
-            accent="#EB1425"
-            link="https://www.independent.co.uk"
-            async={@independent_news}
-            news={@streams.independent_news}
-          />
+              <Components.news_item
+                id="twiv-pulse"
+                title="This Week in Videogames"
+                icon="lucide-gamepad-2"
+                accent="#0567DA"
+                link="https://thisweekinvideogames.com"
+                async={@twiv_news}
+                news={@streams.twiv_news}
+              />
 
-          <Components.news_item
-            id="bbc-news-pulse"
-            title="BBC News"
-            icon="lucide-newspaper"
-            accent="#B80000"
-            link="https://www.bbc.co.uk"
-            async={@bbc_news}
-            news={@streams.bbc_news}
-          />
+              <Components.news_item
+                id="ieee-spectrum-news-pulse"
+                title="IEEE Spectrum"
+                icon="lucide-rainbow"
+                accent="#00629B"
+                link="https://spectrum.ieee.org"
+                async={@spectrum_news}
+                news={@streams.spectrum_news}
+              />
 
-          <Components.news_item
-            id="publico-news-pulse"
-            title="Publico"
-            icon="lucide-users-round"
-            accent="#D10018"
-            link="https://www.publico.pt"
-            async={@publico_news}
-            news={@streams.publico_news}
-          />
-        </div>
+              <Components.news_item
+                id="independent-news-pulse"
+                title="Independent"
+                icon="lucide-bird"
+                accent="#EB1425"
+                link="https://www.independent.co.uk"
+                async={@independent_news}
+                news={@streams.independent_news}
+              />
+
+              <Components.news_item
+                id="bbc-news-pulse"
+                title="BBC News"
+                icon="lucide-newspaper"
+                accent="#B80000"
+                link="https://www.bbc.co.uk"
+                async={@bbc_news}
+                news={@streams.bbc_news}
+              />
+
+              <Components.news_item
+                id="publico-news-pulse"
+                title="Publico"
+                icon="lucide-users-round"
+                accent="#D10018"
+                link="https://www.publico.pt"
+                async={@publico_news}
+                news={@streams.publico_news}
+              />
+            </div>
+          </div>
+
+          <div id="news-list" phx-hook="PulseNewsList">
+            <div class="grid grid-cols-6">
+              <Components.news_list class="col-span-2">
+                <Components.news_list_item
+                  id="news-item-1"
+                  title="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                  description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                  selected
+                />
+                <Components.news_list_item
+                  id="news-item-2"
+                  title="Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                  description="Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                />
+                <Components.news_list_item
+                  id="news-item-3"
+                  title="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                  description="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                />
+                <Components.news_list_item
+                  id="news-item-4"
+                  title="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+                  description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+                />
+                <Components.news_list_item
+                  id="news-item-5"
+                  title="Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                  description="Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                />
+              </Components.news_list>
+              <Components.news_list_detail class="col-span-4" />
+            </div>
+          </div>
+        </section>
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -179,6 +245,43 @@ defmodule SiteWeb.PulseLive.Index do
     today = Date.utc_today()
     year_progress = round(Date.day_of_year(today) / 365 * 100)
 
+    reddit_news = Site.Pulse.fetch_items(:reddit)
+    hacker_news = Site.Pulse.fetch_items(:hacker_news)
+    smashing_news = Site.Pulse.fetch_items(:smashing)
+    changelog_news = Site.Pulse.fetch_items(:changelog)
+    slashdot_news = Site.Pulse.fetch_items(:slashdot)
+    the_verge_news = Site.Pulse.fetch_items(:the_verge)
+    ars_technica_news = Site.Pulse.fetch_items(:ars_technica)
+    tnw_news = Site.Pulse.fetch_items(:tnw)
+    twiv_news = Site.Pulse.fetch_items(:twiv)
+    elixir_status_news = Site.Pulse.fetch_items(:elixir_status)
+    spectrum_news = Site.Pulse.fetch_items(:spectrum)
+    bbc_news = Site.Pulse.fetch_items(:bbc)
+    independent_news = Site.Pulse.fetch_items(:independent)
+    publico_news = Site.Pulse.fetch_items(:publico)
+
+    news_feed =
+      [
+        # reddit_news,
+        # hacker_news,
+        # smashing_news,
+        # changelog_news,
+        # slashdot_news,
+        # the_verge_news,
+        ars_technica_news
+        # tnw_news,
+        # twiv_news,
+        # elixir_status_news,
+        # spectrum_news,
+        # bbc_news,
+        # independent_news,
+        # publico_news
+      ]
+      |> Enum.filter(&match?({:ok, _}, &1))
+      |> Enum.flat_map(fn {:ok, items} -> items end)
+
+    dbg(news_feed)
+
     socket =
       socket
       |> assign(:page_title, "Pulse")
@@ -186,20 +289,20 @@ defmodule SiteWeb.PulseLive.Index do
       |> assign(:rates, get_exchange_rates())
       |> assign_async(:weather, fn -> {:ok, %{weather: get_weather()}} end)
       # |> assign_async(:air_quality, fn -> {:ok, %{air_quality: get_air_quality()}} end)
-      |> stream_async(:reddit_news, fn -> Site.Pulse.fetch_items(:reddit) end)
-      |> stream_async(:hacker_news, fn -> Site.Pulse.fetch_items(:hacker_news) end)
-      |> stream_async(:smashing_news, fn -> Site.Pulse.fetch_items(:smashing) end)
-      |> stream_async(:slashdot_news, fn -> Site.Pulse.fetch_items(:slashdot) end)
-      |> stream_async(:the_verge_news, fn -> Site.Pulse.fetch_items(:the_verge) end)
-      |> stream_async(:ars_technica_news, fn -> Site.Pulse.fetch_items(:ars_technica) end)
-      |> stream_async(:tnw_news, fn -> Site.Pulse.fetch_items(:tnw) end)
-      |> stream_async(:twiv_news, fn -> Site.Pulse.fetch_items(:twiv) end)
-      |> stream_async(:changelog_news, fn -> Site.Pulse.fetch_items(:changelog) end)
-      |> stream_async(:elixir_status_news, fn -> Site.Pulse.fetch_items(:elixir_status) end)
-      |> stream_async(:independent_news, fn -> Site.Pulse.fetch_items(:independent) end)
-      |> stream_async(:bbc_news, fn -> Site.Pulse.fetch_items(:bbc) end)
-      |> stream_async(:publico_news, fn -> Site.Pulse.fetch_items(:publico) end)
-      |> stream_async(:spectrum_news, fn -> Site.Pulse.fetch_items(:spectrum) end)
+      |> stream_async(:reddit_news, fn -> reddit_news end)
+      |> stream_async(:hacker_news, fn -> hacker_news end)
+      |> stream_async(:smashing_news, fn -> smashing_news end)
+      |> stream_async(:changelog_news, fn -> changelog_news end)
+      |> stream_async(:slashdot_news, fn -> slashdot_news end)
+      |> stream_async(:the_verge_news, fn -> the_verge_news end)
+      |> stream_async(:ars_technica_news, fn -> ars_technica_news end)
+      |> stream_async(:tnw_news, fn -> tnw_news end)
+      |> stream_async(:twiv_news, fn -> twiv_news end)
+      |> stream_async(:elixir_status_news, fn -> elixir_status_news end)
+      |> stream_async(:spectrum_news, fn -> spectrum_news end)
+      |> stream_async(:bbc_news, fn -> bbc_news end)
+      |> stream_async(:independent_news, fn -> independent_news end)
+      |> stream_async(:publico_news, fn -> publico_news end)
 
     {:ok, socket}
   end

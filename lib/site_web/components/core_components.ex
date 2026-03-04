@@ -556,10 +556,11 @@ defmodule SiteWeb.CoreComponents do
   """
   attr :header_class, :string
   attr :padding_class, :string, default: "pb-2"
-  attr :class, :any, default: "flex flex-col"
+  # attr :class, :any, default: "flex flex-col"
   attr :anchor, :string, default: nil
   attr :show_anchor_link, :boolean, default: false
   attr :underlined, :boolean, default: false
+  attr :bordered, :boolean, default: false
   attr :tag, :string, default: "h1"
   attr :rest, :global
 
@@ -577,46 +578,50 @@ defmodule SiteWeb.CoreComponents do
       |> assign_new(:header_class, fn -> ["font-medium", header_font_size(assigns.tag)] end)
 
     ~H"""
-    <header
-      class={[@padding_class, @actions != [] && "flex items-center justify-between gap-6"]}
-      {@rest}
-    >
-      <div class={@class}>
-        <.dynamic_tag
-          tag_name={@tag}
-          class={[
-            if(@anchor,
-              do: "relative group sm:flex items-center",
-              else: "flex items-center"
-            ),
-            "text-content-10",
-            @underlined &&
-              "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6 decoration-1 decoration-surface-40/75",
-            @header_class
-          ]}
-        >
-          <%= if @anchor do %>
-            <a
-              id={@anchor}
-              class={if(@show_anchor_link, do: "header-link", else: "scroll-header")}
-              href={"##{@anchor}"}
-            >
-              <span :if={@show_anchor_link}>{@tag}</span>
-            </a>
-            {render_slot(@inner_block)}
-          <% else %>
-            {render_slot(@inner_block)}
-          <% end %>
-        </.dynamic_tag>
+    <header {@rest}>
+      <div class={[
+        "flex items-center",
+        @actions != [] && "justify-between gap-6",
+        @bordered && "border-b border-border border-dashed",
+        @actions != [] && @bordered && "pb-2.5"
+      ]}>
+        <div class={@padding_class}>
+          <.dynamic_tag
+            tag_name={@tag}
+            class={[
+              if(@anchor,
+                do: "relative group sm:flex items-center",
+                else: "flex items-center"
+              ),
+              "text-content-10",
+              @underlined &&
+                "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6 decoration-1 decoration-surface-40/75",
+              @header_class
+            ]}
+          >
+            <%= if @anchor do %>
+              <a
+                id={@anchor}
+                class={if(@show_anchor_link, do: "header-link", else: "scroll-header")}
+                href={"##{@anchor}"}
+              >
+                <span :if={@show_anchor_link}>{@tag}</span>
+              </a>
+              {render_slot(@inner_block)}
+            <% else %>
+              {render_slot(@inner_block)}
+            <% end %>
+          </.dynamic_tag>
 
-        <p
-          :for={subtitle <- @subtitle}
-          class={["mt-1 text-content-40", header_subtitle_font_size(@tag), subtitle[:class]]}
-        >
-          {render_slot(subtitle)}
-        </p>
+          <p
+            :for={subtitle <- @subtitle}
+            class={["mt-1 text-content-40", header_subtitle_font_size(@tag), subtitle[:class]]}
+          >
+            {render_slot(subtitle)}
+          </p>
+        </div>
+        <div :if={@actions != []} class="flex-none">{render_slot(@actions)}</div>
       </div>
-      <div :if={@actions != []} class="flex-none">{render_slot(@actions)}</div>
     </header>
     """
   end
@@ -632,7 +637,7 @@ defmodule SiteWeb.CoreComponents do
 
   defp header_subtitle_font_size(tag) do
     case tag do
-      "h1" -> "text-lg"
+      "h1" -> "text-base"
       "h2" -> "text-base"
       "h3" -> "text-sm"
       _ -> "text-sm"
@@ -1608,6 +1613,34 @@ defmodule SiteWeb.CoreComponents do
   defp picture_srcset(srcset, _src, _ext), do: srcset
 
   @doc """
+  Renders an avatar pictue with optional fallback to initials and a status indicator.
+  The initials are extracted from the `alt` attribute.
+  """
+
+  attr :src, :string, required: true
+  attr :alt, :string, required: true
+  attr :size, :integer, default: 32, doc: "the size of the avatar in pixels"
+  attr :class, :any, default: nil
+  attr :rest, :global, include: ~w(loading crossorigin)
+
+  def avatar(assigns) do
+    ~H"""
+    <.image
+      src={@src}
+      alt={@alt}
+      width={@size}
+      height={@size}
+      class={[
+        "rounded-full object-cover",
+        "hover:ring ring-surface-10 ring-offset-2 ring-offset-surface transition-all",
+        @class
+      ]}
+      {@rest}
+    />
+    """
+  end
+
+  @doc """
   Renders a date/datetime as a formatted string.
   """
 
@@ -1991,7 +2024,6 @@ defmodule SiteWeb.CoreComponents do
       {@rest}
     >
       <div
-        tabindex="0"
         class={[
           "fixed flex flex-col bg-surface-10 shadow-xl border border-surface-30 focus:outline-none",
           "transition-transform duration-200 ease-out will-change-transform",

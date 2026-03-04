@@ -45,7 +45,7 @@ defmodule SiteWeb.AboutLive.Index do
                 "underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6 decoration-1 decoration-surface-40/75",
                 "before:content-[''] before:absolute before:top-0 before:right-full before:w-0.5 before:h-full before:bg-primary before:rounded-xs"
               ]}>
-                <p class="mt-12 font-light text-base md:text-lg text-pretty">
+                <p class="mt-12 md:mt-8 font-light text-base md:text-lg text-pretty">
                   Hello fellow visitor! I'm Nuno Moço, a seasoned software developer focused on web technologies.
                   I love crafting web applications with a focus on <span class="font-medium">User Experience</span>.
                 </p>

@@ -7,6 +7,8 @@ defmodule Site.Pulse.Source.ArsTechnica do
 
   import SweetXml
 
+  alias Site.Pulse.Helpers
+
   @behaviour Site.Pulse.Source
 
   @impl true
@@ -14,7 +16,8 @@ defmodule Site.Pulse.Source.ArsTechnica do
     %Site.Pulse.Meta{
       name: "Ars Technica",
       description: "Stories from Ars Technica's feed.",
-      url: URI.parse("https://arstechnica.com/feed")
+      url: URI.parse("https://arstechnica.com/feed"),
+      category: "technology"
     }
   end
 
@@ -34,14 +37,18 @@ defmodule Site.Pulse.Source.ArsTechnica do
             ~x"//item"l,
             id: ~x"./guid/text()"s,
             title: ~x"./title/text()"s,
-            link: ~x"./link/text()"s
+            link: ~x"./link/text()"s,
+            description: ~x"./description/text()"s,
+            pub_date: ~x"./pubDate/text()"s
           )
           |> Enum.take(limit)
-          |> Enum.map(fn %{id: id, title: title, link: link} ->
+          |> Enum.map(fn item ->
             %Site.Pulse.Item{
-              id: id,
-              title: title,
-              url: link
+              id: item.id,
+              url: item.link,
+              title: Helpers.cleanup_text(item.title),
+              description: Helpers.cleanup_text(item.description),
+              date: parse_date(item.pub_date)
             }
           end)
           |> Enum.take(limit)
@@ -53,6 +60,14 @@ defmodule Site.Pulse.Source.ArsTechnica do
 
       {:error, reason} ->
         {:error, reason}
+    end
+  end
+
+  # "Tue, 03 Mar 2026 22:54:21 +0000"
+  defp parse_date(date_str) do
+    case DateTime.from_iso8601(date_str) do
+      {:ok, dt, _} -> dt
+      _ -> nil
     end
   end
 end
