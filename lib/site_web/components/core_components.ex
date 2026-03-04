@@ -1761,7 +1761,6 @@ defmodule SiteWeb.CoreComponents do
       {@rest}
     >
       <div
-        tabindex="0"
         style={@container_style}
         data-part="dialog-container"
         class={[
@@ -1774,7 +1773,6 @@ defmodule SiteWeb.CoreComponents do
         ]}
       >
         <section
-          tabindex="-1"
           data-part="dialog-panel"
           class={[
             "w-full grow-0 shrink-0 basis-(--dialog-size) backdrop-blur-md backdrop-filter overflow-y-auto",
@@ -1787,7 +1785,6 @@ defmodule SiteWeb.CoreComponents do
             @panel_bg_class,
             @class
           ]}
-          {@rest}
         >
           {render_slot(@inner_block, JS.exec("data-cancel", to: "##{@id}"))}
         </section>

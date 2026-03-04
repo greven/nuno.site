@@ -55,12 +55,15 @@
   dialog {
     position: fixed;
     inset: 0;
-    display: grid;
-    align-content: start;
     margin: auto;
     padding: 0;
     overflow: hidden;
     z-index: 1000000;
+  }
+
+  dialog[open] {
+    display: grid;
+    align-content: start;
   }
 
   dialog:not([open]) {
