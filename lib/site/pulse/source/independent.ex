@@ -7,14 +7,18 @@ defmodule Site.Pulse.Source.Independent do
 
   import SweetXml
 
+  alias Site.Pulse.Helpers
+
   @behaviour Site.Pulse.Source
 
   @impl true
   def meta do
     %Site.Pulse.Meta{
       name: "Independent",
-      description: "Stories from the Independent feed.",
-      url: URI.parse("https://www.independent.co.uk/rss")
+      link: "https://www.independent.co.uk",
+      category: "news",
+      icon: "lucide-bird",
+      accent: "#EB1425"
     }
   end
 
@@ -22,29 +26,29 @@ defmodule Site.Pulse.Source.Independent do
   @decorate cacheable(key: :independent_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
-    meta = meta()
 
-    req = Req.get(to_string(meta.url))
-
-    case req do
+    case Req.get("https://www.independent.co.uk/rss") do
       {:ok, %{status: 200, body: body}} ->
         items =
           body
           |> SweetXml.xpath(
             ~x"//item"l,
             id: ~x"./guid/text()"s,
+            link: ~x"./link/text()"s,
             title: ~x"./title/text()"s,
-            link: ~x"./link/text()"s
+            description: ~x"./description/text()"s,
+            pub_date: ~x"./pubDate/text()"s
           )
           |> Enum.take(limit)
-          |> Enum.map(fn %{id: id, title: title, link: link} ->
+          |> Enum.map(fn item ->
             %Site.Pulse.Item{
-              id: id,
-              title: title,
-              url: link
+              id: item.id,
+              url: item.link,
+              title: Helpers.strip_text(item.title),
+              description: Helpers.strip_text(item.description),
+              date: Helpers.parse_rfc2822_date(item.pub_date) || DateTime.utc_now()
             }
           end)
-          |> Enum.take(limit)
 
         {:ok, items}
 

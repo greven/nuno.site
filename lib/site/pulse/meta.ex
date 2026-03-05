@@ -5,10 +5,11 @@ defmodule Site.Pulse.Meta do
 
   @type t :: %__MODULE__{
           name: String.t(),
-          description: String.t(),
+          link: String.t() | nil,
           category: String.t() | nil,
-          url: URI.t()
+          icon: String.t() | nil,
+          accent: String.t() | nil
         }
 
-  defstruct [:name, :description, :category, :url]
+  defstruct [:name, :link, :category, :icon, :accent]
 end

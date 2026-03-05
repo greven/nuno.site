@@ -11,8 +11,10 @@ defmodule Site.Pulse.Source.Reddit do
   def meta do
     %Site.Pulse.Meta{
       name: "Reddit - Programming",
-      description: "Top posts from the r/programming subreddit.",
-      url: URI.parse("https://www.reddit.com/r/programming/")
+      link: "https://www.reddit.com/r/programming",
+      category: "development",
+      icon: "si-reddit",
+      accent: "#FF4500"
     }
   end
 
@@ -24,8 +26,7 @@ defmodule Site.Pulse.Source.Reddit do
 
     url = url("programming", sort, limit)
 
-    Req.get(url, headers: headers(), retry: false)
-    |> case do
+    case Req.get(url, headers: headers(), retry: false) do
       {:ok, %{status: 200, body: %{"data" => %{"children" => posts}}}} ->
         items =
           posts
@@ -33,7 +34,8 @@ defmodule Site.Pulse.Source.Reddit do
             %Site.Pulse.Item{
               id: post_data["id"],
               title: Site.Support.strip_tags(post_data["title"]),
-              url: "https://www.reddit.com" <> post_data["permalink"]
+              url: "https://www.reddit.com" <> post_data["permalink"],
+              date: DateTime.utc_now()
             }
           end)
 
