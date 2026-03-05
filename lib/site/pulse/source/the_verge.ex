@@ -7,14 +7,18 @@ defmodule Site.Pulse.Source.TheVerge do
 
   import SweetXml
 
+  alias Site.Pulse.Helpers
+
   @behaviour Site.Pulse.Source
 
   @impl true
   def meta do
     %Site.Pulse.Meta{
       name: "The Verge",
-      description: "Stories from The Verge feed.",
-      url: URI.parse("https://www.theverge.com/rss/index.xml")
+      link: "https://www.theverge.com",
+      category: "technology",
+      icon: "lucide-smartphone-charging",
+      accent: "#5100FE"
     }
   end
 
@@ -22,29 +26,30 @@ defmodule Site.Pulse.Source.TheVerge do
   @decorate cacheable(key: :the_verge_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
-    meta = meta()
 
-    req = Req.get(to_string(meta.url))
-
-    case req do
+    case Req.get("https://www.theverge.com/rss/index.xml") do
       {:ok, %{status: 200, body: body}} ->
         items =
           body
           |> SweetXml.xpath(
             ~x"//entry"l,
             id: ~x"./id/text()"s,
+            link: ~x"./link/text()"s,
             title: ~x"./title/text()"s,
-            link: ~x"./link/@href"s
+            description: ~x"./summary/text()"s,
+            pub_date: ~x"./published/text()"s
           )
           |> Enum.take(limit)
-          |> Enum.map(fn %{id: id, title: title, link: link} ->
+          |> Enum.map(fn item ->
             %Site.Pulse.Item{
-              id: id,
-              title: Site.Support.strip_tags(title),
-              url: link
+              id: item.id,
+              url: item.link,
+              title: Helpers.strip_text(item.title),
+              description: Helpers.strip_text(item.description),
+              date: Helpers.parse_iso8601_date(item.pub_date) || DateTime.utc_now()
             }
           end)
-          |> Enum.take(limit)
+          |> dbg()
 
         {:ok, items}
 

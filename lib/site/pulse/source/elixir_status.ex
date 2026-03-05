@@ -7,14 +7,18 @@ defmodule Site.Pulse.Source.ElixirStatus do
 
   import SweetXml
 
+  alias Site.Pulse.Helpers
+
   @behaviour Site.Pulse.Source
 
   @impl true
   def meta do
     %Site.Pulse.Meta{
-      name: "ElixirStatus",
-      description: "Stories from ElixirStatus feed.",
-      url: URI.parse("https://elixirstatus.com/rss")
+      name: "Elixir Status",
+      link: "https://elixirstatus.com",
+      category: "development",
+      icon: "lucide-droplet",
+      accent: "#4E2A8E"
     }
   end
 
@@ -22,11 +26,8 @@ defmodule Site.Pulse.Source.ElixirStatus do
   @decorate cacheable(key: :elixir_status_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
-    meta = meta()
 
-    req = Req.get(to_string(meta.url))
-
-    case req do
+    case Req.get("https://elixirstatus.com/rss") do
       {:ok, %{status: 200, body: body}} ->
         items =
           body
@@ -34,17 +35,20 @@ defmodule Site.Pulse.Source.ElixirStatus do
             ~x"//item"l,
             id: ~x"./guid/text()"s,
             title: ~x"./title/text()"s,
-            link: ~x"./link/text()"s
+            link: ~x"./link/text()"s,
+            description: ~x"./description/text()"s,
+            pub_date: ~x"./pubDate/text()"s
           )
           |> Enum.take(limit)
-          |> Enum.map(fn %{id: id, title: title, link: link} ->
+          |> Enum.map(fn item ->
             %Site.Pulse.Item{
-              id: id,
-              title: Site.Support.strip_tags(title),
-              url: link
+              id: item.id,
+              title: Helpers.strip_text(item.title),
+              url: item.link,
+              description: Helpers.strip_text(item.description),
+              date: Helpers.parse_rfc2822_date(item.pub_date) || DateTime.utc_now()
             }
           end)
-          |> Enum.take(limit)
 
         {:ok, items}
 

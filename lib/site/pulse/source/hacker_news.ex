@@ -11,8 +11,10 @@ defmodule Site.Pulse.Source.HackerNews do
   def meta do
     %Site.Pulse.Meta{
       name: "Hacker News",
-      description: "Top stories from Hacker News.",
-      url: URI.parse("https://hacker-news.firebaseio.com")
+      link: "https://news.ycombinator.com",
+      category: "technology",
+      icon: "lucide-square-chevron-right",
+      accent: "#FF6600"
     }
   end
 
@@ -20,10 +22,9 @@ defmodule Site.Pulse.Source.HackerNews do
   @decorate cacheable(key: :hacker_news_pulse, opts: [ttl: :timer.minutes(30)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
-    meta = meta()
 
     req =
-      Req.get(to_string(meta.url) <> "/v0/topstories.json",
+      Req.get("https://hacker-news.firebaseio.com/v0/topstories.json",
         headers: [{"User-Agent", "SitePulseBot/0.1 by greven"}]
       )
 
@@ -57,8 +58,8 @@ defmodule Site.Pulse.Source.HackerNews do
         {:ok,
          %Site.Pulse.Item{
            id: to_string(id),
-           title: Site.Support.strip_tags(title),
-           url: url || "https://news.ycombinator.com/item?id=#{id}"
+           url: url || "https://news.ycombinator.com/item?id=#{id}",
+           title: Site.Support.strip_tags(title)
          }}
 
       _ ->

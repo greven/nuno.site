@@ -14,10 +14,11 @@ defmodule Site.Pulse.Source.ArsTechnica do
   @impl true
   def meta do
     %Site.Pulse.Meta{
-      name: "Ars Technica",
-      description: "Stories from Ars Technica's feed.",
-      url: URI.parse("https://arstechnica.com/feed"),
-      category: "technology"
+      name: "ARS Technica",
+      link: "https://arstechnica.com",
+      category: "technology",
+      icon: "si-arstechnica",
+      accent: "#FF6600"
     }
   end
 
@@ -25,19 +26,16 @@ defmodule Site.Pulse.Source.ArsTechnica do
   @decorate cacheable(key: :ars_technica_pulse, opts: [ttl: :timer.hours(1)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
-    meta = meta()
 
-    req = Req.get(to_string(meta.url))
-
-    case req do
+    case Req.get("https://arstechnica.com/feed/") do
       {:ok, %{status: 200, body: body}} ->
         items =
           body
           |> SweetXml.xpath(
             ~x"//item"l,
             id: ~x"./guid/text()"s,
-            title: ~x"./title/text()"s,
             link: ~x"./link/text()"s,
+            title: ~x"./title/text()"s,
             description: ~x"./description/text()"s,
             pub_date: ~x"./pubDate/text()"s
           )
@@ -46,12 +44,11 @@ defmodule Site.Pulse.Source.ArsTechnica do
             %Site.Pulse.Item{
               id: item.id,
               url: item.link,
-              title: Helpers.cleanup_text(item.title),
-              description: Helpers.cleanup_text(item.description),
-              date: parse_date(item.pub_date)
+              title: Helpers.strip_text(item.title),
+              description: Helpers.strip_text(item.description),
+              date: Helpers.parse_rfc2822_date(item.pub_date) || DateTime.utc_now()
             }
           end)
-          |> Enum.take(limit)
 
         {:ok, items}
 
@@ -60,14 +57,6 @@ defmodule Site.Pulse.Source.ArsTechnica do
 
       {:error, reason} ->
         {:error, reason}
-    end
-  end
-
-  # "Tue, 03 Mar 2026 22:54:21 +0000"
-  defp parse_date(date_str) do
-    case DateTime.from_iso8601(date_str) do
-      {:ok, dt, _} -> dt
-      _ -> nil
     end
   end
 end
