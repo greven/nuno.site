@@ -45,7 +45,8 @@ defmodule Site.Pulse.Source.Slashdot do
               url: item.link,
               title: Helpers.strip_text(item.title),
               description: Helpers.strip_text(item.description),
-              date: Helpers.parse_rfc2822_date(item.pub_date) || DateTime.utc_now()
+              date: Helpers.maybe_parse_date(item.pub_date),
+              source: :slashdot
             }
           end)
 

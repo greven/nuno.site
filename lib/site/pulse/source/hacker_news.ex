@@ -5,6 +5,8 @@ defmodule Site.Pulse.Source.HackerNews do
 
   use Nebulex.Caching, cache: Site.Cache
 
+  alias Site.Pulse.Helpers
+
   @behaviour Site.Pulse.Source
 
   @impl true
@@ -33,7 +35,7 @@ defmodule Site.Pulse.Source.HackerNews do
         items =
           ids
           |> Enum.take(limit)
-          |> Task.async_stream(&fetch_story/1, timeout: :infinity, max_concurrency: 10)
+          |> Task.async_stream(&fetch_story/1, timeout: :infinity, max_concurrency: 20)
           |> Enum.reduce([], fn
             {:ok, {:ok, item}}, acc -> [item | acc]
             _, acc -> acc
@@ -54,12 +56,14 @@ defmodule Site.Pulse.Source.HackerNews do
     req = Req.get("https://hacker-news.firebaseio.com/v0/item/#{id}.json")
 
     case req do
-      {:ok, %{status: 200, body: %{"title" => title, "url" => url}}} ->
+      {:ok, %{status: 200, body: %{"title" => title, "url" => url, "time" => time}}} ->
         {:ok,
          %Site.Pulse.Item{
            id: to_string(id),
            url: url || "https://news.ycombinator.com/item?id=#{id}",
-           title: Site.Support.strip_tags(title)
+           title: Site.Support.strip_tags(title),
+           date: Helpers.maybe_parse_date(time),
+           source: :hacker_news
          }}
 
       _ ->

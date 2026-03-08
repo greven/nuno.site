@@ -3,6 +3,7 @@ defmodule SiteWeb.PulseLive.Components do
 
   alias Phoenix.LiveView.AsyncResult
 
+  alias Site.Pulse
   alias Site.Services.Weather
 
   @doc false
@@ -685,42 +686,26 @@ defmodule SiteWeb.PulseLive.Components do
     """
   end
 
-  # attr :async, AsyncResult, required: true
-  # attr :rest, :global
-
-  # defp air_quality(assigns) do
-  #   ~H"""
-  #   <div {@rest}>
-  #     <.async_result :let={air_quality} assign={@async}>
-  #       <:loading>Loading...</:loading>
-  #       <div class="flex items-center gap-1 text-sm text-content-40">
-  #         <.icon name="lucide-wind" class="size-4" />
-  #         {air_quality.aqi}
-  #       </div>
-  #     </.async_result>
-  #   </div>
-  #   """
-  # end
-
   @doc false
 
-  attr :id, :string, required: true
   attr :async, AsyncResult, required: true
   attr :news, :list, required: true
-  attr :title, :string, required: true
-  attr :icon, :string, default: "lucide-box"
-  attr :link, :string, default: nil
-  attr :accent, :string, default: nil
+  attr :source, :atom, required: true
   attr :class, :string, default: nil
   attr :rest, :global
 
-  def news_item(assigns) do
+  def news_source(assigns) do
+    assigns =
+      assigns
+      |> assign(:id, "news-#{assigns.source}")
+      |> assign(:meta, Pulse.meta!(assigns.source))
+
     ~H"""
-    <article id={@id} class={@class} style={@accent && "--link-accent: #{@accent};"} {@rest}>
+    <article id={@id} class={@class} style={@meta.accent && "--link-accent: #{@meta.accent};"} {@rest}>
       <.async_result :let={_async} assign={@async}>
         <:loading>
           <div class="flex flex-col min-h-80">
-            <.item_header title={@title} icon={@icon} link={@link} />
+            <.news_item_header title={@meta.name} icon={@meta.icon} link={@meta.link} />
             <div class="flex-1 flex items-center justify-center">
               <.spinner />
             </div>
@@ -729,12 +714,12 @@ defmodule SiteWeb.PulseLive.Components do
 
         <:failed>
           <div class="min-h-80">
-            <.item_header title={@title} icon={@icon} link={@link} />
+            <.news_item_header title={@meta.name} icon={@meta.icon} link={@meta.link} />
             <div class="mt-2 font-medium text-content-40/50">Failed to load source.</div>
           </div>
         </:failed>
 
-        <.item_header title={@title} icon={@icon} link={@link} />
+        <.news_item_header title={@meta.name} icon={@meta.icon} link={@meta.link} />
 
         <ul
           id={"#{@id}-list"}
@@ -768,7 +753,7 @@ defmodule SiteWeb.PulseLive.Components do
   attr :icon, :string, default: "lucide-box"
   attr :link, :string, default: nil
 
-  def item_header(assigns) do
+  def news_item_header(assigns) do
     ~H"""
     <.header
       tag="h2"
@@ -794,70 +779,240 @@ defmodule SiteWeb.PulseLive.Components do
 
   @doc false
 
-  attr :class, :string, default: nil
-  slot :inner_block
+  attr :id, :string, required: true
+  attr :async, AsyncResult, required: true
+  attr :feed, :list, required: true
+  attr :page, :integer, required: true
+  attr :end_of_feed?, :boolean, required: true
+  attr :offset, :integer, default: 0
+  attr :rest, :global
 
-  def news_list(assigns) do
+  def news_feed(assigns) do
     ~H"""
-    <ul class={[
-      "bg-surface-10 divide-y divide-border/60",
-      "rounded-l-xl border border-border",
-      @class
-    ]}>
-      {render_slot(@inner_block)}
-    </ul>
-    """
-  end
-
-  @doc false
-
-  attr :class, :string, default: nil
-  slot :inner_block
-
-  def news_list_detail(assigns) do
-    ~H"""
-    <article class={["rounded-r-xl border-y border-r border-border", @class]}>
-      {render_slot(@inner_block)}
-    </article>
+    <div {@rest}>
+      <div id={@id} phx-hook="PulseFeed" data-feed-offset={@offset}>
+        <div class="mb-12 grid grid-cols-12 h-[60vh] md:min-h-128">
+          <.news_feed_list
+            id={"#{@id}-list-container"}
+            class="col-span-4 overflow-y-auto"
+            async={@async}
+            feed={@feed}
+            page={@page}
+            end_of_feed?={@end_of_feed?}
+          />
+          <.news_feed_detail id={"#{@id}-details"} class="col-span-8" async={@async} feed={@feed} />
+        </div>
+      </div>
+    </div>
     """
   end
 
   @doc false
 
   attr :id, :string, required: true
-  attr :title, :string, required: true
-  attr :description, :string, default: nil
+  attr :async, AsyncResult, required: true
+  attr :feed, :list, required: true
+  attr :page, :integer, required: true
+  attr :end_of_feed?, :boolean, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def news_feed_list(assigns) do
+    ~H"""
+    <div
+      id={"#{@id}-scroll"}
+      class={["relative overflow-y-auto bg-surface-10 rounded-l-xl border border-border", @class]}
+      {@rest}
+    >
+      <%!-- Top spacer --%>
+      <div id={"#{@id}-top-spacer"} style="height: 0px;" aria-hidden="true"></div>
+
+      <ul
+        id={"#{@id}-list"}
+        phx-update="stream"
+        phx-viewport-top="feed_prev_page"
+        phx-viewport-bottom="feed_next_page"
+      >
+        <.async_result :let={_async} assign={@async}>
+          <:loading>
+            <li id={"#{@id}-spinner"} class="h-20 flex items-center justify-center gap-2">
+              <.spinner /> Loading…
+            </li>
+          </:loading>
+
+          <:failed>
+            <li id={"#{@id}-error"} class="h-32 flex items-center justify-center gap-2 p-4">
+              <.icon name="lucide-x-circle" class="size-5" /> Failed to load feed.
+            </li>
+          </:failed>
+
+          <.news_list_item :for={{dom_id, item} <- @feed} id={dom_id} item={item} />
+        </.async_result>
+      </ul>
+
+      <%!-- Bottom spacer --%>
+      <div id={"#{@id}-bottom-spacer"} style="height: 0px;" aria-hidden="true"></div>
+    </div>
+    """
+  end
+
+  @doc false
+
+  attr :id, :string, required: true
+  attr :item, :any, required: true
   attr :selected, :boolean, default: false
 
+  #   <%!-- Source badge + date --%>
+  # <div class="flex items-center justify-between gap-2">
+  #   <%= if @item.source do %>
+  #     <div class="flex items-center gap-1.5">
+  #       <.icon
+  #         name={@item.source.icon || "lucide-rss"}
+  #         class="size-3"
+  #         style={@item.source.accent && "color: #{@item.source.accent};"}
+  #       />
+  #       <span class="text-xs text-content-40 truncate">{@item.source.name}</span>
+  #     </div>
+  #   <% end %>
+  #   <%= if @item.date do %>
+  #     <span class="text-xs text-content-40/70 shrink-0">
+  #       <.relative_time date={@item.date} />
+  #     </span>
+  #   <% end %>
+  # </div>
+
+  # <%!-- Title --%>
+  # <div class="text-sm text-content-10 line-clamp-2 leading-snug">{@item.title}</div>
+  # phx-click="select_item"
+  # phx-value-id={@item.id}
+
+  #   class={[
+  #   "group flex flex-col gap-1 px-3 py-2.5 cursor-pointer select-none outline-none",
+  #   "border-b border-border/40 last:border-b-0",
+  #   "hover:bg-surface-30/30 transition-colors",
+  #   "aria-selected:bg-surface-30/60 aria-selected:border-border/60"
+  # ]}
+
   def news_list_item(assigns) do
+    assigns =
+      assigns
+      |> assign(:meta, assigns.item && Pulse.meta!(assigns.item.source))
+
     ~H"""
     <li
       id={@id}
-      tab-index="-1"
       aria-selected={@selected && "true"}
-      class={[
-        "group flex flex-col gap-1 p-2 select-none outline-none",
-        "first:rounded-t-xl last:rounded-b-xl"
-      ]}
+      class="group flex flex-col gap-1 p-2 select-none outline-none border-b border-border/60"
     >
       <article
+        tabindex="0"
         class={[
           "relative flex flex-col gap-2 px-4 py-3",
           "rounded-lg border border-transparent bg-transparent outline-none transition-all",
+          "group-hover:bg-surface-30/40 group-hover:border-border/50",
           "group-aria-selected:bg-surface-30/40 group-aria-selected:border-border",
-          "focus-visible:bg-surface-30/40 focus-visible:border-primary"
+          "focus-visible:bg-surface-30/80 focus-visible:border-primary"
         ]}
-        tabindex="0"
       >
         <.diagonal_pattern
           use_transition={false}
           class="opacity-0 border border-surface-10 rounded-lg group-aria-selected:opacity-80 transition-opacity"
         />
 
-        <div class="text-sm">{@title}</div>
-        <div class="text-xs text-content-40">{@description}</div>
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5 text-xs text-content-30">{@meta && @meta.name}</div>
+            <%= if @item.date do %>
+              <span class="text-xs text-content-40/70 shrink-0">
+                <.relative_time date={@item.date} suffix="" short />
+              </span>
+            <% end %>
+          </div>
+          <div class="text-xs text-content-10 line-clamp-2 leading-snug">{@item.title}</div>
+        </div>
       </article>
     </li>
+    """
+  end
+
+  @doc false
+
+  attr :id, :string, required: true
+  attr :async, AsyncResult, required: true
+  attr :feed, :list, required: true
+  attr :class, :string, default: nil
+  attr :item, :any, default: nil
+
+  def news_feed_detail(assigns) do
+    ~H"""
+    <article id={@id} class={["rounded-r-xl border-y border-r border-border overflow-y-auto", @class]}>
+      <%= if @item do %>
+        <%!-- <.news_feed_detail_item item={@item} /> --%> Show item!
+      <% else %>
+        <div class="h-full flex items-center justify-center text-content-40 text-sm">
+          <span class="px-4 py-2 border border-border rounded-full bg-surface-20/50">
+            Select an item to read
+          </span>
+        </div>
+      <% end %>
+    </article>
+    """
+  end
+
+  @doc false
+
+  attr :item, :any, required: true
+
+  def news_feed_detail_item(assigns) do
+    ~H"""
+    <div class="flex flex-col gap-6 p-6">
+      <%!-- Source + date header --%>
+      <div class="flex items-center gap-3">
+        <%= if @item.source do %>
+          <div
+            class="flex items-center gap-2 px-2 py-1 rounded-md text-xs font-medium"
+            style={
+              @item.source.accent &&
+                "background-color: #{@item.source.accent}18; color: #{@item.source.accent};"
+            }
+          >
+            <.icon name={@item.source.icon || "lucide-rss"} class="size-3.5" />
+            {@item.source.name}
+          </div>
+        <% end %>
+        <%= if @item.date do %>
+          <span class="text-xs text-content-40">
+            <.relative_time date={@item.date} />
+          </span>
+        <% end %>
+      </div>
+
+      <%!-- Title as external link --%>
+      <h2 class="text-xl font-semibold leading-snug text-content-10">
+        <.link
+          href={@item.url}
+          target="_blank"
+          class="hover:underline underline-offset-2 decoration-content-40/40"
+        >
+          {@item.title}
+          <.icon name="lucide-arrow-up-right" class="inline size-4 ml-1 text-content-40" />
+        </.link>
+      </h2>
+
+      <%!-- Description --%>
+      <%= if @item.description do %>
+        <p class="text-sm text-content-20 leading-relaxed">{@item.description}</p>
+      <% end %>
+
+      <%!-- Image --%>
+      <%= if @item.image_url do %>
+        <img
+          src={@item.image_url}
+          alt=""
+          class="w-full rounded-lg object-cover max-h-64"
+        />
+      <% end %>
+    </div>
     """
   end
 
