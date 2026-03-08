@@ -131,7 +131,8 @@ defmodule Site.MixProject do
       "assets.setup": ["bun.install --if-missing", "bun assets install"],
       "assets.build": ["bun js", "bun css"],
       "assets.deploy": ["bun css --minify", "bun js --minify", "phx.digest"],
-      "assets.format": "cmd npm run format --prefix assets"
+      "assets.format": "cmd npm run format --prefix assets",
+      precommit: ["assets.format", "format", "credo --strict"]
     ]
   end
 end
