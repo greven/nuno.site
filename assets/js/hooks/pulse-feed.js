@@ -4,7 +4,6 @@ export const PulseFeed = {
     this.scrollContainer = this.el.querySelector('[id$="-scroll"]');
     this.lastAnchor = null;
 
-    this.setupScrollAnchor();
     this.setupItemListeners();
   },
 
@@ -13,68 +12,7 @@ export const PulseFeed = {
   },
 
   destroyed() {
-    this.teardownScrollAnchor();
     this.removeItemListeners();
-  },
-
-  setupScrollAnchor() {
-    if (!this.scrollContainer || !this.list) return;
-
-    // Keep a fresh anchor on every scroll event
-    this._onScroll = () => {
-      this.lastAnchor = this.captureScrollAnchor();
-    };
-    this.scrollContainer.addEventListener('scroll', this._onScroll, { passive: true });
-
-    // Restore scroll position whenever the <ul>'s children change
-    this._mutationObserver = new MutationObserver(() => {
-      if (this.lastAnchor) {
-        this.restoreScrollAnchor(this.lastAnchor);
-      }
-    });
-
-    this._mutationObserver.observe(this.list, { childList: true });
-  },
-
-  teardownScrollAnchor() {
-    if (this._onScroll && this.scrollContainer) {
-      this.scrollContainer.removeEventListener('scroll', this._onScroll);
-    }
-    if (this._mutationObserver) {
-      this._mutationObserver.disconnect();
-    }
-  },
-
-  captureScrollAnchor() {
-    if (!this.scrollContainer || !this.list) return null;
-
-    const containerRect = this.scrollContainer.getBoundingClientRect();
-    const items = Array.from(this.list.querySelectorAll('li[id]'));
-
-    const anchor = items.find((item) => {
-      return item.getBoundingClientRect().bottom > containerRect.top;
-    });
-
-    if (!anchor) return null;
-
-    return {
-      id: anchor.id,
-      offset: anchor.getBoundingClientRect().top - containerRect.top,
-    };
-  },
-
-  restoreScrollAnchor({ id, offset }) {
-    if (!this.scrollContainer) return;
-
-    const anchor = document.getElementById(id);
-    if (!anchor) return;
-
-    const containerRect = this.scrollContainer.getBoundingClientRect();
-    const drift = anchor.getBoundingClientRect().top - containerRect.top - offset;
-
-    if (drift !== 0) {
-      this.scrollContainer.scrollTop += drift;
-    }
   },
 
   setupItemListeners() {
