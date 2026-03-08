@@ -3,8 +3,7 @@ defmodule SiteWeb.PulseLive.Index do
 
   alias SiteWeb.PulseLive.Components
 
-  @feed_per_page 10
-  @feed_overscan 5
+  @feed_per_page 20
 
   @impl true
   def render(assigns) do
@@ -87,15 +86,15 @@ defmodule SiteWeb.PulseLive.Index do
               />
 
               <Components.news_source
-                source={:changelog}
-                async={@changelog_news}
-                news={@streams.changelog_news}
-              />
-
-              <Components.news_source
                 source={:elixir_status}
                 async={@elixir_status_news}
                 news={@streams.elixir_status_news}
+              />
+
+              <Components.news_source
+                source={:changelog}
+                async={@changelog_news}
+                news={@streams.changelog_news}
               />
 
               <Components.news_source
@@ -129,12 +128,6 @@ defmodule SiteWeb.PulseLive.Index do
               />
 
               <Components.news_source
-                source={:independent}
-                async={@independent_news}
-                news={@streams.independent_news}
-              />
-
-              <Components.news_source
                 source={:bbc}
                 async={@bbc_news}
                 news={@streams.bbc_news}
@@ -153,7 +146,6 @@ defmodule SiteWeb.PulseLive.Index do
             async={@news_feed}
             feed={@streams.news_feed}
             page={@feed_page}
-            offset={@feed_offset}
             end_of_feed?={@end_of_feed?}
           />
         </section>
@@ -172,8 +164,7 @@ defmodule SiteWeb.PulseLive.Index do
       |> assign(:page_title, "Pulse")
       |> assign(:year_progress, year_progress)
       |> assign(:rates, get_exchange_rates())
-      |> assign(feed_page: 1, feed_per_page: @feed_per_page, feed_overscan: @feed_overscan)
-      |> assign(:end_of_feed?, false)
+      |> assign(feed_page: 1, feed_per_page: @feed_per_page, end_of_feed?: false)
       |> assign_async(:weather, fn -> {:ok, %{weather: get_weather()}} end)
       |> stream_async(:ars_technica_news, fn -> fetch_source(:ars_technica) end)
       |> stream_async(:bbc_news, fn -> fetch_source(:bbc) end)
@@ -219,40 +210,31 @@ defmodule SiteWeb.PulseLive.Index do
   end
 
   defp paginate_feed(socket, new_page) when new_page >= 1 do
-    %{feed_page: cur_page, feed_per_page: per_page, feed_overscan: overscan} = socket.assigns
+    %{feed_page: cur_page, feed_per_page: per_page} = socket.assigns
 
-    # Fetch one extra page for overscan
-    fetch_limit = per_page + overscan
+    items = Site.Pulse.list_feed(offset: (new_page - 1) * per_page, limit: per_page)
 
-    # Offset into the full feed for the start of the fetch window
-    fetch_offset = max((new_page - 1) * per_page - overscan, 0)
-
-    items = Site.Pulse.list_feed(offset: fetch_offset, limit: fetch_limit)
-
-    # Keep 3 pages: the previous page, current page, and next page
     going_forward? = new_page >= cur_page
 
     {items, at, limit} =
       if going_forward? do
         # Append new items to bottom, trim old items from top
-        {items, -1, -(per_page + overscan) * 3}
+        {items, -1, per_page * 3 * -1}
       else
         # Prepend (reversed) items to top, trim old items from bottom
-        {Enum.reverse(items), 0, (per_page + overscan) * 3}
+        {Enum.reverse(items), 0, per_page * 3}
       end
 
     case items do
       [] ->
         socket
         |> assign(:end_of_feed?, going_forward?)
-        |> assign(:feed_offset, fetch_offset)
         |> stream_async(:news_feed, fn -> {:ok, []} end)
 
       [_ | _] = items ->
         socket
         |> assign(:end_of_feed?, false)
         |> assign(:feed_page, new_page)
-        |> assign(:feed_offset, fetch_offset)
         |> stream_async(:news_feed, fn -> {:ok, items, at: at, limit: limit} end)
     end
   end
