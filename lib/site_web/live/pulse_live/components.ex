@@ -784,13 +784,12 @@ defmodule SiteWeb.PulseLive.Components do
   attr :feed, :list, required: true
   attr :page, :integer, required: true
   attr :end_of_feed?, :boolean, required: true
-  attr :offset, :integer, default: 0
   attr :rest, :global
 
   def news_feed(assigns) do
     ~H"""
     <div {@rest}>
-      <div id={@id} phx-hook="PulseFeed" data-feed-offset={@offset}>
+      <div id={@id} phx-hook="PulseFeed">
         <div class="mb-12 grid grid-cols-12 h-[60vh] md:min-h-128">
           <.news_feed_list
             id={"#{@id}-list-container"}
@@ -824,34 +823,32 @@ defmodule SiteWeb.PulseLive.Components do
       class={["relative overflow-y-auto bg-surface-10 rounded-l-xl border border-border", @class]}
       {@rest}
     >
-      <%!-- Top spacer --%>
-      <div id={"#{@id}-top-spacer"} style="height: 0px;" aria-hidden="true"></div>
+      <.async_result :let={_async} assign={@async}>
+        <:loading>
+          <div id={"#{@id}-loading"} class="h-20 flex items-center justify-center gap-2">
+            <.spinner /> Loading…
+          </div>
+        </:loading>
 
-      <ul
-        id={"#{@id}-list"}
-        phx-update="stream"
-        phx-viewport-top="feed_prev_page"
-        phx-viewport-bottom="feed_next_page"
-      >
-        <.async_result :let={_async} assign={@async}>
-          <:loading>
-            <li id={"#{@id}-spinner"} class="h-20 flex items-center justify-center gap-2">
-              <.spinner /> Loading…
-            </li>
-          </:loading>
+        <:failed>
+          <div id={"#{@id}-error"} class="h-32 flex items-center justify-center gap-2 p-4">
+            <.icon name="lucide-x-circle" class="size-5" /> Failed to load feed.
+          </div>
+        </:failed>
 
-          <:failed>
-            <li id={"#{@id}-error"} class="h-32 flex items-center justify-center gap-2 p-4">
-              <.icon name="lucide-x-circle" class="size-5" /> Failed to load feed.
-            </li>
-          </:failed>
-
+        <ul
+          id={"#{@id}-list"}
+          phx-update="stream"
+          phx-viewport-top={@page > 1 && "feed_prev_page"}
+          phx-viewport-bottom={!@end_of_feed? && "feed_next_page"}
+          class={[
+            if(@end_of_feed?, do: "pb-0", else: "pb-[calc(200vh)]"),
+            if(@page == 1, do: "pt-0", else: "pt-[calc(200vh)]")
+          ]}
+        >
           <.news_list_item :for={{dom_id, item} <- @feed} id={dom_id} item={item} />
-        </.async_result>
-      </ul>
-
-      <%!-- Bottom spacer --%>
-      <div id={"#{@id}-bottom-spacer"} style="height: 0px;" aria-hidden="true"></div>
+        </ul>
+      </.async_result>
     </div>
     """
   end
