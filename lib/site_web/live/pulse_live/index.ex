@@ -178,7 +178,6 @@ defmodule SiteWeb.PulseLive.Index do
       |> stream_async(:tnw_news, fn -> fetch_source(:tnw) end)
       |> stream_async(:twiv_news, fn -> fetch_source(:twiv) end)
       |> stream_async(:spectrum_news, fn -> fetch_source(:spectrum) end)
-      |> stream_async(:independent_news, fn -> fetch_source(:independent) end)
       |> stream_async(:publico_news, fn -> fetch_source(:publico) end)
       |> paginate_feed(1)
 

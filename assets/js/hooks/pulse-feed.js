@@ -2,28 +2,47 @@ export const PulseFeed = {
   mounted() {
     this.list = this.el.querySelector('ul');
     this.scrollContainer = this.el.querySelector('[id$="-scroll"]');
-    this.scrollSnapshot = null;
+    this.lastAnchor = null;
 
+    this.setupScrollAnchor();
     this.setupItemListeners();
-
-    console.log(this.scrollContainer);
-  },
-
-  beforeUpdate() {
-    this.scrollSnapshot = this.captureScrollAnchor();
   },
 
   updated() {
-    if (this.scrollSnapshot) {
-      this.restoreScrollAnchor(this.scrollSnapshot);
-      this.scrollSnapshot = null;
-    }
-
     this.setupItemListeners();
   },
 
   destroyed() {
+    this.teardownScrollAnchor();
     this.removeItemListeners();
+  },
+
+  setupScrollAnchor() {
+    if (!this.scrollContainer || !this.list) return;
+
+    // Keep a fresh anchor on every scroll event
+    this._onScroll = () => {
+      this.lastAnchor = this.captureScrollAnchor();
+    };
+    this.scrollContainer.addEventListener('scroll', this._onScroll, { passive: true });
+
+    // Restore scroll position whenever the <ul>'s children change
+    this._mutationObserver = new MutationObserver(() => {
+      if (this.lastAnchor) {
+        this.restoreScrollAnchor(this.lastAnchor);
+      }
+    });
+
+    this._mutationObserver.observe(this.list, { childList: true });
+  },
+
+  teardownScrollAnchor() {
+    if (this._onScroll && this.scrollContainer) {
+      this.scrollContainer.removeEventListener('scroll', this._onScroll);
+    }
+    if (this._mutationObserver) {
+      this._mutationObserver.disconnect();
+    }
   },
 
   captureScrollAnchor() {
