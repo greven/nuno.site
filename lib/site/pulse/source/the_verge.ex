@@ -46,10 +46,10 @@ defmodule Site.Pulse.Source.TheVerge do
               url: item.link,
               title: Helpers.strip_text(item.title),
               description: Helpers.strip_text(item.description),
-              date: Helpers.parse_iso8601_date(item.pub_date) || DateTime.utc_now()
+              date: Helpers.maybe_parse_date(item.pub_date),
+              source: :the_verge
             }
           end)
-          |> dbg()
 
         {:ok, items}
 

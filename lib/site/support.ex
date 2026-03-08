@@ -311,6 +311,7 @@ defmodule Site.Support do
   def time_ago(%NaiveDateTime{} = datetime, options) do
     cutoff = Keyword.get(options, :cutoff_in_days, nil)
     format = Keyword.get(options, :format, "%b %d, %Y")
+    suffix = Keyword.get(options, :suffix, "ago")
     short = Keyword.get(options, :short, false)
 
     if cutoff && NaiveDateTime.diff(NaiveDateTime.utc_now(), datetime, :day) >= cutoff do
@@ -320,83 +321,136 @@ defmodule Site.Support do
 
       cond do
         diff <= 0 -> "now"
-        diff < @min_in_seconds -> seconds_ago(diff, short)
-        diff < @hour_in_seconds -> minutes_ago(diff, short)
-        diff < @day_in_seconds -> hours_ago(diff, short)
-        diff < @week_in_seconds -> days_ago(diff, short)
-        diff < @month_in_seconds -> weeks_ago(diff, short)
-        diff < @year_in_seconds -> months_ago(diff, short)
-        true -> years_ago(diff, short)
+        diff < @min_in_seconds -> seconds_ago(diff, short, suffix)
+        diff < @hour_in_seconds -> minutes_ago(diff, short, suffix)
+        diff < @day_in_seconds -> hours_ago(diff, short, suffix)
+        diff < @week_in_seconds -> days_ago(diff, short, suffix)
+        diff < @month_in_seconds -> weeks_ago(diff, short, suffix)
+        diff < @year_in_seconds -> months_ago(diff, short, suffix)
+        true -> years_ago(diff, short, suffix)
       end
     end
   end
 
-  defp seconds_ago(seconds, true) do
-    ngettext("%{seconds}s ago", "%{seconds}s ago", seconds, seconds: seconds)
+  defp seconds_ago(seconds, true, suffix) do
+    ngettext("%{seconds}s %{suffix}", "%{seconds}s %{suffix}", seconds,
+      seconds: seconds,
+      suffix: suffix
+    )
+    |> String.trim()
   end
 
-  defp seconds_ago(seconds, false) do
-    ngettext("%{seconds} second ago", "%{seconds} seconds ago", seconds, seconds: seconds)
+  defp seconds_ago(seconds, false, suffix) do
+    ngettext("%{seconds} second %{suffix}", "%{seconds} seconds %{suffix}", seconds,
+      seconds: seconds,
+      suffix: suffix
+    )
+    |> String.trim()
   end
 
-  defp minutes_ago(seconds, true) do
+  defp minutes_ago(seconds, true, suffix) do
     minutes = div(seconds, @min_in_seconds)
-    ngettext("%{minutes}m ago", "%{minutes}m ago", minutes, minutes: minutes)
+
+    ngettext("%{minutes}m %{suffix}", "%{minutes}m %{suffix}", minutes,
+      minutes: minutes,
+      suffix: suffix
+    )
+    |> String.trim()
   end
 
-  defp minutes_ago(seconds, false) do
+  defp minutes_ago(seconds, false, suffix) do
     minutes = div(seconds, @min_in_seconds)
-    ngettext("%{minutes} minute ago", "%{minutes} minutes ago", minutes, minutes: minutes)
+
+    ngettext("%{minutes} minute %{suffix}", "%{minutes} minutes %{suffix}", minutes,
+      minutes: minutes,
+      suffix: suffix
+    )
+    |> String.trim()
   end
 
-  defp hours_ago(seconds, true) do
+  defp hours_ago(seconds, true, suffix) do
     hours = div(seconds, @hour_in_seconds)
-    ngettext("%{hours}h ago", "%{hours}h ago", hours, hours: hours)
+
+    ngettext("%{hours}h %{suffix}", "%{hours}h %{suffix}", hours, hours: hours, suffix: suffix)
+    |> String.trim()
   end
 
-  defp hours_ago(seconds, false) do
+  defp hours_ago(seconds, false, suffix) do
     hours = div(seconds, @hour_in_seconds)
-    ngettext("%{hours} hour ago", "%{hours} hours ago", hours, hours: hours)
+
+    ngettext("%{hours} hour %{suffix}", "%{hours} hours %{suffix}", hours,
+      hours: hours,
+      suffix: suffix
+    )
+    |> String.trim()
   end
 
-  defp days_ago(seconds, true) do
+  defp days_ago(seconds, true, suffix) do
     days = div(seconds, @day_in_seconds)
-    ngettext("%{days}d ago", "%{days}d ago", days, days: days)
+
+    ngettext("%{days}d %{suffix}", "%{days}d %{suffix}", days, days: days, suffix: suffix)
+    |> String.trim()
   end
 
-  defp days_ago(seconds, false) do
+  defp days_ago(seconds, false, suffix) do
     days = div(seconds, @day_in_seconds)
-    ngettext("%{days} day ago", "%{days} days ago", days, days: days)
+
+    ngettext("%{days} day %{suffix}", "%{days} days %{suffix}", days, days: days, suffix: suffix)
+    |> String.trim()
   end
 
-  defp weeks_ago(seconds, true) do
+  defp weeks_ago(seconds, true, suffix) do
     weeks = div(seconds, @week_in_seconds)
-    ngettext("%{weeks}w ago", "%{weeks}w ago", weeks, weeks: weeks)
+
+    ngettext("%{weeks}w %{suffix}", "%{weeks}w %{suffix}", weeks, weeks: weeks, suffix: suffix)
+    |> String.trim()
   end
 
-  defp weeks_ago(seconds, false) do
+  defp weeks_ago(seconds, false, suffix) do
     weeks = div(seconds, @week_in_seconds)
-    ngettext("%{weeks} week ago", "%{weeks} weeks ago", weeks, weeks: weeks)
+
+    ngettext("%{weeks} week %{suffix}", "%{weeks} weeks %{suffix}", weeks,
+      weeks: weeks,
+      suffix: suffix
+    )
+    |> String.trim()
   end
 
-  defp months_ago(seconds, true) do
+  defp months_ago(seconds, true, suffix) do
     months = div(seconds, @day_in_seconds * 30)
-    ngettext("%{months}mo ago", "%{months}mo ago", months, months: months)
+
+    ngettext("%{months}mo %{suffix}", "%{months}mo %{suffix}", months,
+      months: months,
+      suffix: suffix
+    )
+    |> String.trim()
   end
 
-  defp months_ago(seconds, false) do
+  defp months_ago(seconds, false, suffix) do
     months = div(seconds, @day_in_seconds * 30)
-    ngettext("%{months} month ago", "%{months} months ago", months, months: months)
+
+    ngettext("%{months} month %{suffix}", "%{months} months %{suffix}", months,
+      months: months,
+      suffix: suffix
+    )
+    |> String.trim()
   end
 
-  defp years_ago(seconds, true) do
+  defp years_ago(seconds, true, suffix) do
     years = div(seconds, @day_in_seconds * 365)
-    ngettext("%{years}y ago", "%{years}y ago", years, years: years)
+
+    ngettext("%{years}y %{suffix}", "%{years}y %{suffix}", years, years: years, suffix: suffix)
+    |> String.trim()
   end
 
-  defp years_ago(seconds, false) do
+  defp years_ago(seconds, false, suffix) do
     years = div(seconds, @day_in_seconds * 365)
-    ngettext("%{years} year ago", "%{years} years ago", years, years: years)
+
+    ngettext("%{years} year %{suffix}", "%{years} years %{suffix}", years,
+      years: years,
+      suffix: suffix
+    )
+    |> String.trim()
   end
 
   ## Converters

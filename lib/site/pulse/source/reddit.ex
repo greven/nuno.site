@@ -5,6 +5,8 @@ defmodule Site.Pulse.Source.Reddit do
 
   use Nebulex.Caching, cache: Site.Cache
 
+  alias Site.Pulse.Helpers
+
   @behaviour Site.Pulse.Source
 
   @impl true
@@ -35,7 +37,8 @@ defmodule Site.Pulse.Source.Reddit do
               id: post_data["id"],
               title: Site.Support.strip_tags(post_data["title"]),
               url: "https://www.reddit.com" <> post_data["permalink"],
-              date: DateTime.utc_now()
+              date: Helpers.maybe_parse_date(post_data["created_utc"]),
+              source: :reddit
             }
           end)
 

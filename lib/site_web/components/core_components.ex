@@ -211,6 +211,7 @@ defmodule SiteWeb.CoreComponents do
   attr :speed, :string, default: "1.3s"
   attr :color_class, :any, default: "text-content-20"
   attr :bg_opacity, :string, default: "0.1"
+  attr :rest, :global
 
   def spinner(assigns) do
     ~H"""
@@ -223,6 +224,7 @@ defmodule SiteWeb.CoreComponents do
       height="23.1"
       width="55"
       preserveAspectRatio="xMidYMid meet"
+      {@rest}
     >
       <path
         class="spinner-track"
@@ -1696,16 +1698,21 @@ defmodule SiteWeb.CoreComponents do
   attr :date, :string, required: true
   attr :cutoff_in_days, :integer, default: nil
   attr :short, :boolean, default: false
-  attr :class, :any, default: nil
+  attr :suffix, :string, default: "ago"
+  attr :rest, :global
 
   def relative_time(assigns) do
-    %{date: date, cutoff_in_days: cutoff, short: short} = assigns
+    %{date: date, cutoff_in_days: cutoff, short: short, suffix: suffix} = assigns
 
     assigns =
-      assign(assigns, :date, Support.time_ago(date, cutoff_in_days: cutoff, short: short))
+      assign(
+        assigns,
+        :date,
+        Support.time_ago(date, cutoff_in_days: cutoff, short: short, suffix: suffix)
+      )
 
     ~H"""
-    <time datetime={@date} class={@class}>{@date}</time>
+    <time datetime={@date} {@rest}>{@date}</time>
     """
   end
 
