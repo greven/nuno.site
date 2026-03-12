@@ -869,14 +869,16 @@ defmodule SiteWeb.PulseLive.Components do
       tabindex="0"
       aria-selected={@selected && "true"}
       aria-controls={"#{@id}-item-detail"}
-      class="group flex flex-col gap-1 p-2 select-none outline-none border-b border-border/60"
+      class={[
+        "group flex flex-col gap-1 p-2 select-none outline-none border-b border-border/60"
+      ]}
     >
       <article class={[
         "relative flex flex-col gap-2 px-4 py-3",
         "rounded-lg border border-transparent bg-transparent outline-none transition-all",
         "group-hover:bg-surface-30/40 group-hover:border-border/50",
-        "group-aria-selected:bg-surface-20 group-aria-selected:border-primary",
-        "group-focus-visible:bg-surface-20 group-focus-visible:border-primary"
+        "group-aria-selected:bg-surface-20 group-aria-selected:border-surface-40",
+        "group-focus:bg-surface-20 group-focus:border-primary!"
       ]}>
         <.diagonal_pattern
           use_transition={false}
@@ -956,13 +958,14 @@ defmodule SiteWeb.PulseLive.Components do
     ~H"""
     <div
       id={@id}
+      tabindex="-1"
       aria-selected="false"
       class={[
         "hidden absolute inset-2 z-1 overflow-y-auto",
-        "rounded-lg bg-surface-10 border border-border",
+        "rounded-lg bg-surface-10 border border-border outline-none",
         "opacity-0 duration-400 ease-in-out transition-all scale-90",
         "starting:opacity-0 starting:translate-x-80 starting:scale-100",
-        "aria-selected:opacity-100 aria-selected:scale-100 aria-selected:animate-fade-in"
+        "aria-selected:border-surface-40 aria-selected:opacity-100 aria-selected:scale-100 aria-selected:animate-fade-in"
       ]}
     >
       <div class="w-full max-w-[60ch] mx-auto p-8 flex flex-col gap-6">

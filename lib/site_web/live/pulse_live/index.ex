@@ -1,6 +1,7 @@
 defmodule SiteWeb.PulseLive.Index do
   use SiteWeb, :live_view
 
+  alias Phoenix.LiveView.AsyncResult
   alias SiteWeb.PulseLive.Components
 
   @feed_per_page 20
@@ -168,6 +169,8 @@ defmodule SiteWeb.PulseLive.Index do
       |> assign(:year_progress, year_progress)
       |> assign(:rates, get_exchange_rates())
       |> assign(feed_page: 1, feed_per_page: @feed_per_page, end_of_feed?: false)
+      |> assign(:news_feed, AsyncResult.loading())
+      |> stream(:news_feed, [])
       |> assign_async(:weather, fn -> {:ok, %{weather: get_weather()}} end)
       |> stream_async(:ars_technica_news, fn -> fetch_source(:ars_technica) end)
       |> stream_async(:bbc_news, fn -> fetch_source(:bbc) end)
@@ -182,7 +185,7 @@ defmodule SiteWeb.PulseLive.Index do
       |> stream_async(:twiv_news, fn -> fetch_source(:twiv) end)
       |> stream_async(:spectrum_news, fn -> fetch_source(:spectrum) end)
       |> stream_async(:publico_news, fn -> fetch_source(:publico) end)
-      |> paginate_feed(1)
+      |> start_async(:fetch_feed, fn -> Site.Pulse.list_feed(offset: 0, limit: @feed_per_page) end)
 
     {:ok, socket}
   end
@@ -204,18 +207,28 @@ defmodule SiteWeb.PulseLive.Index do
     end
   end
 
-  defp fetch_source(source) do
-    case Site.Pulse.list_items(source) do
-      {:ok, items} -> {:ok, items, limit: 10}
-      {:error, reason} -> {:error, reason}
-    end
+  @impl true
+  def handle_async(:fetch_feed, {:ok, items}, socket) do
+    {:noreply, paginate_feed(socket, items, 1)}
+  end
+
+  def handle_async(:fetch_feed, {:exit, _}, socket) do
+    {:noreply, paginate_feed(socket, [], 1)}
+  end
+
+  defp paginate_feed(socket, items, new_page) when new_page >= 1 do
+    assign_feed(socket, items, new_page)
   end
 
   defp paginate_feed(socket, new_page) when new_page >= 1 do
-    %{feed_page: cur_page, feed_per_page: per_page} = socket.assigns
-
+    %{feed_per_page: per_page} = socket.assigns
     items = Site.Pulse.list_feed(offset: (new_page - 1) * per_page, limit: per_page)
 
+    assign_feed(socket, items, new_page)
+  end
+
+  defp assign_feed(socket, items, new_page) do
+    %{feed_page: cur_page, feed_per_page: per_page} = socket.assigns
     going_forward? = new_page >= cur_page
 
     {items, at, limit} =
@@ -231,13 +244,21 @@ defmodule SiteWeb.PulseLive.Index do
       [] ->
         socket
         |> assign(:end_of_feed?, going_forward?)
-        |> stream_async(:news_feed, fn -> {:ok, []} end)
+        |> assign(:news_feed, AsyncResult.ok([]))
 
       [_ | _] = items ->
         socket
         |> assign(:end_of_feed?, false)
         |> assign(:feed_page, new_page)
-        |> stream_async(:news_feed, fn -> {:ok, items, at: at, limit: limit} end)
+        |> assign(:news_feed, AsyncResult.ok([]))
+        |> stream(:news_feed, items, at: at, limit: limit)
+    end
+  end
+
+  defp fetch_source(source) do
+    case Site.Pulse.list_items(source) do
+      {:ok, items} -> {:ok, items, limit: 10}
+      {:error, reason} -> {:error, reason}
     end
   end
 

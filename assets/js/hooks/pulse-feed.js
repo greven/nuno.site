@@ -69,7 +69,6 @@ export const PulseFeed = {
       });
       this.js().removeClass(details, 'hidden');
       this.js().setAttribute(details, 'aria-selected', 'true');
-      details.focus();
     }
   },
 
