@@ -868,20 +868,18 @@ defmodule SiteWeb.PulseLive.Components do
     ~H"""
     <li
       id={@id}
+      tabindex="0"
       aria-selected={@selected && "true"}
+      aria-controls={"#{@id}-item-detail"}
       class="group flex flex-col gap-1 p-2 select-none outline-none border-b border-border/60"
     >
-      <article
-        tabindex="0"
-        class={[
-          "relative flex flex-col gap-2 px-4 py-3",
-          "rounded-lg border border-transparent bg-transparent outline-none transition-all",
-          "group-hover:bg-surface-30/40 group-hover:border-border/50",
-          "group-aria-selected:bg-surface-30/80 group-aria-selected:border-primary",
-          "focus-visible:bg-surface-30/80 focus-visible:border-primary"
-        ]}
-        aria-controls={"#{@id}-item-detail"}
-      >
+      <article class={[
+        "relative flex flex-col gap-2 px-4 py-3",
+        "rounded-lg border border-transparent bg-transparent outline-none transition-all",
+        "group-hover:bg-surface-30/40 group-hover:border-border/50",
+        "group-aria-selected:bg-surface-30/80 group-aria-selected:border-primary",
+        "group-focus-visible:bg-surface-30/80 group-focus-visible:border-primary"
+      ]}>
         <.diagonal_pattern
           use_transition={false}
           class="opacity-0 border border-surface-10 rounded-lg group-aria-selected:opacity-80 transition-opacity"

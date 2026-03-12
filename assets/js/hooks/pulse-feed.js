@@ -1,15 +1,12 @@
 export const PulseFeed = {
   mounted() {
-    this.list = this.el.querySelector(`#${this.el.id}-list-container`);
+    this.itemsList = this.el.querySelector(`#${this.el.id}-list-container`);
     this.detailsList = this.el.querySelector(`#${this.el.id}-details-container`);
 
     this.setupItemListeners();
   },
 
   updated() {
-    this.list = this.el.querySelector(`#${this.el.id}-list-container`);
-    this.detailsList = this.el.querySelector(`#${this.el.id}-details-container`);
-
     this.setupItemListeners();
   },
 
@@ -19,33 +16,30 @@ export const PulseFeed = {
 
   setupItemListeners() {
     this.removeItemListeners();
-    this.items = Array.from(this.list?.querySelectorAll('li[id]') ?? []);
+    this.items = Array.from(this.itemsList?.querySelectorAll('li[id]') ?? []);
 
     this.itemClick = (event) => this.onItemClick(event);
     this.itemFocus = (event) => this.onItemFocus(event);
     this.handleKeydown = (event) => this.onKeydown(event);
 
     this.items.forEach((item) => {
-      const article = item.querySelector('article');
       item.addEventListener('click', this.itemClick);
       item.addEventListener('keydown', this.handleKeydown);
-      if (article) article.addEventListener('focus', this.itemFocus);
+      item.addEventListener('focus', this.itemFocus);
     });
   },
 
   removeItemListeners() {
     if (!this.items) return;
     this.items.forEach((item) => {
-      const article = item.querySelector('article');
       item.removeEventListener('click', this.itemClick);
       item.removeEventListener('keydown', this.handleKeydown);
-      if (article) article.removeEventListener('focus', this.itemFocus);
+      item.removeEventListener('focus', this.itemFocus);
     });
   },
 
   selectItem(item) {
-    const isSelected = item?.getAttribute('aria-selected') === 'true';
-    if (!item && isSelected) return;
+    if (!item) return;
 
     this.items.forEach((i) => {
       this.js().removeAttribute(i, 'aria-selected');
@@ -59,11 +53,6 @@ export const PulseFeed = {
 
   showItemDetails(item) {
     if (!item) return;
-
-    // If the click target is the <li> find the article inside
-    if (item.tagName.toLowerCase() == 'li') {
-      item = item.querySelector('article') || item;
-    }
 
     const detailsId = item.getAttribute('aria-controls');
     const details = document.querySelector(`#${detailsId}`);
@@ -100,6 +89,10 @@ export const PulseFeed = {
       case 'ArrowUp':
         event.preventDefault();
         newIndex = Math.max(currentIndex - 1, 0);
+        break;
+      case 'Enter':
+        event.preventDefault();
+        this.selectItem(currentItem);
         break;
       default:
         return;
