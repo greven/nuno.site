@@ -5,6 +5,7 @@ defmodule Site.Pulse.Source.Reddit do
 
   use Nebulex.Caching, cache: Site.Cache
 
+  alias Site.Pulse.Item
   alias Site.Pulse.Helpers
 
   @behaviour Site.Pulse.Source
@@ -34,7 +35,7 @@ defmodule Site.Pulse.Source.Reddit do
           posts
           |> Enum.map(fn %{"data" => post_data} ->
             %Site.Pulse.Item{
-              id: post_data["id"],
+              id: Item.id(post_data["id"]),
               title: Site.Support.strip_tags(post_data["title"]),
               url: "https://www.reddit.com" <> post_data["permalink"],
               date: Helpers.maybe_parse_date(post_data["created_utc"]),

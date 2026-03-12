@@ -5,6 +5,7 @@ defmodule Site.Pulse.Source.HackerNews do
 
   use Nebulex.Caching, cache: Site.Cache
 
+  alias Site.Pulse.Item
   alias Site.Pulse.Helpers
 
   @behaviour Site.Pulse.Source
@@ -59,7 +60,7 @@ defmodule Site.Pulse.Source.HackerNews do
       {:ok, %{status: 200, body: %{"title" => title, "url" => url, "time" => time}}} ->
         {:ok,
          %Site.Pulse.Item{
-           id: to_string(id),
+           id: to_string(id) |> Item.id(),
            url: url || "https://news.ycombinator.com/item?id=#{id}",
            title: Site.Support.strip_tags(title),
            date: Helpers.maybe_parse_date(time),

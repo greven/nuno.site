@@ -1,13 +1,15 @@
 export const PulseFeed = {
   mounted() {
-    this.list = this.el.querySelector('ul');
-    this.scrollContainer = this.el.querySelector('[id$="-scroll"]');
-    this.lastAnchor = null;
+    this.list = this.el.querySelector(`#${this.el.id}-list-container`);
+    this.detailsList = this.el.querySelector(`#${this.el.id}-details-container`);
 
     this.setupItemListeners();
   },
 
   updated() {
+    this.list = this.el.querySelector(`#${this.el.id}-list-container`);
+    this.detailsList = this.el.querySelector(`#${this.el.id}-details-container`);
+
     this.setupItemListeners();
   },
 
@@ -52,6 +54,26 @@ export const PulseFeed = {
 
     this.js().setAttribute(item, 'aria-selected', 'true');
     this.js().setAttribute(item, 'tabindex', '0');
+    this.showItemDetails(item);
+  },
+
+  showItemDetails(item) {
+    if (!item) return;
+
+    // If the click target is the <li> find the article inside
+    if (item.tagName.toLowerCase() == 'li') {
+      item = item.querySelector('article') || item;
+    }
+
+    const detailsId = item.getAttribute('aria-controls');
+    const details = document.querySelector(`#${detailsId}`);
+    const itemsDetails = this.detailsList.querySelectorAll('[id$="-item-detail"]');
+
+    if (details) {
+      itemsDetails.forEach((itemDetail) => this.js().addClass(itemDetail, 'hidden'));
+      this.js().removeClass(details, 'hidden');
+      details.focus();
+    }
   },
 
   onItemClick(event) {
@@ -65,6 +87,7 @@ export const PulseFeed = {
   onKeydown(event) {
     const currentItem = event.currentTarget;
     const currentIndex = this.items.indexOf(currentItem);
+
     if (currentIndex === -1) return;
 
     let newIndex = null;

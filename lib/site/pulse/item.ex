@@ -14,4 +14,16 @@ defmodule Site.Pulse.Item do
         }
 
   defstruct [:id, :source, :url, :title, :date, :description, :image_url]
+
+  @doc """
+  Generates a unique ID using the given id using
+  an hash function since the source id can be an URL that might contain characters
+  that are not valid for HTML id attributes.
+  """
+  def id(str) when is_binary(str) do
+    :crypto.hash(:sha256, str)
+    |> String.trim()
+    |> String.replace(["/", "+", "="], "-")
+    |> Base.url_encode64(padding: false)
+  end
 end
