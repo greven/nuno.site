@@ -2,6 +2,7 @@ export const PulseFeed = {
   mounted() {
     this.itemsList = this.el.querySelector(`#${this.el.id}-list-container`);
     this.detailsList = this.el.querySelector(`#${this.el.id}-details-container`);
+    this.placeholder = this.detailsList.querySelector(`#${this.detailsList.id}-placeholder`);
 
     this.setupItemListeners();
   },
@@ -41,6 +42,9 @@ export const PulseFeed = {
   selectItem(item) {
     if (!item) return;
 
+    // Hide placeholder when an item is selected
+    this.js().addClass(this.placeholder, 'hidden');
+
     this.items.forEach((i) => {
       this.js().removeAttribute(i, 'aria-selected');
       this.js().setAttribute(i, 'tabindex', '-1');
@@ -59,8 +63,12 @@ export const PulseFeed = {
     const itemsDetails = this.detailsList.querySelectorAll('[id$="-item-detail"]');
 
     if (details) {
-      itemsDetails.forEach((itemDetail) => this.js().addClass(itemDetail, 'hidden'));
+      itemsDetails.forEach((itemDetail) => {
+        this.js().addClass(itemDetail, 'hidden');
+        this.js().setAttribute(itemDetail, 'aria-selected', 'false');
+      });
       this.js().removeClass(details, 'hidden');
+      this.js().setAttribute(details, 'aria-selected', 'true');
       details.focus();
     }
   },
