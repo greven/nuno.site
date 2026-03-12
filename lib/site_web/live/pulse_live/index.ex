@@ -41,12 +41,14 @@ defmodule SiteWeb.PulseLive.Index do
                 <.button title="Sources" disabled>
                   <.icon name="lucide-funnel" />
                 </.button>
+
                 <.button
                   title="Grid View"
                   phx-click={JS.show(to: "#news-grid") |> JS.hide(to: "#news-feed")}
                 >
                   <.icon name="lucide-layout-grid" />
                 </.button>
+
                 <.button
                   title="List View"
                   phx-click={JS.show(to: "#news-feed") |> JS.hide(to: "#news-grid")}
@@ -59,7 +61,7 @@ defmodule SiteWeb.PulseLive.Index do
             <:subtitle>Latest headlines from my favorite sources</:subtitle>
           </.header>
 
-          <div id="news-grid" class="lg:hidden">
+          <div id="news-grid">
             <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
               <Components.news_source
                 source={:hacker_news}
@@ -143,7 +145,7 @@ defmodule SiteWeb.PulseLive.Index do
 
           <Components.news_feed
             id="news-feed"
-            class="hidden lg:block"
+            class="hidden"
             async={@news_feed}
             feed={@streams.news_feed}
             page={@feed_page}

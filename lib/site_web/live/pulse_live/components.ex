@@ -788,24 +788,22 @@ defmodule SiteWeb.PulseLive.Components do
 
   def news_feed(assigns) do
     ~H"""
-    <div {@rest}>
-      <div id={@id} phx-hook="PulseFeed">
-        <div class="mb-12 grid grid-cols-12 h-[60vh] md:min-h-128">
-          <.news_feed_list
-            id={"#{@id}-list-container"}
-            class="col-span-4 overflow-y-auto"
-            end_of_feed?={@end_of_feed?}
-            async={@async}
-            feed={@feed}
-            page={@page}
-          />
-          <.news_feed_detail
-            id={"#{@id}-details-container"}
-            class="col-span-8"
-            async={@async}
-            feed={@feed}
-          />
-        </div>
+    <div id={@id} phx-hook="PulseFeed" {@rest}>
+      <div class="mb-12 grid grid-cols-12 h-[60vh] md:min-h-128">
+        <.news_feed_list
+          id={"#{@id}-list-container"}
+          class="col-span-4 overflow-y-auto"
+          end_of_feed?={@end_of_feed?}
+          async={@async}
+          feed={@feed}
+          page={@page}
+        />
+        <.news_feed_detail
+          id={"#{@id}-details-container"}
+          class="col-span-8"
+          async={@async}
+          feed={@feed}
+        />
       </div>
     </div>
     """
@@ -877,24 +875,26 @@ defmodule SiteWeb.PulseLive.Components do
         "relative flex flex-col gap-2 px-4 py-3",
         "rounded-lg border border-transparent bg-transparent outline-none transition-all",
         "group-hover:bg-surface-30/40 group-hover:border-border/50",
-        "group-aria-selected:bg-surface-30/80 group-aria-selected:border-primary",
-        "group-focus-visible:bg-surface-30/80 group-focus-visible:border-primary"
+        "group-aria-selected:bg-surface-20 group-aria-selected:border-primary",
+        "group-focus-visible:bg-surface-20 group-focus-visible:border-primary"
       ]}>
         <.diagonal_pattern
           use_transition={false}
-          class="opacity-0 border border-surface-10 rounded-lg group-aria-selected:opacity-80 transition-opacity"
+          class="opacity-0 border border-surface-10 rounded-lg group-aria-selected:opacity-50 transition-opacity"
         />
 
         <div class="flex flex-col gap-1">
           <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-1.5 text-xs text-content-30">{@meta && @meta.name}</div>
+            <div class="flex items-center gap-1.5 text-xs text-content-40">
+              {@meta && @meta.name}
+            </div>
             <%= if @item.date do %>
-              <span class="text-xs text-content-40/70 shrink-0">
+              <span class="text-xs text-content-40 shrink-0">
                 <.relative_time date={@item.date} suffix="" short />
               </span>
             <% end %>
           </div>
-          <div class="max-w-11/12 text-xs text-content-10 text-balance line-clamp-2 leading-snug">
+          <div class="max-w-11/12 text-xs text-content text-balance line-clamp-2 leading-snug">
             {@item.title}
           </div>
         </div>
@@ -982,6 +982,21 @@ defmodule SiteWeb.PulseLive.Components do
             </span>
           </:subtitle>
         </.header>
+
+        <%!-- Image --%>
+        <%= if @item.image_url do %>
+          <.image
+            src={@item.image_url}
+            alt="Article image"
+            width={560}
+            height={420}
+            class="w-full h-auto max-h-60 rounded-lg object-cover object-center"
+          />
+        <% else %>
+          <div class="w-full h-60 bg-surface-20 rounded-lg flex items-center justify-center">
+            <.icon name="lucide-image-off" class="size-10 text-content-40/40" />
+          </div>
+        <% end %>
 
         <%!-- Description --%>
         <%= if @item.description do %>

@@ -38,7 +38,8 @@ defmodule Site.Pulse.Source.TWIV do
             link: ~x"./link/text()"s,
             title: ~x"./title/text()"s,
             description: ~x"./description/text()"s,
-            pub_date: ~x"./pubDate/text()"s
+            pub_date: ~x"./pubDate/text()"s,
+            content: ~x"./content:encoded/text()"s
           )
           |> Enum.take(limit)
           |> Enum.map(fn item ->
@@ -48,6 +49,7 @@ defmodule Site.Pulse.Source.TWIV do
               title: Helpers.strip_text(item.title),
               description: Helpers.strip_text(item.description),
               date: Helpers.maybe_parse_date(item.pub_date),
+              image_url: SweetXml.xpath(item.content, ~x"//img/@src"s),
               source: :twiv
             }
           end)
