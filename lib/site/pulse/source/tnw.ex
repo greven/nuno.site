@@ -38,7 +38,8 @@ defmodule Site.Pulse.Source.TNW do
             link: ~x"./link/text()"s,
             title: ~x"./title/text()"s,
             description: ~x"./description/text()"s,
-            pub_date: ~x"./pubDate/text()"s
+            pub_date: ~x"./pubDate/text()"s,
+            image: ~x"./enclosure/@url"s
           )
           |> Enum.take(limit)
           |> Enum.map(fn item ->
@@ -48,6 +49,7 @@ defmodule Site.Pulse.Source.TNW do
               title: Helpers.strip_text(item.title),
               description: Helpers.strip_text(item.description),
               date: Helpers.maybe_parse_date(item.pub_date),
+              image_url: item.image,
               source: :tnw
             }
           end)

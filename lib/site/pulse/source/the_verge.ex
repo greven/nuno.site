@@ -35,9 +35,10 @@ defmodule Site.Pulse.Source.TheVerge do
           |> SweetXml.xpath(
             ~x"//entry"l,
             id: ~x"./id/text()"s,
-            link: ~x"./link/text()"s,
+            link: ~x"./link/@href"s,
             title: ~x"./title/text()"s,
             description: ~x"./summary/text()"s,
+            content: ~x"./content/text()"s,
             pub_date: ~x"./published/text()"s
           )
           |> Enum.take(limit)
@@ -48,6 +49,7 @@ defmodule Site.Pulse.Source.TheVerge do
               title: Helpers.strip_text(item.title),
               description: Helpers.strip_text(item.description),
               date: Helpers.maybe_parse_date(item.pub_date),
+              image_url: SweetXml.xpath(item.content, ~x"//img/@src"s),
               source: :the_verge
             }
           end)

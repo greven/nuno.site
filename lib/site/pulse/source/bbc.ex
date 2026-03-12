@@ -38,7 +38,8 @@ defmodule Site.Pulse.Source.BBC do
             title: ~x"./title/text()"s,
             link: ~x"./link/text()"s,
             description: ~x"./description/text()"s,
-            pub_date: ~x"./pubDate/text()"s
+            pub_date: ~x"./pubDate/text()"s,
+            image: ~x"./media:thumbnail/@url"s
           )
           |> Enum.take(limit)
           |> Enum.map(fn item ->
@@ -48,6 +49,7 @@ defmodule Site.Pulse.Source.BBC do
               title: Helpers.strip_text(item.title),
               description: Helpers.strip_text(item.description),
               date: Helpers.maybe_parse_date(item.pub_date),
+              image_url: image(item.image, 600),
               source: :bbc
             }
           end)
@@ -60,5 +62,11 @@ defmodule Site.Pulse.Source.BBC do
       {:error, reason} ->
         {:error, reason}
     end
+  end
+
+  # BBC News's RSS only provides a low quality thumbnail URL, we
+  # can change the resolution by modifying the URL.
+  defp image(thumbnail_url, resolution) when is_binary(thumbnail_url) do
+    String.replace(thumbnail_url, ~r/\/standard\/\d+\//, "/standard/#{resolution}/")
   end
 end

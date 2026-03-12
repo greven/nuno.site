@@ -64,11 +64,25 @@ defmodule Site.Pulse.Source.HackerNews do
            url: url || "https://news.ycombinator.com/item?id=#{id}",
            title: Site.Support.strip_tags(title),
            date: Helpers.maybe_parse_date(time),
+           image_url: fetch_url_image(url),
            source: :hacker_news
          }}
 
       _ ->
         {:error, :failed_to_fetch_story}
+    end
+  end
+
+  defp fetch_url_image(url) do
+    case Req.get(url, headers: [{"User-Agent", "SitePulseBot/0.1 by greven"}], retry: false) do
+      {:ok, %{status: 200, body: body}} ->
+        body
+        |> LazyHTML.from_fragment()
+        |> LazyHTML.query("meta[property=\"og:image\"]")
+        |> LazyHTML.attribute("content")
+
+      _ ->
+        nil
     end
   end
 end
