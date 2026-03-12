@@ -22,7 +22,7 @@ defmodule Site.Pulse.Source.Reddit do
   end
 
   @impl true
-  @decorate cacheable(key: :reddit_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(key: :reddit_pulse, opts: [ttl: :timer.minutes(30)])
   def fetch_items(opts \\ []) do
     sort = Keyword.get(opts, :sort, "top")
     limit = Keyword.get(opts, :limit, 20)

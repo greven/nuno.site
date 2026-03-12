@@ -24,7 +24,7 @@ defmodule Site.Pulse.Source.Publico do
   end
 
   @impl true
-  @decorate cacheable(key: :publico_pulse, opts: [ttl: :timer.hours(1)])
+  @decorate cacheable(key: :publico_pulse, opts: [ttl: :timer.minutes(30)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
 

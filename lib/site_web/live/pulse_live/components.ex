@@ -894,7 +894,9 @@ defmodule SiteWeb.PulseLive.Components do
               </span>
             <% end %>
           </div>
-          <div class="text-xs text-content-10 line-clamp-2 leading-snug">{@item.title}</div>
+          <div class="max-w-11/12 text-xs text-content-10 text-balance line-clamp-2 leading-snug">
+            {@item.title}
+          </div>
         </div>
       </article>
     </li>
@@ -929,7 +931,7 @@ defmodule SiteWeb.PulseLive.Components do
       </div>
 
       <%!--  Placeholder --%>
-      <div class="h-full w-full flex items-center justify-center">
+      <div id={"#{@id}-placeholder"} class="h-full w-full flex items-center justify-center">
         <.badge
           color="neutral"
           badge_class="text-sm px-2 py-1.5"
@@ -954,8 +956,14 @@ defmodule SiteWeb.PulseLive.Components do
     ~H"""
     <div
       id={@id}
-      class="hidden absolute inset-2 rounded-lg bg-surface-10 border border-border z-1 overflow-y-auto"
       aria-selected="false"
+      class={[
+        "hidden absolute inset-2 z-1 overflow-y-auto",
+        "rounded-lg bg-surface-10 border border-border",
+        "opacity-0 duration-400 ease-in-out transition-all scale-90",
+        "starting:opacity-0 starting:translate-x-80 starting:scale-100",
+        "aria-selected:opacity-100 aria-selected:scale-100 aria-selected:animate-fade-in"
+      ]}
     >
       <div class="w-full max-w-[60ch] mx-auto p-8 flex flex-col gap-6">
         <%!-- Source --%>
@@ -966,12 +974,7 @@ defmodule SiteWeb.PulseLive.Components do
           tag="h3"
           header_class="text-2xl font-medium text-left text-balance"
         >
-          <.link
-            href={@item.url}
-            target="_blank"
-          >
-            {@item.title}
-          </.link>
+          <.link href={@item.url} target="_blank" class="link-subtle">{@item.title}</.link>
 
           <:subtitle>
             <span class="text-content-40/80 text-sm">
