@@ -558,7 +558,6 @@ defmodule SiteWeb.CoreComponents do
   """
   attr :header_class, :string
   attr :padding_class, :string, default: "pb-2"
-  # attr :class, :any, default: "flex flex-col"
   attr :anchor, :string, default: nil
   attr :show_anchor_link, :boolean, default: false
   attr :underlined, :boolean, default: false
@@ -617,7 +616,7 @@ defmodule SiteWeb.CoreComponents do
 
           <p
             :for={subtitle <- @subtitle}
-            class={["mt-1 text-content-40", header_subtitle_font_size(@tag), subtitle[:class]]}
+            class={["mt-1.5 text-content-40", header_subtitle_font_size(@tag), subtitle[:class]]}
           >
             {render_slot(subtitle)}
           </p>

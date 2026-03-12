@@ -794,12 +794,17 @@ defmodule SiteWeb.PulseLive.Components do
           <.news_feed_list
             id={"#{@id}-list-container"}
             class="col-span-4 overflow-y-auto"
+            end_of_feed?={@end_of_feed?}
             async={@async}
             feed={@feed}
             page={@page}
-            end_of_feed?={@end_of_feed?}
           />
-          <.news_feed_detail id={"#{@id}-details"} class="col-span-8" async={@async} feed={@feed} />
+          <.news_feed_detail
+            id={"#{@id}-details-container"}
+            class="col-span-8"
+            async={@async}
+            feed={@feed}
+          />
         </div>
       </div>
     </div>
@@ -819,13 +824,13 @@ defmodule SiteWeb.PulseLive.Components do
   def news_feed_list(assigns) do
     ~H"""
     <div
-      id={"#{@id}-scroll"}
+      id={@id}
       class={["relative overflow-y-auto bg-surface-10 rounded-l-xl border border-border", @class]}
       {@rest}
     >
       <.async_result :let={_async} assign={@async}>
         <:loading>
-          <div id={"#{@id}-loading"} class="h-20 flex items-center justify-center gap-2">
+          <div id={"#{@id}-loading"} class="h-full flex items-center justify-center gap-2">
             <.spinner /> Loading…
           </div>
         </:loading>
@@ -841,10 +846,6 @@ defmodule SiteWeb.PulseLive.Components do
           phx-update="stream"
           phx-viewport-top={@page > 1 && "feed_prev_page"}
           phx-viewport-bottom={!@end_of_feed? && "feed_next_page"}
-          class={[
-            if(@end_of_feed?, do: "pb-0", else: "pb-[calc(200vh)]"),
-            if(@page == 1, do: "pt-0", else: "pt-[calc(200vh)]")
-          ]}
         >
           <.news_list_item :for={{dom_id, item} <- @feed} id={dom_id} item={item} />
         </ul>
@@ -858,37 +859,6 @@ defmodule SiteWeb.PulseLive.Components do
   attr :id, :string, required: true
   attr :item, :any, required: true
   attr :selected, :boolean, default: false
-
-  #   <%!-- Source badge + date --%>
-  # <div class="flex items-center justify-between gap-2">
-  #   <%= if @item.source do %>
-  #     <div class="flex items-center gap-1.5">
-  #       <.icon
-  #         name={@item.source.icon || "lucide-rss"}
-  #         class="size-3"
-  #         style={@item.source.accent && "color: #{@item.source.accent};"}
-  #       />
-  #       <span class="text-xs text-content-40 truncate">{@item.source.name}</span>
-  #     </div>
-  #   <% end %>
-  #   <%= if @item.date do %>
-  #     <span class="text-xs text-content-40/70 shrink-0">
-  #       <.relative_time date={@item.date} />
-  #     </span>
-  #   <% end %>
-  # </div>
-
-  # <%!-- Title --%>
-  # <div class="text-sm text-content-10 line-clamp-2 leading-snug">{@item.title}</div>
-  # phx-click="select_item"
-  # phx-value-id={@item.id}
-
-  #   class={[
-  #   "group flex flex-col gap-1 px-3 py-2.5 cursor-pointer select-none outline-none",
-  #   "border-b border-border/40 last:border-b-0",
-  #   "hover:bg-surface-30/30 transition-colors",
-  #   "aria-selected:bg-surface-30/60 aria-selected:border-border/60"
-  # ]}
 
   def news_list_item(assigns) do
     assigns =
@@ -907,9 +877,10 @@ defmodule SiteWeb.PulseLive.Components do
           "relative flex flex-col gap-2 px-4 py-3",
           "rounded-lg border border-transparent bg-transparent outline-none transition-all",
           "group-hover:bg-surface-30/40 group-hover:border-border/50",
-          "group-aria-selected:bg-surface-30/40 group-aria-selected:border-border",
+          "group-aria-selected:bg-surface-30/80 group-aria-selected:border-primary",
           "focus-visible:bg-surface-30/80 focus-visible:border-primary"
         ]}
+        aria-controls={"#{@id}-item-detail"}
       >
         <.diagonal_pattern
           use_transition={false}
@@ -938,77 +909,96 @@ defmodule SiteWeb.PulseLive.Components do
   attr :async, AsyncResult, required: true
   attr :feed, :list, required: true
   attr :class, :string, default: nil
-  attr :item, :any, default: nil
 
   def news_feed_detail(assigns) do
     ~H"""
-    <article id={@id} class={["rounded-r-xl border-y border-r border-border overflow-y-auto", @class]}>
-      <%= if @item do %>
-        <%!-- <.news_feed_detail_item item={@item} /> --%> Show item!
-      <% else %>
-        <div class="h-full flex items-center justify-center text-content-40 text-sm">
-          <span class="px-4 py-2 border border-border rounded-full bg-surface-20/50">
-            Select an item to read
-          </span>
-        </div>
-      <% end %>
-    </article>
+    <div
+      id={@id}
+      class={[
+        "relative isolate flex rounded-r-xl bg-surface border-y border-r border-border overflow-hidden",
+        @class
+      ]}
+    >
+      <div
+        id={"#{@id}-details-list"}
+        phx-update="stream"
+      >
+        <.news_feed_detail_item
+          :for={{dom_id, item} <- @feed}
+          id={"#{dom_id}-item-detail"}
+          item={item}
+        />
+      </div>
+
+      <%!--  Placeholder --%>
+      <div class="h-full w-full flex items-center justify-center">
+        <.badge
+          color="neutral"
+          badge_class="text-sm px-2 py-1.5"
+        >
+          <.icon name="hero-information-circle" /> Select an item to read
+        </.badge>
+      </div>
+    </div>
     """
   end
 
   @doc false
 
+  attr :id, :string, required: true
   attr :item, :any, required: true
 
   def news_feed_detail_item(assigns) do
+    assigns =
+      assigns
+      |> assign(:meta, assigns.item && Pulse.meta!(assigns.item.source))
+
     ~H"""
-    <div class="flex flex-col gap-6 p-6">
-      <%!-- Source + date header --%>
-      <div class="flex items-center gap-3">
-        <%= if @item.source do %>
-          <div
-            class="flex items-center gap-2 px-2 py-1 rounded-md text-xs font-medium"
-            style={
-              @item.source.accent &&
-                "background-color: #{@item.source.accent}18; color: #{@item.source.accent};"
-            }
-          >
-            <.icon name={@item.source.icon || "lucide-rss"} class="size-3.5" />
-            {@item.source.name}
-          </div>
-        <% end %>
-        <%= if @item.date do %>
-          <span class="text-xs text-content-40">
-            <.relative_time date={@item.date} />
-          </span>
-        <% end %>
-      </div>
+    <div
+      id={@id}
+      class="hidden absolute inset-2 rounded-lg bg-surface-10 border border-border z-1 overflow-y-auto"
+      aria-selected="false"
+    >
+      <div class="w-full max-w-[60ch] mx-auto p-8 flex flex-col gap-6">
+        <%!-- Source --%>
+        <div class="-mb-4 text-sm text-content-40">{@meta.name}</div>
 
-      <%!-- Title as external link --%>
-      <h2 class="text-xl font-semibold leading-snug text-content-10">
-        <.link
-          href={@item.url}
-          target="_blank"
-          class="hover:underline underline-offset-2 decoration-content-40/40"
+        <%!-- Title --%>
+        <.header
+          tag="h3"
+          header_class="text-2xl font-medium text-left text-balance"
         >
-          {@item.title}
-          <.icon name="lucide-arrow-up-right" class="inline size-4 ml-1 text-content-40" />
-        </.link>
-      </h2>
+          <.link
+            href={@item.url}
+            target="_blank"
+          >
+            {@item.title}
+          </.link>
 
-      <%!-- Description --%>
-      <%= if @item.description do %>
-        <p class="text-sm text-content-20 leading-relaxed">{@item.description}</p>
-      <% end %>
+          <:subtitle>
+            <span class="text-content-40/80 text-sm">
+              Published <.relative_time date={@item.date} />
+            </span>
+          </:subtitle>
+        </.header>
 
-      <%!-- Image --%>
-      <%= if @item.image_url do %>
-        <img
-          src={@item.image_url}
-          alt=""
-          class="w-full rounded-lg object-cover max-h-64"
-        />
-      <% end %>
+        <%!-- Description --%>
+        <%= if @item.description do %>
+          <p class="text-content-30 leading-relaxed">
+            {@item.description}
+          </p>
+        <% else %>
+          <p class="text-content-40 italic">
+            No description available.
+          </p>
+        <% end %>
+
+        <div>
+          <.button variant="solid" href={@item.url} target="_blank">
+            Full Article <.icon name="lucide-arrow-up-right" />
+          </.button>
+        </div>
+      </div>
     </div>
     """
   end

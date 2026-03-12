@@ -7,6 +7,7 @@ defmodule Site.Pulse.Source.Slashdot do
 
   import SweetXml
 
+  alias Site.Pulse.Item
   alias Site.Pulse.Helpers
 
   @behaviour Site.Pulse.Source
@@ -41,7 +42,7 @@ defmodule Site.Pulse.Source.Slashdot do
           |> Enum.take(limit)
           |> Enum.map(fn item ->
             %Site.Pulse.Item{
-              id: item.link,
+              id: Item.id(item.link),
               url: item.link,
               title: Helpers.strip_text(item.title),
               description: Helpers.strip_text(item.description),

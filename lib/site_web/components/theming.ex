@@ -240,7 +240,7 @@ defmodule SiteWeb.Components.Theming do
 
   def badge_cx(assigns) do
     [
-      "flex justify-center items-center whitespace-nowrap [&>[data-slot=icon]]::size-[0.9375rem]",
+      "flex justify-center items-center whitespace-nowrap [&>[data-slot=icon]]:size-[0.9375rem]",
       if(assigns.circle, do: "size-[1.725em] p-0 rounded-full", else: "gap-x-1.5 px-2.5 py-0.5"),
       assigns.variant == "default" && "ring-1 ring-inset",
       badge_color_class(assigns[:variant], assigns[:color])

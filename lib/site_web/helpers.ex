@@ -11,6 +11,7 @@ defmodule SiteWeb.Helpers do
     "#{prefix}-"
     |> Kernel.<>(random_encoded_bytes())
     |> String.replace(["/", "+"], "-")
+    |> String.trim()
   end
 
   # Taken from Phoenix LiveView

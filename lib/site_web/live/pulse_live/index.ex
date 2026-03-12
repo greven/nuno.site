@@ -37,7 +37,7 @@ defmodule SiteWeb.PulseLive.Index do
               class="mr-1.5 size-5 text-primary"
             /> The News
             <:actions>
-              <div class="flex items-center gap-2">
+              <div class="hidden lg:flex items-center gap-2">
                 <.button title="Sources" disabled>
                   <.icon name="lucide-funnel" />
                 </.button>
@@ -59,7 +59,7 @@ defmodule SiteWeb.PulseLive.Index do
             <:subtitle>Latest headlines from my favorite sources</:subtitle>
           </.header>
 
-          <div id="news-grid" class="hidden">
+          <div id="news-grid" class="lg:hidden">
             <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
               <Components.news_source
                 source={:hacker_news}
@@ -143,6 +143,7 @@ defmodule SiteWeb.PulseLive.Index do
 
           <Components.news_feed
             id="news-feed"
+            class="hidden lg:block"
             async={@news_feed}
             feed={@streams.news_feed}
             page={@feed_page}
