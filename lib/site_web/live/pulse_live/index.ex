@@ -45,14 +45,14 @@ defmodule SiteWeb.PulseLive.Index do
 
                 <.button
                   title="Grid View"
-                  phx-click={JS.show(to: "#news-grid") |> JS.hide(to: "#news-feed")}
+                  phx-click={JS.patch(~p"/pulse?view=grid")}
                 >
                   <.icon name="lucide-layout-grid" />
                 </.button>
 
                 <.button
                   title="List View"
-                  phx-click={JS.show(to: "#news-feed") |> JS.hide(to: "#news-grid")}
+                  phx-click={JS.patch(~p"/pulse?view=list")}
                 >
                   <.icon name="lucide-panel-left" />
                 </.button>
@@ -62,7 +62,7 @@ defmodule SiteWeb.PulseLive.Index do
             <:subtitle>Latest headlines from my favorite sources</:subtitle>
           </.header>
 
-          <div id="news-grid">
+          <div id="news-grid" class={@view == "list" && "hidden"}>
             <div class="flex flex-col lg:grid grid-cols-2 2xl:grid-cols-3 gap-12 mb-8">
               <Components.news_source
                 source={:hacker_news}
@@ -146,7 +146,7 @@ defmodule SiteWeb.PulseLive.Index do
 
           <Components.news_feed
             id="news-feed"
-            class="hidden"
+            class={@view != "list" && "hidden"}
             async={@news_feed}
             feed={@streams.news_feed}
             page={@feed_page}
@@ -188,6 +188,12 @@ defmodule SiteWeb.PulseLive.Index do
       |> start_async(:fetch_feed, fn -> Site.Pulse.list_feed(offset: 0, limit: @feed_per_page) end)
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_params(params, _url, socket) do
+    view = params["view"] || "grid"
+    {:noreply, assign(socket, :view, view)}
   end
 
   @impl true
