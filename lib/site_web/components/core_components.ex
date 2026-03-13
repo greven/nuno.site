@@ -1803,7 +1803,7 @@ defmodule SiteWeb.CoreComponents do
         style={@container_style}
         data-part="dialog-container"
         class={[
-          "fixed flex justify-center overflow-y-auto focus:outline-none",
+          "fixed flex justify-center overflow-visible focus:outline-none",
           @centered && "items-center",
           !@centered && "items-start",
           !@fullscreen && "-bottom-px left-1 right-1",

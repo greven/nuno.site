@@ -996,7 +996,7 @@ defmodule SiteWeb.PulseLive.Components do
             class="w-full h-auto max-h-60 rounded-lg object-cover object-center"
           />
         <% else %>
-          <div class="w-full h-60 bg-surface-20 rounded-lg flex items-center justify-center">
+          <div class="w-full h-54 bg-surface-20 rounded-lg flex items-center justify-center">
             <.icon name="lucide-image-off" class="size-10 text-content-40/40" />
           </div>
         <% end %>
