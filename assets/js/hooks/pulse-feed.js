@@ -39,6 +39,12 @@ export const PulseFeed = {
     });
   },
 
+  getItemDetails(item) {
+    if (!item) return null;
+    const detailsId = item.getAttribute('aria-controls');
+    return document.querySelector(`#${detailsId}`);
+  },
+
   selectItem(item) {
     if (!item) return;
 
@@ -58,8 +64,7 @@ export const PulseFeed = {
   showItemDetails(item) {
     if (!item) return;
 
-    const detailsId = item.getAttribute('aria-controls');
-    const details = document.querySelector(`#${detailsId}`);
+    const details = this.getItemDetails(item);
     const itemsDetails = this.detailsList.querySelectorAll('[id$="-item-detail"]');
 
     if (details) {
@@ -69,6 +74,17 @@ export const PulseFeed = {
       });
       this.js().removeClass(details, 'hidden');
       this.js().setAttribute(details, 'aria-selected', 'true');
+    }
+  },
+
+  openItemLink(item) {
+    if (!item) return;
+
+    const details = this.getItemDetails(item);
+    const link = details.querySelector('a');
+
+    if (link) {
+      link.click();
     }
   },
 
@@ -96,6 +112,10 @@ export const PulseFeed = {
       case 'ArrowUp':
         event.preventDefault();
         newIndex = Math.max(currentIndex - 1, 0);
+        break;
+      case 'o':
+        event.preventDefault();
+        this.openItemLink(currentItem);
         break;
       case 'Enter':
         event.preventDefault();

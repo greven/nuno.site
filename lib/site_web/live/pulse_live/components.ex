@@ -933,13 +933,29 @@ defmodule SiteWeb.PulseLive.Components do
       </div>
 
       <%!--  Placeholder --%>
-      <div id={"#{@id}-placeholder"} class="h-full w-full flex items-center justify-center">
+      <div
+        id={"#{@id}-placeholder"}
+        class="h-full w-full flex flex-col items-center justify-center gap-4"
+      >
         <.badge
           color="neutral"
           badge_class="text-sm px-2 py-1.5"
         >
           <.icon name="hero-information-circle" /> Select an item to read
         </.badge>
+
+        <div class="flex items-center gap-8 text-xs text-content-40">
+          <div class="ml-1.5 flex flex-wrap items-center gap-2">
+            <.kbd><.icon name="hero-arrow-up" class="size-3" /></.kbd>
+            <.kbd><.icon name="hero-arrow-down" class="size-3" /></.kbd>
+            Move
+          </div>
+
+          <div class="mr-1.5 flex flex-wrap items-center">
+            <.kbd class="mx-2 sm:mx-2 px-1">o</.kbd>
+            Open
+          </div>
+        </div>
       </div>
     </div>
     """
