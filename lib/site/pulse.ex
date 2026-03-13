@@ -17,6 +17,7 @@ defmodule Site.Pulse do
     :smashing,
     :spectrum,
     :the_verge,
+    :neowin,
     :tnw,
     :twiv
   ]
@@ -33,6 +34,7 @@ defmodule Site.Pulse do
   defp source(:smashing), do: Site.Pulse.Source.Smashing
   defp source(:spectrum), do: Site.Pulse.Source.Spectrum
   defp source(:the_verge), do: Site.Pulse.Source.TheVerge
+  defp source(:neowin), do: Site.Pulse.Source.Neowin
   defp source(:tnw), do: Site.Pulse.Source.TNW
   defp source(:twiv), do: Site.Pulse.Source.TWIV
   defp source(_), do: nil
