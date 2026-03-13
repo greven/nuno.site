@@ -119,12 +119,6 @@ defmodule SiteWeb.PulseLive.Index do
               />
 
               <Components.news_source
-                source={:neowin}
-                async={@neowin_news}
-                news={@streams.neowin_news}
-              />
-
-              <Components.news_source
                 source={:twiv}
                 async={@twiv_news}
                 news={@streams.twiv_news}
@@ -187,7 +181,6 @@ defmodule SiteWeb.PulseLive.Index do
       |> stream_async(:smashing_news, fn -> fetch_source(:smashing) end)
       |> stream_async(:slashdot_news, fn -> fetch_source(:slashdot) end)
       |> stream_async(:the_verge_news, fn -> fetch_source(:the_verge) end)
-      |> stream_async(:neowin_news, fn -> fetch_source(:neowin) end)
       |> stream_async(:tnw_news, fn -> fetch_source(:tnw) end)
       |> stream_async(:twiv_news, fn -> fetch_source(:twiv) end)
       |> stream_async(:spectrum_news, fn -> fetch_source(:spectrum) end)
