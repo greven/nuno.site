@@ -823,7 +823,11 @@ defmodule SiteWeb.PulseLive.Components do
     ~H"""
     <div
       id={@id}
-      class={["relative overflow-y-auto bg-surface-10 rounded-l-xl border border-border", @class]}
+      class={[
+        "relative overflow-y-auto bg-surface-10 rounded-l-xl border border-border outline-none",
+        @class
+      ]}
+      tabindex="-1"
       {@rest}
     >
       <.async_result :let={_async} assign={@async}>
@@ -993,7 +997,9 @@ defmodule SiteWeb.PulseLive.Components do
           tag="h3"
           header_class="text-2xl font-medium text-left text-balance"
         >
-          <.link href={@item.url} target="_blank" class="link-subtle">{@item.title}</.link>
+          <.link href={@item.url || @item.discussion_url} target="_blank" class="link-subtle">
+            {@item.title}
+          </.link>
 
           <:subtitle>
             <span class="text-content-40/80 text-sm">
@@ -1013,7 +1019,7 @@ defmodule SiteWeb.PulseLive.Components do
           />
         <% else %>
           <div class="w-full h-54 bg-surface-20 rounded-lg flex items-center justify-center">
-            <.icon name="lucide-image-off" class="size-10 text-content-40/40" />
+            <.icon name="lucide-image-off" class="size-10 text-neutral-300 dark:text-neutral-800" />
           </div>
         <% end %>
 
@@ -1028,12 +1034,55 @@ defmodule SiteWeb.PulseLive.Components do
           </p>
         <% end %>
 
-        <div>
-          <.button variant="solid" href={@item.url} target="_blank">
-            Full Article <.icon name="lucide-arrow-up-right" />
-          </.button>
-        </div>
+        <%!-- Links --%>
+        <.news_feed_detail_item_links item={@item} />
       </div>
+    </div>
+    """
+  end
+
+  defp news_feed_detail_item_links(%{item: %{source: :hacker_news}} = assigns) do
+    ~H"""
+    <div class="flex items-center gap-4">
+      <.button :if={@item.url} variant="solid" href={@item.url} target="_blank">
+        Full Article <.icon name="lucide-arrow-up-right" />
+      </.button>
+
+      <.button
+        variant="light"
+        href={@item.discussion_url}
+        target="_blank"
+      >
+        Discussion <.icon name="lucide-arrow-up-right" />
+      </.button>
+    </div>
+    """
+  end
+
+  defp news_feed_detail_item_links(%{item: %{source: :reddit}} = assigns) do
+    ~H"""
+    <div class="flex items-center gap-4">
+      <.button :if={@item.url} variant="solid" href={@item.url} target="_blank">
+        Full Article <.icon name="lucide-arrow-up-right" />
+      </.button>
+
+      <.button
+        variant="light"
+        href={@item.discussion_url}
+        target="_blank"
+      >
+        Discussion <.icon name="lucide-arrow-up-right" />
+      </.button>
+    </div>
+    """
+  end
+
+  defp news_feed_detail_item_links(assigns) do
+    ~H"""
+    <div>
+      <.button variant="solid" href={@item.url} target="_blank">
+        Full Article <.icon name="lucide-arrow-up-right" />
+      </.button>
     </div>
     """
   end

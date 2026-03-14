@@ -44,6 +44,8 @@ export const Image = {
 
     // Fallback placeholder
     this.el.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
+    this.el.style.backgroundSize = '20% 20%';
+    this.el.style.opacity = '0.6';
     this.el.setAttribute('alt', 'Image not found');
     this.el.setAttribute('data-error', true);
   },

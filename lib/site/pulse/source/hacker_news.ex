@@ -61,10 +61,11 @@ defmodule Site.Pulse.Source.HackerNews do
         {:ok,
          %Site.Pulse.Item{
            id: to_string(id) |> Item.id(),
-           url: url || "https://news.ycombinator.com/item?id=#{id}",
+           url: url,
            title: Site.Support.strip_tags(title),
            date: Helpers.maybe_parse_date(time),
            image_url: fetch_url_image(url),
+           discussion_url: "https://news.ycombinator.com/item?id=#{id}",
            source: :hacker_news
          }}
 
@@ -73,7 +74,7 @@ defmodule Site.Pulse.Source.HackerNews do
     end
   end
 
-  defp fetch_url_image(url) do
+  defp fetch_url_image(url) when is_binary(url) do
     case Req.get(url, headers: [{"User-Agent", "SitePulseBot/0.1 by greven"}], retry: false) do
       {:ok, %{status: 200, body: body}} ->
         body
@@ -85,4 +86,6 @@ defmodule Site.Pulse.Source.HackerNews do
         nil
     end
   end
+
+  defp fetch_url_image(_), do: nil
 end

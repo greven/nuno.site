@@ -10,11 +10,11 @@ defmodule Site.Pulse.Item do
           title: String.t(),
           date: DateTime.t() | nil,
           description: String.t() | nil,
-          content: String.t() | nil,
+          discussion_url: String.t() | nil,
           image_url: String.t() | nil
         }
 
-  defstruct [:id, :source, :url, :title, :date, :description, :content, :image_url]
+  defstruct [:id, :source, :url, :title, :date, :description, :discussion_url, :image_url]
 
   @doc """
   Generates a unique ID using the given id using

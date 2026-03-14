@@ -37,8 +37,10 @@ defmodule Site.Pulse.Source.Reddit do
             %Site.Pulse.Item{
               id: Item.id(post_data["id"]),
               title: Site.Support.strip_tags(post_data["title"]),
-              url: "https://www.reddit.com" <> post_data["permalink"],
+              url: post_data["url"],
+              image_url: fetch_url_image(post_data["url"]),
               date: Helpers.maybe_parse_date(post_data["created_utc"]),
+              discussion_url: "https://www.reddit.com" <> post_data["permalink"],
               source: :reddit
             }
           end)
@@ -90,4 +92,19 @@ defmodule Site.Pulse.Source.Reddit do
 
   defp reddit_username,
     do: System.get_env("REDDIT_USERNAME") || "nuno_site_bot"
+
+  defp fetch_url_image(url) when is_binary(url) do
+    case Req.get(url, headers: [{"User-Agent", "SitePulseBot/0.1 by greven"}], retry: false) do
+      {:ok, %{status: 200, body: body}} ->
+        body
+        |> LazyHTML.from_fragment()
+        |> LazyHTML.query("meta[property=\"og:image\"]")
+        |> LazyHTML.attribute("content")
+
+      _ ->
+        nil
+    end
+  end
+
+  defp fetch_url_image(_), do: nil
 end
