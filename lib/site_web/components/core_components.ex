@@ -1931,7 +1931,8 @@ defmodule SiteWeb.CoreComponents do
           aria-label="Close modal"
           class={[
             "size-10 ml-auto shrink-0 rounded-full text-content-40 transition-colors",
-            "hover:bg-surface-20 hover:text-content-10 hover:cursor-pointer"
+            "hover:bg-surface-20 hover:text-content-10 hover:cursor-pointer",
+            "focus-visible:outline focus-visible:outline-offset-1 focus-visible:outline-primary"
           ]}
         >
           <.icon name="hero-x-mark" class="size-5" />
