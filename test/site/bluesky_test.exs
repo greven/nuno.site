@@ -37,7 +37,9 @@ defmodule Site.BlueskyTest do
     test "updates the post with blog metadata if text contains a valid marker and embed contains a blog link" do
       embed = %{
         "$type" => "app.bsky.embed.external#view",
-        "uri" => "https://nuno.site/blog/2026/its-a-start-init"
+        "external" => %{
+          "uri" => "https://nuno.site/blog/2026/its-a-start-init"
+        }
       }
 
       post =
@@ -98,7 +100,9 @@ defmodule Site.BlueskyTest do
     test "returns {:ok, blog_post_path} when a blog link is present in the embed" do
       embed = %{
         "$type" => "app.bsky.embed.external#view",
-        "uri" => "https://nuno.site/blog/2026/its-a-start-init"
+        "external" => %{
+          "uri" => "https://nuno.site/blog/2026/its-a-start-init"
+        }
       }
 
       post = BlueskyFixtures.bsky_post_fixture(%{text: "Some post #BlogPost", embed: embed})

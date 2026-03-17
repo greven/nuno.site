@@ -451,7 +451,9 @@ defmodule Site.Services.Bluesky do
 
   # If the post text is truncated, the blog post URL might be in the embed instead, so we check for that as well.
   defp extract_blog_post_embed_uri(%{"$type" => "app.bsky.embed.external#view"} = embed)
-       when is_map(embed), do: get_in(embed, ["external", "uri"]) || ""
+       when is_map(embed) do
+    get_in(embed, ["external", "uri"]) || ""
+  end
 
   defp extract_blog_post_embed_uri(_), do: ""
 
