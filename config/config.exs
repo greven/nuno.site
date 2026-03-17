@@ -109,6 +109,9 @@ config :forex,
 # ErrorTracker configuration
 config :error_tracker, repo: Site.Repo, otp_app: :site, enabled: true
 
+config :phoenix_prerender,
+  base_url: "https://nuno.site"
+
 # Inject the environment into the config
 config :site, :env, config_env()
 

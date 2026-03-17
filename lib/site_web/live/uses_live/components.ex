@@ -43,7 +43,7 @@ defmodule SiteWeb.UsesLive.Components do
 
   def hardware_item(assigns) do
     ~H"""
-    <.box class="relative flex flex-col gap-8 md:flex-row">
+    <.box class="flex flex-col gap-8 md:flex-row">
       <.diagonal_pattern use_transition={false} class="opacity-80" />
 
       <div class="flex items-start gap-4 md:items-center md:min-w-48">

@@ -96,7 +96,7 @@ defmodule SiteWeb.CoreComponents do
       shadow={@shadow}
       data-part="card"
       class={[
-        "group/card relative overflow-hidden",
+        "group/card",
         @disabled && "opacity-50 pointer-events-none",
         @content_class,
         @class

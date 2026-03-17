@@ -89,13 +89,11 @@ secrets: ## Print all server .env secrets (values masked)
 	done
 	@echo ""
 
-pre-commit: ## Run pre-commit checks (e.g. mix format, mix credo, mix test)
+pre-commit: ## Run pre-commit checks (e.g. mix format, mix credo, etc.)
 	mix precommit
-	mix test
 
-pre-deploy: pre-commit ## Pre-deployment steps (e.g. prerender pages)
-	mix phoenix.prerender
-	git commit -am "chore: prerender pages"
+pre-deploy: pre-commit ## Pre-deployment steps (e.g. run tests, etc.)
+	mix test
 
 deploy: pre-deploy ## Deploy a new release (e.g. make deploy, make deploy TYPE=minor, make deploy TYPE=major)
 	mix bump $(or $(TYPE),patch)

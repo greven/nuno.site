@@ -19,6 +19,7 @@ defmodule Site.Application do
       SiteWeb.Presence,
       Site.Analytics,
       SiteWeb.Endpoint,
+      PhoenixPrerender.PageCache,
       Site.BrowserData.Manager
     ]
 

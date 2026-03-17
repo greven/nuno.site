@@ -85,7 +85,7 @@ defmodule SiteWeb.Components.Theming do
   def button_variant_cx("default", variant) do
     case variant do
       "default" ->
-        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-[1px] before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
+        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-px before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
 
       "solid" ->
         "bg-neutral-900 dark:bg-neutral-300 text-neutral-50 dark:text-neutral-900 shadow-(--button-shadow) not-active:not-disabled:hover:bg-neutral-900/85 dark:not-active:not-disabled:hover:bg-neutral-300/85 aria-[pressed]:bg-neutral-900/85 dark:aria-[pressed]:bg-neutral-300/85"
@@ -100,14 +100,14 @@ defmodule SiteWeb.Components.Theming do
         "bg-transparent text-neutral-900 dark:text-neutral-200 shadow-none not-active:not-disabled:hover:bg-neutral-600/15 aria-[pressed]:bg-neutral-600/15"
 
       "link" ->
-        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-content-40/60 underline underline-offset-3 transition-colors hover:decoration-primary"
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-content-40/60 underline underline-offset-3 hover:decoration-primary"
     end
   end
 
   def button_variant_cx("primary", variant) do
     case variant do
       "default" ->
-        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-[1px] before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,_linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
+        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-px before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
 
       "solid" ->
         "bg-primary text-primary-contrast shadow-(--button-shadow) not-active:not-disabled:hover:bg-primary/85 aria-[pressed]:bg-primary/85"
@@ -122,14 +122,14 @@ defmodule SiteWeb.Components.Theming do
         "bg-transparent text-primary shadow-none not-active:not-disabled:hover:bg-primary/15 aria-[pressed]:bg-primary/15"
 
       "link" ->
-        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-primary underline underline-offset-3 transition-colors hover:decoration-content-40/60"
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-primary underline underline-offset-3 hover:decoration-content-40/60"
     end
   end
 
   def button_variant_cx("secondary", variant) do
     case variant do
       "default" ->
-        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-[1px] before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,_linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
+        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-px before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
 
       "solid" ->
         "bg-secondary text-secondary-contrast shadow-(--button-shadow) not-active:not-disabled:hover:bg-secondary/85 aria-[pressed]:bg-secondary/85"
@@ -144,14 +144,14 @@ defmodule SiteWeb.Components.Theming do
         "bg-transparent text-secondary shadow-none not-active:not-disabled:hover:bg-secondary/15 aria-[pressed]:bg-secondary/15"
 
       "link" ->
-        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-secondary underline underline-offset-3 transition-colors hover:decoration-content-40/60"
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-secondary underline underline-offset-3 hover:decoration-content-40/60"
     end
   end
 
   def button_variant_cx("info", variant) do
     case variant do
       "default" ->
-        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-[1px] before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,_linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
+        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-px before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
 
       "solid" ->
         "bg-info text-info-contrast shadow-(--button-shadow) not-active:not-disabled:hover:bg-info/85 aria-[pressed]:bg-info/85"
@@ -166,14 +166,14 @@ defmodule SiteWeb.Components.Theming do
         "bg-transparent text-info shadow-none not-active:not-disabled:hover:bg-info/15 aria-[pressed]:bg-info/15"
 
       "link" ->
-        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-info underline underline-offset-3 transition-colors hover:decoration-content-40/60"
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-info underline underline-offset-3 hover:decoration-content-40/60"
     end
   end
 
   def button_variant_cx("success", variant) do
     case variant do
       "default" ->
-        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-[1px] before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,_linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
+        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-px before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
 
       "solid" ->
         "bg-success text-success-contrast shadow-(--button-shadow) not-active:not-disabled:hover:bg-success/85 aria-[pressed]:bg-success/85"
@@ -188,14 +188,14 @@ defmodule SiteWeb.Components.Theming do
         "bg-transparent text-success shadow-none not-active:not-disabled:hover:bg-success/15 aria-[pressed]:bg-success/15"
 
       "link" ->
-        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-secondary underline underline-offset-3 transition-colors hover:decoration-content-40/60"
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-secondary underline underline-offset-3 hover:decoration-content-40/60"
     end
   end
 
   def button_variant_cx("warning", variant) do
     case variant do
       "default" ->
-        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-[1px] before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,_linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
+        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-px before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
 
       "solid" ->
         "bg-warning text-warning-contrast border border-warning shadow-(--button-shadow) not-active:not-disabled:hover:bg-warning/85 aria-[pressed]:bg-warning/85"
@@ -210,14 +210,14 @@ defmodule SiteWeb.Components.Theming do
         "bg-transparent text-warning border border-transparent shadow-none not-active:not-disabled:hover:bg-warning/15 aria-[pressed]:bg-warning/15"
 
       "link" ->
-        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-warning underline underline-offset-3 transition-colors hover:decoration-content-40/60"
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-warning underline underline-offset-3 hover:decoration-content-40/60"
     end
   end
 
   def button_variant_cx("danger", variant) do
     case variant do
       "default" ->
-        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-[1px] before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,_linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
+        "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 ring-1 ring-neutral-300 dark:ring-white/10 shadow-(--button-shadow) before:absolute before:inset-0 before:p-0 before:pb-px before:bg-linear-to-t before:from-neutral-600/15 dark:before:from-white/8 before:to-transparent before:rounded-[calc(var(--border-radius)-0.075rem)] before:[mask:linear-gradient(#fff_0_0)_content-box_exclude,linear-gradient(#fff_0_0)] before:-z-1 before:pointer-events-none active:before:opacity-0 not-active:not-disabled:hover:bg-neutral-600/8 aria-[pressed]:bg-neutral-600/8 dark:not-active:not-disabled:hover:bg-neutral-800/75 dark:aria-[pressed]:bg-neutral-800/75"
 
       "solid" ->
         "bg-danger text-danger-contrast shadow-(--button-shadow) not-active:not-disabled:hover:bg-danger/85 aria-[pressed]:bg-danger/85"
@@ -232,7 +232,7 @@ defmodule SiteWeb.Components.Theming do
         "bg-transparent text-danger shadow-none not-active:not-disabled:hover:bg-danger/15 aria-[pressed]:bg-danger/15"
 
       "link" ->
-        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-danger underline underline-offset-3 transition-colors hover:decoration-content-40/60"
+        "bg-transparent text-content-10 shadow-none decoration-[1.5px] decoration-danger underline underline-offset-3 hover:decoration-content-40/60"
     end
   end
 

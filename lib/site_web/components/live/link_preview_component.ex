@@ -17,7 +17,6 @@ defmodule SiteWeb.LinkPreviewComponent do
         shadow="shadow-xs hover:shadow-sm"
         border="border border-border hover:border-solid hover:border-primary transition-colors duration-150"
         content_class="h-full flex flex-col"
-        class="relative isolate"
         href={@href}
         target="_blank"
         rel="noopener noreferrer"

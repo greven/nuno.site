@@ -18,7 +18,8 @@ config :logger, level: :info
 
 # Phoenix Pre-Rendering
 config :phoenix_prerender,
-  enabled: true
+  enabled: true,
+  isr: true
 
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.

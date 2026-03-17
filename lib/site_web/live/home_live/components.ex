@@ -12,7 +12,7 @@ defmodule SiteWeb.HomeLive.Components do
   attr :icon, :string, default: nil
   attr :variant, :atom, values: ~w(default static subtle)a, default: :default
   attr :size, :atom, values: ~w(small medium)a, default: :medium
-  attr :content_class, :any, default: "h-full flex flex-col justify-between gap-2"
+  attr :content_class, :any, default: "flex flex-col justify-between gap-2"
   attr :icon_class, :string, default: "size-8 text-primary bg-primary shrink-0"
   attr :class, :string, default: nil
   attr :rest, :global, include: ~w(href navigate patch method disabled)
@@ -479,7 +479,7 @@ defmodule SiteWeb.HomeLive.Components do
     ~H"""
     <div
       class={[
-        "relative mt-4 w-1 h-10 md:h-12 lg:h-14 rounded-[2px] shadow-sm",
+        "relative mt-4 w-1 h-10 md:h-12 lg:h-14 rounded-xs shadow-sm",
         @level && activity_level_class(@level),
         @level && activity_border_class(@level),
         @class
@@ -510,27 +510,27 @@ defmodule SiteWeb.HomeLive.Components do
       <div class="flex items-center gap-1">
         <span class="">Less</span>
         <div class={[
-          "size-2 rounded-[2px] outline outline-neutral-400 dark:outline-neutral-900",
+          "size-2 rounded-xs outline outline-neutral-400 dark:outline-neutral-900",
           activity_level_class(0)
         ]}>
         </div>
         <div class={[
-          "size-2 rounded-[2px] outline outline-red-900/30",
+          "size-2 rounded-xs outline outline-red-900/30",
           activity_level_class(1)
         ]}>
         </div>
         <div class={[
-          "size-2 rounded-[2px] outline outline-red-900/50",
+          "size-2 rounded-xs outline outline-red-900/50",
           activity_level_class(2)
         ]}>
         </div>
         <div class={[
-          "size-2 rounded-[2px] outline outline-red-900/70",
+          "size-2 rounded-xs outline outline-red-900/70",
           activity_level_class(3)
         ]}>
         </div>
         <div class={[
-          "size-2 rounded-[2px] outline outline-red-900/90",
+          "size-2 rounded-xs outline outline-red-900/90",
           activity_level_class(4)
         ]}>
         </div>
@@ -556,27 +556,27 @@ defmodule SiteWeb.HomeLive.Components do
       <div class="flex items-center gap-1">
         <span class="">Less</span>
         <div
-          class="size-2 rounded-[2px] bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
+          class="size-2 rounded-xs bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
           style="animation-delay: 0ms;"
         >
         </div>
         <div
-          class="size-2 rounded-[2px] bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
+          class="size-2 rounded-xs bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
           style="animation-delay: 75ms;"
         >
         </div>
         <div
-          class="size-2 rounded-[2px] bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
+          class="size-2 rounded-xs bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
           style="animation-delay: 150ms;"
         >
         </div>
         <div
-          class="size-2 rounded-[2px] bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
+          class="size-2 rounded-xs bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
           style="animation-delay: 225ms;"
         >
         </div>
         <div
-          class="size-2 rounded-[2px] bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
+          class="size-2 rounded-xs bg-surface-40 outline outline-neutral-400 dark:outline-neutral-900 animate-pulse"
           style="animation-delay: 300ms;"
         >
         </div>
@@ -737,7 +737,6 @@ defmodule SiteWeb.HomeLive.Components do
           <.card
             tag="li"
             id={dom_id}
-            class="relative"
             content_class="w-full h-full px-0 sm:px-2.5 lg:px-3 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-6"
             padding="p-0"
             border="border border-transparent border-dashed hover:border-solid hover:border-border"

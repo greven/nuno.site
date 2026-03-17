@@ -71,6 +71,9 @@ jobs:
       - name: Install asset dependencies
         run: mix assets.setup
 
+      - name: Generate prerendered pages
+        run: mix phoenix.prerender
+
       - name: Build assets
         run: mix assets.deploy
 
