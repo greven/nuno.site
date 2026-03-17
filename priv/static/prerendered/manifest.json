@@ -1,0 +1,131 @@
+{
+  "pages": [
+    {
+      "size": 175578,
+      "file": "priv/static/prerendered/index.html",
+      "checksum": "4244204c4a1d9bc0a503e4d8b53e8f0a1a849822fb0435ef74492be36d95b9e6",
+      "route": "/",
+      "generated_at": "2026-03-17T15:37:18.757930Z"
+    },
+    {
+      "size": 95990,
+      "file": "priv/static/prerendered/blog/index.html",
+      "checksum": "3ab67cc36658473b19da043154120911aa4a690debf72d6cc5fb7a60390f5075",
+      "route": "/blog",
+      "generated_at": "2026-03-17T15:37:18.758417Z"
+    },
+    {
+      "size": 85717,
+      "file": "priv/static/prerendered/categories/index.html",
+      "checksum": "2b5835a47f03124c384d87d572f3c0b456a0bd58372426b2322b78b8abfd17c5",
+      "route": "/categories",
+      "generated_at": "2026-03-17T15:37:18.757759Z"
+    },
+    {
+      "size": 109674,
+      "file": "priv/static/prerendered/tags/index.html",
+      "checksum": "c108ed2927157eacfb11542d09ce9ef92452a22c8171b90a223f847a03ab2f7b",
+      "route": "/tags",
+      "generated_at": "2026-03-17T15:37:18.758246Z"
+    },
+    {
+      "size": 139683,
+      "file": "priv/static/prerendered/changelog/index.html",
+      "checksum": "dc7fde8cdc1ebb30edb22dead65b3c69ad8cb7f933d1894ebc1c77808867c326",
+      "route": "/changelog",
+      "generated_at": "2026-03-17T15:37:18.808326Z"
+    },
+    {
+      "size": 7724,
+      "file": "priv/static/prerendered/analytics/index.html",
+      "checksum": "057ce910e5338dc148e496e781f757f13e345163ee83d77728c920a8f748ce29",
+      "route": "/analytics",
+      "generated_at": "2026-03-17T15:37:18.803778Z"
+    },
+    {
+      "size": 678583,
+      "file": "priv/static/prerendered/travel/index.html",
+      "checksum": "e22feaffc8fbd156592c4574841dd1481755941058fe5b3ba3ee8b23e7ec1ced",
+      "route": "/travel",
+      "generated_at": "2026-03-17T15:37:19.082742Z"
+    },
+    {
+      "size": 104826,
+      "file": "priv/static/prerendered/music/index.html",
+      "checksum": "ddd1404e4c0df9eb473b2a96f27d12dd9f040842c4ed901b3a1da28ecc9c1791",
+      "route": "/music",
+      "generated_at": "2026-03-17T15:37:18.805646Z"
+    },
+    {
+      "size": 71004,
+      "file": "priv/static/prerendered/books/index.html",
+      "checksum": "ae99acdc8ba88abcc70284fe09205c800055d8d7209652207aec99ff3f4df461",
+      "route": "/books",
+      "generated_at": "2026-03-17T15:37:18.805578Z"
+    },
+    {
+      "size": 70708,
+      "file": "priv/static/prerendered/gaming/index.html",
+      "checksum": "271febc37c00839a1798ba1656c9557bcd9b66d5dcec296cfddc6a8d469bf6bc",
+      "route": "/gaming",
+      "generated_at": "2026-03-17T15:37:18.805417Z"
+    },
+    {
+      "size": 65507,
+      "file": "priv/static/prerendered/photos/index.html",
+      "checksum": "32103dc7b0f1cd7163238c33ad43685202eaab226bf99d7737129f2020487f7c",
+      "route": "/photos",
+      "generated_at": "2026-03-17T15:37:18.804476Z"
+    },
+    {
+      "size": 94557,
+      "file": "priv/static/prerendered/bookmarks/index.html",
+      "checksum": "d427fa8ec0cc87be4e82fe9cd6866938ae950eae7d6f408987758234f6e1ed16",
+      "route": "/bookmarks",
+      "generated_at": "2026-03-17T15:37:18.805094Z"
+    },
+    {
+      "size": 129762,
+      "file": "priv/static/prerendered/uses/index.html",
+      "checksum": "f01bcf9fb6f3cf3d49dbb9480fff006710c3c60b7f11b0dee1836b905f4413e4",
+      "route": "/uses",
+      "generated_at": "2026-03-17T15:37:18.853014Z"
+    },
+    {
+      "size": 109242,
+      "file": "priv/static/prerendered/about/index.html",
+      "checksum": "3e1fad09da70807e1dd243a4c63645748442aa9826310c76e1b6f1540c2fcd29",
+      "route": "/about",
+      "generated_at": "2026-03-17T15:37:18.850280Z"
+    },
+    {
+      "size": 121816,
+      "file": "priv/static/prerendered/resume/index.html",
+      "checksum": "d28bea0b5275319c4ea3fa8ecb03a9287c0bf452ea4e7578cc1bd3d3de3f3979",
+      "route": "/resume",
+      "generated_at": "2026-03-17T15:37:18.851185Z"
+    },
+    {
+      "size": 170635,
+      "file": "priv/static/prerendered/pulse/index.html",
+      "checksum": "49ce82000d02d0c4eda12e743c0a878bf85d04ed97d8fafd4a3d30876800224a",
+      "route": "/pulse",
+      "generated_at": "2026-03-17T15:37:18.853222Z"
+    },
+    {
+      "size": 73691,
+      "file": "priv/static/prerendered/sitemap/index.html",
+      "checksum": "c889d04e90af9830408a8ea0b1754a1c0b923fa460a8d4cce541316bfa14856e",
+      "route": "/sitemap",
+      "generated_at": "2026-03-17T15:37:18.904339Z"
+    },
+    {
+      "size": 220515,
+      "file": "priv/static/prerendered/sink/index.html",
+      "checksum": "133f822af2cfaf5d2c147b1c0bc8dc334826176590151978efd40ce9f693983c",
+      "route": "/sink",
+      "generated_at": "2026-03-17T15:37:18.905287Z"
+    }
+  ],
+  "generated_at": "2026-03-17T15:37:19.082893Z"
+}

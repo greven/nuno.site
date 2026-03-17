@@ -1,0 +1,1575 @@
+<!-- <SiteWeb.Layouts.root> lib/site_web/components/layouts/root.html.heex:1 (site) --><!DOCTYPE html>
+<html data-phx-loc="2" lang="en">
+  <head data-phx-loc="3">
+    <meta data-phx-loc="4" charset="utf-8">
+    <meta data-phx-loc="5" name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta data-phx-loc="6" name="color-scheme" content="dark light">
+    <meta data-phx-loc="7" name="csrf-token" content="BkhZKwMbYzwedR0SPXccBRcMQjJENgQs_2ajvxTJh0TEi5F2eS6D6XjK">
+
+    <!-- @caller lib/site_web/components/layouts/root.html.heex:9 (site) --><!-- <Phoenix.Component.live_title> lib/phoenix_component.ex:2252 (phoenix_live_view) --><title data-phx-loc="2253" data-default="Hello World" data-suffix=" · Nuno&#39;s Site">
+      Updates
+     · Nuno&#39;s Site</title><!-- </Phoenix.Component.live_title> -->
+
+    <!-- @caller lib/site_web/components/layouts/root.html.heex:13 (site) --><!-- <SiteWeb.Seo.tags> lib/site_web/seo.ex:62 (site) --><link data-phx-loc="64" rel="canonical" href="http://www.example.com/changelog">
+
+
+<meta data-phx-loc="67" name="title" content="Nuno Moço - Software Engineer">
+<meta data-phx-loc="68" name="description" content="Personal website of Nuno Moço, a Software Engineer from Lisbon.">
+<meta data-phx-loc="69" name="author" content="Nuno Moço">
+
+
+
+
+<meta data-phx-loc="74" name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta data-phx-loc="75" name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta data-phx-loc="76" name="mobile-web-app-capable" content="yes">
+<meta data-phx-loc="77" name="apple-mobile-web-app-capable" content="yes">
+<meta data-phx-loc="78" name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta data-phx-loc="79" name="apple-mobile-web-app-title" content="Nuno's Site">
+
+
+
+
+
+
+
+<meta data-phx-loc="91" property="og:type" content="website">
+<meta data-phx-loc="92" property="og:url" content="http://www.example.com/changelog">
+<meta data-phx-loc="93" property="og:title" content="Nuno Moço - Software Engineer">
+<meta data-phx-loc="94" property="og:description" content="Personal website of Nuno Moço, a Software Engineer from Lisbon.">
+<meta data-phx-loc="95" property="og:image" content="http://www.example.com/og-image">
+<meta data-phx-loc="96" property="og:site_name" content="Nuno's Site">
+
+
+<meta data-phx-loc="99" property="twitter:card" content="summary_large_image">
+<meta data-phx-loc="100" property="twitter:url" content="http://www.example.com/changelog">
+<meta data-phx-loc="101" property="twitter:title" content="Nuno Moço - Software Engineer">
+<meta data-phx-loc="102" property="twitter:description" content="Personal website of Nuno Moço, a Software Engineer from Lisbon.">
+<meta data-phx-loc="103" property="twitter:image" content="http://www.example.com/og-image"><!-- </SiteWeb.Seo.tags> -->
+    <!-- @caller lib/site_web/components/layouts/root.html.heex:14 (site) --><!-- <SiteWeb.Seo.favicons> lib/site_web/seo.ex:111 (site) --><link data-phx-loc="112" rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link data-phx-loc="113" rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+<link data-phx-loc="114" rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+<link data-phx-loc="115" rel="icon" type="image/png" sizes="192x192" href="/images/icon-192x192.png">
+<link data-phx-loc="116" rel="icon" type="image/png" sizes="512x512" href="/images/icon-512x512.png">
+<link data-phx-loc="117" rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png"><!-- </SiteWeb.Seo.favicons> -->
+
+    <link data-phx-loc="17" phx-track-static rel="manifest" href="/site.webmanifest">
+
+    <link data-phx-loc="20" rel="alternate" type="application/rss+xml" title="RSS feed for nuno.site" href="/rss">
+
+    <link data-phx-loc="23" phx-track-static rel="stylesheet" href="/assets/css/app.css">
+    <script data-phx-loc="24" defer phx-track-static type="module" src="/assets/js/app.js">
+    </script>
+
+
+
+    <script data-phx-loc="31" type="text/javascript">
+      // System theme
+      (() => {
+        const THEME_KEY = "phx:theme";
+        const getSystemTheme = () => {
+          return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        };
+        const setTheme = (theme) => {
+          if (theme === "system") {
+            localStorage.removeItem(THEME_KEY);
+            document.documentElement.setAttribute("data-theme", getSystemTheme());
+            document.documentElement.setAttribute("data-theme-mode", "system");
+          } else {
+            localStorage.setItem(THEME_KEY, theme);
+            document.documentElement.setAttribute("data-theme", theme);
+            document.documentElement.setAttribute("data-theme-mode", "user");
+          }
+        };
+        const supportsViewTransitions = () => {
+          return typeof document.startViewTransition === "function";
+        }
+
+        setTheme(localStorage.getItem(THEME_KEY) || "system");
+
+        window.addEventListener("storage", (e) => { e.key === THEME_KEY && setTheme(e.newValue || "system"); });
+        window.addEventListener("phx:set-theme", ({ detail: { theme } }) => {
+          if (supportsViewTransitions()) {
+            document.startViewTransition(() => {
+              setTheme(theme);
+            });
+          } else {
+            setTheme(theme);
+          }
+        });
+
+      })();
+
+      // OS Detection
+      (() => {
+        const userAgent = navigator.userAgent;
+
+        let osName = "unknown";
+
+        // Use modern userAgentData if available
+        if (navigator.userAgentData) {
+          const platform = navigator.userAgentData.platform.toLowerCase();
+
+          if (platform.includes("mac")) {
+            if (/iPhone|iPad/.test(userAgent)) {
+              osName = "ios";
+            } else {
+              osName = "macos";
+            }
+          } else if (platform.includes("win")) {
+            osName = "windows";
+          } else if (platform.includes("linux")) {
+            osName = "linux";
+          } else if (platform.includes("android")) {
+            osName = "android";
+          }
+        } else {
+          // Fallback to userAgent parsing for older browsers
+          if (/Mac|iPod|iPhone|iPad/.test(userAgent)) {
+            if (/iPhone|iPad/.test(userAgent)) {
+              osName = "ios";
+            } else {
+              osName = "macos";
+            }
+          } else if (/Win/.test(userAgent)) {
+            osName = "windows";
+          } else if (/Linux/.test(userAgent)) {
+            osName = "linux";
+          } else if (/Android/.test(userAgent)) {
+            osName = "android";
+          }
+        }
+
+        // Set the data-os attribute
+        document.documentElement.setAttribute("data-os", osName);
+      })();
+    </script>
+  </head>
+  <body data-phx-loc="115">
+    <div id="phx-GJ2q_p3B4eas9gKF" data-phx-main data-phx-session="SFMyNTY.g2gDaAJhBnQAAAAIdwJpZG0AAAAUcGh4LUdKMnFfcDNCNGVhczlnS0Z3B3Nlc3Npb250AAAAAHcGcm91dGVydxVFbGl4aXIuU2l0ZVdlYi5Sb3V0ZXJ3CnBhcmVudF9waWR3A25pbHcEdmlld3ciRWxpeGlyLlNpdGVXZWIuQ2hhbmdlbG9nTGl2ZS5JbmRleHcRbGl2ZV9zZXNzaW9uX25hbWV3B2RlZmF1bHR3CHJvb3RfcGlkdwNuaWx3CXJvb3Rfdmlld3ciRWxpeGlyLlNpdGVXZWIuQ2hhbmdlbG9nTGl2ZS5JbmRleG4GANa-cfycAWIAAVGA.AGzGJLi5AwPdnI06jrg3VBDg5TxBMDxmGAg7xV4fJVs" data-phx-static="SFMyNTY.g2gDaAJhBnQAAAADdwJpZG0AAAAUcGh4LUdKMnFfcDNCNGVhczlnS0Z3CmFzc2lnbl9uZXdsAAAAAXcNY3VycmVudF9zY29wZWp3BWZsYXNodAAAAABuBgDWvnH8nAFiAAFRgA.fey84g4X2LBUW_a3AaYpXtC902P1DLfynsc05QSJHpI"><!-- <SiteWeb.ChangelogLive.Index.render> lib/site_web/live/changelog_live/index.ex:13 (site) --><!-- @caller lib/site_web/live/changelog_live/index.ex:14 (site) --><!-- <SiteWeb.Layouts.app> lib/site_web/components/layouts.ex:39 (site) --><div data-phx-loc="40" class="min-h-screen flex flex-col">
+  <a data-phx-loc="41" class="skip-link" href="#main">Skip to content</a>
+  <!-- @caller lib/site_web/components/layouts.ex:42 (site) --><!-- <SiteWeb.Layouts.site_header> lib/site_web/components/layouts.ex:141 (site) --><header data-phx-loc="142" id="site-header" phx-hook="SiteHeader" class="fixed w-full top-0 flex flex-none flex-wrap items-center justify-between z-50 transition duration-500 bg-surface/80 border-b border-dashed border-transparent shadow-gray-900/5 supports-backdrop-filter:blur(0) data-scrolled:bg-surface/95 data-scrolled:supports-backdrop-filter:bg-surface/80 data-scrolled:border-surface-40
+     data-scrolled:shadow-sm data-scrolled:backdrop-blur-sm print:hidden" style="height:var(--header-height); margin-bottom:var(--header-mb)" data-progress="false">
+  
+
+  
+
+  <!-- @caller lib/site_web/components/layouts.ex:170 (site) --><!-- <SiteWeb.Layouts.wrapper> lib/site_web/components/layouts.ex:91 (site) --><div data-phx-loc="92" class="wrapper">
+  <!-- <:inner_block> lib/site_web/components/layouts.ex:170 (site) -->
+    <div data-phx-loc="171" class="flex items-center justify-between py-3">
+      <!-- @caller lib/site_web/components/layouts.ex:172 (site) --><!-- <SiteWeb.Layouts.site_logo> lib/site_web/components/layouts.ex:203 (site) --><!-- @caller lib/site_web/components/layouts.ex:204 (site) --><!-- <Phoenix.Component.link> lib/phoenix_component.ex:3097 (phoenix_live_view) --><a data-phx-loc="3098" href="/" data-phx-link="redirect" data-phx-link-state="push" id="site-logo" class="relative group flex items-center rounded-sm"><!-- <:inner_block> lib/site_web/components/layouts.ex:204 (site) -->
+  <span data-phx-loc="209" class="flex items-baseline gap-0.5 font-headings font-medium">
+    <span data-phx-loc="210" class="text-2xl text-content-10">nuno</span>
+    <span data-phx-loc="211" class="font-semibold text-xl text-content-40/60
+      group-hover:text-primary transition-colors duration-400">
+      .
+    </span>
+    <span data-phx-loc="215" class="text-xl text-content-30">site</span>
+    <span data-phx-loc="216" id="blinking-cursor" class="font-mono text-2xl text-content-40 ml-0.5 transition group-hover:animate-none group-hover:opacity-0 text-primary motion-safe:animate-blink">
+      _
+    </span>
+    <span data-phx-loc="227" class="ios:hidden android:hidden absolute -bottom-3 left-0 font-mono text-xs text-content-40 typing-reveal">
+      cd ~/home
+    </span>
+  </span>
+<!-- </:inner_block> --></a><!-- </Phoenix.Component.link> --><!-- </SiteWeb.Layouts.site_logo> -->
+      <!-- @caller lib/site_web/components/layouts.ex:173 (site) --><!-- <SiteWeb.Layouts.site_nav> lib/site_web/components/layouts.ex:263 (site) --><div data-phx-loc="264" class="flex items-center">
+  
+  <button data-phx-loc="266" type="button" id="mobile-menu" class="flex sm:hidden" aria-label="Open command finder (Cmd+K)" phx-click="[[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-toggle&quot;}]]">
+    <!-- @caller lib/site_web/components/layouts.ex:273 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-bars-2 size-6 text-content-30" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+  </button>
+
+  
+  <nav data-phx-loc="277" id="menu" class="hidden sm:ml-6 sm:flex items-center">
+    <!-- @caller lib/site_web/components/layouts.ex:278 (site) --><!-- <SiteWeb.Layouts.finder_button> lib/site_web/components/layouts.ex:332 (site) --><div data-phx-loc="333">
+  <button data-phx-loc="334" type="button" class="group flex items-center gap-1 mr-4 px-2 py-1 rounded-full corner-squircle bg-surface-40/25
+    inset-ring inset-ring-surface-40/40 outline-none cursor-pointer transition duration-200 hover:inset-ring-surface-40 hover:bg-surface-20 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-dashed focus-visible:outline-primary" aria-label="Open command finder (Cmd+K)" phx-click="[[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-toggle&quot;}]]">
+    <!-- @caller lib/site_web/components/layouts.ex:345 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-magnifying-glass-mini size-4 text-content-40/90 group-hover:text-content-30" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <kbd data-phx-loc="349" class="hidden font-sans text-xs/4 text-content-20 macos:block group-hover:text-content-10 mr-0.5">
+      ⌘K
+    </kbd>
+    <kbd data-phx-loc="352" class="hidden font-sans text-xs/4 text-content-20 not-macos:block group-hover:text-content-10">
+      Ctrl&nbsp;K
+    </kbd>
+  </button>
+</div><!-- </SiteWeb.Layouts.finder_button> -->
+
+    <ul data-phx-loc="280" class="navbar">
+      <!-- @caller lib/site_web/components/layouts.ex:281 (site) --><!-- <SiteWeb.Layouts.navbar_item> lib/site_web/components/layouts.ex:314 (site) --><li data-phx-loc="315">
+  <!-- @caller lib/site_web/components/layouts.ex:316 (site) --><!-- <Phoenix.Component.link> lib/phoenix_component.ex:3097 (phoenix_live_view) --><a data-phx-loc="3098" href="/" data-phx-link="redirect" data-phx-link-state="push" role="navigation" class="navbar-link">
+    
+        Home
+      
+  </a><!-- </Phoenix.Component.link> -->
+</li><!-- </SiteWeb.Layouts.navbar_item> -->
+
+      <!-- @caller lib/site_web/components/layouts.ex:285 (site) --><!-- <SiteWeb.Layouts.navbar_item> lib/site_web/components/layouts.ex:314 (site) --><li data-phx-loc="315">
+  <!-- @caller lib/site_web/components/layouts.ex:316 (site) --><!-- <Phoenix.Component.link> lib/phoenix_component.ex:3097 (phoenix_live_view) --><a data-phx-loc="3098" href="/about" data-phx-link="redirect" data-phx-link-state="push" role="navigation" class="navbar-link">
+    
+        About
+      
+  </a><!-- </Phoenix.Component.link> -->
+</li><!-- </SiteWeb.Layouts.navbar_item> -->
+
+      <!-- @caller lib/site_web/components/layouts.ex:289 (site) --><!-- <SiteWeb.Layouts.navbar_item> lib/site_web/components/layouts.ex:314 (site) --><li data-phx-loc="315">
+  <!-- @caller lib/site_web/components/layouts.ex:316 (site) --><!-- <Phoenix.Component.link> lib/phoenix_component.ex:3097 (phoenix_live_view) --><a data-phx-loc="3098" href="/blog" data-phx-link="redirect" data-phx-link-state="push" role="navigation" class="navbar-link">
+    
+        Blog
+      
+  </a><!-- </Phoenix.Component.link> -->
+</li><!-- </SiteWeb.Layouts.navbar_item> -->
+
+      
+    </ul>
+  </nav>
+</div><!-- </SiteWeb.Layouts.site_nav> -->
+    </div>
+  <!-- </:inner_block> -->
+</div><!-- </SiteWeb.Layouts.wrapper> -->
+</header><!-- </SiteWeb.Layouts.site_header> -->
+  <main data-phx-loc="50" class="relative flex-auto z-1">
+    <!-- @caller lib/site_web/components/layouts.ex:51 (site) --><!-- <SiteWeb.Layouts.wrapper> lib/site_web/components/layouts.ex:91 (site) --><div data-phx-loc="92" class="wrapper" id="main">
+  
+      <!-- <:inner_block> lib/site_web/live/changelog_live/index.ex:14 (site) -->
+  <!-- @caller lib/site_web/live/changelog_live/index.ex:19 (site) --><!-- <SiteWeb.Layouts.page_content> lib/site_web/components/layouts.ex:105 (site) --><div data-phx-loc="106" id="page-content" phx-hook="Layout" class="relative mt-[calc(12*var(--spacing)+var(--header-height))] md:mt-[calc(20*var(--spacing)+var(--header-height))] lg:mt-[calc(32*var(--spacing)+var(--header-height))] flex flex-col gap-12 md:gap-16" style="--page-gap:4rem; --page-gap-md:6rem; --page-gap-lg:8rem">
+  <!-- <:inner_block> lib/site_web/live/changelog_live/index.ex:19 (site) -->
+    <!-- @caller lib/site_web/live/changelog_live/index.ex:20 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h1 class="flex items-center text-content-10 underline underline-offset-3 sm:underline-offset-4 lg:underline-offset-6 decoration-1 decoration-surface-40/75 font-medium text-5xl">
+        
+          
+      Changelog
+      
+        
+      </h1>
+
+      <p data-phx-loc="617" class="mt-1.5 text-content-40 text-base">
+        
+        Site changes and other updates
+      
+      </p>
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+    <div data-phx-loc="27" class="mt-8 flex flex-col items-start justify-start gap-8 md:flex-row md:gap-16 lg:gap-20">
+      <!-- @caller lib/site_web/live/changelog_live/index.ex:28 (site) --><!-- <SiteWeb.ChangelogLive.Components.timeline_nav> lib/site_web/live/changelog_live/components.ex:22 (site) --><nav data-phx-loc="23" id="timeline-nav" class="md:sticky md:top-[calc(var(--header-height)+2rem)] " aria-label="Filter updates by period">
+  <ul data-phx-loc="32" class="flex flex-row md:flex-col gap-3 md:gap-1.5 p-0.5 max-w-(--content-width) pb-2 overflow-x-auto scrollbar-thin snap-x snap-mandatory scroll-px-4">
+    <li data-phx-loc="36">
+      <button data-phx-loc="37" class="group w-full flex items-center justify-between gap-3.5 px-3 py-2 rounded-lg corner-squircle text-content-40 transition-colors ease-in-out hover:text-content-30 hover:bg-surface-20/50 cursor-pointer aria-[current]:text-content aria-[current]:bg-surface-30/50 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-dashed focus-visible:outline-primary" role="link" data-period="week" aria-current phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;value&quot;:&quot;week&quot;},&quot;event&quot;:&quot;period_filter_changed&quot;}]]">
+        <span data-phx-loc="50" class="group-aria-[current]:font-medium">
+          
+              Week
+            
+        </span>
+
+        <span data-phx-loc="61" class="p-0 size-[1.725em] flex justify-center items-center rounded-full text-sm text-content-40/80 bg-surface-20 transition-colors ease-in-out group-hover:text-content-30 group-hover:bg-surface-30 group-aria-[current]:text-surface group-aria-[current]:bg-content">
+          0
+        </span>
+      </button>
+    </li><li data-phx-loc="36">
+      <button data-phx-loc="37" class="group w-full flex items-center justify-between gap-3.5 px-3 py-2 rounded-lg corner-squircle text-content-40 transition-colors ease-in-out hover:text-content-30 hover:bg-surface-20/50 cursor-pointer aria-[current]:text-content aria-[current]:bg-surface-30/50 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-dashed focus-visible:outline-primary" role="link" data-period="month" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;value&quot;:&quot;month&quot;},&quot;event&quot;:&quot;period_filter_changed&quot;}]]">
+        <span data-phx-loc="50" class="group-aria-[current]:font-medium">
+          
+              Month
+            
+        </span>
+
+        <span data-phx-loc="61" class="p-0 size-[1.725em] flex justify-center items-center rounded-full text-sm text-content-40/80 bg-surface-20 transition-colors ease-in-out group-hover:text-content-30 group-hover:bg-surface-30 group-aria-[current]:text-surface group-aria-[current]:bg-content">
+          2
+        </span>
+      </button>
+    </li><li data-phx-loc="36">
+      <button data-phx-loc="37" class="group w-full flex items-center justify-between gap-3.5 px-3 py-2 rounded-lg corner-squircle text-content-40 transition-colors ease-in-out hover:text-content-30 hover:bg-surface-20/50 cursor-pointer aria-[current]:text-content aria-[current]:bg-surface-30/50 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-dashed focus-visible:outline-primary" role="link" data-period="2026" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;value&quot;:2026},&quot;event&quot;:&quot;period_filter_changed&quot;}]]">
+        <span data-phx-loc="50" class="group-aria-[current]:font-medium">
+          
+              2026
+          
+        </span>
+
+        <span data-phx-loc="61" class="p-0 size-[1.725em] flex justify-center items-center rounded-full text-sm text-content-40/80 bg-surface-20 transition-colors ease-in-out group-hover:text-content-30 group-hover:bg-surface-30 group-aria-[current]:text-surface group-aria-[current]:bg-content">
+          5
+        </span>
+      </button>
+    </li><li data-phx-loc="36">
+      <button data-phx-loc="37" class="group w-full flex items-center justify-between gap-3.5 px-3 py-2 rounded-lg corner-squircle text-content-40 transition-colors ease-in-out hover:text-content-30 hover:bg-surface-20/50 cursor-pointer aria-[current]:text-content aria-[current]:bg-surface-30/50 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-dashed focus-visible:outline-primary" role="link" data-period="2025" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;value&quot;:2025},&quot;event&quot;:&quot;period_filter_changed&quot;}]]">
+        <span data-phx-loc="50" class="group-aria-[current]:font-medium">
+          
+              2025
+          
+        </span>
+
+        <span data-phx-loc="61" class="p-0 size-[1.725em] flex justify-center items-center rounded-full text-sm text-content-40/80 bg-surface-20 transition-colors ease-in-out group-hover:text-content-30 group-hover:bg-surface-30 group-aria-[current]:text-surface group-aria-[current]:bg-content">
+          4
+        </span>
+      </button>
+    </li><li data-phx-loc="36">
+      <button data-phx-loc="37" class="group w-full flex items-center justify-between gap-3.5 px-3 py-2 rounded-lg corner-squircle text-content-40 transition-colors ease-in-out hover:text-content-30 hover:bg-surface-20/50 cursor-pointer aria-[current]:text-content aria-[current]:bg-surface-30/50 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-dashed focus-visible:outline-primary" role="link" data-period="2024" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;value&quot;:2024},&quot;event&quot;:&quot;period_filter_changed&quot;}]]">
+        <span data-phx-loc="50" class="group-aria-[current]:font-medium">
+          
+              2024
+          
+        </span>
+
+        <span data-phx-loc="61" class="p-0 size-[1.725em] flex justify-center items-center rounded-full text-sm text-content-40/80 bg-surface-20 transition-colors ease-in-out group-hover:text-content-30 group-hover:bg-surface-30 group-aria-[current]:text-surface group-aria-[current]:bg-content">
+          1
+        </span>
+      </button>
+    </li>
+  </ul>
+</nav><!-- </SiteWeb.ChangelogLive.Components.timeline_nav> -->
+      <!-- @caller lib/site_web/live/changelog_live/index.ex:29 (site) --><!-- <SiteWeb.ChangelogLive.Components.updates_timeline> lib/site_web/live/changelog_live/components.ex:97 (site) --><div data-phx-loc="98" class="mt-4 md:mt-0">
+  <div data-phx-loc="99" id="changelog-list" class="flex flex-col gap-14" phx-update="stream">
+    <section data-phx-loc="100" id="updates-week" class="" id="period-week" aria-label="Updates from the past week">
+      <!-- @caller lib/site_web/live/changelog_live/components.ex:113 (site) --><!-- <SiteWeb.ChangelogLive.Components.period_section_header> lib/site_web/live/changelog_live/components.ex:329 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:330 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h3 class="relative group sm:flex items-center text-content-10 text-content uppercase">
+        
+          <a data-phx-loc="604" id="week" class="scroll-header" href="#week">
+            
+          </a>
+          
+  This Week
+
+        
+      </h3>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> --><!-- </SiteWeb.ChangelogLive.Components.period_section_header> -->
+
+      
+        <p data-phx-loc="116" class="mt-2 flex items-center text-content-40 opacity-60">
+          <!-- @caller lib/site_web/live/changelog_live/components.ex:117 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-megaphone-off mr-4 size-6 text-content-40/80" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+          <span data-phx-loc="118" class="font-light">No updates</span>
+        </p>
+      
+    </section><section data-phx-loc="100" id="updates-month" class="" id="period-month" aria-label="Updates from the past month">
+      <!-- @caller lib/site_web/live/changelog_live/components.ex:113 (site) --><!-- <SiteWeb.ChangelogLive.Components.period_section_header> lib/site_web/live/changelog_live/components.ex:343 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:344 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h3 class="relative group sm:flex items-center text-content-10 text-content uppercase">
+        
+          <a data-phx-loc="604" id="month" class="scroll-header" href="#month">
+            
+          </a>
+          
+  This Month
+
+        
+      </h3>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> --><!-- </SiteWeb.ChangelogLive.Components.period_section_header> -->
+
+      
+        <!-- @caller lib/site_web/live/changelog_live/components.ex:121 (site) --><!-- <SiteWeb.CoreComponents.timeline> lib/site_web/components/core_components.ex:1205 (site) --><div data-phx-loc="1206" class="mt-2" class="flow-root" style="--tl-node-size: 38px; --tl-line-width: 2px;
+    --tl-node-radius: calc(infinity * 1px); --tl-align: left;
+    --tl-offset: calc(var(--tl-node-size) / 2 + var(--tl-line-width) / 2);
+    --tl-border-width: 2px;">
+  <ul data-phx-loc="1214" role="list" data-align="left" class="data-[align=left]:[--tl-ps:var(--tl-offset)] data-[align=right]:[--tl-pe:var(--tl-offset)] data-[align=left]:ps-(--tl-offset) data-[align=right]:pe-(--tl-offset) data-[align=left]:[--tl-node-left:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)] data-[align=left]:[--tl-node-right:auto] data-[align=right]:[--tl-node-right:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)] data-[align=right]:[--tl-node-left:auto] data-[align=left]:[--tl-line-left:calc(var(--tl-line-width)*-1)] data-[align=left]:[--tl-line-right:auto] data-[align=right]:[--tl-line-right:calc(var(--tl-line-width)*-1)] data-[align=right]:[--tl-line-left:auto]">
+    <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:121 (site) -->
+          <!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-sky-50/80 border border-sky-200 dark:bg-sky-500/5 dark:border-sky-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:250 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:251 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-cloud size-4 text-sky-600 dark:text-sky-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:202 (site) --><div data-phx-loc="203" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:204 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10">
+        
+          
+    Bluesky Post
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="208" class="mt-1 max-w-md">
+    <a data-phx-loc="209" href="https://bsky.app/profile/nuno.site/post/3mh2dgbtaek2w" class="link-ghost text-sm text-balance text-content-30 hover:decoration-sky-600" target="_blank">
+      Silversun Pickups - Lazy Eye
+
+It&#39;s a perfect song.
+That&#39;s it.
+    </a>
+  </div>
+
+  
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:220 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Mar 14th, 2026
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> --><!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-sky-50/80 border border-sky-200 dark:bg-sky-500/5 dark:border-sky-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:250 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:251 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-cloud size-4 text-sky-600 dark:text-sky-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:202 (site) --><div data-phx-loc="203" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:204 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10">
+        
+          
+    Bluesky Post
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="208" class="mt-1 max-w-md">
+    <a data-phx-loc="209" href="https://bsky.app/profile/nuno.site/post/3mg3nnveid22y" class="link-ghost text-sm text-balance text-content-30 hover:decoration-sky-600" target="_blank">
+      I&#39;ve written a small post about adding flag icons in Phoenix using the same technique that the Phoenix generators use to add the heroicons set.
+
+nuno.site/blog/2026/fl...
+
+#BlogPost #ElixirLang
+    </a>
+  </div>
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:218 (site) --><!-- <SiteWeb.ChangelogLive.Components.bluesky_embed> lib/site_web/live/changelog_live/components.ex:275 (site) --><a data-phx-loc="276" href="https://nuno.site/blog/2026/flag-icons-in-phoenix" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 mb-1">
+  <img data-phx-loc="282" src="https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:7rjevs6fx7wx7es2xtrnn73h/bafkreihtibgd562acwwy66mgc4ztlkfyemvwsn5ejqdoeypnxz3fnv5oyy" alt="Flag icons in Phoenix · Nuno&#39;s Site" loading="lazy" class="rounded-md max-h-48 object-cover">
+</a><!-- </SiteWeb.ChangelogLive.Components.bluesky_embed> -->
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:220 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Mar 2nd, 2026
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> -->
+        <!-- </:inner_block> -->
+  </ul>
+</div><!-- </SiteWeb.CoreComponents.timeline> -->
+      
+    </section><section data-phx-loc="100" id="updates-2026" class="" id="period-2026" aria-label="Updates from the year 2026">
+      <!-- @caller lib/site_web/live/changelog_live/components.ex:113 (site) --><!-- <SiteWeb.ChangelogLive.Components.period_section_header> lib/site_web/live/changelog_live/components.ex:357 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:358 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h3 class="relative group sm:flex items-center text-content-10 text-content uppercase">
+        
+          <a data-phx-loc="604" id="year-2026" class="scroll-header" href="#year-2026">
+            
+          </a>
+          
+  2026
+
+        
+      </h3>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> --><!-- </SiteWeb.ChangelogLive.Components.period_section_header> -->
+
+      
+        <!-- @caller lib/site_web/live/changelog_live/components.ex:121 (site) --><!-- <SiteWeb.CoreComponents.timeline> lib/site_web/components/core_components.ex:1205 (site) --><div data-phx-loc="1206" class="mt-2" class="flow-root" style="--tl-node-size: 38px; --tl-line-width: 2px;
+    --tl-node-radius: calc(infinity * 1px); --tl-align: left;
+    --tl-offset: calc(var(--tl-node-size) / 2 + var(--tl-line-width) / 2);
+    --tl-border-width: 2px;">
+  <ul data-phx-loc="1214" role="list" data-align="left" class="data-[align=left]:[--tl-ps:var(--tl-offset)] data-[align=right]:[--tl-pe:var(--tl-offset)] data-[align=left]:ps-(--tl-offset) data-[align=right]:pe-(--tl-offset) data-[align=left]:[--tl-node-left:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)] data-[align=left]:[--tl-node-right:auto] data-[align=right]:[--tl-node-right:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)] data-[align=right]:[--tl-node-left:auto] data-[align=left]:[--tl-line-left:calc(var(--tl-line-width)*-1)] data-[align=left]:[--tl-line-right:auto] data-[align=right]:[--tl-line-right:calc(var(--tl-line-width)*-1)] data-[align=right]:[--tl-line-left:auto]">
+    <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:121 (site) -->
+          <!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-red-50/80 border border-red-200 dark:bg-red-500/5 dark:border-red-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:238 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:239 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-file-text size-4 text-red-600 dark:text-red-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:180 (site) --><div data-phx-loc="181" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:182 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10 capitalize">
+        
+          
+    Blog article
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="186" class="mt-1 max-w-md">
+    <a data-phx-loc="187" href="/blog/2026/flag-icons-in-phoenix" class="link-subtle text-base text-balance text-content-30">
+      Flag icons in Phoenix
+    </a>
+
+    <p data-phx-loc="191" class="mt-1 text-sm text-content-40">
+      Easily add country flag icons to your phoenix app using a Tailwind plugin.
+    </p>
+  </div>
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:196 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Feb 27th, 2026
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> --><!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-sky-50/80 border border-sky-200 dark:bg-sky-500/5 dark:border-sky-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:250 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:251 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-cloud size-4 text-sky-600 dark:text-sky-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:202 (site) --><div data-phx-loc="203" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:204 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10">
+        
+          
+    Bluesky Post
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="208" class="mt-1 max-w-md">
+    <a data-phx-loc="209" href="https://bsky.app/profile/nuno.site/post/3mfepbmndpc2m" class="link-ghost text-sm text-balance text-content-30 hover:decoration-sky-600" target="_blank">
+      I&#39;ve written a thing about AI (who hasn&#39;t amirite?).
+
+nuno.site/blog/2026/ai...
+
+#BlogPost #ai
+    </a>
+  </div>
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:218 (site) --><!-- <SiteWeb.ChangelogLive.Components.bluesky_embed> lib/site_web/live/changelog_live/components.ex:275 (site) --><a data-phx-loc="276" href="https://nuno.site/blog/2026/ai-fatigue-in-the-age-of-agents" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 mb-1">
+  <img data-phx-loc="282" src="https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:7rjevs6fx7wx7es2xtrnn73h/bafkreietltqypoaa6b4iml7ouh636wa746pntoyn4uamkgeaz4xpt7fgzm" alt="AI Fatigue in the Age of Agents · Nuno&#39;s Site" loading="lazy" class="rounded-md max-h-48 object-cover">
+</a><!-- </SiteWeb.ChangelogLive.Components.bluesky_embed> -->
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:220 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Feb 21st, 2026
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> --><!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-red-50/80 border border-red-200 dark:bg-red-500/5 dark:border-red-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:238 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:239 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-file-text size-4 text-red-600 dark:text-red-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:180 (site) --><div data-phx-loc="181" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:182 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10 capitalize">
+        
+          
+    Blog article
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="186" class="mt-1 max-w-md">
+    <a data-phx-loc="187" href="/blog/2026/ai-fatigue-in-the-age-of-agents" class="link-subtle text-base text-balance text-content-30">
+      AI Fatigue in the Age of Agents
+    </a>
+
+    <p data-phx-loc="191" class="mt-1 text-sm text-content-40">
+      I use AI every day. I find it useful. Sometimes even impressive. And yet, I’m tired.
+    </p>
+  </div>
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:196 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Feb 20th, 2026
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> --><!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-amber-50/80 border border-amber-200 dark:bg-amber-500/5 dark:border-amber-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:244 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:245 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-message-square size-4 text-amber-600 dark:text-amber-500" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:180 (site) --><div data-phx-loc="181" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:182 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10 capitalize">
+        
+          
+    Blog note
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="186" class="mt-1 max-w-md">
+    <a data-phx-loc="187" href="/blog/2026/life-is-hardmode" class="link-subtle text-base text-balance text-content-30">
+      Life is Hardmode
+    </a>
+
+    <p data-phx-loc="191" class="mt-1 text-sm text-content-40">
+      Why hard games can be more rewarding than easy ones.
+    </p>
+  </div>
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:196 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Jan 10th, 2026
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> --><!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-amber-50/80 border border-amber-200 dark:bg-amber-500/5 dark:border-amber-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:244 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:245 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-message-square size-4 text-amber-600 dark:text-amber-500" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:180 (site) --><div data-phx-loc="181" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:182 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10 capitalize">
+        
+          
+    Blog note
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="186" class="mt-1 max-w-md">
+    <a data-phx-loc="187" href="/blog/2026/its-a-start-init" class="link-subtle text-base text-balance text-content-30">
+      It&#39;s a start, init?
+    </a>
+
+    <p data-phx-loc="191" class="mt-1 text-sm text-content-40">
+      Lorem ipsum?
+    </p>
+  </div>
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:196 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Jan 1st, 2026
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> -->
+        <!-- </:inner_block> -->
+  </ul>
+</div><!-- </SiteWeb.CoreComponents.timeline> -->
+      
+    </section><section data-phx-loc="100" id="updates-2025" class="" id="period-2025" aria-label="Updates from the year 2025">
+      <!-- @caller lib/site_web/live/changelog_live/components.ex:113 (site) --><!-- <SiteWeb.ChangelogLive.Components.period_section_header> lib/site_web/live/changelog_live/components.ex:357 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:358 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h3 class="relative group sm:flex items-center text-content-10 text-content uppercase">
+        
+          <a data-phx-loc="604" id="year-2025" class="scroll-header" href="#year-2025">
+            
+          </a>
+          
+  2025
+
+        
+      </h3>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> --><!-- </SiteWeb.ChangelogLive.Components.period_section_header> -->
+
+      
+        <!-- @caller lib/site_web/live/changelog_live/components.ex:121 (site) --><!-- <SiteWeb.CoreComponents.timeline> lib/site_web/components/core_components.ex:1205 (site) --><div data-phx-loc="1206" class="mt-2" class="flow-root" style="--tl-node-size: 38px; --tl-line-width: 2px;
+    --tl-node-radius: calc(infinity * 1px); --tl-align: left;
+    --tl-offset: calc(var(--tl-node-size) / 2 + var(--tl-line-width) / 2);
+    --tl-border-width: 2px;">
+  <ul data-phx-loc="1214" role="list" data-align="left" class="data-[align=left]:[--tl-ps:var(--tl-offset)] data-[align=right]:[--tl-pe:var(--tl-offset)] data-[align=left]:ps-(--tl-offset) data-[align=right]:pe-(--tl-offset) data-[align=left]:[--tl-node-left:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)] data-[align=left]:[--tl-node-right:auto] data-[align=right]:[--tl-node-right:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)] data-[align=right]:[--tl-node-left:auto] data-[align=left]:[--tl-line-left:calc(var(--tl-line-width)*-1)] data-[align=left]:[--tl-line-right:auto] data-[align=right]:[--tl-line-right:calc(var(--tl-line-width)*-1)] data-[align=right]:[--tl-line-left:auto]">
+    <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:121 (site) -->
+          <!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-sky-50/80 border border-sky-200 dark:bg-sky-500/5 dark:border-sky-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:250 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:251 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-cloud size-4 text-sky-600 dark:text-sky-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:202 (site) --><div data-phx-loc="203" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:204 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10">
+        
+          
+    Bluesky Post
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="208" class="mt-1 max-w-md">
+    <a data-phx-loc="209" href="https://bsky.app/profile/nuno.site/post/3mamh7xczok24" class="link-ghost text-sm text-balance text-content-30 hover:decoration-sky-600" target="_blank">
+      👀
+
+PS - Not the author, found it on Reddit, don&#39;t know the source.
+    </a>
+  </div>
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:218 (site) --><!-- <SiteWeb.ChangelogLive.Components.bluesky_embed> lib/site_web/live/changelog_live/components.ex:294 (site) --><div data-phx-loc="295" class="mt-4 mb-1">
+  <img data-phx-loc="296" class="max-h-100 rounded-md object-cover" src="https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:7rjevs6fx7wx7es2xtrnn73h/bafkreibzbdwwobn2p3bx2bmb4nc5ymbqszncupaztaflvpny7gwmkrqg6y@jpeg" alt="Image of a fictitious MAGA Sans typeface where all letters are just black boxes in allusion to the released Epstein files. " loading="lazy">
+</div><!-- </SiteWeb.ChangelogLive.Components.bluesky_embed> -->
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:220 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Dec 23rd, 2025
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> --><!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-sky-50/80 border border-sky-200 dark:bg-sky-500/5 dark:border-sky-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:250 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:251 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-cloud size-4 text-sky-600 dark:text-sky-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:202 (site) --><div data-phx-loc="203" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:204 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10">
+        
+          
+    Bluesky Post
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="208" class="mt-1 max-w-md">
+    <a data-phx-loc="209" href="https://bsky.app/profile/nuno.site/post/3lzk2lsxsck2h" class="link-ghost text-sm text-balance text-content-30 hover:decoration-sky-600" target="_blank">
+      One thing I fail to understand in this “We will push AI down your throat, you like it or not era” is who really wants AI to “browse the web for you”, “buy things for you”. Who wants that? Who foresees the screen being replaced by voice interactions? I don’t get the end goal here.
+    </a>
+  </div>
+
+  
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:220 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Sep 23rd, 2025
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> --><!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-sky-50/80 border border-sky-200 dark:bg-sky-500/5 dark:border-sky-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:250 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:251 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-cloud size-4 text-sky-600 dark:text-sky-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:202 (site) --><div data-phx-loc="203" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:204 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10">
+        
+          
+    Bluesky Post
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="208" class="mt-1 max-w-md">
+    <a data-phx-loc="209" href="https://bsky.app/profile/nuno.site/post/3lr6vvcw4uc2f" class="link-ghost text-sm text-balance text-content-30 hover:decoration-sky-600" target="_blank">
+      Years ago, Aqua was cool, but a bit corny. Windows Aero was bad. This new Apple “Liquid Glass” is a modern take on Aqua + Aero and it looks modern corny. :/
+
+Maybe I will change my mind when I’ll see it in front of me, but no me gusta.
+    </a>
+  </div>
+
+  
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:220 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Jun 9th, 2025
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> --><!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-sky-50/80 border border-sky-200 dark:bg-sky-500/5 dark:border-sky-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:250 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:251 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-cloud size-4 text-sky-600 dark:text-sky-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:202 (site) --><div data-phx-loc="203" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:204 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10">
+        
+          
+    Bluesky Post
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="208" class="mt-1 max-w-md">
+    <a data-phx-loc="209" href="https://bsky.app/profile/nuno.site/post/3lmm7momvrk27" class="link-ghost text-sm text-balance text-content-30 hover:decoration-sky-600" target="_blank">
+      The Phoenix generator includes Heroicons by default, but while Heroicons is a really nice set it isn&#39;t very expansive. Let&#39;s include Lucide Icons and Simple Icons for brand icons.
+
+Gist: gist.github.com/greven/36077...
+
+#elixirlang
+    </a>
+  </div>
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:218 (site) --><!-- <SiteWeb.ChangelogLive.Components.bluesky_embed> lib/site_web/live/changelog_live/components.ex:275 (site) --><a data-phx-loc="276" href="https://gist.github.com/greven/36077217806ddd42989387a212a8c8db" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 mb-1">
+  <img data-phx-loc="282" src="https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:7rjevs6fx7wx7es2xtrnn73h/bafkreibtrbpyryo2rigfocscpnmsytqhscip2u4pwkqccgtlbyd5fapnnm@jpeg" alt="Phoenix CSS Icons" loading="lazy" class="rounded-md max-h-48 object-cover">
+</a><!-- </SiteWeb.ChangelogLive.Components.bluesky_embed> -->
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:220 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Apr 12th, 2025
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> -->
+        <!-- </:inner_block> -->
+  </ul>
+</div><!-- </SiteWeb.CoreComponents.timeline> -->
+      
+    </section><section data-phx-loc="100" id="updates-2024" class="" id="period-2024" aria-label="Updates from the year 2024">
+      <!-- @caller lib/site_web/live/changelog_live/components.ex:113 (site) --><!-- <SiteWeb.ChangelogLive.Components.period_section_header> lib/site_web/live/changelog_live/components.ex:357 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:358 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h3 class="relative group sm:flex items-center text-content-10 text-content uppercase">
+        
+          <a data-phx-loc="604" id="year-2024" class="scroll-header" href="#year-2024">
+            
+          </a>
+          
+  2024
+
+        
+      </h3>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> --><!-- </SiteWeb.ChangelogLive.Components.period_section_header> -->
+
+      
+        <!-- @caller lib/site_web/live/changelog_live/components.ex:121 (site) --><!-- <SiteWeb.CoreComponents.timeline> lib/site_web/components/core_components.ex:1205 (site) --><div data-phx-loc="1206" class="mt-2" class="flow-root" style="--tl-node-size: 38px; --tl-line-width: 2px;
+    --tl-node-radius: calc(infinity * 1px); --tl-align: left;
+    --tl-offset: calc(var(--tl-node-size) / 2 + var(--tl-line-width) / 2);
+    --tl-border-width: 2px;">
+  <ul data-phx-loc="1214" role="list" data-align="left" class="data-[align=left]:[--tl-ps:var(--tl-offset)] data-[align=right]:[--tl-pe:var(--tl-offset)] data-[align=left]:ps-(--tl-offset) data-[align=right]:pe-(--tl-offset) data-[align=left]:[--tl-node-left:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)] data-[align=left]:[--tl-node-right:auto] data-[align=right]:[--tl-node-right:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)] data-[align=right]:[--tl-node-left:auto] data-[align=left]:[--tl-line-left:calc(var(--tl-line-width)*-1)] data-[align=left]:[--tl-line-right:auto] data-[align=right]:[--tl-line-right:calc(var(--tl-line-width)*-1)] data-[align=right]:[--tl-line-left:auto]">
+    <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:121 (site) -->
+          <!-- @caller lib/site_web/live/changelog_live/components.ex:122 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-sky-50/80 border border-sky-200 dark:bg-sky-500/5 dark:border-sky-500/60">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:127 (site) -->
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:128 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_icon> lib/site_web/live/changelog_live/components.ex:250 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:251 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-cloud size-4 text-sky-600 dark:text-sky-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </SiteWeb.ChangelogLive.Components.update_icon> -->
+            <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:122 (site) -->
+            <div data-phx-loc="130" class="flex flex-col gap-1">
+              <!-- @caller lib/site_web/live/changelog_live/components.ex:131 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:202 (site) --><div data-phx-loc="203" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:204 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10">
+        
+          
+    Bluesky Post
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+
+  <div data-phx-loc="208" class="mt-1 max-w-md">
+    <a data-phx-loc="209" href="https://bsky.app/profile/nuno.site/post/3lbhs5tmlds2h" class="link-ghost text-sm text-balance text-content-30 hover:decoration-sky-600" target="_blank">
+      Reddit is down. How am I supposed to procrastinate now?? 😩
+    </a>
+  </div>
+
+  
+
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:220 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Nov 21st, 2024
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+            </div>
+          <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> -->
+        <!-- </:inner_block> -->
+  </ul>
+</div><!-- </SiteWeb.CoreComponents.timeline> -->
+      
+    </section>
+
+    <section data-phx-loc="138" id="period-1982" aria-label="The beginning">
+      <!-- @caller lib/site_web/live/changelog_live/components.ex:139 (site) --><!-- <SiteWeb.ChangelogLive.Components.period_section_header> lib/site_web/live/changelog_live/components.ex:357 (site) --><!-- @caller lib/site_web/live/changelog_live/components.ex:358 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h3 class="relative group sm:flex items-center text-content-10 text-content uppercase">
+        
+          <a data-phx-loc="604" id="year-1982" class="scroll-header" href="#year-1982">
+            
+          </a>
+          
+  1982
+
+        
+      </h3>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> --><!-- </SiteWeb.ChangelogLive.Components.period_section_header> -->
+
+      <!-- @caller lib/site_web/live/changelog_live/components.ex:141 (site) --><!-- <SiteWeb.CoreComponents.timeline> lib/site_web/components/core_components.ex:1205 (site) --><div data-phx-loc="1206" class="mt-2" class="flow-root" style="--tl-node-size: 34px; --tl-line-width: 2px;
+    --tl-node-radius: calc(infinity * 1px); --tl-align: left;
+    --tl-offset: calc(var(--tl-node-size) / 2 + var(--tl-line-width) / 2);
+    --tl-border-width: 2px;">
+  <ul data-phx-loc="1214" role="list" data-align="left" class="data-[align=left]:[--tl-ps:var(--tl-offset)] data-[align=right]:[--tl-pe:var(--tl-offset)] data-[align=left]:ps-(--tl-offset) data-[align=right]:pe-(--tl-offset) data-[align=left]:[--tl-node-left:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)] data-[align=left]:[--tl-node-right:auto] data-[align=right]:[--tl-node-right:calc((var(--tl-node-size)/2+var(--tl-line-width)/2)*-1)] data-[align=right]:[--tl-node-left:auto] data-[align=left]:[--tl-line-left:calc(var(--tl-line-width)*-1)] data-[align=left]:[--tl-line-right:auto] data-[align=right]:[--tl-line-right:calc(var(--tl-line-width)*-1)] data-[align=right]:[--tl-line-left:auto]">
+    <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:141 (site) -->
+        <!-- @caller lib/site_web/live/changelog_live/components.ex:142 (site) --><!-- <SiteWeb.CoreComponents.timeline_item> lib/site_web/components/core_components.ex:1261 (site) --><li data-phx-loc="1262" style="--tl-border: var(--tl-border-width) dashed var(--color-surface-30);" class="relative not-first:mt-8 ps-(--tl-ps) pe-(--tl-pe) before:content-[&#39;&#39;] last:before:hidden before:absolute before:pointer-events-none before:[border-inline-start:var(--tl-border)] before:top-0 before:-bottom-8 before:left-(--tl-line-left) ">
+  <div data-phx-loc="1275" data-part="timeline-node" aria-hidden="true" style="width: var(--tl-node-size); height: var(--tl-node-size); border-radius: var(--tl-node-radius);
+      false" class="absolute left-(--tl-node-left) right-(--tl-node-right) top-0 flex items-center justify-center bg-surface-30">
+    <div data-phx-loc="1288" class="w-full h-full relative inline-flex items-center justify-center rounded-full bg-surface-20 border border-surface-30">
+      <!-- <:node> lib/site_web/live/changelog_live/components.ex:143 (site) -->
+            <!-- @caller lib/site_web/live/changelog_live/components.ex:144 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-signpost-big size-4 text-content-40" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+          <!-- </:node> -->
+    </div>
+  </div>
+
+  <div data-phx-loc="1296" data-part="timeline-body" class="flex flex-col justify-center items-start ps-(--tl-ps) pe-(--tl-pe)">
+    
+
+    <div data-phx-loc="1307" class="text-sm text-content-40">
+      <!-- <:inner_block> lib/site_web/live/changelog_live/components.ex:142 (site) -->
+          <div data-phx-loc="146" class="flex flex-col gap-1">
+            <!-- @caller lib/site_web/live/changelog_live/components.ex:147 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_body> lib/site_web/live/changelog_live/components.ex:226 (site) --><div data-phx-loc="227" class="mt-1">
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:228 (site) --><!-- <SiteWeb.CoreComponents.header> lib/site_web/components/core_components.ex:581 (site) --><header data-phx-loc="582" class="-mb-2">
+  <div data-phx-loc="583" class="flex items-center ">
+    <div data-phx-loc="589" class="pb-2">
+      <!-- @caller lib/site_web/components/core_components.ex:590 (site) --><h4 class="flex items-center text-content-10 font-medium text-sm text-content-10">
+        
+          
+    The Beginning
+  
+        
+      </h4>
+
+      
+    </div>
+    
+  </div>
+</header><!-- </SiteWeb.CoreComponents.header> -->
+  <div data-phx-loc="231" class="max-w-md">This is where it all started... but I didn&#39;t know how to use a computer yet.</div>
+  <!-- @caller lib/site_web/live/changelog_live/components.ex:232 (site) --><!-- <SiteWeb.ChangelogLive.Components.update_date> lib/site_web/live/changelog_live/components.ex:263 (site) --><div data-phx-loc="264" class="mt-1">
+  <time data-phx-loc="265" class="text-sm text-content-40/80">
+    Feb 25th, 1982
+  </time>
+</div><!-- </SiteWeb.ChangelogLive.Components.update_date> -->
+</div><!-- </SiteWeb.ChangelogLive.Components.update_body> -->
+          </div>
+        <!-- </:inner_block> -->
+    </div>
+  </div>
+</li><!-- </SiteWeb.CoreComponents.timeline_item> -->
+      <!-- </:inner_block> -->
+  </ul>
+</div><!-- </SiteWeb.CoreComponents.timeline> -->
+    </section>
+  </div>
+</div><!-- </SiteWeb.ChangelogLive.Components.updates_timeline> -->
+    </div>
+  <!-- </:inner_block> -->
+</div><!-- </SiteWeb.Layouts.page_content> -->
+<!-- </:inner_block> -->
+    
+</div><!-- </SiteWeb.Layouts.wrapper> -->
+  </main>
+
+  <!-- @caller lib/site_web/components/layouts.ex:56 (site) --><!-- <SiteWeb.Layouts.site_footer> lib/site_web/components/layouts.ex:183 (site) --><footer data-phx-loc="184" class="z-0 flex flex-col items-center gap-4 pt-8 pb-4 md:pt-12">
+  <!-- @caller lib/site_web/components/layouts.ex:185 (site) --><!-- <SiteWeb.Layouts.wrapper> lib/site_web/components/layouts.ex:91 (site) --><div data-phx-loc="92" class="wrapper">
+  <!-- <:inner_block> lib/site_web/components/layouts.ex:185 (site) -->
+    <div data-phx-loc="186" class="my-1 flex items-center gap-2 justify-center text-xs font-headings text-content-30">
+      <!-- @caller lib/site_web/components/layouts.ex:187 (site) --><!-- <SiteWeb.Layouts.footer_copyright> lib/site_web/components/layouts.ex:250 (site) --><span data-phx-loc="251" class="flex items-center gap-1 ">
+  &copy; 2026 <span data-phx-loc="252" class="ml-0.5">Nuno Moço</span>
+</span><!-- </SiteWeb.Layouts.footer_copyright> -->
+      <!-- @caller lib/site_web/components/layouts.ex:188 (site) --><!-- <SiteWeb.Layouts.footer_divider> lib/site_web/components/layouts.ex:240 (site) --><span data-phx-loc="241" class="font-sans text-xs text-primary print:hidden">&bull;</span><!-- </SiteWeb.Layouts.footer_divider> -->
+      <span data-phx-loc="189" class="link-ghost print:hidden">
+        <a data-phx-loc="190" href="/sitemap">Sitemap</a>
+      </span>
+    </div>
+  <!-- </:inner_block> -->
+</div><!-- </SiteWeb.Layouts.wrapper> -->
+</footer><!-- </SiteWeb.Layouts.site_footer> -->
+
+  <!-- @caller lib/site_web/components/layouts.ex:58 (site) --><!-- <SiteWeb.LiveComponents.finder> lib/site_web/components/live_components.ex:13 (site) --><!-- @caller lib/site_web/components/live_components.ex:14 (site) --><!-- <SiteWeb.FinderComponent.render> lib/site_web/components/live/finder_component.ex:15 (site) --><div data-phx-loc="16" id="finder-component" class="finder" phx-hook="Finder" data-mode="default">
+  <!-- @caller lib/site_web/components/live/finder_component.ex:17 (site) --><!-- <SiteWeb.CoreComponents.dialog> lib/site_web/components/core_components.ex:1785 (site) --><dialog data-phx-loc="1786" id="finder-dialog" phx-hook="Dialog" phx-remove="[[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-dialog&quot;,&quot;event&quot;:&quot;hide-dialog&quot;}]]" data-cancel="[[&quot;exec&quot;,{&quot;attr&quot;:&quot;phx-remove&quot;}]]" data-close-on-click-outside style="--dialog-size: var(--container-xl);" class="opacity-0 border-none outline-none bg-transparent transition-discrete backdrop:transition-discrete starting:open:opacity-0 starting:open:backdrop:bg-transparent starting:open:backdrop:opacity-0 open:opacity-100 transition ease-out duration-250 backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-opacity backdrop:ease-out
+      backdrop:duration-250 backdrop:transition-discrete open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100" data-close="[[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]">
+  <div data-phx-loc="1802" style="--dialog-x-offset: 5vw; --dialog-y-offset: 15dvh;" data-part="dialog-container" class="fixed flex justify-center overflow-visible focus:outline-none items-start -bottom-px left-1 right-1 md:top-0 md:bottom-0 md:px-(--dialog-x-offset) md:py-(--dialog-y-offset)">
+    <section data-phx-loc="1814" data-part="dialog-panel" class="w-full grow-0 shrink-0 basis-(--dialog-size) backdrop-blur-md backdrop-filter overflow-y-auto max-w-full max-h-[calc(100dvh-2*var(--dialog-y-offset))] rounded-t-md md:rounded-md animate-slide-out-down data-dialog-open:animate-slide-in-up
+      md:animate-scale-out md:data-dialog-open:animate-scale-in outline-1 outline-black/5 dark:-outline-offset-1 dark:outline-white/5 shadow-2xl bg-surface-10/95">
+      <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:17 (site) -->
+    
+    <!-- @caller lib/site_web/components/live/finder_component.ex:26 (site) --><!-- <SiteWeb.FinderComponent.finder_search> lib/site_web/components/live/finder_component.ex:235 (site) --><div data-phx-loc="236" class="relative hidden md:flex">
+  <!-- @caller lib/site_web/components/live/finder_component.ex:237 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-magnifying-glass-mini absolute left-4 top-3.5 h-5 w-5 text-content-40 pointer-events-none" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+  <input data-phx-loc="241" id="finder-input" class="w-full h-12 pl-11 px-4 py-2.5 rounded-md bg-transparent border-0 placeholder:text-content-40/80 text-content-10 sm:text-sm focus:outline-none focus:ring-0" placeholder="Search or type a command..." autocomplete="off" role="combobox" aria-expanded="false" aria-controls="options">
+</div><!-- </SiteWeb.FinderComponent.finder_search> -->
+
+    
+    <!-- @caller lib/site_web/components/live/finder_component.ex:29 (site) --><!-- <SiteWeb.FinderComponent.finder_commands> lib/site_web/components/live/finder_component.ex:204 (site) --><div data-phx-loc="205" id="finder-commands" class="max-h-100 scroll-py-1 overflow-y-auto focus:outline-none divide-y divide-neutral-500/10 dark:divide-white/5" data-part="items-container" tabindex="-1">
+  <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:29 (site) -->
+      
+      <!-- @caller lib/site_web/components/live/finder_component.ex:34 (site) --><!-- <SiteWeb.FinderComponent.finder_section> lib/site_web/components/live/finder_component.ex:282 (site) --><section data-phx-loc="283" id="theme-section">
+  <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:34 (site) -->
+        <!-- @caller lib/site_web/components/live/finder_component.ex:35 (site) --><!-- <SiteWeb.FinderComponent.finder_section_title> lib/site_web/components/live/finder_component.ex:293 (site) --><h3 data-phx-loc="294" class="mt-4 mb-0.5 px-5 font-headings text-xs text-content-40/80 ">
+  Theme
+</h3><!-- </SiteWeb.FinderComponent.finder_section_title> -->
+
+        <!-- @caller lib/site_web/components/live/finder_component.ex:37 (site) --><!-- <SiteWeb.FinderComponent.finder_items_list> lib/site_web/components/live/finder_component.ex:305 (site) --><ul data-phx-loc="306" id="finder-theme-switcher" class="p-2 text-sm ">
+  <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:37 (site) -->
+          <!-- @caller lib/site_web/components/live/finder_component.ex:38 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="set_theme_light" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="Set light theme" phx-click="[[&quot;dispatch&quot;,{&quot;detail&quot;:{&quot;theme&quot;:&quot;light&quot;},&quot;event&quot;:&quot;phx:set-theme&quot;}],[&quot;exec&quot;,{&quot;to&quot;:&quot;#finder-dialog&quot;,&quot;attr&quot;:&quot;data-close&quot;}]]" data-section="theme">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-sun size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:38 (site) -->
+            Light Mode
+            <!-- @caller lib/site_web/components/live/finder_component.ex:50 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-check hidden size-4.5 ml-1.5 text-secondary [[data-theme-mode=user][data-theme=light]_&amp;]:block" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+          <!-- </:inner_block> -->
+    </span>
+  </div>
+
+  
+</li><!-- </SiteWeb.FinderComponent.finder_item> -->
+          <!-- @caller lib/site_web/components/live/finder_component.ex:55 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="set_theme_dark" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="Set dark theme" phx-click="[[&quot;dispatch&quot;,{&quot;detail&quot;:{&quot;theme&quot;:&quot;dark&quot;},&quot;event&quot;:&quot;phx:set-theme&quot;}],[&quot;exec&quot;,{&quot;to&quot;:&quot;#finder-dialog&quot;,&quot;attr&quot;:&quot;data-close&quot;}]]" data-section="theme">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-moon size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:55 (site) -->
+            Dark Mode
+            <!-- @caller lib/site_web/components/live/finder_component.ex:67 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-check hidden size-4.5 ml-1.5 text-secondary [[data-theme-mode=user][data-theme=dark]_&amp;]:block" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+          <!-- </:inner_block> -->
+    </span>
+  </div>
+
+  
+</li><!-- </SiteWeb.FinderComponent.finder_item> -->
+          <!-- @caller lib/site_web/components/live/finder_component.ex:72 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="set_theme_system" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="Follow system theme settings" phx-click="[[&quot;dispatch&quot;,{&quot;detail&quot;:{&quot;theme&quot;:&quot;system&quot;},&quot;event&quot;:&quot;phx:set-theme&quot;}],[&quot;exec&quot;,{&quot;to&quot;:&quot;#finder-dialog&quot;,&quot;attr&quot;:&quot;data-close&quot;}]]" data-section="theme">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-monitor size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:72 (site) -->
+            System Mode
+            <!-- @caller lib/site_web/components/live/finder_component.ex:84 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-check hidden size-4.5 ml-1.5 text-secondary in-data-[theme-mode=system]:block" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+          <!-- </:inner_block> -->
+    </span>
+  </div>
+
+  
+</li><!-- </SiteWeb.FinderComponent.finder_item> -->
+        <!-- </:inner_block> -->
+</ul><!-- </SiteWeb.FinderComponent.finder_items_list> -->
+      <!-- </:inner_block> -->
+</section><!-- </SiteWeb.FinderComponent.finder_section> -->
+
+      
+      <!-- @caller lib/site_web/components/live/finder_component.ex:93 (site) --><!-- <SiteWeb.FinderComponent.finder_section> lib/site_web/components/live/finder_component.ex:282 (site) --><section data-phx-loc="283" id="navigation-section">
+  <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:93 (site) -->
+        <!-- @caller lib/site_web/components/live/finder_component.ex:94 (site) --><!-- <SiteWeb.FinderComponent.finder_section_title> lib/site_web/components/live/finder_component.ex:293 (site) --><h3 data-phx-loc="294" class="mt-4 mb-0.5 px-5 font-headings text-xs text-content-40/80 ">
+  Navigation
+</h3><!-- </SiteWeb.FinderComponent.finder_section_title> -->
+
+        <!-- @caller lib/site_web/components/live/finder_component.ex:96 (site) --><!-- <SiteWeb.FinderComponent.finder_items_list> lib/site_web/components/live/finder_component.ex:305 (site) --><ul data-phx-loc="306" id="finder-navigation" class="p-2 text-sm ">
+  <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:96 (site) -->
+          <!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_home" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="Go Home" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_home&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-house size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Home
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_blog" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="Articles and notes" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_blog&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-notebook-pen size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Blog
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_about" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="About me" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_about&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-fingerprint-pattern size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            About
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_pulse" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="News Pulse" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_pulse&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-activity size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Pulse
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_music" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="Recent music" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_music&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-music-4 size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Music
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_books" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="Currently reading" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_books&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-book size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Books
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_gaming" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="Games I&#39;m playing" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_gaming&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-gamepad-2 size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Gaming
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_resume" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="My Resume" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_resume&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-file-user size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Resume
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_photos" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="My photos" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_photos&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-image size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Photos
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_travel" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="Travel log" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_travel&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-map-pinned size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Travel
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_stack" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="My stack / tools I use" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_stack&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-layers size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Stack
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_bookmarks" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="My bookmarks" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_bookmarks&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-bookmark size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Bookmarks
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> --><!-- @caller lib/site_web/components/live/finder_component.ex:97 (site) --><!-- <SiteWeb.FinderComponent.finder_item> lib/site_web/components/live/finder_component.ex:327 (site) --><li data-phx-loc="328" id="nav_changelog" class="group cursor-default flex items-center justify-between rounded-md px-3 py-2 select-none aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4 focus:outline-hidden " role="option" tabindex="-1" data-type="command" aria-selected="false" data-description="Site updates" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;command_id&quot;:&quot;nav_changelog&quot;},&quot;target&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;finder:exec&quot;}],[&quot;dispatch&quot;,{&quot;to&quot;:&quot;#finder-component&quot;,&quot;event&quot;:&quot;phx:finder-close&quot;}]]" data-section="navigation">
+  <div data-phx-loc="343" class="flex items-center">
+    <!-- @caller lib/site_web/components/live/finder_component.ex:344 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-history size-5 flex-none text-content-40/60 group-aria-selected:text-secondary" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+    <span data-phx-loc="345" class="ml-3 flex items-center flex-none text-xs text-content-30 group-aria-selected:text-content-10" data-slot="text">
+      
+            Changelog
+          
+    </span>
+  </div>
+
+  <!-- @caller lib/site_web/components/live/finder_component.ex:353 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-chevron-right md:hidden size-4 flex-none text-secondary/90" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+</li><!-- </SiteWeb.FinderComponent.finder_item> -->
+        <!-- </:inner_block> -->
+</ul><!-- </SiteWeb.FinderComponent.finder_items_list> -->
+      <!-- </:inner_block> -->
+</section><!-- </SiteWeb.FinderComponent.finder_section> -->
+    <!-- </:inner_block> -->
+</div><!-- </SiteWeb.FinderComponent.finder_commands> -->
+
+    
+    <div data-phx-loc="112" id="finder-search-results" class="max-h-100 scroll-py-1 overflow-y-auto" data-part="items-container" tabindex="-1" hidden>
+      <ul data-phx-loc="119" id="finder-search-items" class="p-2 text-sm"></ul>
+    </div>
+
+    
+    <!-- @caller lib/site_web/components/live/finder_component.ex:123 (site) --><!-- <SiteWeb.FinderComponent.finder_no_results> lib/site_web/components/live/finder_component.ex:262 (site) --><div data-phx-loc="263" id="finder-no-results" class="px-6 py-14 text-center text-sm sm:px-14" hidden>
+  <!-- @caller lib/site_web/components/live/finder_component.ex:264 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-radar mx-auto mb-4 size-8 text-content-40/40" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+  
+    <p data-phx-loc="266" class="text-content-40/80">No results found.</p>
+  
+  <p data-phx-loc="270" class="mt-2 text-content-30">
+    
+        We couldn't find anything with that term. Please try again.
+      
+  </p>
+</div><!-- </SiteWeb.FinderComponent.finder_no_results> -->
+
+    
+    <!-- @caller lib/site_web/components/live/finder_component.ex:131 (site) --><!-- <SiteWeb.FinderComponent.finder_footer> lib/site_web/components/live/finder_component.ex:223 (site) --><div data-phx-loc="224" class="hidden md:flex justify-between bg-surface-30/40 px-4 py-2.5 text-xs text-content-40">
+  <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:131 (site) -->
+      <div data-phx-loc="132" class="flex items-center gap-8">
+        <div data-phx-loc="133" class="flex flex-wrap items-center gap-2">
+          <!-- @caller lib/site_web/components/live/finder_component.ex:134 (site) --><!-- <SiteWeb.CoreComponents.kbd> lib/site_web/components/core_components.ex:964 (site) --><kbd data-phx-loc="965" class="flex h-5 min-w-5 items-center justify-center rounded-sm border border-surface-40 bg-surface-30 shadow-sm text-sm text-content-20">
+  <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:134 (site) --><!-- @caller lib/site_web/components/live/finder_component.ex:134 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-arrow-up size-3" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </:inner_block> -->
+</kbd><!-- </SiteWeb.CoreComponents.kbd> -->
+          <!-- @caller lib/site_web/components/live/finder_component.ex:135 (site) --><!-- <SiteWeb.CoreComponents.kbd> lib/site_web/components/core_components.ex:964 (site) --><kbd data-phx-loc="965" class="flex h-5 min-w-5 items-center justify-center rounded-sm border border-surface-40 bg-surface-30 shadow-sm text-sm text-content-20">
+  <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:135 (site) --><!-- @caller lib/site_web/components/live/finder_component.ex:135 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-arrow-down size-3" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> --><!-- </:inner_block> -->
+</kbd><!-- </SiteWeb.CoreComponents.kbd> -->
+          Move
+        </div>
+
+        <div data-phx-loc="139" class="flex flex-wrap items-center">
+          <!-- @caller lib/site_web/components/live/finder_component.ex:140 (site) --><!-- <SiteWeb.CoreComponents.kbd> lib/site_web/components/core_components.ex:964 (site) --><kbd data-phx-loc="965" class="flex h-5 min-w-5 items-center justify-center rounded-sm border border-surface-40 bg-surface-30 shadow-sm text-sm text-content-20 mx-2 sm:mx-2 px-1 in-data-[mode=search]:bg-secondary/5 in-data-[mode=search]:border-secondary in-data-[mode=search]:text-secondary">
+  
+            &gt;
+          
+</kbd><!-- </SiteWeb.CoreComponents.kbd> -->
+          Search
+        </div>
+      </div>
+
+      <div data-phx-loc="150" class="flex flex-wrap items-center">
+        <!-- @caller lib/site_web/components/live/finder_component.ex:151 (site) --><!-- <SiteWeb.CoreComponents.kbd> lib/site_web/components/core_components.ex:964 (site) --><kbd data-phx-loc="965" class="flex h-5 min-w-5 items-center justify-center rounded-sm border border-surface-40 bg-surface-30 shadow-sm text-sm text-content-20 mx-2 sm:mx-2 px-1">
+  esc
+</kbd><!-- </SiteWeb.CoreComponents.kbd> -->
+        Clear <span data-phx-loc="152" class="ml-3 mr-1 text-content-40/30">|</span>
+        <!-- @caller lib/site_web/components/live/finder_component.ex:153 (site) --><!-- <SiteWeb.CoreComponents.kbd> lib/site_web/components/core_components.ex:964 (site) --><kbd data-phx-loc="965" class="flex h-5 min-w-5 items-center justify-center rounded-sm border border-surface-40 bg-surface-30 shadow-sm text-sm text-content-20 mx-2 sm:mx-2 px-1">
+  <!-- <:inner_block> lib/site_web/components/live/finder_component.ex:153 (site) -->
+          <!-- @caller lib/site_web/components/live/finder_component.ex:154 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="lucide-corner-down-left size-3" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+        <!-- </:inner_block> -->
+</kbd><!-- </SiteWeb.CoreComponents.kbd> -->
+        Select
+      </div>
+    <!-- </:inner_block> -->
+</div><!-- </SiteWeb.FinderComponent.finder_footer> -->
+  <!-- </:inner_block> -->
+    </section>
+  </div>
+</dialog><!-- </SiteWeb.CoreComponents.dialog> -->
+</div><!-- </SiteWeb.FinderComponent.render> --><!-- </SiteWeb.LiveComponents.finder> -->
+  <!-- @caller lib/site_web/components/layouts.ex:59 (site) --><!-- <SiteWeb.Layouts.flash_group> lib/site_web/components/layouts.ex:371 (site) --><div data-phx-loc="372" id="flash-group" aria-live="polite">
+  <!-- @caller lib/site_web/components/layouts.ex:373 (site) --><!-- <SiteWeb.CoreComponents.flash> lib/site_web/components/core_components.ex:275 (site) --><!-- </SiteWeb.CoreComponents.flash> -->
+  <!-- @caller lib/site_web/components/layouts.ex:374 (site) --><!-- <SiteWeb.CoreComponents.flash> lib/site_web/components/core_components.ex:275 (site) --><!-- </SiteWeb.CoreComponents.flash> -->
+
+  <!-- @caller lib/site_web/components/layouts.ex:376 (site) --><!-- <SiteWeb.CoreComponents.flash> lib/site_web/components/core_components.ex:275 (site) --><div data-phx-loc="276" id="client-error" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;key&quot;:&quot;error&quot;},&quot;event&quot;:&quot;lv:clear-flash&quot;}],[&quot;hide&quot;,{&quot;time&quot;:200,&quot;to&quot;:&quot;#client-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;ease-in&quot;,&quot;duration-200&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;],[&quot;opacity-0&quot;,&quot;translate-y-20&quot;]]}]]" role="alert" class="fixed bottom-4 left-4 w-fit z-50 cursor-pointer" hidden phx-connected="[[&quot;hide&quot;,{&quot;time&quot;:200,&quot;to&quot;:&quot;#client-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;ease-in&quot;,&quot;duration-200&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;],[&quot;opacity-0&quot;,&quot;translate-y-20&quot;]]}],[&quot;set_attr&quot;,{&quot;attr&quot;:[&quot;hidden&quot;,&quot;&quot;]}]]" phx-disconnected="[[&quot;show&quot;,{&quot;time&quot;:300,&quot;to&quot;:&quot;.phx-client-error #client-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;ease-out&quot;,&quot;duration-300&quot;],[&quot;opacity-0&quot;,&quot;translate-y-20&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;]]}],[&quot;remove_attr&quot;,{&quot;attr&quot;:&quot;hidden&quot;}]]">
+  <div data-phx-loc="284" class="relative flex items-center gap-3 px-4 py-3.5 rounded-lg border text-sm shadow bg-rose-50/90 border-rose-600 text-rose-800 dark:bg-rose-950/50 dark:border-rose-800/30 dark:text-rose-200 backdrop-blur-xs">
+    
+    <!-- @caller lib/site_web/components/core_components.ex:294 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-exclamation-circle-mini size-5 shrink-0 text-rose-600 dark:text-rose-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+
+    <div data-phx-loc="300" class="flex-1 min-w-0">
+      
+      <p data-phx-loc="302" class="text-wrap wrap-break-words"><!-- <:inner_block> lib/site_web/components/layouts.ex:376 (site) -->
+    Reconnecting
+    <!-- @caller lib/site_web/components/layouts.ex:386 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-arrow-path ml-1.5 size-3 motion-safe:animate-spin" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+  <!-- </:inner_block> --></p>
+    </div>
+  </div>
+</div><!-- </SiteWeb.CoreComponents.flash> -->
+
+  <!-- @caller lib/site_web/components/layouts.ex:389 (site) --><!-- <SiteWeb.CoreComponents.flash> lib/site_web/components/core_components.ex:275 (site) --><div data-phx-loc="276" id="server-error" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;key&quot;:&quot;error&quot;},&quot;event&quot;:&quot;lv:clear-flash&quot;}],[&quot;hide&quot;,{&quot;time&quot;:200,&quot;to&quot;:&quot;#server-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;ease-in&quot;,&quot;duration-200&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;],[&quot;opacity-0&quot;,&quot;translate-y-20&quot;]]}]]" role="alert" class="fixed bottom-4 left-4 w-fit z-50 cursor-pointer" hidden phx-connected="[[&quot;hide&quot;,{&quot;time&quot;:200,&quot;to&quot;:&quot;#server-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;ease-in&quot;,&quot;duration-200&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;],[&quot;opacity-0&quot;,&quot;translate-y-20&quot;]]}],[&quot;set_attr&quot;,{&quot;attr&quot;:[&quot;hidden&quot;,&quot;&quot;]}]]" phx-disconnected="[[&quot;show&quot;,{&quot;time&quot;:300,&quot;to&quot;:&quot;.phx-server-error #server-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;ease-out&quot;,&quot;duration-300&quot;],[&quot;opacity-0&quot;,&quot;translate-y-20&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;]]}],[&quot;remove_attr&quot;,{&quot;attr&quot;:&quot;hidden&quot;}]]">
+  <div data-phx-loc="284" class="relative flex items-center gap-3 px-4 py-3.5 rounded-lg border text-sm shadow bg-rose-50/90 border-rose-600 text-rose-800 dark:bg-rose-950/50 dark:border-rose-800/30 dark:text-rose-200 backdrop-blur-xs">
+    
+    <!-- @caller lib/site_web/components/core_components.ex:294 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-exclamation-circle-mini size-5 shrink-0 text-rose-600 dark:text-rose-400" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+
+    <div data-phx-loc="300" class="flex-1 min-w-0">
+      <p data-phx-loc="301" class="font-semibold mb-1">Something went wrong!</p>
+      <p data-phx-loc="302" class="text-wrap wrap-break-words"><!-- <:inner_block> lib/site_web/components/layouts.ex:389 (site) -->
+    Attempting to reconnect
+    <!-- @caller lib/site_web/components/layouts.ex:400 (site) --><!-- <SiteWeb.CoreComponents.icon> lib/site_web/components/core_components.ex:1436 (site) --><span data-phx-loc="1437" class="hero-arrow-path ml-1.5 size-3 motion-safe:animate-spin" data-slot="icon"></span><!-- </SiteWeb.CoreComponents.icon> -->
+  <!-- </:inner_block> --></p>
+    </div>
+  </div>
+</div><!-- </SiteWeb.CoreComponents.flash> -->
+</div><!-- </SiteWeb.Layouts.flash_group> -->
+</div><!-- </SiteWeb.Layouts.app> --><!-- </SiteWeb.ChangelogLive.Index.render> --></div>
+  <iframe hidden height="0" width="0" src="/phoenix/live_reload/frame"></iframe></body>
+</html><!-- </SiteWeb.Layouts.root> -->

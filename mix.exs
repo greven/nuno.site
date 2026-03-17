@@ -42,6 +42,7 @@ defmodule Site.MixProject do
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
+      {:phoenix_prerender, "~> 0.1.1"},
       {:bandit, "~> 1.10"},
       {:lazy_html, "~> 0.1"},
       {:ecto_sql, "~> 3.13"},

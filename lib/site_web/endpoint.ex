@@ -27,6 +27,8 @@ defmodule SiteWeb.Endpoint do
     only: SiteWeb.static_paths(),
     only_matching: ~w(site)
 
+  plug PhoenixPrerender.Plug
+
   if Code.ensure_loaded?(Tidewave) do
     plug Tidewave
   end

@@ -56,28 +56,28 @@ defmodule SiteWeb.Router do
         Hooks.ActiveLinks,
         Hooks.Metrics
       ] do
-      live "/", HomeLive.Index, :index
-      live "/blog", BlogLive.Index, :index
+      live "/", HomeLive.Index, :index, metadata: %{prerender: true}
+      live "/blog", BlogLive.Index, :index, metadata: %{prerender: true}
       live "/blog/:year/:slug", BlogLive.Show, :show
       live "/archive/year/:year", ArchiveLive.Index, :index
-      live "/categories", CategoriesLive.Index, :index
+      live "/categories", CategoriesLive.Index, :index, metadata: %{prerender: true}
       live "/category/:category", CategoriesLive.Show, :show
-      live "/tags", TagsLive.Index, :index
+      live "/tags", TagsLive.Index, :index, metadata: %{prerender: true}
       live "/tag/:tag", TagsLive.Show, :show
-      live "/changelog", ChangelogLive.Index, :index
-      live "/analytics", AnalyticsLive.Index, :index
-      live "/travel", TravelLive.Index, :index
-      live "/music", MusicLive.Index, :index
-      live "/books", BooksLive.Index, :index
-      live "/gaming", GamingLive.Index, :index
-      live "/photos", PhotosLive.Index, :index
-      live "/bookmarks", BookmarksLive.Index, :index
-      live "/uses", UsesLive.Index, :index
-      live "/about", AboutLive.Index, :index
-      live "/resume", AboutLive.Resume, :show
-      live "/pulse", PulseLive.Index, :index
-      live "/sitemap", SitemapLive.Index, :index
-      live "/sink", KitchenSinkLive.Index, :index
+      live "/changelog", ChangelogLive.Index, :index, metadata: %{prerender: true}
+      live "/analytics", AnalyticsLive.Index, :index, metadata: %{prerender: true}
+      live "/travel", TravelLive.Index, :index, metadata: %{prerender: true}
+      live "/music", MusicLive.Index, :index, metadata: %{prerender: true}
+      live "/books", BooksLive.Index, :index, metadata: %{prerender: true}
+      live "/gaming", GamingLive.Index, :index, metadata: %{prerender: true}
+      live "/photos", PhotosLive.Index, :index, metadata: %{prerender: true}
+      live "/bookmarks", BookmarksLive.Index, :index, metadata: %{prerender: true}
+      live "/uses", UsesLive.Index, :index, metadata: %{prerender: true}
+      live "/about", AboutLive.Index, :index, metadata: %{prerender: true}
+      live "/resume", AboutLive.Resume, :show, metadata: %{prerender: true}
+      live "/pulse", PulseLive.Index, :index, metadata: %{prerender: true}
+      live "/sitemap", SitemapLive.Index, :index, metadata: %{prerender: true}
+      live "/sink", KitchenSinkLive.Index, :index, metadata: %{prerender: true}
     end
   end
 
