@@ -76,7 +76,7 @@ if config_env() == :prod do
   # Email configuration
   config :site, Site.Mailer,
     adapter: Swoosh.Adapters.Resend,
-    api_key: System.fetch_env!("RESEND_API_KEY")
+    api_key: env!("RESEND_API_KEY", :string!, "resend-api-key")
 
   config :site, :temp_dir, System.get_env("TEMP_DIR")
 
