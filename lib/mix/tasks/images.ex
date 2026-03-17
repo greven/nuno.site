@@ -106,8 +106,10 @@ defmodule Mix.Tasks.Images do
     # Get all images in the directory (recursively)
     images =
       Path.wildcard("#{directory}/**/*.{jpg,jpeg,png,gif}")
-      |> Enum.reject(fn image -> Regex.match?(@ignore_pattern, image) end)
-      |> Enum.reject(fn image -> Enum.any?(@ignored_files, &String.ends_with?(image, &1)) end)
+      |> Enum.reject(fn image ->
+        Regex.match?(@ignore_pattern, image) or
+          Enum.any?(@ignored_files, &String.ends_with?(image, &1))
+      end)
 
     # Process each image (concurrently... because BEAM!!)
     Task.async_stream(

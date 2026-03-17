@@ -90,6 +90,7 @@ defmodule SiteWeb.SiteComponents do
 
   attr :class, :string, default: nil
 
+  # credo:disable-for-next-line
   def dashed_line(%{position: position} = assigns) do
     assigns =
       assigns

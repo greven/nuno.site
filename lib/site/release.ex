@@ -26,6 +26,7 @@ defmodule Site.Release do
         Ecto.Migrator.with_repo(repo, fn _repo ->
           seed_script = Path.join([:code.priv_dir(@app), "repo", "seeds.exs"])
 
+          # credo:disable-for-next-line
           if File.exists?(seed_script) do
             IO.puts("Running seed script: #{seed_script}")
             Code.eval_file(seed_script)

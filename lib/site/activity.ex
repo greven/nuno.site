@@ -5,8 +5,8 @@ defmodule Site.Activity do
 
   use Nebulex.Caching, cache: Site.Cache
 
-  alias Site.Support
   alias Site.Activity.Update
+  alias Site.Support
 
   # Activity sources where each source is defined as a
   # tuple of `{type, {module, function}}`.

@@ -7,8 +7,8 @@ defmodule Site.Pulse.Source.ElixirStatus do
 
   import SweetXml
 
-  alias Site.Pulse.Item
   alias Site.Pulse.Helpers
+  alias Site.Pulse.Item
 
   @behaviour Site.Pulse.Source
 

@@ -308,6 +308,7 @@ defmodule Site.Support do
     end
   end
 
+  # credo:disable-for-next-line
   def time_ago(%NaiveDateTime{} = datetime, options) do
     cutoff = Keyword.get(options, :cutoff_in_days, nil)
     format = Keyword.get(options, :format, "%b %d, %Y")

@@ -12,7 +12,7 @@ APP      := site
 APP_DIR  := /opt/$(APP)
 DB_PATH  := /var/lib/$(APP)/$(APP).db
 
-.PHONY: help logs status restart current releases rollback console database health secrets deploy
+.PHONY: help logs status restart current releases rollback console database health secrets pre-commit pre-deploy deploy
 
 help: ## Show this help
 	@echo ""
@@ -89,5 +89,13 @@ secrets: ## Print all server .env secrets (values masked)
 	done
 	@echo ""
 
-deploy: ## Deploy a new release (e.g. make deploy, make deploy TYPE=minor, make deploy TYPE=major)
+pre-commit: ## Run pre-commit checks (e.g. mix format, mix credo, mix test)
+	mix precommit
+	mix test
+
+pre-deploy: pre-commit ## Pre-deployment steps (e.g. prerender pages)
+	mix phoenix.prerender
+	git commit -am "chore: prerender pages"
+
+deploy: pre-deploy ## Deploy a new release (e.g. make deploy, make deploy TYPE=minor, make deploy TYPE=major)
 	mix bump $(or $(TYPE),patch)

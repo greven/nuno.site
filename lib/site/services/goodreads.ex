@@ -8,8 +8,8 @@ defmodule Site.Services.Goodreads do
   require Logger
   import SweetXml
 
-  alias Site.Support
   alias Site.Services.Book
+  alias Site.Support
 
   @base_url "https://www.goodreads.com"
   @user_id "87020422"
@@ -45,29 +45,27 @@ defmodule Site.Services.Goodreads do
   end
 
   defp parse_currently_reading_response({:ok, body}) do
-    try do
-      books =
-        body
-        |> xpath(
-          ~x"//item"l,
-          id: ~x"./book_id/text()"s,
-          title: ~x"./title/text()"s,
-          author: ~x"./author_name/text()"s,
-          link: ~x"./link/text()"s,
-          thumbnail_url: ~x"./book_medium_image_url/text()"s,
-          cover_url: ~x"./book_large_image_url/text()"s,
-          book_published: ~x"./book_published/text()"s,
-          user_date_added: ~x"./user_date_added/text()"s,
-          description: ~x"./description/text()"s
-        )
-        |> Enum.map(&build_book_struct/1)
+    books =
+      body
+      |> xpath(
+        ~x"//item"l,
+        id: ~x"./book_id/text()"s,
+        title: ~x"./title/text()"s,
+        author: ~x"./author_name/text()"s,
+        link: ~x"./link/text()"s,
+        thumbnail_url: ~x"./book_medium_image_url/text()"s,
+        cover_url: ~x"./book_large_image_url/text()"s,
+        book_published: ~x"./book_published/text()"s,
+        user_date_added: ~x"./user_date_added/text()"s,
+        description: ~x"./description/text()"s
+      )
+      |> Enum.map(&build_book_struct/1)
 
-      {:ok, books}
-    rescue
-      error ->
-        Logger.error("Failed to parse RSS feed: #{inspect(error)}")
-        {:error, :parse_error}
-    end
+    {:ok, books}
+  rescue
+    error ->
+      Logger.error("Failed to parse RSS feed: #{inspect(error)}")
+      {:error, :parse_error}
   end
 
   defp parse_currently_reading_response({:error, _} = error), do: error
@@ -90,39 +88,37 @@ defmodule Site.Services.Goodreads do
   end
 
   defp parse_recently_read_response({:ok, body}) do
-    try do
-      books =
-        body
-        |> xpath(
-          ~x"//item"l,
-          id: ~x"./book_id/text()"s,
-          title: ~x"./title/text()"s,
-          author: ~x"./author_name/text()"s,
-          link: ~x"./link/text()"s,
-          thumbnail_url: ~x"./book_medium_image_url/text()"s,
-          cover_url: ~x"./book_large_image_url/text()"s,
-          book_published: ~x"./book_published/text()"s,
-          user_read_at: ~x"./user_read_at/text()"s,
-          user_date_added: ~x"./user_date_added/text()"s,
-          description: ~x"./description/text()"s
-        )
-        |> Enum.map(&build_book_struct/1)
-        |> Enum.sort_by(
-          fn book ->
-            case book.read_date do
-              nil -> ~D[1970-01-01]
-              date -> date
-            end
-          end,
-          {:desc, Date}
-        )
+    books =
+      body
+      |> xpath(
+        ~x"//item"l,
+        id: ~x"./book_id/text()"s,
+        title: ~x"./title/text()"s,
+        author: ~x"./author_name/text()"s,
+        link: ~x"./link/text()"s,
+        thumbnail_url: ~x"./book_medium_image_url/text()"s,
+        cover_url: ~x"./book_large_image_url/text()"s,
+        book_published: ~x"./book_published/text()"s,
+        user_read_at: ~x"./user_read_at/text()"s,
+        user_date_added: ~x"./user_date_added/text()"s,
+        description: ~x"./description/text()"s
+      )
+      |> Enum.map(&build_book_struct/1)
+      |> Enum.sort_by(
+        fn book ->
+          case book.read_date do
+            nil -> ~D[1970-01-01]
+            date -> date
+          end
+        end,
+        {:desc, Date}
+      )
 
-      {:ok, books}
-    rescue
-      error ->
-        Logger.error("Failed to parse RSS feed: #{inspect(error)}")
-        {:error, :parse_error}
-    end
+    {:ok, books}
+  rescue
+    error ->
+      Logger.error("Failed to parse RSS feed: #{inspect(error)}")
+      {:error, :parse_error}
   end
 
   defp parse_recently_read_response({:error, _} = error), do: error
@@ -145,29 +141,27 @@ defmodule Site.Services.Goodreads do
   end
 
   defp parse_want_to_read_response({:ok, body}) do
-    try do
-      books =
-        body
-        |> xpath(
-          ~x"//item"l,
-          id: ~x"./book_id/text()"s,
-          title: ~x"./title/text()"s,
-          author: ~x"./author_name/text()"s,
-          link: ~x"./link/text()"s,
-          thumbnail_url: ~x"./book_medium_image_url/text()"s,
-          cover_url: ~x"./book_large_image_url/text()"s,
-          book_published: ~x"./book_published/text()"s,
-          user_date_added: ~x"./user_date_added/text()"s,
-          description: ~x"./description/text()"s
-        )
-        |> Enum.map(&build_book_struct/1)
+    books =
+      body
+      |> xpath(
+        ~x"//item"l,
+        id: ~x"./book_id/text()"s,
+        title: ~x"./title/text()"s,
+        author: ~x"./author_name/text()"s,
+        link: ~x"./link/text()"s,
+        thumbnail_url: ~x"./book_medium_image_url/text()"s,
+        cover_url: ~x"./book_large_image_url/text()"s,
+        book_published: ~x"./book_published/text()"s,
+        user_date_added: ~x"./user_date_added/text()"s,
+        description: ~x"./description/text()"s
+      )
+      |> Enum.map(&build_book_struct/1)
 
-      {:ok, books}
-    rescue
-      error ->
-        Logger.error("Failed to parse RSS feed: #{inspect(error)}")
-        {:error, :parse_error}
-    end
+    {:ok, books}
+  rescue
+    error ->
+      Logger.error("Failed to parse RSS feed: #{inspect(error)}")
+      {:error, :parse_error}
   end
 
   defp parse_want_to_read_response({:error, _} = error), do: error

@@ -27,11 +27,9 @@ defmodule SiteWeb.HealthController do
   end
 
   defp check_database do
-    try do
-      Site.Repo.query!("SELECT 1")
-      true
-    rescue
-      _ -> false
-    end
+    Site.Repo.query!("SELECT 1")
+    true
+  rescue
+    _ -> false
   end
 end

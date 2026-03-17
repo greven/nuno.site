@@ -5,8 +5,8 @@ defmodule SiteWeb.Router do
 
   import SiteWeb.UserAuth
 
-  alias SiteWeb.Plugs
   alias SiteWeb.Hooks
+  alias SiteWeb.Plugs
 
   pipeline :browser do
     plug :accepts, ["html"]

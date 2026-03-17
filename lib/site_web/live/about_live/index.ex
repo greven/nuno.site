@@ -1,8 +1,8 @@
 defmodule SiteWeb.AboutLive.Index do
   use SiteWeb, :live_view
 
-  alias SiteWeb.SiteComponents
   alias SiteWeb.AboutLive.Components
+  alias SiteWeb.SiteComponents
 
   @impl true
   def render(assigns) do

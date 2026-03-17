@@ -15,9 +15,8 @@ defmodule Site.Services.Bluesky do
   import Ecto.Query
 
   alias __MODULE__.Post
-
-  alias Site.Repo
   alias Site.Blog
+  alias Site.Repo
 
   @base_url "https://bsky.social/xrpc"
 
@@ -272,32 +271,27 @@ defmodule Site.Services.Bluesky do
 
   # Streams the author feed posts for a given BlueSky actor (handle or DID).
   defp stream_author_feed(actor, opts) do
-    Stream.unfold(
-      nil,
-      fn
-        -1 ->
-          nil
+    Stream.unfold(nil, &fetch_feed_page(actor, &1, opts))
+  end
 
-        cursor ->
-          case fetch_author_feed(actor, Keyword.put(opts, :cursor, cursor)) do
-            {:ok, %{"feed" => feed} = resp} ->
-              posts = Enum.map(feed, &map_author_post/1)
-              next = resp["cursor"]
+  defp fetch_feed_page(_actor, -1, _opts), do: nil
 
-              # We return -1 as the next cursor since nil would
-              # be ambiguous as it's the initial cursor value.
-              cond do
-                posts == [] -> nil
-                is_nil(next) -> {posts, -1}
-                next -> {posts, next}
-                true -> {posts, nil}
-              end
+  defp fetch_feed_page(actor, cursor, opts) do
+    case fetch_author_feed(actor, Keyword.put(opts, :cursor, cursor)) do
+      {:ok, %{"feed" => feed} = resp} -> build_feed_page(feed, resp["cursor"])
+      _ -> nil
+    end
+  end
 
-            _ ->
-              nil
-          end
-      end
-    )
+  defp build_feed_page(feed, next_cursor) do
+    posts = Enum.map(feed, &map_author_post/1)
+
+    cond do
+      posts == [] -> nil
+      is_nil(next_cursor) -> {posts, -1}
+      next_cursor -> {posts, next_cursor}
+      true -> {posts, nil}
+    end
   end
 
   @doc """
@@ -731,8 +725,7 @@ defmodule Site.Services.Bluesky do
   # Extracts blog post tags and add the marker for identifying blog posts.
   defp post_tags(%Blog.Post{tags: tags}) when is_list(tags) do
     tags
-    |> Enum.map(fn tag -> "##{tag}" end)
-    |> Enum.join(" ")
+    |> Enum.map_join(" ", fn tag -> "##{tag}" end)
     |> Kernel.<>(" " <> @blog_post_marker)
   end
 

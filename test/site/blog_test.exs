@@ -2,11 +2,11 @@ defmodule Site.BlogTest do
   use Site.DataCase
 
   alias Site.Blog
-  alias Site.Blog.Parser
+  alias Site.Blog.Event
   alias Site.Blog.HeaderLink
+  alias Site.Blog.Parser
   alias Site.Blog.Post
   alias Site.Blog.PostLike
-  alias Site.Blog.Event
 
   describe "all_posts/0" do
     test "returns a list of posts" do

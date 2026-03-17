@@ -1,13 +1,13 @@
 defmodule SiteWeb.HomeLive.Index do
   use SiteWeb, :live_view
 
-  alias Site.Blog
   alias Site.Activity
+  alias Site.Blog
   alias Site.Services
   alias Site.Services.MusicTrack
 
-  alias SiteWeb.SiteComponents
   alias SiteWeb.HomeLive.Components
+  alias SiteWeb.SiteComponents
 
   @refresh_interval 60_000
 

@@ -32,8 +32,8 @@ defmodule Site.BrowserData do
 
   import Ecto.Query
 
-  alias Site.BrowserData.Repo
   alias Site.BrowserData.Feature
+  alias Site.BrowserData.Repo
 
   def version, do: @version
 

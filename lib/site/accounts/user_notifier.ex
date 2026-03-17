@@ -3,8 +3,8 @@ defmodule Site.Accounts.UserNotifier do
 
   import Swoosh.Email
 
-  alias Site.Mailer
   alias Site.Accounts.User
+  alias Site.Mailer
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do

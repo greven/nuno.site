@@ -1,8 +1,8 @@
 defmodule SiteWeb.ChangelogLive.Components do
   use SiteWeb, :html
 
-  alias Site.Support
   alias Site.Changelog
+  alias Site.Support
 
   @doc """
   Renders a navigation list of dates to filter the changelog timeline.

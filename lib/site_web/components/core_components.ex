@@ -7,8 +7,9 @@ defmodule SiteWeb.CoreComponents do
   alias Phoenix.LiveView.JS
 
   alias Site.Support
-  alias SiteWeb.Helpers
+
   alias SiteWeb.Components.Theming
+  alias SiteWeb.Helpers
 
   @button_radius "lg"
 
@@ -1792,7 +1793,7 @@ defmodule SiteWeb.CoreComponents do
       data-close-on-click-outside={@close_on_click_outside}
       style={"--dialog-size: #{dialog_size(@size)};"}
       class={[
-        "opacity-0 border-none outline-none bg-transparent transition-discrete backdrop:transition-discrete",
+        "opacity-0 border-none outline-none bg-transparent transition-discrete",
         "starting:open:opacity-0 starting:open:backdrop:bg-transparent starting:open:backdrop:opacity-0",
         @dialog_animation_class,
         @use_backdrop && @backdrop_class

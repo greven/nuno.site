@@ -13,8 +13,8 @@ defmodule Site.BrowserData.Manager do
   import Ecto.Query
 
   alias Site.BrowserData
-  alias Site.BrowserData.Repo
   alias Site.BrowserData.Feature
+  alias Site.BrowserData.Repo
 
   @version BrowserData.version()
   @database_path BrowserData.database_path()

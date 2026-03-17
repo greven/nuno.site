@@ -6,9 +6,9 @@ defmodule Site.Travel do
   use Nebulex.Caching, cache: Site.Cache
 
   alias Site.Geo
+  alias Site.Travel.Measures
   alias Site.Travel.Trip
   alias Site.Travel.Visit
-  alias Site.Travel.Measures
 
   @decorate cacheable(key: {:trips})
   def list_trips do

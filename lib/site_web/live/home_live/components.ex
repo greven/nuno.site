@@ -3,8 +3,8 @@ defmodule SiteWeb.HomeLive.Components do
 
   alias Phoenix.LiveView.AsyncResult
 
-  alias SiteWeb.SiteComponents
   alias SiteWeb.BlogComponents
+  alias SiteWeb.SiteComponents
 
   @doc false
 
@@ -18,17 +18,13 @@ defmodule SiteWeb.HomeLive.Components do
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
+  # credo:disable-for-next-line
   def bento_card(assigns) do
     duotone_icon =
-      cond do
-        assigns[:icon] && String.ends_with?(assigns[:icon], "-duotone") ->
-          assigns[:icon]
-          |> String.trim_leading("lucide-")
-          |> String.trim_trailing("-duotone")
-
-        true ->
-          nil
-      end
+      if(assigns[:icon] && String.ends_with?(assigns[:icon], "-duotone"),
+        do: assigns[:icon] |> String.trim_leading("lucide-") |> String.trim_trailing("-duotone"),
+        else: nil
+      )
 
     assigns =
       assigns

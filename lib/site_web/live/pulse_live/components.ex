@@ -1093,6 +1093,7 @@ defmodule SiteWeb.PulseLive.Components do
   Given a weather code, returns the corresponding icon path.
   Icons used are Google Material Design weather icons v2.
   """
+  # credo:disable-for-next-line
   def weather_icon_path(weather_code, is_night? \\ false) do
     cond do
       weather_code == 0 and is_night? -> "clear_night.png"

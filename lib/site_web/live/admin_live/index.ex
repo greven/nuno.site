@@ -2,8 +2,8 @@ defmodule SiteWeb.AdminLive.Index do
   use SiteWeb, :live_view
 
   alias Site.ErrorTracking
-  alias Site.SystemInfo
   alias Site.Support
+  alias Site.SystemInfo
 
   alias SiteWeb.AdminLive.Components
 

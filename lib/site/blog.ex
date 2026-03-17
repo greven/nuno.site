@@ -6,10 +6,10 @@ defmodule Site.Blog do
   alias __MODULE__
 
   alias Site.Repo
-  alias Site.Services.Bluesky
 
-  alias Site.Blog.PostLike
   alias Site.Blog.Event
+  alias Site.Blog.PostLike
+  alias Site.Services.Bluesky
 
   defmodule NotFoundError do
     defexception [:message, plug_status: 404]

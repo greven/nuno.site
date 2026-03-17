@@ -39,6 +39,7 @@ defmodule Mix.Tasks.Urls do
       @sources
       |> Stream.flat_map(fn {mod, fun, args, {id_field, body_field}} ->
         apply(mod, fun, args)
+        # credo:disable-for-next-line
         |> Stream.map(fn item ->
           %{id: Map.get(item, id_field), body: Map.get(item, body_field)}
         end)

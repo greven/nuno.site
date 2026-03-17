@@ -3,11 +3,11 @@ defmodule Site.Services.Weather do
   Weather information service using Open Meteo API (https://open-meteo.com).
   """
 
-  alias __MODULE__.Forecast
+  alias __MODULE__.AirQuality
   alias __MODULE__.Current
   alias __MODULE__.Daily
+  alias __MODULE__.Forecast
   alias __MODULE__.Hourly
-  alias __MODULE__.AirQuality
 
   @doc """
   Fetches weather information for the configured location.
@@ -162,6 +162,7 @@ defmodule Site.Services.Weather do
   Translates the weather code from the API to a human-readable description.
   Source: https://open-meteo.com/en/docs#weather_variable_documentation
   """
+  # credo:disable-for-next-line
   def weather_description(code) when is_integer(code) do
     case code do
       0 -> "Clear sky"
@@ -200,6 +201,7 @@ defmodule Site.Services.Weather do
   Like weather_description/1 but returns a shorter description
   suitable for compact UI elements.
   """
+  # credo:disable-for-next-line
   def weather_short_description(code) when is_integer(code) do
     case code do
       0 -> "Clear sky"

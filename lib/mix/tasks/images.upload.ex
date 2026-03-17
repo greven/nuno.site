@@ -1,4 +1,5 @@
 defmodule Mix.Tasks.Images.Upload do
+  @moduledoc false
   use Mix.Task
 
   @shortdoc "Process and upload blog post images to R2"

@@ -5,8 +5,8 @@ defmodule Site.Pulse.Source.Reddit do
 
   use Nebulex.Caching, cache: Site.Cache
 
-  alias Site.Pulse.Item
   alias Site.Pulse.Helpers
+  alias Site.Pulse.Item
 
   @behaviour Site.Pulse.Source
 

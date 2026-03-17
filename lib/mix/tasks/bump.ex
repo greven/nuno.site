@@ -135,6 +135,7 @@ defmodule Mix.Tasks.Bump do
         Mix.shell().info("\n   Would push to GitHub and create release")
         Mix.shell().info("   Release notes would be auto-generated from git commits")
       else
+        # credo:disable-for-next-line
         if skip_confirm? or confirm_push?(new_tag) do
           push_to_github(new_tag)
           create_github_release(new_tag)

@@ -5,11 +5,11 @@ defmodule Site.Services do
 
   use Nebulex.Caching, cache: Site.Cache
 
-  alias Site.Services.Weather
   alias Site.Services.Bluesky
-  alias Site.Services.Lastfm
   alias Site.Services.Goodreads
+  alias Site.Services.Lastfm
   alias Site.Services.Steam
+  alias Site.Services.Weather
 
   @music_albums_limit 36
   @music_top_artists_limit 50

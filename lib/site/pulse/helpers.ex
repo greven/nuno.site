@@ -99,38 +99,26 @@ defmodule Site.Pulse.Helpers do
   def parse_custom_date(""), do: nil
 
   def parse_custom_date(date_str) when is_binary(date_str) do
-    case Regex.run(
-           ~r/(\d{1,2})\s+(\w{3})\s+(\d{4})\s+(\d{2}):(\d{2}):(\d{2})\s+([+-]\d{4})/,
-           date_str
-         ) do
-      [_, day, month_abbr, year, hour, minute, second, tz] ->
-        with {:ok, month} <- Site.Support.month_number(month_abbr),
-             {day_int, ""} <- Integer.parse(day),
-             {year_int, ""} <- Integer.parse(year),
-             {hour_int, ""} <- Integer.parse(hour),
-             {minute_int, ""} <- Integer.parse(minute),
-             {second_int, ""} <- Integer.parse(second) do
-          tz_offset = String.to_integer(tz)
-          tz_hours = div(tz_offset, 100)
-          tz_minutes = rem(tz_offset, 100)
+    regex = ~r/(\d{1,2})\s+(\w{3})\s+(\d{4})\s+(\d{2}):(\d{2}):(\d{2})\s+([+-]\d{4})/
 
-          case DateTime.new(
-                 Date.new(year_int, month, day_int),
-                 Time.new(hour_int, minute_int, second_int),
-                 "Etc/UTC"
-               ) do
-            {:ok, dt} ->
-              DateTime.add(dt, -(tz_hours * 3600 + tz_minutes * 60))
-
-            _ ->
-              nil
-          end
-        else
-          _ -> nil
-        end
-
-      _ ->
-        nil
+    with [_, day, month_abbr, year, hour, minute, second, tz] <- Regex.run(regex, date_str),
+         {:ok, month} <- Site.Support.month_number(month_abbr),
+         {day_int, ""} <- Integer.parse(day),
+         {year_int, ""} <- Integer.parse(year),
+         {hour_int, ""} <- Integer.parse(hour),
+         {minute_int, ""} <- Integer.parse(minute),
+         {second_int, ""} <- Integer.parse(second),
+         {:ok, date} <- Date.new(year_int, month, day_int),
+         {:ok, time} <- Time.new(hour_int, minute_int, second_int),
+         {:ok, dt} <- DateTime.new(date, time, "Etc/UTC") do
+      tz_offset = String.to_integer(tz)
+      tz_hours = div(tz_offset, 100)
+      tz_minutes = rem(tz_offset, 100)
+      DateTime.add(dt, -(tz_hours * 3600 + tz_minutes * 60))
+    else
+      _ -> nil
     end
   end
+
+  def parse_custom_date(_), do: nil
 end
