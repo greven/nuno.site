@@ -80,5 +80,19 @@ if config_env() == :prod do
 
   config :site, :temp_dir, System.get_env("TEMP_DIR")
 
-  config :forex, dets_file_path: ~c"/var/lib/site/forex_cache"
+  # Forex
+
+  forex_cache_module =
+    case System.get_env("FOREX_CACHE_MODULE") do
+      "Forex.Cache.ETS" -> Forex.Cache.ETS
+      _ -> Forex.Cache.DETS
+    end
+
+  forex_dets_path =
+    System.get_env("FOREX_DETS_PATH", "/var/lib/site/forex_cache")
+    |> String.to_charlist()
+
+  config :forex,
+    dets_file_path: forex_dets_path,
+    cache_module: forex_cache_module
 end
