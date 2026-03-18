@@ -7,26 +7,32 @@ defmodule Site.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      SiteWeb.Telemetry,
-      Site.Cache,
-      Site.Repo,
-      {Ecto.Migrator,
-       repos: Application.fetch_env!(:site, :ecto_repos), skip: skip_migrations?()},
-      {Oban, Application.fetch_env!(:site, Oban)},
-      {DNSCluster, query: Application.get_env(:site, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: Site.PubSub},
-      SiteWeb.Presence,
-      Site.Analytics,
-      SiteWeb.Endpoint,
-      PhoenixPrerender.PageCache,
-      Site.BrowserData.Manager
-    ]
+    children =
+      [
+        SiteWeb.Telemetry,
+        Site.Cache,
+        Site.Repo,
+        {Ecto.Migrator,
+         repos: Application.fetch_env!(:site, :ecto_repos), skip: skip_migrations?()},
+        {Oban, Application.fetch_env!(:site, Oban)},
+        {DNSCluster, query: Application.get_env(:site, :dns_cluster_query) || :ignore},
+        {Phoenix.PubSub, name: Site.PubSub},
+        SiteWeb.Presence,
+        Site.Analytics,
+        SiteWeb.Endpoint,
+        PhoenixPrerender.PageCache
+      ] ++ optional_children()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Site.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp optional_children do
+    [{Site.BrowserData.Manager, System.get_env("SKIP_BROWSER_DATA", "true")}]
+    |> Enum.reject(fn {_, skip} -> skip != "true" end)
+    |> Enum.map(fn {module, _} -> module end)
   end
 
   # Tell Phoenix to update the endpoint configuration
