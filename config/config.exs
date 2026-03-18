@@ -103,8 +103,7 @@ config :site, :seo,
 # OG Image Generation
 config :ogi, cache: true
 
-config :forex,
-  cache_module: Forex.Cache.DETS
+config :forex, cache_module: Forex.Cache.DETS
 
 # ErrorTracker configuration
 config :error_tracker, repo: Site.Repo, otp_app: :site, enabled: true

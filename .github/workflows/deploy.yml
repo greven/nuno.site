@@ -72,8 +72,6 @@ jobs:
         run: mix assets.setup
 
       - name: Generate prerendered pages
-        env:
-          FOREX_CACHE_MODULE: Forex.Cache.ETS
         run: mix phoenix.prerender
 
       - name: Build assets

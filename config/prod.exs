@@ -21,5 +21,7 @@ config :phoenix_prerender,
   enabled: true,
   isr: true
 
+config :forex, cache_module: Forex.Cache.ETS
+
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.
