@@ -30,8 +30,8 @@ defmodule Site.Application do
   end
 
   defp optional_children do
-    [{Site.BrowserData.Manager, System.get_env("SKIP_BROWSER_DATA", "true")}]
-    |> Enum.reject(fn {_, skip} -> skip != "true" end)
+    [{Site.BrowserData.Manager, System.get_env("SKIP_BROWSER_DATA", "false")}]
+    |> Enum.reject(fn {_, skip} -> skip == "true" end)
     |> Enum.map(fn {module, _} -> module end)
   end
 
