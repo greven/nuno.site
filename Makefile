@@ -12,7 +12,7 @@ APP      := site
 APP_DIR  := /opt/$(APP)
 DB_PATH  := /var/lib/$(APP)/$(APP).db
 
-.PHONY: help logs status restart current releases rollback console database health secrets pre-commit pre-deploy deploy
+.PHONY: help logs status stats restart current releases rollback console database health secrets pre-commit pre-deploy deploy
 
 help: ## Show this help
 	@echo ""
@@ -26,6 +26,9 @@ logs: ## Stream live application logs (Ctrl+C to stop)
 
 status: ## Show current service status and active release
 	$(SSH) "sudo systemctl --no-pager status $(APP) && echo '' && echo 'Current release:' && readlink $(APP_DIR)/current && echo 'Previous release:' && readlink $(APP_DIR)/previous 2>/dev/null || echo '(none)'"
+
+stats: ## Show VPS CPU load, memory stats, and disk space in MB
+	$(SSH) "echo 'CPU load (1m/5m/15m):'; awk '{printf \"  %s / %s / %s\\n\", \$$1, \$$2, \$$3}' /proc/loadavg; echo ''; awk '/MemTotal/ {total=\$$2} /MemAvailable/ {avail=\$$2} END {used=total-avail; printf \"Memory (MB):\\n  current %.0f / available %.0f (total %.0f)\\n\", used/1024, avail/1024, total/1024}' /proc/meminfo; echo ''; df -m / | awk 'NR==2 {printf \"Disk / (MB):\\n  current %s / available %s (total %s, used %s)\\n\", \$$3, \$$4, \$$2, \$$5}'"
 
 restart: ## Restart the application service
 	$(SSH) "sudo systemctl restart $(APP) && sleep 2 && sudo systemctl is-active $(APP)"
