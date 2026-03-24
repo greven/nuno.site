@@ -25,7 +25,6 @@ defmodule SiteWeb.BlogLive.Index do
           </:subtitle>
         </.header>
 
-        <%!-- && @post_count > 1 --%>
         <div :if={@has_posts?} class="relative p-1 mt-8 flex justify-between items-center">
           <SiteWeb.SiteComponents.box_chrome offset="32px" color_class="text-surface-40" />
           <.segmented_control
@@ -59,8 +58,35 @@ defmodule SiteWeb.BlogLive.Index do
         </div>
 
         <%!-- Posts --%>
-        <div id="articles" class="mt-8 flex flex-col gap-12 md:gap-6" phx-update="stream">
-          <Components.article :for={{dom_id, post} <- @streams.posts} id={dom_id} post={post} />
+        <div class="flex flex-col gap-16 mt-8">
+          <section
+            id="featured-articles"
+            class="flex flex-col gap-12 md:gap-4 empty:hidden"
+            phx-update="stream"
+          >
+            <Components.featured_article
+              :for={{dom_id, post} <- @streams.featured}
+              id={dom_id}
+              post={post}
+            />
+          </section>
+
+          <section class="flex flex-col gap-2 empty:hidden">
+            <.header tag="h3">
+              <.icon
+                name="lucide-arrow-down"
+                class="mr-1.5 text-content-40"
+              /> All Posts
+            </.header>
+
+            <div
+              id="all-articles"
+              class="flex flex-col justify-center gap-0.5"
+              phx-update="stream"
+            >
+              <Components.article :for={{dom_id, post} <- @streams.posts} id={dom_id} post={post} />
+            </div>
+          </section>
         </div>
       </Layouts.page_content>
     </Layouts.app>
@@ -80,7 +106,11 @@ defmodule SiteWeb.BlogLive.Index do
   @impl true
   def handle_params(params, _uri, socket) do
     filter_category = get_params_category(params)
+    featured_posts = Blog.list_featured_posts() |> Enum.take(3)
     posts = Blog.list_published_posts()
+
+    featured_published_posts =
+      Enum.filter(featured_posts, filter_posts_by_category(filter_category))
 
     published_posts = Enum.filter(posts, filter_posts_by_category(filter_category))
     category_counts = Enum.frequencies_by(posts, &Atom.to_string(&1.category))
@@ -91,6 +121,7 @@ defmodule SiteWeb.BlogLive.Index do
       |> assign(:has_posts?, published_posts != [])
       |> assign(:post_count, length(published_posts))
       |> assign(:filter_categories, filter_categories(category_counts))
+      |> stream(:featured, featured_published_posts, reset: true)
       |> stream(:posts, published_posts, reset: true)
 
     {:noreply, socket}

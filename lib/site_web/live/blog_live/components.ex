@@ -19,7 +19,7 @@ defmodule SiteWeb.BlogLive.Components do
   attr :post, Blog.Post, required: true
   attr :rest, :global
 
-  def article(assigns) do
+  def featured_article(assigns) do
     ~H"""
     <article
       class={[
@@ -29,6 +29,14 @@ defmodule SiteWeb.BlogLive.Components do
       ]}
       {@rest}
     >
+      <%!-- Featured Tag --%>
+      <div class={[
+        "absolute top-4 left-4 z-10 flex items-center gap-1.5",
+        "bg-surface-40/60 text-content px-2 py-0.5 rounded-xs backdrop-blur-xs",
+        "text-xs tracking-wider font-sans"
+      ]}>
+        Featured
+      </div>
       <BlogComponents.article_thumbnail post={@post} />
       <div class="px-4 pb-3 md:px-0 md:py-2 flex flex-col">
         <BlogComponents.post_card_meta
@@ -51,6 +59,61 @@ defmodule SiteWeb.BlogLive.Components do
         </p>
       </div>
     </article>
+    """
+  end
+
+  @doc false
+
+  attr :post, Blog.Post, required: true
+  attr :rest, :global
+
+  def article(assigns) do
+    ~H"""
+    <.card
+      tag="li"
+      content_class="w-full h-full px-0 sm:px-2.5 lg:px-3 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-6"
+      padding="p-0"
+      border="border border-transparent border-dashed hover:border-solid hover:border-border"
+      bg="bg-transparent hover:bg-surface-10"
+      {@rest}
+    >
+      <.diagonal_pattern use_transition={false} class="opacity-0 group-hover/card:opacity-60" />
+
+      <%!-- Title --%>
+      <div class="flex items-center gap-2 md:max-w-5/6">
+        <.link
+          class="link-subtle decoration-1 transition-none"
+          navigate={~p"/blog/#{@post.year}/#{@post}"}
+        >
+          <span class="absolute inset-0 z-10"></span>
+          <h3 class="font-medium text-content-30 group-hover/card:text-content-10 line-clamp-2 md:line-clamp-1">
+            {@post.title}
+          </h3>
+        </.link>
+      </div>
+
+      <hr class="hidden flex-1 border-0.5 border-surface-40 border-dashed opacity-50 md:flex group-hover/card:opacity-0" />
+
+      <%!-- Meta --%>
+      <div class="flex items-center shrink-0 gap-2 text-sm md:justify-between">
+        <BlogComponents.post_publication_date
+          class="shrink-0 text-content-40  md:order-3 font-mono"
+          format="%b %d, %Y"
+          show_icon={false}
+          post={@post}
+        />
+
+        <span class="opacity-10 md:flex md:order-2">|</span>
+
+        <%!-- Tags --%>
+        <div class="flex items-center flex-nowrap shrink-0 line-clamp-1 md:order-1">
+          <span class="text-content-40/40 mr-1">#</span>
+          <span class="text-content-40/50 group-hover/card:text-content-40">
+            {List.first(@post.tags)}
+          </span>
+        </div>
+      </div>
+    </.card>
     """
   end
 
