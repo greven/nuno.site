@@ -52,6 +52,7 @@ defmodule SiteWeb.BlogComponents do
         class={[@class, @rounded && "rounded-lg"]}
         use_picture={@is_cdn_image?}
         use_blur={@is_cdn_image?}
+        loading="lazy"
       />
       <figcaption :if={@caption}>{@caption}</figcaption>
     </figure>

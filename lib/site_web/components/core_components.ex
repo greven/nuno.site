@@ -1507,7 +1507,6 @@ defmodule SiteWeb.CoreComponents do
   attr :alt, :string, required: true
   attr :width, :integer, required: true
   attr :height, :integer, required: true
-  # attr :use_loader, :boolean, default: true
 
   attr :blur_path, :string
 

@@ -3,6 +3,7 @@ export const Image = {
     this.useBlur = this.el.hasAttribute('data-src-blur');
     this.blurPath = this.el.getAttribute('data-src-blur');
 
+    this.setupFadeIn();
     this.setImageBlur();
 
     // Load and error event listeners
@@ -15,6 +16,11 @@ export const Image = {
     }
   },
 
+  setupFadeIn() {
+    this.el.style.opacity = '0';
+    this.el.style.transition = 'opacity 0.35s ease-out';
+  },
+
   // If the image has a blur path set it as the background
   setImageBlur() {
     if (this.useBlur && this.blurPath) {
@@ -24,12 +30,10 @@ export const Image = {
       this.el.style.backgroundPosition = 'center';
       this.el.style.width = '100%';
       this.el.style.maxHeight = this.el.height ? `${this.el.height}px` : 'auto';
-      this.el.style.transition = 'opacity 0.5s ease-out';
     }
   },
 
   removeImageBlur() {
-    this.el.style.opacity = '1';
     this.el.style.height = 'auto';
 
     requestAnimationFrame(() => {
@@ -54,5 +58,9 @@ export const Image = {
     if (this.useBlur) {
       this.removeImageBlur();
     }
+
+    requestAnimationFrame(() => {
+      this.el.style.opacity = '1';
+    });
   },
 };
