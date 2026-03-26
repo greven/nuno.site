@@ -380,24 +380,25 @@ defmodule SiteWeb.Layouts do
           show_flash(".phx-client-error #client-error") |> JS.remove_attribute("hidden")
         }
         phx-connected={hide_flash("#client-error") |> JS.set_attribute({"hidden", ""})}
+        show_icon={false}
         hidden
       >
+        <.icon name="lucide-loader-circle" class="mr-2 size-5 text-rose-500 motion-safe:animate-spin" />
         {gettext("Reconnecting")}
-        <.icon name="hero-arrow-path" class="ml-1.5 size-3 motion-safe:animate-spin" />
       </.flash>
 
       <.flash
         id="server-error"
         kind={:error}
-        title={gettext("Something went wrong!")}
         phx-disconnected={
           show_flash(".phx-server-error #server-error") |> JS.remove_attribute("hidden")
         }
         phx-connected={hide_flash("#server-error") |> JS.set_attribute({"hidden", ""})}
+        show_icon={false}
         hidden
       >
-        {gettext("Attempting to reconnect")}
-        <.icon name="hero-arrow-path" class="ml-1.5 size-3 motion-safe:animate-spin" />
+        <.icon name="lucide-loader-circle" class="mr-2 size-5 text-rose-500 motion-safe:animate-spin" />
+        {gettext("Reconnecting")}
       </.flash>
     </div>
     """
