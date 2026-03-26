@@ -95,12 +95,7 @@ defmodule SiteWeb.CoreComponents do
       padding={@padding}
       shadow={@shadow}
       data-part="card"
-      class={[
-        "group/card",
-        @disabled && "opacity-50 pointer-events-none",
-        @content_class,
-        @class
-      ]}
+      class={["group/card", @disabled && "opacity-50 pointer-events-none", @content_class, @class]}
       {@rest}
     >
       <%= if @rest[:href] || @rest[:navigate] || @rest[:patch] do %>

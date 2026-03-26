@@ -6,6 +6,7 @@ import { Drawer } from './drawer';
 import { EmailLink } from './email-link';
 import { Finder } from './finder';
 import { Hello } from './hello';
+import { HomeGrid } from './home-grid';
 import { Image } from './image';
 import { Layout } from './layout';
 import { PostLike } from './post-like';
@@ -35,6 +36,7 @@ export default {
   EmailLink,
   Finder,
   Hello,
+  HomeGrid,
   Image,
   Layout,
   PostLike,

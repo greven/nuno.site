@@ -12,6 +12,7 @@ defmodule SiteWeb.HomeLive.Components do
   attr :icon, :string, default: nil
   attr :variant, :atom, values: ~w(default static subtle)a, default: :default
   attr :size, :atom, values: ~w(small medium)a, default: :medium
+  attr :description, :string, default: nil
   attr :content_class, :any, default: "flex flex-col justify-between gap-2"
   attr :icon_class, :string, default: "size-8 text-primary bg-primary shrink-0"
   attr :class, :string, default: nil
@@ -58,10 +59,11 @@ defmodule SiteWeb.HomeLive.Components do
 
     ~H"""
     <.card
+      tag={@tag}
       border={@border}
       shadow={@shadow}
       class={@class}
-      tag={@tag}
+      data-description={@description}
       {@rest}
     >
       <.diagonal_pattern :if={@variant == :default} />
