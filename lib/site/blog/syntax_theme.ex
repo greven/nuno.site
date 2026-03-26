@@ -1,23 +1,13 @@
 defmodule Site.Blog.SyntaxTheme do
   @moduledoc """
-  Custom Autumn syntax theme.
+  Custom Lumis syntax theme.
   """
 
   # https://hexdocs.pm/mdex/custom_theme.html
 
-  #   def umbra_theme do
-  #     %Autumn.Theme{
-  #       name: "umbra_dark",
-  #       appearance: "dark",
-  #       highlights: %{
-  #         "normal" => %Autumn.Theme.Style{
-  #           fg: "#b0b0b0",
-  #           bg: "#141414"
-  #         },
-  #         "variable" => %Autumn.Theme.Style{
-  #           fg: "#ebebeb"
-  #         }
-  #       }
-  #     }
-  #   end
+  # Re-use Github Dark but change the background color to match our surface colors
+  def umbra_theme do
+    Lumis.Theme.get("github_dark")
+    |> put_in([Access.key!(:highlights), Access.key!("normal"), Access.key!(:bg)], "#0E0E0E")
+  end
 end

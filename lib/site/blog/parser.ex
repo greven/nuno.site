@@ -2,9 +2,7 @@ defmodule Site.Blog.Parser do
   @moduledoc false
 
   alias Site.Blog.HeaderLink
-  # alias Site.Blog.SyntaxTheme
-
-  @syntax_theme "neovim_dark"
+  alias Site.Blog.SyntaxTheme
 
   def parse(_path, contents) do
     [doc_header, markdown_body] = String.split(contents, "---\n", trim: true, parts: 2)
@@ -59,7 +57,7 @@ defmodule Site.Blog.Parser do
   defp mdex_options do
     [
       syntax_highlight: [
-        formatter: {:html_inline, theme: @syntax_theme}
+        formatter: {:html_inline, theme: SyntaxTheme.umbra_theme()}
       ],
       render: [
         unsafe: true,
