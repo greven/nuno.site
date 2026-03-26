@@ -58,7 +58,7 @@ defmodule SiteWeb.BlogLive.Index do
         </div>
 
         <%!-- Posts --%>
-        <div class="flex flex-col gap-16 mt-8">
+        <div class="flex flex-col gap-12 mt-8">
           <section
             id="featured-articles"
             class="flex flex-col gap-12 md:gap-4 empty:hidden"
@@ -76,7 +76,7 @@ defmodule SiteWeb.BlogLive.Index do
               <.icon
                 name="lucide-arrow-down"
                 class="mr-1.5 text-primary"
-              /> All Posts
+              /> All {posts_text_by_category(@filter_category)}
             </.header>
 
             <div
@@ -163,4 +163,8 @@ defmodule SiteWeb.BlogLive.Index do
       }
     ]
   end
+
+  defp posts_text_by_category("article"), do: "Articles"
+  defp posts_text_by_category("note"), do: "Notes"
+  defp posts_text_by_category(_), do: "Posts"
 end

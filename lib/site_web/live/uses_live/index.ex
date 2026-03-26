@@ -145,8 +145,8 @@ defmodule SiteWeb.UsesLive.Index do
 
           <div class="flex flex-col gap-4">
             <Components.hardware_item icon="lucide-laptop">
-              <:name>Macbook Pro 14&quot;</:name>
-              <:description>Laptop</:description>
+              <:name>Laptop</:name>
+              <:description>Macbook Pro 14&quot;</:description>
               <:spec label="CPU">M2 Max</:spec>
               <:spec label="RAM">32GB</:spec>
               <:spec label="GPU">38-Core</:spec>
@@ -154,8 +154,8 @@ defmodule SiteWeb.UsesLive.Index do
             </Components.hardware_item>
 
             <Components.hardware_item icon="hero-computer-desktop">
-              <:name>Mainframe</:name>
-              <:description>Desktop</:description>
+              <:name>Desktop</:name>
+              <:description>Mainframe</:description>
               <:spec label="CPU">AMD 5600X</:spec>
               <:spec label="RAM">32GB</:spec>
               <:spec label="GPU">AMD RX 9700XT</:spec>
@@ -164,8 +164,8 @@ defmodule SiteWeb.UsesLive.Index do
             </Components.hardware_item>
 
             <Components.hardware_item icon="lucide-keyboard">
-              <:name>Keyboard</:name>
-              <:description>Mechanical</:description>
+              <:name>Mechanical</:name>
+              <:description>Keyboard</:description>
               <:spec label="Case">Ginkgo65 White</:spec>
               <:spec label="Switches">Gateron Silent Ink</:spec>
               <:spec label="Keycaps">Nuphy Gem Black</:spec>
@@ -180,8 +180,8 @@ defmodule SiteWeb.UsesLive.Index do
             </Components.hardware_item>
 
             <Components.hardware_item icon="hero-camera">
-              <:name>Sony Alpha 6000</:name>
-              <:description>Camera</:description>
+              <:name>Camera</:name>
+              <:description>Sony Alpha 6000</:description>
               <:spec label="Lens">Sony Zeiss 24mm</:spec>
               <:spec label="Lens">Sony 50mm</:spec>
               <:spec label="Lens">Sony 16-50mm</:spec>

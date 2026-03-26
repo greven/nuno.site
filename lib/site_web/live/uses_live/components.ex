@@ -54,11 +54,10 @@ defmodule SiteWeb.UsesLive.Components do
 
         <%!-- Name and description --%>
         <div class="flex flex-col leading-1">
-          <div class="font-headings font-medium text-sm text-content-10">
+          <div class="font-headings text-sm text-content-40">
             {render_slot(@name)}
           </div>
-
-          <div class="text-sm text-content-40">
+          <div class="font-medium text-sm text-content-10">
             {render_slot(@description)}
           </div>
         </div>
@@ -71,7 +70,7 @@ defmodule SiteWeb.UsesLive.Components do
       >
         <%= for spec <- @spec do %>
           <div class={["leading-tight", spec[:class]]}>
-            <dt class="font-mono text-xs text-content-30 uppercase">{spec[:label]}</dt>
+            <dt class="text-xs text-content-40 uppercase">{spec[:label]}</dt>
             <dd class="font-mono text-sm text-content-10 line-clamp-1">
               {spec[:inner_block]}
             </dd>
