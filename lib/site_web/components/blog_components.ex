@@ -86,6 +86,7 @@ defmodule SiteWeb.BlogComponents do
       height={@size}
       class={[@base_class, !@post.image && "bg-surface-10/60"]}
       use_picture={if @post.image, do: true, else: false}
+      loading="lazy"
       {@rest}
     >
       <:source srcset={@image} type="image/jpeg" media="(max-width: 768px)" />
