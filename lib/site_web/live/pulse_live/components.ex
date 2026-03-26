@@ -715,7 +715,7 @@ defmodule SiteWeb.PulseLive.Components do
         <:failed>
           <div class="min-h-80">
             <.news_item_header title={@meta.name} icon={@meta.icon} link={@meta.link} />
-            <div class="mt-2 font-medium text-content-40/50">Failed to load source.</div>
+            <div class="mt-2 pl-6 font-medium text-content-40/50">Failed to load source.</div>
           </div>
         </:failed>
 
