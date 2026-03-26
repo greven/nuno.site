@@ -105,7 +105,7 @@ defmodule SiteWeb.HomeLive.Index do
               navigate={~p"/blog"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-file-text-duotone"
-              description="My ramblings on software, technology and life."
+              description="My ramblings on software, technology and life"
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>The Blog</:label>
@@ -119,7 +119,7 @@ defmodule SiteWeb.HomeLive.Index do
               navigate={~p"/music"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-music-duotone"
-              description="The music I listening to."
+              description="The music I listening to"
             >
               <Components.now_playing track={@track} />
               <Components.now_playing_cover track={@track} />
@@ -132,7 +132,7 @@ defmodule SiteWeb.HomeLive.Index do
                 navigate={~p"/pulse"}
                 class="col-span-1 row-span-1 aspect-square"
                 size={:small}
-                description="My start page with news and weather updates."
+                description="My start page with news and weather updates"
               >
                 <Components.mini_calendar date={@today} />
               </Components.bento_card>
@@ -143,7 +143,7 @@ defmodule SiteWeb.HomeLive.Index do
                 class="hidden lg:block col-span-1 row-span-1 aspect-square"
                 variant={:subtle}
                 size={:small}
-                description="Switch between light and dark themes."
+                description="Switch between light and dark themes"
               >
                 <Components.theme_switcher />
               </Components.bento_card>
@@ -154,7 +154,7 @@ defmodule SiteWeb.HomeLive.Index do
                 class="col-span-2 row-span-1"
                 icon="lucide-history"
                 size={:small}
-                description="A log of site and socials updates."
+                description="A log of site and socials updates"
               >
                 <Components.card_content>
                   <:label>Changelog</:label>
@@ -172,7 +172,7 @@ defmodule SiteWeb.HomeLive.Index do
                 icon="lucide-search-duotone"
                 size={:small}
                 aria-label="Open command finder (Cmd+K)"
-                description="Quick access to all site content."
+                description="Quick access to all site content"
                 phx-click={SiteWeb.Finder.toggle()}
               >
                 <Components.card_content>
@@ -185,7 +185,7 @@ defmodule SiteWeb.HomeLive.Index do
               navigate={~p"/books"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-library"
-              description="Books I'm currently reading."
+              description="Books I'm currently reading"
             >
               <Components.async_card_content async_result={@reading_stats}>
                 <:label>Reading</:label>
@@ -207,7 +207,7 @@ defmodule SiteWeb.HomeLive.Index do
               navigate={~p"/photos"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-image-duotone"
-              description="A gallery of my photographs."
+              description="A gallery of my photographs"
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>Photography</:label>
@@ -221,7 +221,7 @@ defmodule SiteWeb.HomeLive.Index do
               navigate={~p"/bookmarks"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-bookmark-duotone"
-              description="A curated list of my favorite links."
+              description="A curated list of my favorite links"
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>Bookmarks</:label>
@@ -233,7 +233,7 @@ defmodule SiteWeb.HomeLive.Index do
               navigate={~p"/uses"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-layers-duotone"
-              description="Hardware and software I use daily."
+              description="Hardware and software I use daily"
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>Stack</:label>
