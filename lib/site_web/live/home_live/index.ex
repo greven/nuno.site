@@ -119,7 +119,7 @@ defmodule SiteWeb.HomeLive.Index do
               navigate={~p"/music"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-music-duotone"
-              description="Musical I'm currently listening to."
+              description="The music I listening to."
             >
               <Components.now_playing track={@track} />
               <Components.now_playing_cover track={@track} />
