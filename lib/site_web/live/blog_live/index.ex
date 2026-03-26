@@ -75,7 +75,7 @@ defmodule SiteWeb.BlogLive.Index do
             <.header tag="h3">
               <.icon
                 name="lucide-arrow-down"
-                class="mr-1.5 text-content-40"
+                class="mr-1.5 text-primary"
               /> All Posts
             </.header>
 

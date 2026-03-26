@@ -17,6 +17,8 @@ export const Image = {
   },
 
   setupFadeIn() {
+    this.initialOpacity = window.getComputedStyle(this.el).opacity;
+
     this.el.style.opacity = '0';
     this.el.style.transition = 'opacity 0.35s ease-out';
   },
@@ -60,7 +62,7 @@ export const Image = {
     }
 
     requestAnimationFrame(() => {
-      this.el.style.opacity = '1';
+      this.el.style.opacity = this.initialOpacity || '1';
     });
   },
 };
