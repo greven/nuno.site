@@ -233,7 +233,7 @@ defmodule SiteWeb.HomeLive.Index do
               navigate={~p"/uses"}
               class="col-span-1 row-span-1 aspect-square"
               icon="lucide-layers-duotone"
-              description="A list of hardware and software I use daily."
+              description="Hardware and software I use daily."
             >
               <Components.card_content loading={is_nil(@post_count)}>
                 <:label>Stack</:label>
