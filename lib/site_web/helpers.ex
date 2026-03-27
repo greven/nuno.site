@@ -56,8 +56,6 @@ defmodule SiteWeb.Helpers do
   #  Dates
   # ------------------------------------------
 
-  def format_date(date, format)
-
   def format_date(nil, _), do: nil
 
   def format_date(%Date{} = date, format) do

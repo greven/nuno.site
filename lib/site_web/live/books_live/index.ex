@@ -21,7 +21,11 @@ defmodule SiteWeb.BooksLive.Index do
 
         <section>
           <.header tag="h2">Currently Reading</.header>
-          <Components.reading_list async={@books} books={@streams.books} class="mt-8" />
+          <Components.reading_list
+            async={@books}
+            books={@streams.books}
+            class="mt-8"
+          />
         </section>
 
         <section class={["flex flex-col gap-4", @want_books.loading && "opacity-50"]}>

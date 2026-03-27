@@ -6,6 +6,98 @@ defmodule SiteWeb.BooksLive.Components do
 
   @doc false
 
+  attr :id, :string, required: true
+  attr :loading, :boolean, default: false
+  attr :title, :string, default: nil
+  attr :author, :string, default: nil
+  attr :url, :string, default: nil
+  attr :cover_url, :string, default: nil
+  attr :pub_date, Date, default: nil
+  attr :show_info, :boolean, default: true
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def book(assigns) do
+    ~H"""
+    <%= if @loading do %>
+      <div class={["inline-flex flex-row gap-4 animate-pulse", @class]} {@rest}>
+        <div class="relative w-28 h-38 bg-content-40/20 rounded-sm">
+          <.icon
+            name="hero-bookmark-mini"
+            class="size-6 absolute -top-1 right-1 text-primary"
+          />
+          <.icon
+            name="lucide-pencil-ruler"
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10 text-content-40/20"
+          />
+        </div>
+
+        <div class="max-w-md flex flex-col justify-center gap-1.5">
+          <.skeleton height="24px" width="192px" />
+          <.skeleton height="20px" width="160px" />
+          <.skeleton height="16px" width="120px" />
+        </div>
+      </div>
+    <% else %>
+      <%!-- Cover --%>
+      <a
+        href={@url}
+        target="_blank"
+        class="group relative shrink-0 rounded-md border-2 border-transparent hover:border-secondary transition-border"
+      >
+        <.icon
+          name="hero-bookmark-mini"
+          class="size-6 absolute -top-1 right-1 text-primary"
+        />
+
+        <div class={[
+          "absolute inset-0 rounded-sm bg-secondary/25 opacity-0 transition-opacity",
+          "group-hover:opacity-100"
+        ]}>
+          <.icon
+            name="hero-arrow-top-right-on-square"
+            class="size-10 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90"
+          />
+        </div>
+        <.image
+          src={@cover_url}
+          alt={"#{@title} cover by #{@author}"}
+          class="object-cover rounded-sm shadow-sm"
+          width={110}
+          height={150}
+          loading="lazy"
+        />
+      </a>
+      <%!-- Book Info --%>
+      <div :if={@show_info} class="max-w-md flex flex-col justify-center gap-1">
+        <div class="line-clamp-2 text-ellipsis text-balance">
+          <a
+            href={@url}
+            target="_blank"
+            class="link-subtle font-headings font-medium text-xl text-content-20"
+          >
+            {@title}
+          </a>
+        </div>
+        <div class="line-clamp-1 text-ellipsis font-light text-xl text-content-40">
+          {@author}
+        </div>
+        <%= if @pub_date do %>
+          <div class="line-clamp-1 font-light text-ellipsis text-base text-content-40">
+            {Helpers.format_date(@pub_date, "%Y")}
+          </div>
+        <% else %>
+          <div class="font-light text-ellipsis text-base text-content-40/50">
+            Unknown date
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    """
+  end
+
+  @doc false
+
   attr :id, :string, default: "books-reading-list"
   attr :async, AsyncResult, required: true
   attr :books, :list, required: true
@@ -17,7 +109,7 @@ defmodule SiteWeb.BooksLive.Components do
     <div class={@class} {@rest}>
       <.async_result :let={_async} assign={@async}>
         <:loading>
-          <div class="min-h-32 font-medium text-content-40/50 animate-pulse">Loading...</div>
+          <.book id="book-reading-loading" loading />
         </:loading>
 
         <ul
@@ -26,61 +118,17 @@ defmodule SiteWeb.BooksLive.Components do
           phx-update={is_struct(@books, Phoenix.LiveView.LiveStream) && "stream"}
         >
           <li :for={{dom_id, book} <- @books} id={dom_id} class="flex flex-row gap-4">
-            <a
-              href={book.url}
-              target="_blank"
-              class="group relative shrink-0 rounded-md border-2 border-transparent hover:border-secondary transition-border"
-            >
-              <.icon
-                name="hero-bookmark-mini"
-                class="size-6 absolute -top-1 right-1 text-primary"
-              />
-
-              <div class={[
-                "absolute inset-0 rounded-sm bg-secondary/25 opacity-0 transition-opacity",
-                "group-hover:opacity-100"
-              ]}>
-                <.icon
-                  name="hero-arrow-top-right-on-square"
-                  class="size-10 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90"
-                />
-              </div>
-              <.image
-                src={book.cover_url}
-                alt={"#{book.title} cover by #{book.author}"}
-                class="object-cover rounded-sm shadow-sm"
-                width={110}
-                height={150}
-                loading="lazy"
-              />
-            </a>
-            <div class="max-w-md flex justify-center items-center">
-              <div class="flex flex-col gap-0.5">
-                <div class="line-clamp-2 text-ellipsis text-balance">
-                  <a
-                    href={book.url}
-                    target="_blank"
-                    class="link-subtle font-headings font-medium text-xl text-content-20"
-                  >
-                    {book.title}
-                  </a>
-                </div>
-                <div class="line-clamp-1 text-ellipsis font-light text-xl text-content-40">
-                  {book.author}
-                </div>
-                <%= if book.pub_date do %>
-                  <div class="line-clamp-1 font-light text-ellipsis text-base text-content-40">
-                    {Helpers.format_date(book.pub_date, "%Y")}
-                  </div>
-                <% else %>
-                  <div class="font-light text-ellipsis text-base text-content-40/50">
-                    Unknown date
-                  </div>
-                <% end %>
-              </div>
-            </div>
+            <.book
+              id={"book-#{dom_id}"}
+              url={book.url}
+              title={book.title}
+              author={book.author}
+              cover_url={book.cover_url}
+              pub_date={book.pub_date}
+            />
           </li>
 
+          <%!-- Empty state --%>
           <li class="hidden only:flex items-center gap-3">
             <.icon name="lucide-book-dashed" class="size-8 text-content-40/40" />
             <span class="text-lg text-content-40">Currently not reading any books...</span>
@@ -196,30 +244,15 @@ defmodule SiteWeb.BooksLive.Components do
             id={dom_id}
             class="pb-4 shrink-0 flex items-end snap-center"
           >
-            <a
-              href={book.url}
-              target="_blank"
-              class="group inline-block relative rounded-md border-2 border-transparent hover:border-secondary transition-border"
-              title={"#{book.title} by #{book.author}"}
-            >
-              <div class={[
-                "absolute inset-0 rounded-sm bg-secondary/25 opacity-0 transition-opacity",
-                "group-hover:opacity-100"
-              ]}>
-                <.icon
-                  name="hero-arrow-top-right-on-square"
-                  class="size-10 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90"
-                />
-              </div>
-              <.image
-                src={book.cover_url}
-                alt={"#{book.title} cover by #{book.author}"}
-                class="object-fill rounded-sm shadow-sm"
-                width={120}
-                height={200}
-                loading="lazy"
-              />
-            </a>
+            <.book
+              id={"want-book-#{dom_id}"}
+              url={book.url}
+              title={book.title}
+              author={book.author}
+              cover_url={book.cover_url}
+              pub_date={book.pub_date}
+              show_info={false}
+            />
           </div>
         </div>
       <% else %>
