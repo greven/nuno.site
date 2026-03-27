@@ -64,7 +64,12 @@
             setTheme(theme);
           }
         });
-
+        // Listen for system theme changes
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+          if (!localStorage.getItem(THEME_KEY)) {
+            setTheme("system");
+          }
+        });
       })();
 
       // OS Detection
