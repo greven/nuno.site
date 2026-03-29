@@ -2030,7 +2030,8 @@ defmodule SiteWeb.CoreComponents do
           drawer_position_class(@position, @offset),
           drawer_size_class(@position, @size),
           drawer_radius_class(@position, @offset),
-          drawer_transform_class(@position)
+          drawer_transform_class(@position),
+          drawer_starting_transform_class(@position)
         ]}
         data-part="drawer-container"
         data-state="close"
@@ -2064,7 +2065,8 @@ defmodule SiteWeb.CoreComponents do
             aria-label="Close drawer"
             class={[
               "size-10 ml-auto shrink-0 rounded-full text-content-40 transition-colors",
-              "hover:bg-surface-20 hover:text-content-10 hover:cursor-pointer"
+              "hover:bg-surface-20 hover:text-content-10 hover:cursor-pointer",
+              "focus-visible:outline focus-visible:outline-offset-1 focus-visible:outline-primary"
             ]}
           >
             <.icon name="hero-x-mark" class="size-5" />
@@ -2167,6 +2169,15 @@ defmodule SiteWeb.CoreComponents do
       "right" -> "translate-x-full"
       "top" -> "-translate-y-full"
       "bottom" -> "translate-y-full"
+    end
+  end
+
+  defp drawer_starting_transform_class(position) do
+    case position do
+      "left" -> "starting:group-open:-translate-x-full"
+      "right" -> "starting:group-open:translate-x-full"
+      "top" -> "starting:group-open:-translate-y-full"
+      "bottom" -> "starting:group-open:translate-y-full"
     end
   end
 
