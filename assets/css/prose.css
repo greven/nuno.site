@@ -535,6 +535,10 @@
     .code-block pre.lumis code > .line.code-line-highlight {
       background-color: --alpha(var(--color-surface-40) / 0.3) !important;
       border-inline-start: 2px solid var(--color-primary);
+
+      &::before {
+        opacity: 0.5;
+      }
     }
 
     .code-block-header {

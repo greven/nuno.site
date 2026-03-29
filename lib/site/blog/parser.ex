@@ -195,7 +195,6 @@ defmodule Site.Blog.Parser do
 
   defp parse_code_block_info(info, mdex_options) do
     trimmed = String.trim(info)
-    # formatter = syntax_formatter(mdex_options)
 
     language =
       case String.split(trimmed, ~r/\s+/, parts: 2, trim: true) do
@@ -217,8 +216,6 @@ defmodule Site.Blog.Parser do
         "" -> language
         other -> other
       end
-
-    # |> maybe_apply_default_highlight_decorator(formatter)
 
     %{
       language: language,
