@@ -28,7 +28,7 @@
   }
 
   ::selection {
-    background-color: --alpha(var(--color-secondary) / 0.2);
+    background-color: --alpha(var(--color-secondary) / 0.25);
   }
 
   a {

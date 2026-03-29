@@ -2,14 +2,13 @@
 title: "Life is Hardmode",
 tags: ~w(random gaming),
 excerpt: "Why hard games can be more rewarding than easy ones.",
+lead: true,
 category: :note,
 status: :published,
 image: "hollow_knight.jpg"
 }
 
 ---
-
-<!-- lead -->
 
 I'm often asked (maybe at least once...) why I enjoy playing games that are hard and punishing, like _Elden Ring_, _Hades_, or _Hollow Knight_.
 

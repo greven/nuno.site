@@ -17,22 +17,24 @@ defmodule SiteWeb.BlogLive.Show do
       active_link={@active_link}
     >
       <Layouts.page_content class="relative post" data-cateogry={@post.category}>
-        <Components.post_header post={@post} readers={@readers} page_views={@page_views} />
-        <Components.post_content
-          body={@post.body}
-          headers={@post.headers}
-          show_toc={@post.show_toc}
-        />
+        <div id="blog-post" phx-hook="BlogPost">
+          <Components.post_header post={@post} readers={@readers} page_views={@page_views} />
+          <Components.post_content
+            body={@post.body}
+            headers={@post.headers}
+            show_toc={@post.show_toc}
+          />
 
-        <Components.post_footer
-          post={@post}
-          likes={@likes}
-          next_post={@next_post}
-          prev_post={@prev_post}
-          bsky_post={@bsky_post}
-          comments={@streams.comments}
-          comments_async={@comments}
-        />
+          <Components.post_footer
+            post={@post}
+            likes={@likes}
+            next_post={@next_post}
+            prev_post={@prev_post}
+            bsky_post={@bsky_post}
+            comments={@streams.comments}
+            comments_async={@comments}
+          />
+        </div>
       </Layouts.page_content>
     </Layouts.app>
     """

@@ -139,7 +139,7 @@ defmodule SiteWeb.BlogLive.Components do
         </.link>
       </div>
 
-      <BlogComponents.post_title class="mt-4" post={@post} underline />
+      <BlogComponents.post_title class="mt-2" post={@post} underline />
       <BlogComponents.post_meta
         post={@post}
         readers={@readers}

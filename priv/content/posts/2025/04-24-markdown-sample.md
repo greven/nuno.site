@@ -2,13 +2,12 @@
 title: "Tailwind Markdown Sample",
 tags: ~w(offtopic phoenix CSS),
 excerpt: "Let's test our custom markdown styling!",
+lead: true,
 status: :draft,
 featured: false
 }
 
 ---
-
-<!-- lead -->
 
 Until now, trying to style an article, document, or blog post with Tailwind has been a tedious
 task that required a keen eye for typography and a lot of complex custom CSS!
@@ -119,7 +118,7 @@ I think most people are going to use [highlight.js](https://highlightjs.org/) or
 
 Here's what a default `tailwind.config.js` file looks like at the time of writing:
 
-```js
+```javascript
 module.exports = {
   purge: [],
   theme: {

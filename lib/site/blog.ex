@@ -9,6 +9,7 @@ defmodule Site.Blog do
 
   alias Site.Blog.Event
   alias Site.Blog.PostLike
+
   alias Site.Services.Bluesky
 
   defmodule NotFoundError do
@@ -20,10 +21,9 @@ defmodule Site.Blog do
   use NimblePublisher,
     from: Application.app_dir(:site, @posts_dir <> "/**/*.md"),
     build: Site.Blog.Post,
+    as: :posts,
     parser: Site.Blog.Parser,
-    html_converter: Site.Blog.HTMLConverter,
-    highlighters: [],
-    as: :posts
+    html_converter: Site.Blog.HTMLConverter
 
   @posts Enum.sort_by(@posts, & &1.date, {:desc, Date})
   @categories @posts |> Enum.map(& &1.category) |> Enum.uniq() |> Enum.sort()

@@ -2,140 +2,66 @@ defmodule Site.Blog.Parser do
   @moduledoc false
 
   alias Site.Blog.HeaderLink
-  alias Site.Blog.SyntaxTheme
+  alias Site.Blog.Markdown
 
+  @doc """
+  Parse the given markdown contents.
+  """
   def parse(_path, contents) do
+    mdex_options = Markdown.mdex_options()
     [doc_header, markdown_body] = String.split(contents, "---\n", trim: true, parts: 2)
 
     {%{} = attrs, _} = Code.eval_string(doc_header, [])
 
-    mdex_options = mdex_options()
-
-    html_body =
+    mdex_document =
       markdown_body
       |> MDEx.parse_document!(mdex_options)
-      |> post_parsing()
-      |> MDEx.to_html!(mdex_options)
-      |> post_processing()
+      |> post_parsing(attrs)
 
-    attrs = Map.put(attrs, :headers, parse_headers(html_body))
+    attrs = Map.put(attrs, :headers, parse_headers(mdex_document))
 
-    # We need to eval the template to render any EEx tags
-    # to allow embedding LiveView components in the markdown
-    env = __ENV__
-
-    html_body =
-      EEx.compile_string(
-        html_body,
-        engine: Phoenix.LiveView.TagEngine,
-        file: env.file,
-        line: env.line + 1,
-        caller: env,
-        indentation: 0,
-        source: html_body,
-        tag_handler: Phoenix.LiveView.HTMLEngine
-      )
-      |> Code.eval_quoted([assigns: %{}], env)
-      |> then(fn {rendered, _} -> Phoenix.HTML.Safe.to_iodata(rendered) end)
-      |> IO.iodata_to_binary()
-
-    {attrs, html_body}
+    {attrs, mdex_document}
   end
 
   # Apply transformations to the markdown AST before converting to HTML
-  defp post_parsing(markdown_body) do
+  defp post_parsing(markdown_body, attrs) do
     markdown_body
+    |> transform_lead(attrs)
     |> linkify_headers()
+    |> decorate_code_blocks()
   end
 
-  # Apply transformations to the HTML body
-  defp post_processing(html_body) do
-    html_body
-    |> parse_lead_paragraph()
+  # If the `lead` attribute is set to true, add the `lead` class to the first paragraph of the markdown body.
+  defp transform_lead(%MDEx.Document{nodes: nodes} = markdown_body, %{lead: true}) do
+    {new_nodes, _found?} =
+      Enum.map_reduce(nodes, false, fn
+        %MDEx.Paragraph{} = paragraph, false ->
+          {paragraph_to_lead_html_block(paragraph), true}
+
+        node, found? ->
+          {node, found?}
+      end)
+
+    %{markdown_body | nodes: new_nodes}
   end
 
-  defp mdex_options do
-    [
-      syntax_highlight: [
-        formatter: {:html_inline, theme: SyntaxTheme.umbra_theme()}
-      ],
-      render: [
-        unsafe: true,
-        escape: false,
-        hardbreaks: false,
-        github_pre_lang: true,
-        full_info_string: true
-      ],
-      extension: [
-        alerts: true,
-        autolink: false,
-        description_lists: true,
-        footnotes: true,
-        highlight: true,
-        math_code: true,
-        math_dollars: true,
-        multiline_block_quotes: true,
-        phoenix_heex: true,
-        shortcodes: true,
-        spoiler: true,
-        strikethrough: true,
-        superscript: true,
-        table: true,
-        tasklist: true,
-        underline: true
-      ],
-      parse: [
-        smart: true,
-        relaxed_autolinks: true,
-        relaxed_tasklist_matching: true
-      ]
-    ]
-  end
+  defp transform_lead(markdown_body, _attrs), do: markdown_body
 
-  @doc """
-  Linkify the headers in the given HTML body, that is, we add an anchor link
-  to the headers with the header tag level as the link text and
-  the id slug as the parent heading text.
-  """
-  def linkify_headers(markdown_body) do
-    markdown_body
-    |> MDEx.traverse_and_update(fn
-      %MDEx.Heading{level: level, nodes: children} = heading_node ->
-        id =
-          to_string(heading_node)
-          |> MDEx.to_html!()
-          |> LazyHTML.from_fragment()
-          |> LazyHTML.text()
-          |> MDEx.anchorize()
+  defp paragraph_to_lead_html_block(%MDEx.Paragraph{} = paragraph) do
+    paragraph_html =
+      paragraph
+      |> MDEx.to_html!()
+      |> String.replace(~r/<p>/, ~s(<p class="lead">), global: false)
 
-        header_markdown =
-          ~s(<header class="group relative h#{level}"><h#{level} id="#{id}">#{MDEx.to_html!(children)}</h#{level}>
-               <a href="##{id}" class="header-link" aria-labelledby="#{id}">H#{level}</a></header>)
-
-        case MDEx.parse_fragment(header_markdown) do
-          {:ok, node} -> node
-          _ -> heading_node
-        end
-
-      node ->
-        node
-    end)
-  end
-
-  # Replace the first <p> after an HTML comment marker
-  defp parse_lead_paragraph(html) do
-    html
-    |> String.replace(
-      ~r/<!-- lead -->\s*<p>/,
-      ~s(<p class="lead">),
-      global: false
-    )
+    %MDEx.HtmlBlock{literal: paragraph_html}
   end
 
   @doc """
   Create a list of header links from the HTML body to be used in the table of contents.
   """
-  def parse_headers(html_body) do
+  def parse_headers(mdex_document) do
+    html_body = MDEx.to_html!(mdex_document)
+
     html_body
     |> LazyHTML.from_fragment()
     |> LazyHTML.to_tree()
@@ -185,4 +111,167 @@ defmodule Site.Blog.Parser do
     |> LazyHTML.attribute("id")
     |> List.first()
   end
+
+  @doc """
+  Linkify the headers in the given HTML body, that is, we add an anchor link
+  to the headers with the header tag level as the link text and
+  the id slug as the parent heading text.
+  """
+  def linkify_headers(markdown_body) do
+    markdown_body
+    |> MDEx.traverse_and_update(fn
+      %MDEx.Heading{level: level, nodes: children} = heading_node ->
+        id =
+          to_string(heading_node)
+          |> MDEx.to_html!()
+          |> LazyHTML.from_fragment()
+          |> LazyHTML.text()
+          |> MDEx.anchorize()
+
+        header_markdown =
+          ~s(<header class="group relative h#{level}"><h#{level} id="#{id}">#{MDEx.to_html!(children)}</h#{level}>
+               <a href="##{id}" class="header-link" aria-labelledby="#{id}">H#{level}</a></header>)
+
+        case MDEx.parse_fragment(header_markdown) do
+          {:ok, node} -> node
+          _ -> heading_node
+        end
+
+      node ->
+        node
+    end)
+  end
+
+  defp decorate_code_blocks(markdown_body) do
+    MDEx.traverse_and_update(markdown_body, fn
+      %MDEx.CodeBlock{fenced: true} = node ->
+        case build_decorated_code_block(node) do
+          {:ok, html} -> %MDEx.HtmlBlock{literal: html}
+          :error -> node
+        end
+
+      node ->
+        node
+    end)
+  end
+
+  defp build_decorated_code_block(%MDEx.CodeBlock{} = node) do
+    mdex_options = Markdown.mdex_options()
+    meta = parse_code_block_info(node.info, mdex_options)
+
+    code_html =
+      %MDEx.Document{nodes: [%{node | info: meta.render_info}]}
+      |> MDEx.to_html!(mdex_options)
+
+    html =
+      """
+      <div class="code-block">
+        <div class="code-block-header">
+          <div class="code-block-lights" aria-hidden="true">
+            <span class="code-block-light code-block-light-red"></span>
+            <span class="code-block-light code-block-light-yellow"></span>
+            <span class="code-block-light code-block-light-green"></span>
+          </div>
+          <div class="code-block-tab">
+            <span class="#{language_icon_class(meta.language)} size-4" aria-hidden="true"></span>
+            <span class="code-block-filename">#{html_escape(meta.filename || meta.title || meta.language_label)}</span>
+          </div>
+          <div class="code-block-spacer"></div>
+          <div class="code-block-copy">
+            <button class="code-block-copy-button" aria-label="Copy code to clipboard" title="Copy">
+              <span class="lucide-copy size-4" aria-hidden="true"></span>
+              <span class="lucide-check size-4 text-green-600 hidden" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+        #{code_html}
+      </div>
+      """
+
+    {:ok, html}
+  end
+
+  defp build_decorated_code_block(_), do: :error
+
+  defp parse_code_block_info(info, mdex_options) do
+    trimmed = String.trim(info)
+    # formatter = syntax_formatter(mdex_options)
+
+    language =
+      case String.split(trimmed, ~r/\s+/, parts: 2, trim: true) do
+        [lang | _] when lang != "" -> lang
+        _ -> "text"
+      end
+
+    filename = extract_info_attr(trimmed, "data-filename")
+    title = extract_info_attr(trimmed, "data-title")
+
+    # Remove only our custom attrs, preserve all other decorators
+    render_info =
+      trimmed
+      |> String.replace(~r/\s*\bdata-filename=(?:"[^"]*"|\S+)/, "")
+      |> String.replace(~r/\s*\bdata-title=(?:"[^"]*"|\S+)/, "")
+      |> Kernel.<>(~S( highlight_lines_class="code-line-highlight"))
+      |> String.trim()
+      |> case do
+        "" -> language
+        other -> other
+      end
+
+    # |> maybe_apply_default_highlight_decorator(formatter)
+
+    %{
+      language: language,
+      language_label: language_label(language),
+      title: title,
+      filename: filename,
+      render_info: render_info
+    }
+  end
+
+  defp extract_info_attr(info, key) do
+    escaped = Regex.escape(key)
+
+    case Regex.run(~r/\b#{escaped}="([^"]*)"/, info, capture: :all_but_first) do
+      [value] when value != "" ->
+        value
+
+      _ ->
+        case Regex.run(~r/\b#{escaped}=([^\s"]+)/, info, capture: :all_but_first) do
+          [value] when value != "" -> value
+          _ -> nil
+        end
+    end
+  end
+
+  defp html_escape(nil), do: ""
+
+  defp html_escape(text) do
+    text
+    |> Phoenix.HTML.html_escape()
+    |> Phoenix.HTML.safe_to_string()
+  end
+
+  # Language icon classes based on the language name
+  defp language_icon_class("elixir"), do: "lucide-droplet text-purple-500"
+  defp language_icon_class("js"), do: "lucide-braces text-yellow-500"
+  defp language_icon_class("javascript"), do: "lucide-braces text-yellow-500"
+  defp language_icon_class("ts"), do: "lucide-braces text-sky-500"
+  defp language_icon_class("typescript"), do: "lucide-braces text-sky-500"
+  defp language_icon_class("html"), do: "lucide-code text-orange-500"
+  defp language_icon_class("css"), do: "lucide-ampersand text-purple-500"
+  defp language_icon_class("ruby"), do: "lucide-gem text-red-500"
+  defp language_icon_class("python"), do: "lucide-line-squiggle text-yellow-500"
+  defp language_icon_class("markdown"), do: "lucide-file-text text-gray-500"
+  defp language_icon_class("json"), do: "lucide-file-text text-blue-500"
+  defp language_icon_class("bash"), do: "lucide-terminal text-green-500"
+  defp language_icon_class("sh"), do: "lucide-terminal text-green-500"
+  defp language_icon_class(_), do: "lucide-file text-gray-500"
+
+  # Human-readable language labels
+  defp language_label("javascript"), do: "JavaScript"
+  defp language_label("typescript"), do: "TypeScript"
+  defp language_label("html"), do: "HTML"
+  defp language_label("css"), do: "CSS"
+  defp language_label(lang), do: String.capitalize(lang)
 end

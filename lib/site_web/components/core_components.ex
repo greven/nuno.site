@@ -599,7 +599,7 @@ defmodule SiteWeb.CoreComponents do
             <%= if @anchor do %>
               <a
                 id={@anchor}
-                class={if(@show_anchor_link, do: "header-link", else: "scroll-header")}
+                class={if(@show_anchor_link, do: "anchor", else: "scroll-header")}
                 href={"##{@anchor}"}
               >
                 <span :if={@show_anchor_link}>{@tag}</span>

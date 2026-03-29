@@ -1,7 +1,28 @@
 defmodule Site.Blog.HTMLConverter do
-  @moduledoc false
+  @moduledoc """
+  Custom HTML converter so we can apply transformations to the HTML body.
+  """
 
-  # Custom HTML converter so that NimblePublisher
-  # does not apply their default markdown -> HTML conversion.
-  def convert(_extname, body, _attrs, _opts), do: body
+  require MDEx
+
+  alias Site.Blog.Markdown
+
+  @supported_extensions [".md", ".markdown", ".livemd", ".heex"]
+
+  def convert(filepath, body, _attrs, opts) do
+    ext = filepath |> Path.extname() |> String.downcase()
+
+    if ext in @supported_extensions do
+      opts = Markdown.mdex_options(opts)
+      to_html(body, opts)
+    else
+      body
+    end
+  end
+
+  defp to_html(body, opts) do
+    body
+    |> MDEx.to_heex!(opts)
+    |> MDEx.to_html!()
+  end
 end

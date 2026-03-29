@@ -2,14 +2,13 @@
 title: "Flag icons in Phoenix",
 tags: ~w(dev elixir phoenix),
 excerpt: "Easily add country flag icons to your phoenix app using a Tailwind plugin.",
+lead: true,
 category: :article,
 status: :published,
-featured: true,
+featured: true
 }
 
 ---
-
-<!-- lead -->
 
 Easily add country flag icons to your phoenix app using a Tailwind plugin.
 
@@ -93,18 +92,20 @@ More Varations:
 ## The Recipe
 
 The Phoenix generators already bring with it an icon library, [heroicons](https://heroicons.com/).
-I have [previously written about how easy is to extend this idea](https://bsky.app/profile/nuno.site/post/3lmm7momvrk27) to other icon sets. For our flag icon
+I have previously written about [how easy is to extend this idea](https://bsky.app/profile/nuno.site/post/3lmm7momvrk27) to other icon sets. For our flag icon
 set we are using [Lipis Flag Icons](https://github.com/lipis/flag-icons) but any SVG icon set with properly named files should work fine (by properly named I mean using country ISO codes).
 
 [Mix](https://hexdocs.pm/elixir/introduction-to-mix.html) has the ability to add local packages [as well as from other sources](https://hexdocs.pm/mix/Mix.Tasks.Deps.html#module-git-options-git), such as Git/GitHub by adding it as as dependency in `mix.exs`.
 
-```elixir
-# mix.exs
-
+```elixir data-filename="mix.exs"
 defp deps do
-	[ {:heroicons, github: "tailwindlabs/heroicons", tag: "v2.2.0",
-     sparse: "optimized", app: false, compile: false, depth: 1}
-	]
+	[{:heroicons,
+    github: "tailwindlabs/heroicons",
+    tag: "v2.2.0",
+    sparse: "optimized",
+    app: false,
+    compile: false,
+    depth: 1}]
 end
 ```
 
@@ -113,19 +114,17 @@ This will download the `heroicons` from the Github repo and add it to our depend
 With the icon SVGs downloaded to our `deps` folder we now need a way to use them, this is where the [Tailwind CSS plugins](https://v3.tailwindcss.com/docs/plugins) enters the picture.
 For this post I am considering the use of Tailwind CSS since it is now the default in Phoenix (and I don’t want discuss the merits or demerits of using Tailwind here).
 
-<SiteWeb.BlogComponents.article_aside intent="info" title="Tailwind plugins in version 4">
+<!-- <SiteWeb.BlogComponents.article_aside intent="info" title="Tailwind plugins in version 4"> -->
 
 Tailwind plugins are now considered by Tailwind a legacy system but are still supported in Tailwind v4. This is because Tailwind moved to a CSS only configuration but still supports the “old” JavaScript file based system, including plugins.
 
 I haven’t explored a “Tailwind v4 way of doing things” but I suppose it shouldn’t be much different. Instead of a JavaScript plugin using `matchComponents` we could write a script that generates a CSS file with the icon utilities, then import it in our `app.css`.
 
-</SiteWeb.BlogComponents.article_aside>
+<!-- </SiteWeb.BlogComponents.article_aside> -->
 
 The plugin file that we will import in our `app.css` is the following (adapted from the generated `heroicons.js`file in the `assets\vendor`):
 
-```javascript
-// assets/vendor/flag_icons.js
-
+```javascript data-filename="flag_icons.js"
 import plugin from "tailwindcss/plugin";
 import fs from "fs";
 import path from "path";
@@ -190,6 +189,86 @@ export default plugin(function ({ matchComponents, theme }) {
     { values },
   );
 });
+
+export default plugin(function ({ matchComponents, theme }) {
+  matchComponents(
+    {
+      flag: ({ name, fullPath }) => {
+        if (!svgCache.has(fullPath)) {
+          const content = encodeURIComponent(
+            fs
+              .readFileSync(fullPath)
+              .toString()
+              .replace(/\r?\n|\r/g, ""),
+          );
+
+          svgCache.set(fullPath, content);
+        }
+
+        const content = svgCache.get(fullPath);
+
+        let aspect = "4 / 3";
+        let size = theme("spacing.6");
+        if (name.endsWith("-square")) {
+          aspect = "1";
+        }
+
+        return {
+          [`--flag-${name}`]: `url('data:image/svg+xml;utf8,${content}')`,
+          "background-image": `var(--flag-${name})`,
+          "background-repeat": "no-repeat",
+          "background-size": "cover",
+          "background-position": "center",
+          "vertical-align": "middle",
+          display: "inline-block",
+          "aspect-ratio": aspect,
+          width: size,
+        };
+      },
+    },
+    { values },
+  );
+});
+
+export default plugin(function ({ matchComponents, theme }) {
+  matchComponents(
+    {
+      flag: ({ name, fullPath }) => {
+        if (!svgCache.has(fullPath)) {
+          const content = encodeURIComponent(
+            fs
+              .readFileSync(fullPath)
+              .toString()
+              .replace(/\r?\n|\r/g, ""),
+          );
+
+          svgCache.set(fullPath, content);
+        }
+
+        const content = svgCache.get(fullPath);
+
+        let aspect = "4 / 3";
+        let size = theme("spacing.6");
+        if (name.endsWith("-square")) {
+          aspect = "1";
+        }
+
+        return {
+          [`--flag-${name}`]: `url('data:image/svg+xml;utf8,${content}')`,
+          "background-image": `var(--flag-${name})`,
+          "background-repeat": "no-repeat",
+          "background-size": "cover",
+          "background-position": "center",
+          "vertical-align": "middle",
+          display: "inline-block",
+          "aspect-ratio": aspect,
+          width: size,
+        };
+      },
+    },
+    { values },
+  );
+});
 ```
 
 I’m not going to go through the code (ask your friend LLM!) but we have two folders with two distinct icon formats, a squared `1x1` format and a `4x3`.
@@ -198,7 +277,7 @@ and it will set the background image to the SVG content of the icon encoded as a
 
 The last part of the recipe, just like the default `heroicons`is to be able to used them from the `<.icon>` HEEx component defined in our `core_components.ex` file.
 
-```elixir
+```elixir data-filename="core_components.ex"
   attr :name, :string, required: true
   attr :class, :any, default: "size-5"
   attr :rest, :global
@@ -223,7 +302,7 @@ The function clause relevant to us its the last one, but since I have extended t
 With the plugin in place we can now use the flag icons in our codebase.
 I also created a HEEx component to add specific features to the flag icons that makes use of the icon component above.
 
-```elixir
+```elixir data-filename="core_components.ex"
 attr :name, :string, required: true
 attr :label, :string, default: nil
 attr :radius, :string, default: "rounded-xs"
@@ -268,12 +347,12 @@ end
 
 To display the flag of the European Union with a linear overlay and a border we can do:
 
-```elixir
-<.flag_icon name="flag-pt" overlay="wave" class="w-24" radius="rounded-lg" border shadow />
+```elixir data-title="Usage example"
+<.flag_icon name="flag-im" overlay="wave" class="w-24" radius="rounded-lg" border shadow />
 ```
 
 Which will render the following flag icon:
 
-<SiteWeb.CoreComponents.flag_icon name="flag-pt" overlay="wave" class="w-24" radius="rounded-lg" border shadow />
+<SiteWeb.CoreComponents.flag_icon name="flag-im" overlay="wave" class="w-24" radius="rounded-lg" border shadow />
 
-You know, I'm a bit of a vexillologist myself... 😏
+Yes, this is a real flag from the Isle of Man. You know, I'm a bit of a vexillologist myself... 😏

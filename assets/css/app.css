@@ -2,6 +2,7 @@
    https://tailwindcss.com/docs/configuration */
 
 @import 'tailwindcss' source(none);
+@source '../../lib/site';
 @source '../../lib/site_web';
 @source '../css';
 @source '../js';

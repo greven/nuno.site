@@ -1,4 +1,5 @@
 import { ArticleTableOfContents } from './article-toc';
+import { BlogPost } from './blog-post';
 import { CardStack } from './card-stack';
 import { CoverImage } from './cover-image';
 import { Dialog } from './dialog';
@@ -29,6 +30,7 @@ import { TravelMap } from './travel-map';
 
 export default {
   ArticleTableOfContents,
+  BlogPost,
   CardStack,
   CoverImage,
   Dialog,

@@ -2,14 +2,13 @@
 title: "AI Fatigue in the Age of Agents",
 tags: ~w(dev ai),
 excerpt: "I use AI every day. I find it useful. Sometimes even impressive. And yet, I’m tired.",
+lead: true,
 category: :article,
 status: :published,
 featured: true
 }
 
 ---
-
-<!-- lead -->
 
 I use AI every day. I find it useful. Sometimes even impressive. And yet, I’m tired.
 
