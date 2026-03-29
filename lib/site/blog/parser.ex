@@ -157,7 +157,7 @@ defmodule Site.Blog.Parser do
 
   defp build_decorated_code_block(%MDEx.CodeBlock{} = node) do
     mdex_options = Markdown.mdex_options()
-    meta = parse_code_block_info(node.info, mdex_options)
+    meta = parse_code_block_info(node.info)
 
     code_html =
       %MDEx.Document{nodes: [%{node | info: meta.render_info}]}
@@ -193,7 +193,7 @@ defmodule Site.Blog.Parser do
 
   defp build_decorated_code_block(_), do: :error
 
-  defp parse_code_block_info(info, mdex_options) do
+  defp parse_code_block_info(info) do
     trimmed = String.trim(info)
 
     language =
