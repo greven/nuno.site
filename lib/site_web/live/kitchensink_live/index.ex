@@ -372,6 +372,52 @@ defmodule SiteWeb.KitchenSinkLive.Index do
             </.timeline_item>
           </.timeline>
         </div>
+
+        <%!-- Article Components --%>
+        <div class="flex flex-col">
+          <h2 class="flex items-center gap-1 text-2xl font-medium ">
+            <a name="article" href="#article" class="text-content-40 scroll-my-(--header-height)">#</a>Article Components
+          </h2>
+
+          <SiteWeb.BlogComponents.article_aside
+            title="This is an default article aside"
+            markdown={false}
+          >
+            This is the content of the article aside. It can be used to highlight important information or provide additional context to the reader.
+          </SiteWeb.BlogComponents.article_aside>
+
+          <SiteWeb.BlogComponents.article_aside
+            title="This is an article aside with markdown content"
+            intent="info"
+            markdown={false}
+          >
+            This is the content of the article aside. It can be used to highlight important information or provide additional context to the reader.
+          </SiteWeb.BlogComponents.article_aside>
+
+          <SiteWeb.BlogComponents.article_aside
+            title="This is an article aside with markdown content"
+            intent="success"
+            markdown={false}
+          >
+            This is the content of the article aside. It can be used to highlight important information or provide additional context to the reader.
+          </SiteWeb.BlogComponents.article_aside>
+
+          <SiteWeb.BlogComponents.article_aside
+            title="This is an article aside with markdown content"
+            intent="warning"
+            markdown={false}
+          >
+            This is the content of the article aside. It can be used to highlight important information or provide additional context to the reader.
+          </SiteWeb.BlogComponents.article_aside>
+
+          <SiteWeb.BlogComponents.article_aside
+            title="This is an article aside with markdown content"
+            intent="danger"
+            markdown={false}
+          >
+            This is the content of the article aside. It can be used to highlight important information or provide additional context to the reader.
+          </SiteWeb.BlogComponents.article_aside>
+        </div>
       </Layouts.page_content>
     </Layouts.app>
     """

@@ -100,65 +100,65 @@ defmodule SiteWeb.BlogComponents do
   attr :intent, :string, default: nil
   attr :title, :string, default: nil
   attr :icon, :string, default: nil
+
+  attr :markdown, :boolean,
+    default: true,
+    doc:
+      "Whether the content is coming from markdown (and thus needs to be rendered as raw HTML) or is regular HEEx content"
+
   slot :inner_block, required: true
 
   def article_aside(assigns) do
     default_icon =
       case assigns.intent do
         "info" -> "lucide-info"
-        "warning" -> "lucide-triangle-alert"
-        "danger" -> "lucide-alert-circle"
+        "warning" -> "lucide-message-circle-warning"
+        "danger" -> "lucide-triangle-alert"
         "success" -> "lucide-circle-check"
         _ -> "lucide-info"
       end
 
     intent_classes =
       case assigns.intent do
-        "info" ->
-          %{bg: "bg-info", border: "border-info/90", icon: "text-info"}
-
-        "warning" ->
-          %{bg: "bg-warning", border: "border-warning/90", icon: "text-warning"}
-
-        "danger" ->
-          %{bg: "bg-danger", border: "border-danger/90", icon: "text-danger"}
-
-        "success" ->
-          %{bg: "bg-success", border: "border-success/90", icon: "text-success"}
-
-        _ ->
-          %{bg: "bg-surface-40", border: "border-border", icon: "text-neutral-600"}
+        "info" -> %{color: "info", bg: "bg-info", border: "border-info/90"}
+        "warning" -> %{color: "warning", bg: "bg-warning", border: "border-warning/90"}
+        "danger" -> %{color: "danger", bg: "bg-danger", border: "border-danger/90"}
+        "success" -> %{color: "success", bg: "bg-success", border: "border-success/90"}
+        _ -> %{color: "neutral", bg: "bg-surface-40", border: "border-border"}
       end
 
     assigns =
       assigns
       |> assign(:content, Helpers.slot_content_to_html!(assigns.inner_block))
       |> assign(:icon, assigns.icon || default_icon)
+      |> assign(:intent_color, intent_classes.color)
       |> assign(:intent_bg, intent_classes.bg)
       |> assign(:intent_border, intent_classes.border)
-      |> assign(:intent_icon, intent_classes.icon)
 
     ~H"""
-    <aside class={[
-      "relative isolate my-[1.5em] [&>*:last-child]:mb-0",
-      "text-[0.925em] text-content-10 rounded-lg border shadow-xs overflow-hidden",
-      @intent_border
-    ]}>
+    <aside
+      class={[
+        "relative isolate my-[1.5em] [&>*:last-child]:mb-0",
+        "text-[0.925em] text-content-10 rounded-lg border shadow-xs overflow-hidden",
+        @intent_border
+      ]}
+      style={"--color-accent: var(--color-#{@intent_color}); --link-color: var(--color-#{@intent_color});"}
+    >
       <div class={["absolute inset-0 opacity-10 -z-1", @intent_bg]}></div>
       <div
         :if={@title}
-        class="relative flex items-center gap-3 font-headings py-3 px-[1.5em]"
+        class="relative flex items-center gap-3 font-headings py-3.5 px-[1.5em]"
       >
         <.diagonal_pattern class="-z-1" use_transition={false} />
         <div class={["absolute inset-0 opacity-5 -z-2", @intent_bg]}></div>
-        <.icon name={@icon} class={["size-5", @intent_icon]} />
+        <.icon name={@icon} class="size-4" style={"color: var(--color-#{@intent_color})"} />
         <h5 class="text-[0.95em] leading-tight font-medium text-content-10 text-pretty">
           {@title}
         </h5>
       </div>
       <div class={["w-full mb-2 border-b opacity-20", @intent_border]}></div>
-      <div class="mb-[1.5em] px-[1.5em]">
-        {Phoenix.HTML.raw(@content)}
+      <div class="pb-[1.25em] px-[1.5em] [&>*:last-child]:mb-0!">
+        {(@markdown && Phoenix.HTML.raw(@content)) || render_slot(@inner_block)}
       </div>
     </aside>
     """

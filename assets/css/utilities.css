@@ -107,15 +107,18 @@
 /* Links */
 
 @utility link {
-  @apply text-content-10 decoration-primary hover:decoration-content-30 hover:bg-surface-40/20 underline decoration-[1.5px] underline-offset-3 transition-colors;
+  --decoration-color: var(--link-color, var(--color-primary));
+  @apply text-content-10 hover:decoration-content-30 underline decoration-(--decoration-color) decoration-[1.5px] underline-offset-3 transition-colors hover:bg-[var(--color-surface-40)/20];
 }
 
 @utility link-subtle {
-  @apply text-content-10 decoration-content-40/20 hover:decoration-primary underline decoration-[1.5px] underline-offset-3 transition-colors;
+  --decoration-color: var(--link-color, var(--color-primary));
+  @apply text-content-10 decoration-content-40/20 underline decoration-[1.5px] underline-offset-3 transition-colors hover:decoration-(--decoration-color);
 }
 
 @utility link-ghost {
-  @apply text-content-30 hover:text-content-10 hover:decoration-primary underline decoration-transparent decoration-[1.5px] underline-offset-3 transition-colors;
+  --decoration-color: var(--link-color, var(--color-primary));
+  @apply text-content-30 hover:text-content-10 underline decoration-transparent decoration-[1.5px] underline-offset-3 transition-colors hover:decoration-(--decoration-color);
 }
 
 @utility header-link {

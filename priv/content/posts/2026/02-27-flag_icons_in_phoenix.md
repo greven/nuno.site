@@ -357,9 +357,8 @@ Which will render the following flag icon:
 
 Yes, this is a real flag from the Isle of Man. You know, I'm a bit of a vexillologist myself... 😏
 
-<SiteWeb.BlogComponents.article_aside title="Resources" icon="lucide-book-marked">
-
-Some resources if you want to learn more about the topics covered in this article:
+<SiteWeb.BlogComponents.article_aside title="Resources">
+Some resources related to this article:
 
 - [Tailwind CSS plugins documentation](https://v3.tailwindcss.com/docs/plugins)
 - [Tailwind upgrade guide](https://tailwindcss.com/docs/upgrade-guide)
