@@ -715,7 +715,6 @@ defmodule Site.BlogTest do
         content
         |> MDEx.parse_document!(options)
         |> Parser.linkify_headers()
-        |> MDEx.to_html!(options)
         |> Parser.parse_headers()
 
       assert headings == expected
