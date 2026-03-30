@@ -114,13 +114,11 @@ This will download the `heroicons` from the Github repo and add it to our depend
 With the icon SVGs downloaded to our `deps` folder we now need a way to use them, this is where the [Tailwind CSS plugins](https://v3.tailwindcss.com/docs/plugins) enters the picture.
 For this post I am considering the use of Tailwind CSS since it is now the default in Phoenix (and I don’t want discuss the merits or demerits of using Tailwind here).
 
-<SiteWeb.BlogComponents.article_aside intent="info" title="Tailwind plugins in version 4">
-
+```aside title="Tailwind plugins in version 4" intent="info"
 Tailwind plugins are now considered by Tailwind a legacy system but are still supported in Tailwind v4. This is because Tailwind moved to a CSS only configuration but still supports the “old” JavaScript file based system, including plugins.
 
 I haven’t explored a “Tailwind v4 way of doing things” but I suppose it shouldn’t be much different. Instead of a JavaScript plugin using `matchComponents` we could write a script that generates a CSS file with the icon utilities, then import it in our `app.css`.
-
-</SiteWeb.BlogComponents.article_aside>
+```
 
 The plugin file that we will import in our `app.css` is the following (adapted from the generated `heroicons.js`file in the `assets\vendor`):
 
@@ -357,10 +355,9 @@ Which will render the following flag icon:
 
 Yes, this is a real flag from the Isle of Man. You know, I'm a bit of a vexillologist myself... 😏
 
-<SiteWeb.BlogComponents.article_aside title="Resources">
+```aside title="Resources"
 Some resources related to this article:
 
 - [Tailwind CSS plugins documentation](https://v3.tailwindcss.com/docs/plugins)
 - [Tailwind upgrade guide](https://tailwindcss.com/docs/upgrade-guide)
-
-</SiteWeb.BlogComponents.article_aside>
+```

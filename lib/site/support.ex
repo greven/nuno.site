@@ -44,6 +44,27 @@ defmodule Site.Support do
     |> String.trim()
   end
 
+  ## Keywords
+
+  @doc """
+  Merges two keyword lists recursively.
+  If both values are keyword lists, they will be merged recursively.
+  Otherwise, the value from the override list will take precedence.
+  """
+  def deep_merge(base, override) when is_list(base) and is_list(override) do
+    Keyword.merge(base, override, fn
+      _key, base_val, override_val when is_list(base_val) and is_list(override_val) ->
+        if Keyword.keyword?(base_val) and Keyword.keyword?(override_val) do
+          deep_merge(base_val, override_val)
+        else
+          override_val
+        end
+
+      _key, _base_val, override_val ->
+        override_val
+    end)
+  end
+
   ## Numbers
 
   @doc """

@@ -147,7 +147,7 @@ defmodule SiteWeb.BlogComponents do
       <div class={["absolute inset-0 opacity-10 -z-1", @intent_bg]}></div>
       <div
         :if={@title}
-        class="relative flex items-center gap-3 font-headings py-3.5 px-[1.5em]"
+        class="relative flex items-center gap-3 font-headings py-3 px-[1.5em]"
       >
         <.diagonal_pattern class="-z-1" use_transition={false} />
         <div class={["absolute inset-0 opacity-5 -z-2", @intent_bg]}></div>
