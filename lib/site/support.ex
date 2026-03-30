@@ -24,6 +24,10 @@ defmodule Site.Support do
   defp maybe_downcase(string, true), do: String.downcase(string)
   defp maybe_downcase(string, false), do: string
 
+  @doc """
+  Truncate text to a specified length, optionally adding a
+  terminator (e.g., "...")  if the text is truncated.
+  """
   def truncate_text(text, opts \\ []) when is_binary(text) do
     length = Keyword.get(opts, :length, 100)
     terminator = Keyword.get(opts, :terminator, "...")
