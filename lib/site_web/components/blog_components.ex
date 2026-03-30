@@ -12,6 +12,42 @@ defmodule SiteWeb.BlogComponents do
 
   ## Article Components to render using MDEx (at compile time)
 
+  @doc false
+
+  attr :post, Blog.Post, required: true
+  attr :size, :integer, default: 250
+  attr :rest, :global
+
+  def article_thumbnail(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :base_class,
+        [
+          "w-full max-h-[200px] aspect-video rounded-md border border-border/50 shadow-sm object-cover",
+          "md:w-44 md:aspect-square md:shrink-0"
+        ]
+      )
+      |> assign(:image, article_thumbnail_url(assigns.post, "400w"))
+      |> assign(:image_sm, article_thumbnail_url(assigns.post, "200w"))
+
+    ~H"""
+    <.image
+      src={@image}
+      alt={@post.title}
+      width={@size}
+      height={@size}
+      class={[@base_class, !@post.image && "bg-surface-10/60"]}
+      use_picture={if @post.image, do: true, else: false}
+      loading="lazy"
+      {@rest}
+    >
+      <:source srcset={@image} type="image/jpeg" media="(max-width: 768px)" />
+      <:source srcset={@image_sm} type="image/jpeg" media="(min-width: 769px)" />
+    </.image>
+    """
+  end
+
   @doc """
   Renders an image for an article given an image name (including path) or image URL.
   If a URL is given, it will use it as is. If an image name/path is given it will resolve to a full URL using
@@ -56,42 +92,6 @@ defmodule SiteWeb.BlogComponents do
       />
       <figcaption :if={@caption}>{@caption}</figcaption>
     </figure>
-    """
-  end
-
-  @doc false
-
-  attr :post, Blog.Post, required: true
-  attr :size, :integer, default: 250
-  attr :rest, :global
-
-  def article_thumbnail(assigns) do
-    assigns =
-      assigns
-      |> assign(
-        :base_class,
-        [
-          "w-full max-h-[200px] aspect-video rounded-md border border-border/50 shadow-sm object-cover",
-          "md:w-44 md:aspect-square md:shrink-0"
-        ]
-      )
-      |> assign(:image, article_thumbnail_url(assigns.post, "400w"))
-      |> assign(:image_sm, article_thumbnail_url(assigns.post, "200w"))
-
-    ~H"""
-    <.image
-      src={@image}
-      alt={@post.title}
-      width={@size}
-      height={@size}
-      class={[@base_class, !@post.image && "bg-surface-10/60"]}
-      use_picture={if @post.image, do: true, else: false}
-      loading="lazy"
-      {@rest}
-    >
-      <:source srcset={@image} type="image/jpeg" media="(max-width: 768px)" />
-      <:source srcset={@image_sm} type="image/jpeg" media="(min-width: 769px)" />
-    </.image>
     """
   end
 
