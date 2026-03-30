@@ -439,10 +439,26 @@
       }
     }
 
-    /* Multi-theme output from MDEx exposes --lumis-* vars on token spans. */
     .code-block pre.lumis {
       background-color: var(--color-surface-20);
-      color: var(--color-content);
+    }
+
+    /* Light theme */
+    :where([data-theme='light']) & .code-block pre.lumis,
+    :where([data-theme='light']) & .code-block pre.lumis span {
+      color: var(--lumis-light) !important;
+      font-style: var(--lumis-light-font-style) !important;
+      font-weight: var(--lumis-light-font-weight) !important;
+      text-decoration: var(--lumis-light-text-decoration) !important;
+    }
+
+    /* Dark theme */
+    :where([data-theme='dark']) & .code-block pre.lumis,
+    :where([data-theme='dark']) & .code-block pre.lumis span {
+      color: var(--lumis-dark) !important;
+      font-style: var(--lumis-dark-font-style) !important;
+      font-weight: var(--lumis-dark-font-weight) !important;
+      text-decoration: var(--lumis-dark-text-decoration) !important;
     }
 
     .code-block pre.lumis code > .line.code-line-highlight {

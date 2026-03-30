@@ -22,7 +22,7 @@ defmodule Site.Blog.Markdown do
     syntax_highlight: [
       formatter:
         {:html_multi_themes,
-         themes: [light: SyntaxTheme.light(), dark: SyntaxTheme.dark()], default_theme: "dark"}
+         themes: [light: SyntaxTheme.light(), dark: SyntaxTheme.dark()], default_theme: nil}
     ]
   ]
 
