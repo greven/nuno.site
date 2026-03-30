@@ -109,6 +109,8 @@ defmodule SiteWeb.BlogComponents do
   slot :inner_block, required: true
 
   def article_aside(assigns) do
+    intent_classes = aside_intent_classes(assigns.intent)
+
     default_icon =
       case assigns.intent do
         "info" -> "lucide-info"
@@ -116,15 +118,6 @@ defmodule SiteWeb.BlogComponents do
         "danger" -> "lucide-triangle-alert"
         "success" -> "lucide-circle-check"
         _ -> "lucide-info"
-      end
-
-    intent_classes =
-      case assigns.intent do
-        "info" -> %{color: "info", bg: "bg-info", border: "border-info/90"}
-        "warning" -> %{color: "warning", bg: "bg-warning", border: "border-warning/90"}
-        "danger" -> %{color: "danger", bg: "bg-danger", border: "border-danger/90"}
-        "success" -> %{color: "success", bg: "bg-success", border: "border-success/90"}
-        _ -> %{color: "neutral", bg: "bg-surface-40", border: "border-border"}
       end
 
     assigns =
@@ -162,6 +155,16 @@ defmodule SiteWeb.BlogComponents do
       </div>
     </aside>
     """
+  end
+
+  defp aside_intent_classes(intent) do
+    case intent do
+      "info" -> %{color: "info", bg: "bg-info", border: "border-info/90"}
+      "warning" -> %{color: "warning", bg: "bg-warning", border: "border-warning/90"}
+      "danger" -> %{color: "danger", bg: "bg-danger", border: "border-danger/90"}
+      "success" -> %{color: "success", bg: "bg-success", border: "border-success/90"}
+      _ -> %{color: "neutral", bg: "bg-surface-40", border: "border-border"}
+    end
   end
 
   @doc false

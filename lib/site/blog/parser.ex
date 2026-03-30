@@ -144,19 +144,20 @@ defmodule Site.Blog.Parser do
 
   defp decorate_code_blocks(markdown_body) do
     MDEx.traverse_and_update(markdown_body, fn
-      %MDEx.CodeBlock{fenced: true, info: info} = node ->
-        if aside_info?(info) do
-          node
-        else
-          case build_decorated_code_block(node) do
-            {:ok, html} -> %MDEx.HtmlBlock{literal: html}
-            :error -> node
-          end
-        end
-
-      node ->
-        node
+      %MDEx.CodeBlock{fenced: true} = node -> maybe_decorate_code_block(node)
+      node -> node
     end)
+  end
+
+  defp maybe_decorate_code_block(%MDEx.CodeBlock{fenced: true, info: info} = node) do
+    if aside_info?(info) do
+      node
+    else
+      case build_decorated_code_block(node) do
+        {:ok, html} -> %MDEx.HtmlBlock{literal: html}
+        :error -> node
+      end
+    end
   end
 
   defp aside_info?(info) when is_binary(info) do
