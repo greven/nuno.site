@@ -8,10 +8,10 @@ export const SiteHeader = {
     // Events Handlers
     this.handleScroll = () => this.onScroll();
 
-    this.handleScroll();
-
     // Event Listeners
     window.addEventListener('scroll', this.handleScroll, { passive: true });
+
+    this.handleScroll();
   },
 
   destroyed() {
@@ -28,21 +28,8 @@ export const SiteHeader = {
       this.el.removeAttribute('data-scrolled');
     }
 
-    this.updateProgress(currentScrollY);
+    this.showProgress && this.updateProgress(currentScrollY);
     this.lastScrollY = currentScrollY;
-  },
-
-  updateProgress(currentScrollY) {
-    if (this.showProgress) {
-      const scrollPercentage = this.calculateScrollPercentage(currentScrollY);
-      this.el.style.setProperty('--page-progress', `${scrollPercentage}%`);
-
-      if (scrollPercentage > 0 && this.progressIcon) {
-        this.progressIcon.classList.remove('hidden');
-      } else if (this.progressIcon) {
-        this.progressIcon.classList.add('hidden');
-      }
-    }
   },
 
   calculateScrollPercentage(currentScrollY) {
@@ -56,5 +43,16 @@ export const SiteHeader = {
 
     const percentage = (currentScrollY / maxScrollDistance) * 100;
     return Math.min(Math.max(percentage, 0), 100);
+  },
+
+  updateProgress(currentScrollY) {
+    const scrollPercentage = this.calculateScrollPercentage(currentScrollY);
+    this.el.style.setProperty('--page-progress', `${scrollPercentage}%`);
+
+    if (scrollPercentage > 0 && this.progressIcon) {
+      this.progressIcon.classList.remove('hidden');
+    } else if (this.progressIcon) {
+      this.progressIcon.classList.add('hidden');
+    }
   },
 };
