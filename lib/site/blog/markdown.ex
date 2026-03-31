@@ -9,7 +9,12 @@ defmodule Site.Blog.Markdown do
   @aside_allowed_attrs ~w(intent title icon markdown)
 
   @default_opts [
-    plugins: [MDExGFM, &__MODULE__.aside_plugin/1, &__MODULE__.decorate_code_blocks_plugin/1],
+    plugins: [
+      MDExGFM,
+      &__MODULE__.aside_plugin/1,
+      &__MODULE__.decorate_code_blocks_plugin/1,
+      &__MODULE__.linkify_headers_plugin/1
+    ],
     extension: [
       highlight: true,
       phoenix_heex: true
@@ -140,6 +145,71 @@ defmodule Site.Blog.Markdown do
   end
 
   defp aside_info?(_), do: false
+
+  @doc """
+  Linkify headers by wrapping them in anchor links for table of contents navigation.
+  """
+  def linkify_headers_plugin(document) do
+    Document.append_steps(document, linkify_headers: &do_linkify_headers/1)
+  end
+
+  defp do_linkify_headers(document) do
+    MDEx.traverse_and_update(document, fn
+      %MDEx.Heading{level: level, nodes: children} = heading_node ->
+        id =
+          to_string(heading_node)
+          |> MDEx.to_html!()
+          |> LazyHTML.from_fragment()
+          |> LazyHTML.text()
+          |> MDEx.anchorize()
+
+        header_markdown =
+          ~s(<header class="group relative h#{level}"><h#{level} id="#{id}">#{MDEx.to_html!(children)}</h#{level}>
+               <a href="##{id}" class="header-link" aria-labelledby="#{id}">H#{level}</a></header>)
+
+        case MDEx.parse_fragment(header_markdown) do
+          {:ok, node} -> node
+          _ -> heading_node
+        end
+
+      node ->
+        node
+    end)
+  end
+
+  @doc """
+  Add a `lead` class to the first paragraph when `lead: true` is set in the post attrs.
+  Returns a 1-arity plugin function that captures the given attrs.
+  """
+  def lead_plugin(attrs) do
+    fn document ->
+      Document.append_steps(document, transform_lead: &do_transform_lead(&1, attrs))
+    end
+  end
+
+  defp do_transform_lead(%MDEx.Document{nodes: nodes} = document, %{lead: true}) do
+    {new_nodes, _found?} =
+      Enum.map_reduce(nodes, false, fn
+        %MDEx.Paragraph{} = paragraph, false ->
+          {paragraph_to_lead_html_block(paragraph), true}
+
+        node, found? ->
+          {node, found?}
+      end)
+
+    %{document | nodes: new_nodes}
+  end
+
+  defp do_transform_lead(document, _attrs), do: document
+
+  defp paragraph_to_lead_html_block(%MDEx.Paragraph{} = paragraph) do
+    paragraph_html =
+      paragraph
+      |> MDEx.to_html!()
+      |> String.replace(~r/<p>/, ~s(<p class="lead">), global: false)
+
+    %MDEx.HtmlBlock{literal: paragraph_html}
+  end
 
   defp render_decorated_code_block(node) do
     meta = parse_code_block_info(node.info)
