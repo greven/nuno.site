@@ -44,20 +44,6 @@ defmodule Site.Blog.Markdown do
     Document.append_steps(document, update_aside_blocks: &update_aside_blocks/1)
   end
 
-  defp replace_aside_block(%MDEx.CodeBlock{info: info, literal: content} = node) do
-    info
-    |> parse_aside_attrs()
-    |> case do
-      {:ok, attrs} ->
-        %MDEx.HtmlBlock{literal: build_aside_component(attrs, content), nodes: node.nodes}
-
-      :error ->
-        node
-    end
-  end
-
-  defp replace_aside_block(node), do: node
-
   defp update_aside_blocks(document) do
     selector = fn
       %MDEx.CodeBlock{fenced: true, info: info} ->
@@ -69,8 +55,22 @@ defmodule Site.Blog.Markdown do
         false
     end
 
-    Document.update_nodes(document, selector, &replace_aside_block/1)
+    Document.update_nodes(document, selector, &process_aside_block/1)
   end
+
+  defp process_aside_block(%MDEx.CodeBlock{info: info, literal: content} = node) do
+    info
+    |> parse_aside_attrs()
+    |> case do
+      {:ok, attrs} ->
+        %MDEx.HtmlBlock{literal: render_aside_component(attrs, content), nodes: node.nodes}
+
+      :error ->
+        node
+    end
+  end
+
+  defp process_aside_block(node), do: node
 
   defp parse_aside_attrs(info) when is_binary(info) do
     trimmed = String.trim(info)
@@ -94,7 +94,7 @@ defmodule Site.Blog.Markdown do
     end
   end
 
-  defp build_aside_component(attrs, content) do
+  defp render_aside_component(attrs, content) do
     attrs_html =
       attrs
       |> Enum.map_join("", fn {key, value} ->
