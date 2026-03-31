@@ -4,6 +4,7 @@ defmodule Site.BlogTest do
   alias Site.Blog
   alias Site.Blog.Event
   alias Site.Blog.HeaderLink
+  alias Site.Blog.Markdown
   alias Site.Blog.Parser
   alias Site.Blog.Post
   alias Site.Blog.PostLike
@@ -714,7 +715,7 @@ defmodule Site.BlogTest do
       headings =
         content
         |> MDEx.parse_document!(options)
-        |> Parser.linkify_headers()
+        |> Markdown.linkify_headers_plugin()
         |> Parser.parse_headers()
 
       assert headings == expected
