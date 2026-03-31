@@ -16,15 +16,6 @@ config :swoosh, local: false
 # Do not print debug messages in production
 config :logger, level: :info
 
-# Phoenix Pre-Rendering
-config :phoenix_prerender,
-  enabled: true,
-  isr: true,
-  revalidate: 300,
-  prewarm: true,
-  base_url: "https://nuno.site",
-  compressors: [PhoenixPrerender.Compressor.Gzip]
-
 config :forex, cache_module: Forex.Cache.ETS
 
 # Runtime production configuration, including reading

@@ -71,11 +71,6 @@ jobs:
       - name: Install asset dependencies
         run: mix assets.setup
 
-      - name: Generate prerendered pages
-        env:
-          SKIP_BROWSER_DATA: "true"
-        run: mix phoenix.prerender
-
       - name: Build assets
         run: mix assets.deploy
 

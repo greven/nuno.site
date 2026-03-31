@@ -19,9 +19,7 @@ defmodule Site.Application do
         {Phoenix.PubSub, name: Site.PubSub},
         SiteWeb.Presence,
         Site.Analytics,
-        SiteWeb.Endpoint,
-        {PhoenixPrerender.PageCache, prewarm: true},
-        {PhoenixPrerender.Regenerator, endpoint: SiteWeb.Endpoint}
+        SiteWeb.Endpoint
       ] ++ optional_children()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
