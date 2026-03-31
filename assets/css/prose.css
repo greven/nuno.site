@@ -390,6 +390,30 @@
       text-align: start;
     }
 
+    .footnotes {
+      margin-block: 3em;
+      padding-top: 1em;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      border-top: 1px dashed var(--prose-border-color);
+      color: var(--color-content-40);
+    }
+
+    .footnote-ref a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    a.footnote-backref {
+      font-size: 0;
+
+      &::after {
+        content: '^';
+        font-size: 0.75rem;
+        color: var(--color-primary);
+      }
+    }
+
     /* Code Blocks & Syntax Highlighting */
 
     .code-block {

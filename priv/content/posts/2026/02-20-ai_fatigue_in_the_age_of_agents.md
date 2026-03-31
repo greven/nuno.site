@@ -56,10 +56,12 @@ One could look at tools like OpenClaw as a massive productivity boost. Myself I 
 
 ## The real tradeoff
 
-AI didn’t emerge, it was unleashed. It went from research labs to global deployment almost overnight. It was released too soon (thanks OpenAI!), before we had clear legal frameworks in place. Before we had meaningful safeguards around intellectual property. Before we understood the economic and societal consequences of deploying systems at this scale.
+AI didn’t emerge, it was unleashed upon the world. It went from research labs to global deployment almost overnight. It was released too soon (thanks OpenAI!), before we had clear legal frameworks in place. Before we had meaningful safeguards around intellectual property. Before we understood the economic and societal consequences of deploying systems at this scale.
 
-Regulators are now scrambling to catch up. In Europe, legislation races against adoption curves. In the United States, it often feels like experimentation at planetary scale. AI investment is already the biggest endeavour of the human race to date (even surpassing the investments in The Manhattan Project and The Apollo program by several orders of magnitude). Yet, AI is being pushed from executives downward, searching for problems to justify its existence.
+Regulators are now scrambling to catch up. In Europe, legislation races against adoption curves. In the United States, it often feels like experimentation at planetary scale. AI investment is already the biggest endeavour of the human race to date (even surpassing the investments in The Manhattan Project and The Apollo program by several orders of magnitude[^1]). Yet, AI is being pushed from executives downward, searching for problems to justify its existence.
 
 If “10x more efficiency” comes at the cost of privacy, trust and potential global economic collapse, maybe we should at least be honest about the tradeoff.
 
 The cat is out of the bag. There’s no rewinding this, but we can still slow down and let society catch up.
+
+[^1]: The Manhattan Project cost around $30 billion in 2026 dollars. The Apollo program cost around $298 billion in today’s dollars. In contrast, by 2024, investors had poured over $1.6 trillion into AI investments since 2013. In [Reuters](https://www.reuters.com/graphics/USA-ECONOMY/AI-INVESTMENT/gkvlqbgxkpb/?utm_source=nuno.site).
