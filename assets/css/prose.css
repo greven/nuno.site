@@ -245,10 +245,12 @@
     }
 
     :not(pre) > code {
+      --code-bg: --alpha(var(--code-color) / 0.175);
+
       padding-block: 0.25rem;
       padding-inline: 0.125rem;
       color: var(--color-content);
-      background-color: var(--color-surface-30);
+      background-color: var(--code-bg, var(--color-surface-30));
       border-radius: var(--radius-sm);
       box-shadow: var(--shadow-xs);
       white-space: pre-wrap;
@@ -429,7 +431,7 @@
       left: 0.25rem;
       width: 2rem;
       text-align: right;
-      opacity: 0.15;
+      opacity: 0.25;
       user-select: none;
       pointer-events: none;
       font-variant-numeric: tabular-nums;
@@ -440,7 +442,11 @@
     }
 
     .code-block pre.lumis {
-      background-color: var(--color-surface-20);
+      background-color: --alpha(var(--color-surface-20) / 0.5);
+
+      @variant dark {
+        background-color: --alpha(var(--color-surface-20) / 0.9);
+      }
     }
 
     /* Light theme */

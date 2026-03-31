@@ -2343,11 +2343,13 @@ defmodule SiteWeb.CoreComponents do
   """
 
   attr :class, :string, default: "border border-surface-10 rounded-lg z-1"
+  attr :color, :string, default: "var(--color-content-40)"
+  attr :opacity, :string, default: "0.2"
   attr :use_transition, :boolean, default: true
 
   attr :hover_transition, :string,
     default:
-      "group-hover/card:text-primary group-hover/card:opacity-40 transition-opacity duration-150"
+      "group-hover/card:text-primary! group-hover/card:opacity-40 transition-opacity duration-150"
 
   def diagonal_pattern(assigns) do
     assigns =
@@ -2356,11 +2358,14 @@ defmodule SiteWeb.CoreComponents do
 
     ~H"""
     <div class={["absolute inset-0", @class]}>
-      <svg class={[
-        "absolute inset-0 size-full text-content-40/70 rounded-lg opacity-20 pointer-events-none select-none",
-        "mask-[linear-gradient(to_left,#ffffffad,transparent)]",
-        @use_transition && @hover_transition
-      ]}>
+      <svg
+        style={"color: #{@color}; opacity: #{@opacity};"}
+        class={[
+          "absolute inset-0 size-full text-current rounded-lg pointer-events-none select-none",
+          "mask-[linear-gradient(to_left,#ffffffad,transparent)]",
+          @use_transition && @hover_transition
+        ]}
+      >
         <defs>
           <pattern
             id={@svg_id}

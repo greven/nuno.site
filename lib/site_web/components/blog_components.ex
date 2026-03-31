@@ -130,19 +130,23 @@ defmodule SiteWeb.BlogComponents do
 
     ~H"""
     <aside
+      style={"--color-accent: var(--color-#{@intent_color}); --code-color: var(--color-#{@intent_color});"}
       class={[
         "relative isolate my-[1.5em] [&>*:last-child]:mb-0",
         "text-[0.925em] text-content-10 rounded-lg border shadow-xs overflow-hidden",
         @intent_border
       ]}
-      style={"--color-accent: var(--color-#{@intent_color}); --link-color: var(--color-#{@intent_color});"}
     >
       <div class={["absolute inset-0 opacity-10 -z-1", @intent_bg]}></div>
       <div
         :if={@title}
         class="relative flex items-center gap-3 font-headings py-3 px-[1.5em]"
       >
-        <.diagonal_pattern class="-z-1" use_transition={false} />
+        <.diagonal_pattern
+          class="-z-1"
+          color={"var(--color-#{@intent_color})"}
+          use_transition={false}
+        />
         <div class={["absolute inset-0 opacity-5 -z-2", @intent_bg]}></div>
         <.icon name={@icon} class="size-4" style={"color: var(--color-#{@intent_color})"} />
         <h5 class="text-[0.95em] leading-tight font-medium text-content-10 text-pretty">
