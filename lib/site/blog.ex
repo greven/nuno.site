@@ -3,7 +3,7 @@ defmodule Site.Blog do
   The Blog context.
   """
 
-  alias __MODULE__
+  use Nebulex.Caching, cache: Site.Cache
 
   alias Site.Repo
 
@@ -471,6 +471,7 @@ defmodule Site.Blog do
 
   Returns the bluesky post or nil if not found.
   """
+  @decorate cacheable(key: {:bluesky_post_for_article, post.id}, opts: [ttl: :timer.minutes(5)])
   def get_bluesky_post_for_article(%__MODULE__.Post{} = post) do
     with blog_post_path when not is_nil(blog_post_path) <- __MODULE__.Post.path(post),
          %Bluesky.Post{} = bsky_post <- Bluesky.get_post_by_blog_post_path(blog_post_path) do
