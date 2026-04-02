@@ -22,7 +22,10 @@ config :site, :scopes,
 
 config :site,
   ecto_repos: [Site.Repo],
-  generators: [binary_id: true, timestamp_type: :utc_datetime]
+  generators: [binary_id: true, timestamp_type: :utc_datetime],
+  # AES-256-GCM key for email address obfuscation
+  # Override in production via the EMAIL_ENCRYPTION_KEY environment variable.
+  email_encryption_key: "4rXTFAJnDzhMEqdaF269tV/5I3Omd7oKXK063qMiAYI="
 
 # Configures the endpoint
 config :site, SiteWeb.Endpoint,

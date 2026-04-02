@@ -79,4 +79,8 @@ if config_env() == :prod do
     api_key: env!("RESEND_API_KEY", :string!, "resend-api-key")
 
   config :site, :temp_dir, System.get_env("TEMP_DIR")
+
+  if email_key = System.get_env("EMAIL_ENCRYPTION_KEY") do
+    config :site, :email_encryption_key, email_key
+  end
 end

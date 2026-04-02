@@ -473,20 +473,15 @@ defmodule SiteWeb.SiteComponents do
   slot :inner_block, required: true, doc: "the link text content"
 
   def email_link(assigns) do
-    [user, domain] = String.split(assigns.email, "@", parts: 2)
-
-    assigns =
-      assigns
-      |> assign(:user, user)
-      |> assign(:domain, domain)
+    assigns = assign(assigns, :encrypted_email, Site.Email.encrypt(assigns.email))
 
     ~H"""
     <a
       href="#"
       id={"email-link-#{SiteWeb.Helpers.use_id()}"}
+      aria-label="Interact to reveal email address"
       phx-hook="EmailLink"
-      data-email-user={@user}
-      data-email-domain={@domain}
+      data-email={@encrypted_email}
       class={@class}
       {@rest}
     >

@@ -48,13 +48,13 @@ defmodule SiteWeb.AboutLive.Resume do
               <%!-- LinkedIn --%>
               <div class="hidden md:flex items-center justify-center gap-1.5 md:gap-2.5 text-content print:text-sm">
                 <.icon name="lucide-linkedin" class="size-4 text-content-20 print:size-4" />
-                <a href="https://www.linkedin.com/in/nuno-fr3ire/" class="link-ghost">linkedin</a>
+                <a href="https://www.linkedin.com/in/nuno-fr3ire/" class="link-ghost">Linkedin</a>
               </div>
 
               <%!-- GitHub --%>
               <div class="hidden md:flex items-center justify-center gap-1.5 md:gap-2.5 text-content print:text-sm">
                 <.icon name="lucide-github" class="size-4 text-content-20 print:size-4" />
-                <a href="https://github.com/greven" class="link-ghost">github</a>
+                <a href="https://github.com/greven" class="link-ghost">Github</a>
               </div>
             </div>
 
