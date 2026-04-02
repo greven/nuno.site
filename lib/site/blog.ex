@@ -7,6 +7,7 @@ defmodule Site.Blog do
 
   alias Site.Repo
 
+  alias __MODULE__
   alias Site.Blog.Event
   alias Site.Blog.PostLike
 
