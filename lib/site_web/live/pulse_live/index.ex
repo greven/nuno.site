@@ -139,12 +139,6 @@ defmodule SiteWeb.PulseLive.Index do
                 async={@bbc_news}
                 news={@streams.bbc_news}
               />
-
-              <Components.news_source
-                source={:publico}
-                async={@publico_news}
-                news={@streams.publico_news}
-              />
             </div>
           </div>
 
@@ -190,7 +184,6 @@ defmodule SiteWeb.PulseLive.Index do
       |> stream_async(:tnw_news, fn -> fetch_source(:tnw) end)
       |> stream_async(:twiv_news, fn -> fetch_source(:twiv) end)
       |> stream_async(:spectrum_news, fn -> fetch_source(:spectrum) end)
-      |> stream_async(:publico_news, fn -> fetch_source(:publico) end)
       |> start_async(:fetch_feed, fn -> Pulse.list_feed(offset: 0, limit: @feed_per_page) end)
       |> start_async(:hacker_news_loader, fn ->
         HackerNews.fetch_items_streaming(lv_pid, limit: 10)

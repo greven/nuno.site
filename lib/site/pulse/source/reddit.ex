@@ -33,17 +33,26 @@ defmodule Site.Pulse.Source.Reddit do
       {:ok, %{status: 200, body: %{"data" => %{"children" => posts}}}} ->
         items =
           posts
-          |> Enum.map(fn %{"data" => post_data} ->
-            %Site.Pulse.Item{
-              id: Item.id(post_data["id"]),
-              title: Site.Support.strip_tags(post_data["title"]),
-              url: post_data["url"],
-              image_url: fetch_url_image(post_data["url"]),
-              date: Helpers.maybe_parse_date(post_data["created_utc"]),
-              discussion_url: "https://www.reddit.com" <> post_data["permalink"],
-              source: :reddit
-            }
+          |> Task.async_stream(
+            fn %{"data" => post_data} ->
+              %Site.Pulse.Item{
+                id: Item.id(post_data["id"]),
+                title: Site.Support.strip_tags(post_data["title"]),
+                url: post_data["url"],
+                image_url: fetch_url_image(post_data["url"]),
+                date: Helpers.maybe_parse_date(post_data["created_utc"]),
+                discussion_url: "https://www.reddit.com" <> post_data["permalink"],
+                source: :reddit
+              }
+            end,
+            timeout: :infinity,
+            max_concurrency: 20
+          )
+          |> Enum.reduce([], fn
+            {:ok, item}, acc -> [item | acc]
+            _, acc -> acc
           end)
+          |> Enum.reverse()
 
         {:ok, items}
 
