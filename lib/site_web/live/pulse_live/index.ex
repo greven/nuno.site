@@ -2,6 +2,10 @@ defmodule SiteWeb.PulseLive.Index do
   use SiteWeb, :live_view
 
   alias Phoenix.LiveView.AsyncResult
+
+  alias Site.Pulse
+  alias Site.Pulse.Source.HackerNews
+
   alias SiteWeb.PulseLive.Components
 
   @feed_per_page 20
@@ -162,6 +166,7 @@ defmodule SiteWeb.PulseLive.Index do
   def mount(_params, _session, socket) do
     today = Date.utc_today()
     year_progress = round(Date.day_of_year(today) / 365 * 100)
+    lv_pid = self()
 
     socket =
       socket
@@ -170,14 +175,15 @@ defmodule SiteWeb.PulseLive.Index do
       |> assign(:rates, get_exchange_rates())
       |> assign(feed_page: 1, feed_per_page: @feed_per_page, end_of_feed?: false)
       |> assign(:news_feed, AsyncResult.loading())
+      |> assign(:hacker_news, AsyncResult.loading())
       |> stream(:news_feed, [])
+      |> stream(:hacker_news, [])
       |> assign_async(:weather, fn -> {:ok, %{weather: get_weather()}} end)
       |> stream_async(:ars_technica_news, fn -> fetch_source(:ars_technica) end)
       |> stream_async(:bbc_news, fn -> fetch_source(:bbc) end)
       |> stream_async(:changelog_news, fn -> fetch_source(:changelog) end)
       |> stream_async(:elixir_status_news, fn -> fetch_source(:elixir_status) end)
       |> stream_async(:reddit_news, fn -> fetch_source(:reddit) end)
-      |> stream_async(:hacker_news, fn -> fetch_source(:hacker_news) end)
       |> stream_async(:smashing_news, fn -> fetch_source(:smashing) end)
       |> stream_async(:slashdot_news, fn -> fetch_source(:slashdot) end)
       |> stream_async(:the_verge_news, fn -> fetch_source(:the_verge) end)
@@ -185,7 +191,8 @@ defmodule SiteWeb.PulseLive.Index do
       |> stream_async(:twiv_news, fn -> fetch_source(:twiv) end)
       |> stream_async(:spectrum_news, fn -> fetch_source(:spectrum) end)
       |> stream_async(:publico_news, fn -> fetch_source(:publico) end)
-      |> start_async(:fetch_feed, fn -> Site.Pulse.list_feed(offset: 0, limit: @feed_per_page) end)
+      |> start_async(:fetch_feed, fn -> Pulse.list_feed(offset: 0, limit: @feed_per_page) end)
+      |> start_async(:hacker_news_loader, fn -> HackerNews.fetch_items_streaming(lv_pid, limit: 10) end)
 
     {:ok, socket}
   end
@@ -222,13 +229,51 @@ defmodule SiteWeb.PulseLive.Index do
     {:noreply, paginate_feed(socket, [], 1)}
   end
 
+  def handle_async(:hacker_news_loader, {:ok, :done}, socket) do
+    socket =
+      if socket.assigns.hacker_news.ok? do
+        socket
+      else
+        assign(socket, :hacker_news, AsyncResult.ok(socket.assigns.hacker_news, true))
+      end
+
+    {:noreply, socket}
+  end
+
+  def handle_async(:hacker_news_loader, {:ok, {:error, reason}}, socket) do
+    {:noreply,
+     assign(
+       socket,
+       :hacker_news,
+       AsyncResult.failed(socket.assigns.hacker_news, {:error, reason})
+     )}
+  end
+
+  def handle_async(:hacker_news_loader, {:exit, reason}, socket) do
+    {:noreply,
+     assign(socket, :hacker_news, AsyncResult.failed(socket.assigns.hacker_news, {:exit, reason}))}
+  end
+
+  @impl true
+  def handle_info({:hacker_news_item, item}, socket) do
+    # Transition to ok on first item so the stream container is rendered in the DOM
+    socket =
+      if socket.assigns.hacker_news.ok? do
+        socket
+      else
+        assign(socket, :hacker_news, AsyncResult.ok(socket.assigns.hacker_news, true))
+      end
+
+    {:noreply, stream_insert(socket, :hacker_news, item)}
+  end
+
   defp paginate_feed(socket, items, new_page) when new_page >= 1 do
     assign_feed(socket, items, new_page)
   end
 
   defp paginate_feed(socket, new_page) when new_page >= 1 do
     %{feed_per_page: per_page} = socket.assigns
-    items = Site.Pulse.list_feed(offset: (new_page - 1) * per_page, limit: per_page)
+    items = Pulse.list_feed(offset: (new_page - 1) * per_page, limit: per_page)
 
     assign_feed(socket, items, new_page)
   end
@@ -262,7 +307,7 @@ defmodule SiteWeb.PulseLive.Index do
   end
 
   defp fetch_source(source) do
-    case Site.Pulse.list_items(source) do
+    case Pulse.list_items(source) do
       {:ok, items} -> {:ok, items, limit: 10}
       {:error, reason} -> {:error, reason}
     end

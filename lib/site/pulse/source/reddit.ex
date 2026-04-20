@@ -29,7 +29,7 @@ defmodule Site.Pulse.Source.Reddit do
 
     url = url("programming", sort, limit)
 
-    case Req.get(url, headers: headers(), retry: false) do
+    case Req.get(url, headers: headers()) do
       {:ok, %{status: 200, body: %{"data" => %{"children" => posts}}}} ->
         items =
           posts
