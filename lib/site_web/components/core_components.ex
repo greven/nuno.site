@@ -1788,7 +1788,6 @@ defmodule SiteWeb.CoreComponents do
       style={"--dialog-size: #{dialog_size(@size)};"}
       class={[
         "opacity-0 border-none outline-none bg-transparent transition-discrete",
-        "starting:open:opacity-0 starting:open:backdrop:bg-transparent starting:open:backdrop:opacity-0",
         @dialog_animation_class,
         @use_backdrop && @backdrop_class
       ]}
@@ -2013,7 +2012,6 @@ defmodule SiteWeb.CoreComponents do
       aria-labelledby={"#{@id}-drawer-title"}
       style={["--drawer-offset: #{assigns.offset}px"] |> Enum.join("; ")}
       class={[
-        "starting:open:opacity-0 starting:open:backdrop:bg-transparent starting:open:backdrop:opacity-0",
         "group opacity-0 border-none outline-none bg-transparent transition ease-out duration-200 transition-discrete",
         "backdrop:bg-transparent backdrop:opacity-0 backdrop:backdrop-blur-[2px] backdrop:transition-opacity backdrop:ease-out backdrop:duration-200 backdrop:transition-discrete",
         "open:opacity-100 open:backdrop:bg-neutral-900/60 open:backdrop:opacity-100",
@@ -2030,8 +2028,7 @@ defmodule SiteWeb.CoreComponents do
           drawer_position_class(@position, @offset),
           drawer_size_class(@position, @size),
           drawer_radius_class(@position, @offset),
-          drawer_transform_class(@position),
-          drawer_starting_transform_class(@position)
+          drawer_transform_class(@position)
         ]}
         data-part="drawer-container"
         data-state="close"
@@ -2169,15 +2166,6 @@ defmodule SiteWeb.CoreComponents do
       "right" -> "translate-x-full"
       "top" -> "-translate-y-full"
       "bottom" -> "translate-y-full"
-    end
-  end
-
-  defp drawer_starting_transform_class(position) do
-    case position do
-      "left" -> "starting:group-open:-translate-x-full"
-      "right" -> "starting:group-open:translate-x-full"
-      "top" -> "starting:group-open:-translate-y-full"
-      "bottom" -> "starting:group-open:translate-y-full"
     end
   end
 

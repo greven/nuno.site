@@ -66,7 +66,31 @@ export const Drawer = {
   show(event) {
     // Check if the event is targeting this specific drawer
     if (event.target === this.el || event.target?.id === this.el.id) {
+      const container = this.el.querySelector('[data-part="drawer-container"]');
+      const position = this.el.dataset.position;
+
+      if (container) {
+        // Force the container to its closed (offscreen) transform before opening
+        const closedTransforms = {
+          left: 'translateX(-100%)',
+          right: 'translateX(100%)',
+          top: 'translateY(-100%)',
+          bottom: 'translateY(100%)',
+        };
+        container.style.transform = closedTransforms[position] || '';
+        // Force a reflow so the transform is painted before the transition starts
+        container.getBoundingClientRect();
+      }
+
       this.el.showModal();
+
+      // Remove the forced inline style in the next frame so the CSS transition
+      // animates from the closed position to the open (translated-to-zero) position
+      requestAnimationFrame(() => {
+        if (container) {
+          container.style.transform = '';
+        }
+      });
     }
   },
 
