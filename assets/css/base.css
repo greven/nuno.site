@@ -23,9 +23,7 @@
   }
 
   /* Make LiveView wrapper divs transparent for layout */
-  [data-phx-session] {
-    display: contents;
-  }
+  [data-phx-session], [data-phx-teleported-src] { display: contents }
 
   ::selection {
     background-color: --alpha(var(--color-secondary) / 0.25);
