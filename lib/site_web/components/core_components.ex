@@ -162,7 +162,7 @@ defmodule SiteWeb.CoreComponents do
             type="button"
             data-part="nav-button"
             data-index={index - 1}
-            aria-currrent={index == 1}
+            aria-current={index == 1}
             aria-label={"View Card #{index}"}
             class="group relative h-4 w-6 cursor-pointer"
           >
@@ -1046,8 +1046,8 @@ defmodule SiteWeb.CoreComponents do
       <div
         :for={drawer <- @drawer}
         id={"#{@id}-drawer-#{drawer[:name]}"}
-        role="tabdrawer"
-        aria-labelledby={drawer[:name]}
+        role="tabpanel"
+        aria-labelledby={"#{@id}-tab-#{drawer[:name]}"}
         aria-hidden={drawer[:name] != @default}
         hidden={drawer[:name] != @default}
         class={drawer[:class]}
@@ -1701,12 +1701,12 @@ defmodule SiteWeb.CoreComponents do
     assigns =
       assign(
         assigns,
-        :date,
+        :relative_time,
         Support.time_ago(date, cutoff_in_days: cutoff, short: short, suffix: suffix)
       )
 
     ~H"""
-    <time datetime={@date} {@rest}>{@date}</time>
+    <time datetime={@date} {@rest}>{@relative_time}</time>
     """
   end
 

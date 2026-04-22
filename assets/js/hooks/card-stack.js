@@ -33,9 +33,18 @@ export const CardStack = {
 
     this.updateCards();
     this.updateNavButtons();
+
+    if (this.autoplay && this.totalItems > 1) {
+      this.autoplayTimer = setInterval(() => {
+        this.nextCard();
+      }, this.duration);
+    }
   },
 
   destroyed() {
+    if (this.autoplayTimer) {
+      clearInterval(this.autoplayTimer);
+    }
     if (this.showNav && this.navButtons && this.navClickHandler) {
       this.navButtons.forEach((button) => {
         button.removeEventListener('click', this.navClickHandler);

@@ -63,11 +63,15 @@ export const Dialog = {
   },
 
   show(event) {
-    event.target?.showModal();
+    if (event.target === this.el || event.target?.id === this.el.id) {
+      this.el.showModal();
+    }
   },
 
   hide(event) {
-    event.target?.close();
+    if (event.target === this.el || event.target?.id === this.el.id) {
+      this.el.close();
+    }
   },
 
   toggle() {

@@ -8,7 +8,7 @@ export const Spoiler = {
     // Check if content exceeds max height
     this.checkOverflow(content, trigger, overlay);
 
-    trigger.addEventListener('click', () => {
+    this.clickHandler = () => {
       const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
 
       this.js().setAttribute(this.el, 'data-open', !isExpanded);
@@ -21,7 +21,17 @@ export const Spoiler = {
       } else {
         this.js().addClass(overlay, 'hidden opacity-0');
       }
-    });
+    };
+
+    trigger.addEventListener('click', this.clickHandler);
+
+    this._trigger = trigger;
+  },
+
+  destroyed() {
+    if (this._trigger && this.clickHandler) {
+      this._trigger.removeEventListener('click', this.clickHandler);
+    }
   },
 
   checkOverflow(content, trigger, overlay) {
