@@ -7,7 +7,7 @@
 
     color: var(--color-content-30);
     font-size: clamp(1rem, 1rem + 0.25vw, 1.125rem);
-    font-weight: var(--font-weight-light);
+    font-weight: var(--font-weight-normal);
     line-height: 1.6;
 
     p,
@@ -46,7 +46,7 @@
 
     h2,
     .h2 {
-      margin-top: 1.75em;
+      margin-top: 2.5em;
       margin-bottom: 1em;
       font-size: clamp(1.5rem, 1rem + 2vw, 2rem);
       line-height: 1.3;
