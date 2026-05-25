@@ -36,15 +36,15 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.4"},
-      {:phoenix_live_view, "~> 1.1.24"},
+      {:phoenix, "~> 1.8.7"},
+      {:phoenix_live_view, "~> 1.1.30"},
       {:phoenix_ecto, "~> 4.7"},
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
-      {:bandit, "~> 1.10"},
+      {:bandit, "~> 1.11"},
       {:lazy_html, "~> 0.1"},
-      {:ecto_sql, "~> 3.13"},
+      {:ecto_sql, "~> 3.14"},
       {:ecto_sqlite3, ">= 0.0.0"},
       {:bcrypt_elixir, "~> 3.3"},
       {:dns_cluster, "~> 0.2"},
@@ -55,7 +55,7 @@ defmodule Site.MixProject do
       {:req, "~> 0.5"},
 
       # Utilities
-      {:oban, "~> 2.20"},
+      {:oban, "~> 2.22"},
       {:uniq, "~> 0.6"},
       {:req_s3, "~> 0.2"},
       {:nebulex, "~> 3.0"},
@@ -69,7 +69,7 @@ defmodule Site.MixProject do
       {:recase, "~> 0.9"},
       {:mdex, "~> 0.11"},
       {:mdex_gfm, "~> 0.2"},
-      {:forex, "~> 1.1.2"},
+      {:forex, "~> 1.1.3"},
       {:geocalc, "~> 0.8"},
       {:sweet_xml, "~> 0.7"},
       {:ogi, "~> 0.2"},
@@ -78,10 +78,10 @@ defmodule Site.MixProject do
       # {:image, "~> 0.62.1"},
 
       # Development
-      {:igniter, "~> 0.7", only: [:dev]},
+      {:igniter, "~> 0.8", only: [:dev]},
       {:credo, "~> 1.7", only: :dev, runtime: false},
       {:tidewave, "~> 0.5", only: [:dev]},
-      {:live_debugger, "~> 0.6", only: :dev},
+      {:live_debugger, "~> 1.0", only: :dev},
       # {:benchee, "~> 1.4", only: :dev},
 
       # Assets
