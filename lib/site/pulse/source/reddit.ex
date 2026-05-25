@@ -22,32 +22,15 @@ defmodule Site.Pulse.Source.Reddit do
   end
 
   @impl true
-  @decorate cacheable(key: :reddit_pulse, opts: [ttl: :timer.minutes(30)])
   def fetch_items(opts \\ []) do
     sort = Keyword.get(opts, :sort, "top")
     limit = Keyword.get(opts, :limit, 20)
 
-    url = url("programming", sort, limit)
-
-    case Req.get(url, headers: headers()) do
-      {:ok, %{status: 200, body: %{"data" => %{"children" => posts}}}} ->
+    case fetch_posts(sort, limit) do
+      posts when is_list(posts) ->
         items =
           posts
-          |> Task.async_stream(
-            fn %{"data" => post_data} ->
-              %Site.Pulse.Item{
-                id: Item.id(post_data["id"]),
-                title: Site.Support.strip_tags(post_data["title"]),
-                url: post_data["url"],
-                image_url: fetch_url_image(post_data["url"]),
-                date: Helpers.maybe_parse_date(post_data["created_utc"]),
-                discussion_url: "https://www.reddit.com" <> post_data["permalink"],
-                source: :reddit
-              }
-            end,
-            timeout: :infinity,
-            max_concurrency: 20
-          )
+          |> Task.async_stream(&post_item/1, timeout: :infinity, max_concurrency: 20)
           |> Enum.reduce([], fn
             {:ok, item}, acc -> [item | acc]
             _, acc -> acc
@@ -56,12 +39,83 @@ defmodule Site.Pulse.Source.Reddit do
 
         {:ok, items}
 
+      {:error, _} = error ->
+        error
+    end
+  end
+
+  @doc """
+  Streams a list of Reddit items from the given subreddit to the given process.
+
+  Fetches items concurrently and sends each `{:reddit_news_item, item}` to the
+  `pid` as soon as it is available. Returns `:done` when all items have been sent,
+  or `{:error, reason}` if an error occurs.
+  """
+  def fetch_items_streaming(pid, opts \\ []) do
+    sort = Keyword.get(opts, :sort, "top")
+    limit = Keyword.get(opts, :limit, 20)
+
+    case fetch_posts(sort, limit) do
+      posts when is_list(posts) ->
+        Task.async_stream(posts, &post_item/1,
+          timeout: :infinity,
+          max_concurrency: 20,
+          ordered: false
+        )
+        |> Enum.each(fn
+          {:ok, item} -> send(pid, {:reddit_news_item, item})
+          _ -> :ok
+        end)
+
+        :done
+
+      {:error, _} = error ->
+        error
+    end
+  end
+
+  @decorate cacheable(
+              key: {:reddit_fetch_posts, sort, limit},
+              opts: [ttl: :timer.minutes(30)]
+            )
+  defp fetch_posts(sort, limit) do
+    case Req.get(url("programming", sort, limit), headers: headers()) do
+      {:ok, %{status: 200, body: %{"data" => %{"children" => posts}}}} ->
+        posts
+
       {:ok, %{status: status}} ->
         {:error, {:http_error, status}}
 
       {:error, reason} ->
         {:error, reason}
     end
+  end
+
+  defp fetch_url_image(url) when is_binary(url) do
+    case Req.get(url, headers: [{"User-Agent", "SitePulseBot/0.1 by greven"}], retry: false) do
+      {:ok, %{status: 200, body: body}} ->
+        body
+        |> LazyHTML.from_fragment()
+        |> LazyHTML.query("meta[property=\"og:image\"]")
+        |> LazyHTML.attribute("content")
+
+      _ ->
+        nil
+    end
+  end
+
+  defp fetch_url_image(_), do: nil
+
+  defp post_item(%{"data" => post_data}, fetch_image? \\ true) do
+    %Site.Pulse.Item{
+      id: Item.id(post_data["id"]),
+      url: post_data["url"],
+      title: Site.Support.strip_tags(post_data["title"]),
+      date: Helpers.maybe_parse_date(post_data["created_utc"]),
+      image_url: if(fetch_image?, do: fetch_url_image(post_data["url"])),
+      discussion_url: "https://www.reddit.com" <> post_data["permalink"],
+      source: :reddit
+    }
   end
 
   defp url(subreddit, sort, limit) do
@@ -101,19 +155,4 @@ defmodule Site.Pulse.Source.Reddit do
 
   defp reddit_username,
     do: System.get_env("REDDIT_USERNAME") || "nuno_site_bot"
-
-  defp fetch_url_image(url) when is_binary(url) do
-    case Req.get(url, headers: [{"User-Agent", "SitePulseBot/0.1 by greven"}], retry: false) do
-      {:ok, %{status: 200, body: body}} ->
-        body
-        |> LazyHTML.from_fragment()
-        |> LazyHTML.query("meta[property=\"og:image\"]")
-        |> LazyHTML.attribute("content")
-
-      _ ->
-        nil
-    end
-  end
-
-  defp fetch_url_image(_), do: nil
 end

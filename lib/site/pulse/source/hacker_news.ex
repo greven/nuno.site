@@ -22,7 +22,6 @@ defmodule Site.Pulse.Source.HackerNews do
   end
 
   @impl true
-  @decorate cacheable(key: :hacker_news_pulse, opts: [ttl: :timer.minutes(30)])
   def fetch_items(opts \\ []) do
     limit = Keyword.get(opts, :limit, 20)
 
@@ -93,6 +92,10 @@ defmodule Site.Pulse.Source.HackerNews do
     end
   end
 
+  @decorate cacheable(
+              key: {:hacker_news_story, id, fetch_image?},
+              opts: [ttl: :timer.minutes(30)]
+            )
   defp fetch_story(id, fetch_image? \\ true) do
     req = Req.get("https://hacker-news.firebaseio.com/v0/item/#{id}.json")
 
