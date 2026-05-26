@@ -48,7 +48,7 @@ config :site, SiteWeb.Endpoint,
 config :site, Site.Mailer, adapter: Swoosh.Adapters.Local
 
 config :bun,
-  version: "1.3.11",
+  version: "1.3.14",
   assets: [args: [], cd: Path.expand("../assets", __DIR__)],
   js: [
     args:
