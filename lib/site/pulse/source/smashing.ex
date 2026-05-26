@@ -18,7 +18,7 @@ defmodule Site.Pulse.Source.Smashing do
       name: "Smashing Magazine",
       link: "https://www.smashingmagazine.com",
       category: "technology",
-      icon: "si-smashing",
+      icon: "si-smashingmagazine",
       accent: "#D33A2C"
     }
   end
