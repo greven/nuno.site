@@ -17,7 +17,7 @@ defmodule Site.Services do
 
   @playlists [
     {"Nuno FM", "38yrXszA90IS0092T8S6sU"},
-    {"Metal", "7EXeemOaoDUWZs8YAgUuFR"},
+    {"M3tal", "7EXeemOaoDUWZs8YAgUuFR"},
     {"Post Rock", "5IkU9IYbSYiK31bjZJC4rm"},
     {"After Metal", "6pwsY3Gkn19i9f7cxjs9yb"},
     {"TOOLesque", "2MuGzA2IPWAWUlyon7XvBG"},
