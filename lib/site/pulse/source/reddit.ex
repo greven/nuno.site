@@ -57,7 +57,7 @@ defmodule Site.Pulse.Source.Reddit do
 
     case fetch_posts(sort, limit) do
       posts when is_list(posts) ->
-        Task.async_stream(posts, &post_item/1,
+        Task.async_stream(posts, &post_item(&1, false),
           timeout: :infinity,
           max_concurrency: 20,
           ordered: false
@@ -72,6 +72,18 @@ defmodule Site.Pulse.Source.Reddit do
       {:error, _} = error ->
         error
     end
+  end
+
+  defp post_item(%{"data" => post_data}, fetch_image? \\ true) do
+    %Site.Pulse.Item{
+      id: Item.id(post_data["id"]),
+      url: post_data["url"],
+      title: Site.Support.strip_tags(post_data["title"]),
+      date: Helpers.maybe_parse_date(post_data["created_utc"]),
+      image_url: if(fetch_image?, do: fetch_url_image(post_data["url"])),
+      discussion_url: "https://www.reddit.com" <> post_data["permalink"],
+      source: :reddit
+    }
   end
 
   @decorate cacheable(
@@ -105,18 +117,6 @@ defmodule Site.Pulse.Source.Reddit do
   end
 
   defp fetch_url_image(_), do: nil
-
-  defp post_item(%{"data" => post_data}, fetch_image? \\ true) do
-    %Site.Pulse.Item{
-      id: Item.id(post_data["id"]),
-      url: post_data["url"],
-      title: Site.Support.strip_tags(post_data["title"]),
-      date: Helpers.maybe_parse_date(post_data["created_utc"]),
-      image_url: if(fetch_image?, do: fetch_url_image(post_data["url"])),
-      discussion_url: "https://www.reddit.com" <> post_data["permalink"],
-      source: :reddit
-    }
-  end
 
   defp url(subreddit, sort, limit) do
     "#{base_url()}/r/#{subreddit}"
