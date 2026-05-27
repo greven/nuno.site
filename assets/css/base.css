@@ -23,7 +23,10 @@
   }
 
   /* Make LiveView wrapper divs transparent for layout */
-  [data-phx-session], [data-phx-teleported-src] { display: contents }
+  [data-phx-session],
+  [data-phx-teleported-src] {
+    display: contents;
+  }
 
   ::selection {
     background-color: --alpha(var(--color-secondary) / 0.25);
@@ -66,6 +69,22 @@
 
   dialog:not([open]) {
     pointer-events: none;
+  }
+
+  /* Safari and Firefox do not support transitioning the `overlay` CSS property */
+  dialog[data-closing] [data-part='dialog-panel'] {
+    animation: slide-out-down 200ms ease forwards;
+  }
+
+  @media (width >= 768px) {
+    dialog[data-closing] [data-part='dialog-panel'] {
+      animation: scale-out 200ms ease forwards;
+    }
+  }
+
+  dialog[data-closing]::backdrop {
+    opacity: 0;
+    transition: opacity 200ms ease;
   }
 
   /* Disable dialog body scroll */

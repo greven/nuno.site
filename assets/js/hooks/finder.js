@@ -96,7 +96,7 @@ export const Finder = {
   },
 
   close() {
-    this.finderDialog.close();
+    this.finderDialog.dispatchEvent(new CustomEvent('hide-dialog', { bubbles: true }));
   },
 
   toggle() {

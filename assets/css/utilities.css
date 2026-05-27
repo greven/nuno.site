@@ -101,7 +101,7 @@
 }
 
 @utility breakout {
-  @apply relative right-1/2 left-1/2 -mr-[50vw] -ml-[50vw] w-screen;
+  @apply relative right-1/2 left-1/2 mr-[-50vw] ml-[-50vw] w-screen;
 }
 
 /* Links */
@@ -122,7 +122,7 @@
 }
 
 @utility header-link {
-  @apply text-content-40/20 scroll-header group-hover:text-content-40/40 absolute top-0 -left-[1.85em] hidden cursor-pointer bg-transparent capitalize no-underline shadow-none sm:inline-block;
+  @apply text-content-40/20 scroll-header group-hover:text-content-40/40 absolute top-0 left-[-1.85em] hidden cursor-pointer bg-transparent capitalize no-underline shadow-none sm:inline-block;
 }
 
 /* Elements */
