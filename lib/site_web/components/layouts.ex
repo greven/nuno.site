@@ -156,7 +156,7 @@ defmodule SiteWeb.Layouts do
       <div
         :if={@show_progress}
         id="page-progress"
-        class="absolute -bottom-[1.5px] left-0 h-[1.5px] w-(--page-progress) bg-primary shadow-gray-900/10 select-none"
+        class="absolute bottom-[-1.5px] left-0 h-[1.5px] w-(--page-progress) bg-primary shadow-gray-900/10 select-none"
       >
       </div>
 
