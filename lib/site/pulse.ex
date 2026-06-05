@@ -11,7 +11,6 @@ defmodule Site.Pulse do
     :changelog,
     :elixir_status,
     :hacker_news,
-    :reddit,
     :slashdot,
     :smashing,
     :spectrum,
@@ -26,7 +25,6 @@ defmodule Site.Pulse do
   defp source(:changelog), do: Site.Pulse.Source.Changelog
   defp source(:elixir_status), do: Site.Pulse.Source.ElixirStatus
   defp source(:hacker_news), do: Site.Pulse.Source.HackerNews
-  defp source(:reddit), do: Site.Pulse.Source.Reddit
   defp source(:slashdot), do: Site.Pulse.Source.Slashdot
   defp source(:smashing), do: Site.Pulse.Source.Smashing
   defp source(:spectrum), do: Site.Pulse.Source.Spectrum

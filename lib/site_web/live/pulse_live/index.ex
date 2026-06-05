@@ -5,7 +5,6 @@ defmodule SiteWeb.PulseLive.Index do
 
   alias Site.Pulse
   alias Site.Pulse.Source.HackerNews
-  alias Site.Pulse.Source.Reddit
 
   alias SiteWeb.PulseLive.Components
 
@@ -79,12 +78,6 @@ defmodule SiteWeb.PulseLive.Index do
                 source={:smashing}
                 async={@smashing_news}
                 news={@streams.smashing_news}
-              />
-
-              <Components.news_source
-                source={:reddit}
-                async={@reddit_news}
-                news={@streams.reddit_news}
               />
 
               <Components.news_source
@@ -171,10 +164,8 @@ defmodule SiteWeb.PulseLive.Index do
       |> assign(feed_page: 1, feed_per_page: @feed_per_page, end_of_feed?: false)
       |> assign(:news_feed, AsyncResult.loading())
       |> assign(:hacker_news, AsyncResult.loading())
-      |> assign(:reddit_news, AsyncResult.loading())
       |> stream(:news_feed, [])
       |> stream(:hacker_news, [])
-      |> stream(:reddit_news, [])
       |> assign_async(:weather, fn -> {:ok, %{weather: get_weather()}} end)
       |> stream_async(:ars_technica_news, fn -> fetch_source(:ars_technica) end)
       |> stream_async(:bbc_news, fn -> fetch_source(:bbc) end)
@@ -189,9 +180,6 @@ defmodule SiteWeb.PulseLive.Index do
       |> start_async(:fetch_feed, fn -> Pulse.list_feed(offset: 0, limit: @feed_per_page) end)
       |> start_async(:hacker_news_loader, fn ->
         HackerNews.fetch_items_streaming(lv_pid, limit: 10)
-      end)
-      |> start_async(:reddit_news_loader, fn ->
-        Reddit.fetch_items_streaming(lv_pid, limit: 10)
       end)
 
     {:ok, socket}
@@ -254,31 +242,6 @@ defmodule SiteWeb.PulseLive.Index do
      assign(socket, :hacker_news, AsyncResult.failed(socket.assigns.hacker_news, {:exit, reason}))}
   end
 
-  def handle_async(:reddit_news_loader, {:ok, :done}, socket) do
-    socket =
-      if socket.assigns.reddit_news.ok? do
-        socket
-      else
-        assign(socket, :reddit_news, AsyncResult.ok(socket.assigns.reddit_news, true))
-      end
-
-    {:noreply, socket}
-  end
-
-  def handle_async(:reddit_news_loader, {:ok, {:error, reason}}, socket) do
-    {:noreply,
-     assign(
-       socket,
-       :reddit_news,
-       AsyncResult.failed(socket.assigns.reddit_news, {:error, reason})
-     )}
-  end
-
-  def handle_async(:reddit_news_loader, {:exit, reason}, socket) do
-    {:noreply,
-     assign(socket, :reddit_news, AsyncResult.failed(socket.assigns.reddit_news, {:exit, reason}))}
-  end
-
   @impl true
   def handle_info({:hacker_news_item, item}, socket) do
     socket =
@@ -289,17 +252,6 @@ defmodule SiteWeb.PulseLive.Index do
       end
 
     {:noreply, stream_insert(socket, :hacker_news, item)}
-  end
-
-  def handle_info({:reddit_news_item, item}, socket) do
-    socket =
-      if socket.assigns.reddit_news.ok? do
-        socket
-      else
-        assign(socket, :reddit_news, AsyncResult.ok(socket.assigns.reddit_news, true))
-      end
-
-    {:noreply, stream_insert(socket, :reddit_news, item)}
   end
 
   defp paginate_feed(socket, items, new_page) when new_page >= 1 do
