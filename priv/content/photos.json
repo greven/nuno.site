@@ -1,0 +1,12 @@
+[
+  {
+    "id": "example-sunset",
+    "key": "example-sunset.jpg",
+    "title": "Golden Hour",
+    "description": "A warm sunset captured along the coastline.",
+    "album": null,
+    "width": 1920,
+    "height": 1280,
+    "taken_at": "2025-06-01"
+  }
+]

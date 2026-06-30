@@ -176,8 +176,7 @@ defmodule SiteWeb.SiteComponents do
         @class
       ]}
       style={"mask-image:url('/images/icons/#{@name}-duotone.svg');"}
-    >
-    </span>
+    ></span>
     """
   end
 
@@ -387,18 +386,6 @@ defmodule SiteWeb.SiteComponents do
             <.playing_icon is_playing={@is_playing} />
             <div class="font-medium text-emerald-600">Playing...</div>
           </div>
-        <% @last_played -> %>
-          <div class="flex items-center gap-1.5">
-            <.icon
-              name="hero-bolt-slash-solid"
-              class="size-4 text-content-40 animate-pulse"
-            />
-            <span :if={@last_played} class="font-medium text-content-30">Offline</span>
-            <.relative_time
-              date={@last_played}
-              class="hidden lg:block ml-0.5 text-sm font-headings text-content-40"
-            />
-          </div>
         <% true -> %>
           <div class="flex items-center gap-1.5">
             <.icon
@@ -406,6 +393,11 @@ defmodule SiteWeb.SiteComponents do
               class="size-4 text-content-40 animate-pulse"
             />
             <span class="font-medium text-content-30">Offline</span>
+            <.relative_time
+              :if={@last_played}
+              date={@last_played}
+              class="hidden lg:block ml-0.5 text-sm font-headings text-content-40"
+            />
           </div>
       <% end %>
     </div>

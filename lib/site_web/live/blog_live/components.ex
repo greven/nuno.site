@@ -317,7 +317,7 @@ defmodule SiteWeb.BlogLive.Components do
           has_replies={parent_reply.replies && parent_reply.replies != []}
         />
         <ul :if={parent_reply.replies && parent_reply.replies != []} data-replies>
-          <%= for child_reply <- parent_reply.replies || [] do %>
+          <%= for child_reply <- parent_reply.replies do %>
             <.comment post={child_reply} depth={1} />
           <% end %>
         </ul>
@@ -350,8 +350,7 @@ defmodule SiteWeb.BlogLive.Components do
             "absolute top-4 left-4 -ml-0.75 h-full w-0.5 bg-border/60",
             @depth > 0 && "left-10"
           ]}
-        >
-        </span>
+        ></span>
         <span
           :if={@depth > 0}
           aria-hidden="true"
@@ -359,8 +358,7 @@ defmodule SiteWeb.BlogLive.Components do
             "not-group-first:hidden absolute top-4 left-0 -ml-0.75 h-4 w-8",
             "rounded-bl-xl border-l-2 border-b-2 border-border opacity-60"
           ]}
-        >
-        </span>
+        ></span>
 
         <div class={["relative flex items-start space-x-3", @depth > 0 && "pl-6 pt-4"]}>
           <.image

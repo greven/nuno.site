@@ -182,7 +182,6 @@ defmodule Site.Changelog do
 
   defp extract_field(item, field) when is_atom(field), do: Map.get(item, field)
   defp extract_field(item, fun) when is_function(fun, 1), do: fun.(item)
-  defp extract_field(_item, nil), do: nil
 
   defp item_mapper(:posts) do
     post_date = fn %{date: date} ->

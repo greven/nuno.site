@@ -31,7 +31,6 @@ defmodule Site.Pulse do
   defp source(:the_verge), do: Site.Pulse.Source.TheVerge
   defp source(:tnw), do: Site.Pulse.Source.TNW
   defp source(:twiv), do: Site.Pulse.Source.TWIV
-  defp source(_), do: nil
 
   @doc """
   Fetches items from all sources concurrently, merges them into a single list
@@ -68,10 +67,8 @@ defmodule Site.Pulse do
   """
   @spec list_items(atom, keyword) :: {:ok, list(Site.Pulse.Item.t())} | {:error, any}
   def list_items(source_name, opts \\ []) when source_name in @all_sources do
-    case source(source_name) do
-      nil -> {:error, :unknown_source}
-      module -> apply(module, :fetch_items, [opts])
-    end
+    module = source(source_name)
+    apply(module, :fetch_items, [opts])
   end
 
   @doc """
@@ -81,10 +78,8 @@ defmodule Site.Pulse do
   def meta(nil), do: {:error, nil}
 
   def meta(source) when source in @all_sources do
-    case source(source) do
-      nil -> {:error, :unknown_source}
-      module -> {:ok, apply(module, :meta, [])}
-    end
+    module = source(source)
+    {:ok, apply(module, :meta, [])}
   end
 
   def meta(_source), do: {:error, :unknown_source}
