@@ -103,6 +103,9 @@ config :site, :seo,
   default_keywords: "web development, elixir, phoenix, css, javascript, software, programming",
   title_suffix: " · Nuno's Site"
 
+# MDEx config
+config :mdex_native, syntax_highlighter: :lumis
+
 # OG Image Generation
 config :ogi, cache: true
 

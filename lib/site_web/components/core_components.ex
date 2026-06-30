@@ -106,8 +106,7 @@ defmodule SiteWeb.CoreComponents do
           patch={@rest[:patch]}
           method={@rest[:method]}
           target={@rest[:target]}
-        >
-        </.link>
+        ></.link>
         {render_slot(@inner_block)}
       <% else %>
         {render_slot(@inner_block)}
@@ -856,8 +855,7 @@ defmodule SiteWeb.CoreComponents do
       <span class={[
         "before:content=[''] before:size-1.5 before:inline-flex before:rounded-full",
         @dot_class
-      ]}>
-      </span>
+      ]}></span>
     </span>
     """
   end
@@ -878,7 +876,10 @@ defmodule SiteWeb.CoreComponents do
   attr :wide, :boolean, default: false
   attr :loading, :boolean, default: false
   attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: @button_radius
-  attr :rest, :global, include: ~w(href navigate patch method disabled name value popovertarget)
+
+  attr :rest, :global,
+    include: ~w(href navigate patch method disabled target name value popovertarget)
+
   slot :inner_block, required: true
 
   def button(%{rest: rest} = assigns) do

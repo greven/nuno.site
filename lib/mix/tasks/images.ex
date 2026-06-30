@@ -12,7 +12,8 @@ defmodule Mix.Tasks.Images do
   - `--image` - Path to a single image to optimize.
   - `--quality` - Set the quality of the optimized image (default: 80).
   - `--resize` - Resize the image using ImageMagick resize syntax.
-  - `--thumbnail` - Create thumbnailss for the image.
+  - `--thumbnail` - Create thumbnails for the image.
+  - `--thumbnail-size` - Comma-separated thumbnail sizes (default: "200x200,400x200").
   - `--gravity` - Set the gravity for thumbnail creation (default: center).
   - `--blur` - Create a blurred placeholder for the image.
 
@@ -24,6 +25,7 @@ defmodule Mix.Tasks.Images do
       mix images --resize "x200"
       mix images --dir "priv/static/images" --quality 85
       mix images --dir "tmp/images" --blur --thumbnail
+      mix images --dir "tmp/photos" --resize "2048" --blur --thumbnail --thumbnail-size "400x400"
       mix images --image "priv/static/images/example.png"
       mix images --image "priv/static/images/example.png" --quality 75 --blur
   """
@@ -34,6 +36,7 @@ defmodule Mix.Tasks.Images do
     quality: :integer,
     resize: :string,
     thumbnail: :boolean,
+    thumbnail_size: :string,
     gravity: :string,
     blur: :boolean
   ]
@@ -152,7 +155,7 @@ defmodule Mix.Tasks.Images do
     end
 
     # Create thumbnail if requested
-    opts[:thumbnail] && create_thumbnails(image_path, gravity)
+    opts[:thumbnail] && create_thumbnails(image_path, gravity, opts)
   end
 
   defp maybe_resize(image_path, resize) do
@@ -220,16 +223,17 @@ defmodule Mix.Tasks.Images do
     System.cmd("sh", ["-c", cmd])
   end
 
-  defp create_thumbnails(image_path, gravity) do
-    sizes = ["200x200", "400x200"]
+  defp create_thumbnails(image_path, gravity, opts) do
+    sizes = thumbnail_sizes(opts)
 
     for size <- sizes do
-      create_thumbnail(image_path, size, gravity)
+      create_thumbnail(image_path, size, gravity, opts)
     end
   end
 
-  defp create_thumbnail(image_path, size, gravity) do
+  defp create_thumbnail(image_path, size, gravity, opts) do
     {width, height} = get_dimensions_from_size(size)
+    quality = Keyword.get(opts, :quality, 85)
 
     dimension =
       cond do
@@ -241,13 +245,22 @@ defmodule Mix.Tasks.Images do
 
     cmd =
       "magick #{image_path} \
-      -quality 80 \
+      -quality #{quality} \
+      -filter Lanczos \
       -resize #{size}^ \
-      -extent #{size}^ \
+      -unsharp 0.5x0.5+0.5+0.008 \
       -gravity #{gravity} \
+      -extent #{size} \
       #{Path.rootname(image_path)}_thumbnail_#{dimension}#{Path.extname(image_path)}"
 
     System.cmd("sh", ["-c", cmd])
+  end
+
+  defp thumbnail_sizes(opts) do
+    case opts[:thumbnail_size] do
+      nil -> ["200x200", "400x200"]
+      str -> String.split(str, ",") |> Enum.map(&String.trim/1)
+    end
   end
 
   # Helper to parse resize dimensions from string

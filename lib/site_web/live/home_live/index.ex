@@ -45,8 +45,7 @@ defmodule SiteWeb.HomeLive.Index do
                         "hover:text-neutral-700 hover:dark:text-neutral-400"
                       ]}
                       data-text="h3ll0, fr13nd!"
-                    >
-                    </span>
+                    ></span>
                     <span class="font-mono text-primary motion-safe:animate-blink">_</span>
                   </div>
                 </div>

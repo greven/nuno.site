@@ -38,6 +38,12 @@ config :site, :cdn,
   endpoint_url: env!("R2_ENDPOINT_URL", :string!, "public-endpoint-url"),
   bucket: env!("R2_BUCKET_NAME", :string!, "bucket-name")
 
+config :site, :cdn_photos,
+  access_key_id: env!("R2_ACCESS_KEY_ID", :string, "access-key-id"),
+  secret_access_key: env!("R2_SECRET_ACCESS_KEY", :string, "secret-key"),
+  endpoint_url: env!("R2_ENDPOINT_URL", :string!, "public-endpoint-url"),
+  bucket: env!("R2_PHOTOS_BUCKET_NAME", :string!, "photos-bucket-name")
+
 config :site, :geo, coords: env!("COORDS", :string!, "latitude;longitude")
 
 # ------------------------------------------
