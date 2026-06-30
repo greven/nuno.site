@@ -437,7 +437,7 @@
       }
     }
 
-    .code-block pre.lumis code > .line {
+    .code-block pre.lumis code > .l-line {
       position: relative;
       display: block;
       padding-inline: 0.75rem;
@@ -448,7 +448,7 @@
     }
 
     /* Line numbers */
-    .code-block pre.lumis code > .line::before {
+    .code-block pre.lumis code > .l-line::before {
       content: attr(data-line);
       display: none;
       position: absolute;
