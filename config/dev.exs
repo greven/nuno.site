@@ -87,3 +87,5 @@ config :site, Oban, peer: Oban.Peers.Global
 
 # Disable Ogi cache in development
 config :ogi, cache: false
+
+config :site, :spotify, redirect_uri: "http://localhost:4000/dev/spotify/callback"

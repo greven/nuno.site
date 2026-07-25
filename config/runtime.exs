@@ -28,7 +28,8 @@ config :site, :lastfm,
 config :site, :spotify,
   client_id: env!("SPOTIFY_CLIENT_ID", :string!, "spotify-client-id"),
   client_secret: env!("SPOTIFY_CLIENT_SECRET", :string!, "spotify-client-secret"),
-  refresh_token: env!("SPOTIFY_REFRESH_TOKEN", :string!, "spotify-refresh-token")
+  refresh_token: env!("SPOTIFY_REFRESH_TOKEN", :string!, "spotify-refresh-token"),
+  redirect_uri: env!("SPOTIFY_REDIRECT_URI", :string!, "https://nuno.site/spotify/callback")
 
 config :site, :github, access_token: env!("GITHUB_ACCESS_TOKEN", :string!, "github-access-token")
 

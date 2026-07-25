@@ -71,6 +71,8 @@ defmodule SiteWeb.Router do
       live "/books", BooksLive.Index, :index
       live "/gaming", GamingLive.Index, :index
       live "/photos", PhotosLive.Index, :index
+      live "/photos/:id", PhotosLive.Show, :show
+      live "/photos/:id/:album", PhotosLive.Show, :show
       live "/bookmarks", BookmarksLive.Index, :index
       live "/uses", UsesLive.Index, :index
       live "/about", AboutLive.Index, :index
@@ -86,6 +88,8 @@ defmodule SiteWeb.Router do
 
     get "/sitemap.xml", SitemapController, :index
     get "/rss", RssController, :feed
+
+    get "/spotify/callback", SiteWeb.SpotifyController, :callback
   end
 
   # Other scopes may use custom stacks.
@@ -99,7 +103,6 @@ defmodule SiteWeb.Router do
       pipe_through :browser
 
       get "/spotify", SiteWeb.SpotifyController, :index
-      get "/spotify/callback", SiteWeb.SpotifyController, :callback
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
