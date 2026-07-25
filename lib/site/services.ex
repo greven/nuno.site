@@ -113,18 +113,19 @@ defmodule Site.Services do
 
   @decorate cacheable(key: :spotify_playlists, opts: [ttl: :timer.hours(24)])
   def get_spotify_playlists do
-    playlists =
-      @playlists
-      |> Task.async_stream(fn {_name, playlist_id} ->
-        Site.Services.Spotify.get_playlist(playlist_id)
-      end)
-      |> Enum.filter(fn
-        {:ok, {:ok, _playlist}} -> true
-        _ -> false
-      end)
-      |> Enum.map(fn {:ok, {:ok, playlist}} -> playlist end)
-
-    {:ok, playlists}
+    @playlists
+    |> Task.async_stream(fn {_name, playlist_id} ->
+      Site.Services.Spotify.get_playlist!(playlist_id)
+    end)
+    |> Enum.filter(fn
+      {:ok, {:ok, _playlist}} -> true
+      _ -> false
+    end)
+    |> Enum.map(fn {:ok, {:ok, playlist}} -> playlist end)
+    |> case do
+      [] -> {:error, :empty}
+      playlists -> {:ok, playlists}
+    end
   end
 
   ## Books
