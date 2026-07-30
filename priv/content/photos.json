@@ -7,9 +7,10 @@
     "album": null,
     "width": 2048,
     "height": 1365,
-    "camera": "Sony Alpha a6000",
+    "date": "2017-07-23",
     "location": "Leeds, United Kingdom",
-    "date": "2017-07-23"
+    "camera": "Sony Alpha a6000",
+    "tags": "united kingdom; leeds"
   },
   {
     "id": "british-museum-1",
@@ -19,8 +20,9 @@
     "album": null,
     "width": 2048,
     "height": 1367,
-    "camera": "Sony Alpha a6000",
+    "date": "2016-04-02",
     "location": "London, United Kingdom",
-    "date": "2016-04-02"
+    "camera": "Sony Alpha a6000",
+    "tags": "united kingdom; london"
   }
 ]

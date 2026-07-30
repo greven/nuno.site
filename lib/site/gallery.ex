@@ -127,12 +127,21 @@ defmodule Site.Gallery do
       height: item["height"],
       date: parse_date(item["date"]),
       location: item["location"],
-      camera: item["camera"]
+      camera: item["camera"],
+      tags: parse_tags(item["tags"])
     }
   end
 
   defp parse_date(nil), do: nil
   defp parse_date(str) when is_binary(str), do: Date.from_iso8601!(str)
+
+  defp parse_tags(tags) when is_binary(tags) do
+    tags
+    |> String.split(";")
+    |> Enum.map(&String.trim/1)
+  end
+
+  defp parse_tags(_), do: nil
 
   defp manifest do
     manifest_path()

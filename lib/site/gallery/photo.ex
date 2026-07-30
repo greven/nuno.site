@@ -13,6 +13,7 @@ defmodule Site.Gallery.Photo do
     - `date` - Optional Date when the photo was taken
     - `location` - Optional photo location
     - `camera` - Optional camera model used to take the photo
+    - `tags` - Image tags
   """
 
   @type t :: %__MODULE__{
@@ -25,7 +26,8 @@ defmodule Site.Gallery.Photo do
           height: non_neg_integer() | nil,
           date: Date.t() | nil,
           location: String.t() | nil,
-          camera: String.t() | nil
+          camera: String.t() | nil,
+          tags: List.t() | nil
         }
 
   @derive Phoenix.Param
@@ -40,6 +42,7 @@ defmodule Site.Gallery.Photo do
     :height,
     :date,
     :location,
-    :camera
+    :camera,
+    :tags
   ]
 end
