@@ -16,14 +16,18 @@ defmodule Site.Gallery do
 
   @cdn_path "/gallery"
 
+  defmodule NotFoundError do
+    defexception [:message, plug_status: 404]
+  end
+
   @doc """
-  Returns all photos, sorted by `taken_at` descending (most recent first).
+  Returns all photos, sorted by `date` descending (most recent first).
   """
   @decorate cacheable(key: :photos)
   def list_photos do
     manifest()
     |> Enum.map(&build_photo/1)
-    |> Enum.sort_by(fn %Photo{taken_at: taken_at} -> taken_at end, {:desc, Date})
+    |> Enum.sort_by(fn %Photo{date: date} -> date end, {:desc, Date})
   end
 
   @doc """
@@ -51,6 +55,38 @@ defmodule Site.Gallery do
     |> Enum.group_by(fn %Photo{album: a} -> a end)
     |> Enum.map(fn {album, photos} -> %{name: album, count: length(photos)} end)
     |> Enum.sort_by(fn %{name: name} -> name end)
+  end
+
+  @doc """
+  Returns the number of photos in the gallery.
+  """
+  @decorate cacheable(key: :photos_count)
+  def photos_count do
+    list_photos()
+    |> length()
+  end
+
+  @doc """
+  Given a Photo, return the previous and next photos in the sequence.
+  If the Photo is in an album, the sequence is the album's photos.
+  Otherwise, the sequence is the gallery's photos.
+  """
+  def get_photo_navigation(%Photo{} = photo) do
+    sequence =
+      if is_nil(photo.album) do
+        list_photos()
+      else
+        list_photos_by_album(photo.album)
+      end
+
+    index = Enum.find_index(sequence, fn p -> p.id == photo.id end)
+    prev_index = if index == 0, do: nil, else: index - 1
+    next_index = if index == length(sequence) - 1, do: nil, else: index + 1
+
+    prev_photo = if is_nil(prev_index), do: nil, else: Enum.at(sequence, prev_index)
+    next_photo = if is_nil(next_index), do: nil, else: Enum.at(sequence, next_index)
+
+    {prev_photo, next_photo}
   end
 
   @doc """
@@ -89,7 +125,9 @@ defmodule Site.Gallery do
       album: item["album"],
       width: item["width"],
       height: item["height"],
-      taken_at: parse_date(item["taken_at"])
+      date: parse_date(item["date"]),
+      location: item["location"],
+      camera: item["camera"]
     }
   end
 

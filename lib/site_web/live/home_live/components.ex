@@ -268,7 +268,7 @@ defmodule SiteWeb.HomeLive.Components do
           </div>
         <% @last_played -> %>
           <div class="flex items-center gap-2">
-            <span :if={@last_played} class="font-medium text-content-40/80">Last Played</span>
+            <span class="font-medium text-content-40/80">Last Played</span>
           </div>
         <% true -> %>
           <div class="flex items-center gap-2">

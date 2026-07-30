@@ -297,7 +297,7 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign(:today, Date.utc_today())
       |> assign(:post_count, published_posts_count)
       |> assign(:featured_post_count, featured_posts_count)
-      |> assign(:photos_count, 0)
+      |> assign(:photos_count, Site.Gallery.photos_count())
       |> stream(:posts, posts)
       |> assign_async(:track, &get_currently_playing/0)
       |> assign_async(:reading_stats, fn -> {:ok, %{reading_stats: get_reading_stats()}} end)

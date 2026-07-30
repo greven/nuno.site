@@ -36,8 +36,8 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.8"},
-      {:phoenix_live_view, "~> 1.2.5"},
+      {:phoenix, "~> 1.8.9"},
+      {:phoenix_live_view, "~> 1.2.7"},
       {:phoenix_ecto, "~> 4.7"},
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.6", only: :dev},
@@ -68,7 +68,7 @@ defmodule Site.MixProject do
       {:dotenvy, "~> 1.1"},
       {:recase, "~> 0.9"},
       {:mdex, "~> 0.13"},
-      {:lumis, "~> 0.3"},
+      {:lumis, "~> 0.6"},
       {:mdex_gfm, "~> 0.2"},
       {:forex, "~> 1.1.3"},
       {:geocalc, "~> 0.8"},

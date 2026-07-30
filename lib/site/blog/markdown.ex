@@ -213,7 +213,13 @@ defmodule Site.Blog.Markdown do
 
   defp render_decorated_code_block(node) do
     meta = parse_code_block_info(node.info)
-    filename = meta.filename || meta.title || meta.language_label || "Code"
+
+    filename =
+      cond do
+        meta.title -> meta.title
+        meta.filename -> meta.filename
+        true -> meta.language_label
+      end
 
     html =
       Enum.join([

@@ -5,7 +5,7 @@ defmodule Site.GalleryTest do
   alias Site.Gallery.Photo
 
   describe "list_photos/0" do
-    test "returns photos from the manifest sorted by taken_at descending" do
+    test "returns photos from the manifest sorted by date descending" do
       photos = Gallery.list_photos()
 
       assert is_list(photos)

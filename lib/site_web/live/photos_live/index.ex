@@ -16,16 +16,10 @@ defmodule SiteWeb.PhotosLive.Index do
       <Layouts.page_content class="flex flex-col gap-8">
         <.header underlined>
           Photos
-          <:subtitle>A collection of moments I've captured.</:subtitle>
+          <:subtitle>Moments captured through my lens</:subtitle>
         </.header>
 
-        <div :if={@photos == []} class="text-center py-16 text-content-40">
-          <p>No photos yet.</p>
-        </div>
-
-        <Components.photo_grid :if={@photos != []} photos={@photos} />
-
-        <Components.lightbox photo={@selected_photo} show={@show_lightbox} />
+        <Components.photo_grid photos={@photos} />
       </Layouts.page_content>
     </Layouts.app>
     """
