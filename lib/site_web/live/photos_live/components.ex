@@ -5,15 +5,10 @@ defmodule SiteWeb.PhotosLive.Components do
 
   use SiteWeb, :html
 
-  alias Site.Gallery.Photo
+  alias Site.Gallery
 
   @doc """
-  Renders a grid of photo cards.
-
-  ## Examples
-
-      <.photo_grid photos={@photos} />
-      <.photo_grid photos={@photos} columns={3} />
+  Renders a grid of photography cards.
   """
 
   attr :photos, :list, required: true, doc: "list of Photo structs"
@@ -23,16 +18,17 @@ defmodule SiteWeb.PhotosLive.Components do
 
   def photo_grid(assigns) do
     ~H"""
-    <div
-      id={@id}
-      class={[
-        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4",
-        @class
-      ]}
-      {@rest}
-    >
+    <ul id={@id} class={["grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4", @class]} {@rest}>
+      <li
+        :if={@photos == []}
+        class="col-span-full place-items-center flex items-center justify-center gap-2"
+      >
+        <p class="text-center py-16 text-content-40">No photos yet...</p>
+        <.icon name="lucide-frown" class="text-center text-content-40/50" />
+      </li>
+
       <.photo_card :for={photo <- @photos} photo={photo} />
-    </div>
+    </ul>
     """
   end
 
@@ -40,102 +36,194 @@ defmodule SiteWeb.PhotosLive.Components do
   A single photo card with a blurred placeholder loading effect.
   """
 
-  attr :photo, Photo, required: true, doc: "the Photo struct"
+  attr :photo, Gallery.Photo, required: true, doc: "the Photo struct"
+  attr :size, :integer, default: 300, doc: "the size of the thumbnail in pixels"
   attr :class, :string, default: nil
   attr :rest, :global
 
-  def photo_card(assigns) do
-    ~H"""
-    <button
-      type="button"
-      id={"photo-#{@photo.id}"}
-      phx-click="open-photo"
-      phx-value-id={@photo.id}
-      class={[
-        "group relative overflow-hidden rounded-lg bg-surface-10 cursor-pointer",
-        "focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-primary",
-        @class
-      ]}
-      {@rest}
-    >
-      <div class="aspect-[3/2] relative overflow-hidden">
-        <img
-          src={Site.Gallery.photo_blur_url(@photo.key)}
-          alt={@photo.title || @photo.id}
-          class="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-60 transition-opacity duration-500"
-          aria-hidden="true"
-        />
-        <img
-          src={Site.Gallery.photo_url(@photo.key)}
-          alt={@photo.title || @photo.id}
-          loading="lazy"
-          class="relative w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          onload="this.previousElementSibling.style.opacity='0'"
-          onerror="this.style.display='none'"
-        />
-      </div>
+  def photo_card(%{photo: photo} = assigns) do
+    assigns =
+      assigns
+      |> assign(:photo_url, "#{Gallery.photo_url(photo.id)}_thumbnail_400w.jpg")
 
-      <div class="p-3">
-        <p :if={@photo.title} class="text-sm font-medium truncate">
-          {@photo.title}
-        </p>
-        <p :if={@photo.description} class="text-xs text-content-40 mt-0.5 line-clamp-2">
-          {@photo.description}
-        </p>
-      </div>
-    </button>
+    ~H"""
+    <li class="group relative">
+      <.image
+        src={@photo_url}
+        alt={@photo.title || @photo.id}
+        width={@size}
+        height={@size}
+        loading="lazy"
+        class="w-full aspect-square object-cover border-4 border-surface-10 dark:border-surface-30 rounded shadow-md"
+      />
+      <p class={[
+        "absolute left-1 right-1 bottom-1 p-1.5 bg-surface-20/80 backdrop-blur-sm text-center text-content-30 text-xs font-medium",
+        "line-clamp-1 truncate opacity-0 transition-opacity duration-300 ease-in-out",
+        "group-hover:opacity-100"
+      ]}>
+        {@photo.title}
+      </p>
+      <.link navigate={~p"/photos/#{@photo}"} class="absolute inset-0 z-10 outline-none"></.link>
+    </li>
     """
   end
 
   @doc """
-  A lightbox overlay for viewing a photo in detail.
+  Displays a single photo.
   """
 
-  attr :photo, Photo, required: true, doc: "the Photo struct to display"
-  attr :show, :boolean, default: false, doc: "whether the lightbox is visible"
+  attr :photo, Gallery.Photo, required: true, doc: "the Photo struct"
+  attr :prev, Gallery.Photo, default: nil
+  attr :next, Gallery.Photo, default: nil
 
-  def lightbox(assigns) do
+  def photo(assigns) do
+    assigns =
+      assigns
+      |> assign(:photo_url, "#{Gallery.photo_url(assigns.photo.id)}.jpg")
+
     ~H"""
-    <div
-      :if={@show and @photo}
-      id="photo-lightbox"
-      phx-click="close-photo"
-      phx-key="escape"
-      phx-window-keydown="close-photo"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Photo viewer"
-    >
-      <button
-        type="button"
-        phx-click="close-photo"
-        class="absolute top-4 right-4 size-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-        aria-label="Close"
-      >
-        <.icon name="hero-x-mark" class="size-6" />
-      </button>
+    <div class="group/photo relative">
+      <.image
+        src={@photo_url}
+        alt={@photo.title || @photo.id}
+        width={@photo.width}
+        height={@photo.height}
+        loading="lazy"
+        class="max-w-container object-cover border-4 border-surface-10 rounded shadow-md"
+        use_picture
+        use_blur
+      />
 
-      <figure
-        class="max-w-5xl max-h-[90vh] flex flex-col items-center"
-        phx-click-stop-propagation
-      >
-        <img
-          id={"lightbox-img-#{@photo.id}"}
-          src={Site.Gallery.photo_url(@photo.key)}
-          alt={@photo.title || @photo.id}
-          class="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
-        />
-
-        <figcaption
-          :if={@photo.title || @photo.description}
-          class="mt-4 text-center text-white/80 max-w-lg"
-        >
-          <p :if={@photo.title} class="text-lg font-medium">{@photo.title}</p>
-          <p :if={@photo.description} class="text-sm text-white/60 mt-1">{@photo.description}</p>
-        </figcaption>
-      </figure>
+      <.gallery_navigation photo={@photo} prev={@prev} next={@next} />
     </div>
+    """
+  end
+
+  @doc """
+  Displays the photo fullscreen.
+  """
+
+  attr :photo, Gallery.Photo, required: true
+
+  def photo_fullscreen_dialog(assigns) do
+    assigns =
+      assigns
+      |> assign(:photo_url, "#{Gallery.photo_url(assigns.photo.id)}.jpg")
+
+    ~H"""
+    <.dialog
+      id="photo-fullscreen"
+      backdrop_class="backdrop:bg-black backdrop:opacity-0 open:backdrop:opacity-100 backdrop:transition-opacity backdrop:duration-300"
+      panel_bg_class="bg-transparent"
+      panel_shadow_class=""
+      panel_outline_class=""
+      size="full"
+      use_backdrop
+      fullscreen
+      centered
+    >
+      <div class="w-full h-full flex items-center justify-center">
+        <.image
+          src={@photo_url}
+          alt={@photo.title || @photo.id}
+          width={@photo.width}
+          height={@photo.height}
+          class="max-h-full max-w-full object-contain"
+          use_picture
+          use_blur
+        />
+      </div>
+    </.dialog>
+    """
+  end
+
+  @doc """
+  Displays the details of a photo.
+  """
+
+  attr :photo, Gallery.Photo, required: true
+  attr :class, :string, default: nil
+
+  def photo_details(assigns) do
+    ~H"""
+    <div class={["flex flex-col gap-4 text-sm", @class]}>
+      <.photo_detail_item :if={@photo.date} icon="lucide-calendar-days">
+        <SiteWeb.CoreComponents.date date={@photo.date} />
+      </.photo_detail_item>
+      <.photo_detail_item :if={@photo.location} icon="lucide-map-pin">
+        {@photo.location}
+      </.photo_detail_item>
+      <.photo_detail_item :if={@photo.camera} icon="lucide-camera">
+        {@photo.camera}
+      </.photo_detail_item>
+    </div>
+    """
+  end
+
+  attr :icon, :string, required: true
+  slot :inner_block, required: true
+
+  defp photo_detail_item(assigns) do
+    ~H"""
+    <div class="flex items-center gap-2.5">
+      <.icon name={@icon} class="size-5 text-content-30" />
+      <div class="text-content-20">{render_slot(@inner_block)}</div>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders the navigation arrows for the gallery given the current photo.
+  """
+
+  attr :photo, Gallery.Photo, required: true
+  attr :prev, Gallery.Photo, default: nil
+  attr :next, Gallery.Photo, default: nil
+
+  def gallery_navigation(assigns) do
+    ~H"""
+    <.photo_nav_button
+      :if={@prev}
+      class="left-4"
+      phx-click={JS.push("navigate", value: %{direction: "prev"})}
+      phx-window-keydown="navigate"
+      phx-value-direction="prev"
+      phx-key="ArrowLeft"
+    >
+      <.icon name="lucide-chevron-left" class="size-7" />
+    </.photo_nav_button>
+
+    <.photo_nav_button
+      :if={@next}
+      class="right-4"
+      phx-click={JS.push("navigate", value: %{direction: "next"})}
+      phx-window-keydown="navigate"
+      phx-value-direction="next"
+      phx-key="ArrowRight"
+    >
+      <.icon name="lucide-chevron-right" class="size-7" />
+    </.photo_nav_button>
+    """
+  end
+
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :inner_block, required: true
+
+  defp photo_nav_button(assigns) do
+    ~H"""
+    <button
+      class={[
+        "absolute top-1/2 size-12 -translate-y-1/2 rounded-[50%] flex items-center justify-center",
+        "bg-surface-10/60 backdrop-blur-sm shadow opacity-1 cursor-pointer z-10",
+        "transition-opacity ease-in group-hover/photo:opacity-100",
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </button>
     """
   end
 end

@@ -89,7 +89,7 @@ defmodule SiteWeb.Router do
     get "/sitemap.xml", SitemapController, :index
     get "/rss", RssController, :feed
 
-    get "/spotify/callback", SiteWeb.SpotifyController, :callback
+    get "/spotify/callback", SpotifyController, :callback
   end
 
   # Other scopes may use custom stacks.

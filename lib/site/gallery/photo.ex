@@ -10,11 +10,10 @@ defmodule Site.Gallery.Photo do
     - `album` - Optional album/collection name for grouping
     - `width` - Image width in pixels
     - `height` - Image height in pixels
-    - `taken_at` - Optional Date when the photo was taken
+    - `date` - Optional Date when the photo was taken
+    - `location` - Optional photo location
+    - `camera` - Optional camera model used to take the photo
   """
-
-  @enforce_keys [:id, :key]
-  defstruct [:id, :key, :title, :description, :album, :width, :height, :taken_at]
 
   @type t :: %__MODULE__{
           id: String.t(),
@@ -24,6 +23,23 @@ defmodule Site.Gallery.Photo do
           album: String.t() | nil,
           width: non_neg_integer() | nil,
           height: non_neg_integer() | nil,
-          taken_at: Date.t() | nil
+          date: Date.t() | nil,
+          location: String.t() | nil,
+          camera: String.t() | nil
         }
+
+  @derive Phoenix.Param
+  @enforce_keys [:id, :key]
+  defstruct [
+    :id,
+    :key,
+    :title,
+    :description,
+    :album,
+    :width,
+    :height,
+    :date,
+    :location,
+    :camera
+  ]
 end

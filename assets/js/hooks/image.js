@@ -30,14 +30,10 @@ export const Image = {
       this.el.style.backgroundSize = 'cover';
       this.el.style.backgroundRepeat = 'no-repeat';
       this.el.style.backgroundPosition = 'center';
-      this.el.style.width = '100%';
-      this.el.style.maxHeight = this.el.height ? `${this.el.height}px` : 'auto';
     }
   },
 
   removeImageBlur() {
-    this.el.style.height = 'auto';
-
     requestAnimationFrame(() => {
       this.el.style.backgroundImage = 'none';
     });

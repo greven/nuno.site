@@ -1,12 +1,26 @@
 [
   {
-    "id": "example-sunset",
-    "key": "example-sunset.jpg",
-    "title": "Golden Hour",
-    "description": "A warm sunset captured along the coastline.",
+    "id": "leeds-corn-exchange-1",
+    "key": "leeds-corn-exchange-1.jpg",
+    "title": "Leeds Corn Exchange",
+    "description": "Corn Exchange in Leeds city centre. A shopping mall with indie shops and restaurants. Looks amazing from the inside.",
     "album": null,
-    "width": 1920,
-    "height": 1280,
-    "taken_at": "2025-06-01"
+    "width": 2048,
+    "height": 1365,
+    "camera": "Sony Alpha a6000",
+    "location": "Leeds, United Kingdom",
+    "date": "2017-07-23"
+  },
+  {
+    "id": "british-museum-1",
+    "key": "british-museum-1.jpg",
+    "title": "British Museum",
+    "description": "British Museum iconic glass rooftop.",
+    "album": null,
+    "width": 2048,
+    "height": 1367,
+    "camera": "Sony Alpha a6000",
+    "location": "London, United Kingdom",
+    "date": "2016-04-02"
   }
 ]

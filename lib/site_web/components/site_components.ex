@@ -188,10 +188,13 @@ defmodule SiteWeb.SiteComponents do
   def back_link(assigns) do
     ~H"""
     <.link {@rest}>
-      <div class="group inline-flex items-center gap-2 text-sm font-medium text-content-40 underline-offset-3 hover:underline">
+      <div class={[
+        "group inline-flex items-center gap-2 text-sm font-medium text-content-20 underline-offset-3",
+        "hover:underline hover:text-content transition-colors"
+      ]}>
         <.icon
           name="hero-arrow-left-mini"
-          class="size-4 -mr-0.5 shrink-0 text-content-40/80 transition-transform group-hover:-translate-x-0.5"
+          class="size-4 -mr-0.5 shrink-0 text-content-40 transition-transform group-hover:-translate-x-0.5"
         />
         <span>{@text}</span>
       </div>

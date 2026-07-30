@@ -145,7 +145,7 @@ defmodule SiteWeb.AboutLive.Components do
       <div class="flex items-center gap-1.5">
         <.icon name="hero-calendar-mini" class="size-4.5 text-content-40/90" />
         <span :if={@start_date} class="text-content-30/90 uppercase text-sm">
-          <%= if @start_date && @end_date do %>
+          <%= if @end_date do %>
             {parse_date(@start_date)} - {parse_date(@end_date)}
           <% else %>
             {parse_date(@start_date)}
@@ -304,7 +304,7 @@ defmodule SiteWeb.AboutLive.Components do
       <div class="mt-2 flex items-center gap-1.5">
         <.icon name="hero-calendar-mini" class="size-4.5 text-content-40/90" />
         <span :if={@start_date} class="text-content-30/90 uppercase text-sm">
-          <%= if @start_date && @end_date do %>
+          <%= if @end_date do %>
             {parse_date(@start_date)} - {parse_date(@end_date)}
           <% else %>
             {parse_date(@start_date)}
@@ -351,11 +351,8 @@ defmodule SiteWeb.AboutLive.Components do
 
   ## Renderless Helpers
 
-  # Shortened date string, e.g. "2023-10-01" -> "Oct 2023"
-  defp parse_date(nil), do: "Present"
-
-  defp parse_date(string) do
-    case Date.from_iso8601(string) do
+  defp parse_date(date) when is_binary(date) do
+    case Date.from_iso8601(date) do
       {:ok, date} -> Calendar.strftime(date, "%b %Y")
       {:error, _} -> nil
     end

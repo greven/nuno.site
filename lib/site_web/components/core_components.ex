@@ -82,7 +82,7 @@ defmodule SiteWeb.CoreComponents do
   attr :radius, :string, default: "rounded-lg"
   attr :shadow, :string, default: "hover:shadow-drop"
   attr :disabled, :boolean, default: false
-  attr :rest, :global, include: ~w(href navigate patch method target)
+  attr :rest, :global, include: ~w(href navigate patch method target rel)
   slot :inner_block, required: true
 
   def card(assigns) do
@@ -1803,7 +1803,7 @@ defmodule SiteWeb.CoreComponents do
           !@centered && "items-start",
           !@fullscreen && "-bottom-px left-1 right-1",
           !@fullscreen && "md:top-0 md:bottom-0 md:px-(--dialog-x-offset) md:py-(--dialog-y-offset)",
-          @fullscreen && "p-0"
+          @fullscreen && "inset-0 p-0"
         ]}
       >
         <section
