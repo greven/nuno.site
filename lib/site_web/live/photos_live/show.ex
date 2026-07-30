@@ -79,11 +79,11 @@ defmodule SiteWeb.PhotosLive.Show do
     photo = Site.Gallery.get_photo(id)
     album_photos = list_album_photos(photo, album)
 
-    {prev_photo, next_photo} = Site.Gallery.get_photo_navigation(photo)
+    if is_nil(photo) and album_photos == [] do
+      raise Site.Gallery.NotFoundError, "Photo or Album not found!"
+    end
 
-    # if is_nil(photo) and album_photos == [] do
-    #   raise Site.Gallery.NotFoundError, "Photo or Album not found!"
-    # end
+    {prev_photo, next_photo} = Site.Gallery.get_photo_navigation(photo)
 
     {:noreply,
      socket
