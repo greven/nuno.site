@@ -138,6 +138,23 @@ defmodule SiteWeb.PhotosLive.Components do
   end
 
   @doc """
+  Render a list of the photo tags.
+  """
+
+  attr :photo, Gallery.Photo, required: true
+  attr :class, :string, default: nil
+
+  def photo_tags(assigns) do
+    ~H"""
+    <div :if={@photo.tags && !Enum.empty?(@photo.tags)} class={["flex items-center gap-2", @class]}>
+      <span :for={tag <- @photo.tags} class="capitalize">
+        <span class="text-content-40/80">#</span> <span class="text-content-10">{tag}</span>
+      </span>
+    </div>
+    """
+  end
+
+  @doc """
   Displays the details of a photo.
   """
 

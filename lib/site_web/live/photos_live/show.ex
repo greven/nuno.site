@@ -57,12 +57,15 @@ defmodule SiteWeb.PhotosLive.Show do
           <div class="mt-8">
             <.header
               tag="h2"
-              header_class="text-xl font-medium text-balance"
+              header_class="text-xl font-medium text-balance text-content!"
               underlined
             >
               {@photo.title}
             </.header>
+
             <p class="mt-4 text-content-30">{@photo.description}</p>
+
+            <Components.photo_tags photo={@photo} class="mt-2" />
             <Components.photo_details photo={@photo} class="mt-8" />
           </div>
         </.drawer>
