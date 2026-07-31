@@ -67,6 +67,28 @@ defmodule Site.Gallery do
   end
 
   @doc """
+  Search the photos manifest given the query.
+  We search by `ìd`, `title`, `description`, `album`,  `location` and `tags`.
+  """
+  def search_photos(query) when is_binary(query) do
+    term = query |> String.trim() |> String.downcase()
+
+    if term == "" do
+      list_photos()
+    else
+      Enum.filter(list_photos(), &photo_matches_query?(&1, term))
+    end
+  end
+
+  defp photo_matches_query?(%Photo{} = photo, term) do
+    [photo.id, photo.title, photo.description, photo.album, photo.location]
+    |> Enum.concat(photo.tags || [])
+    |> Enum.any?(fn field ->
+      is_binary(field) && String.contains?(String.downcase(field), term)
+    end)
+  end
+
+  @doc """
   Given a Photo, return the previous and next photos in the sequence.
   If the Photo is in an album, the sequence is the album's photos.
   Otherwise, the sequence is the gallery's photos.

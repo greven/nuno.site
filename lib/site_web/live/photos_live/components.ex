@@ -8,10 +8,115 @@ defmodule SiteWeb.PhotosLive.Components do
   alias Site.Gallery
 
   @doc """
+  Page header with controls.
+  """
+
+  attr :title, :string, required: true
+  attr :subtitle, :string, required: true
+  attr :form, Phoenix.HTML.Form, required: true
+  attr :rest, :global
+
+  def photo_page_header(assigns) do
+    ~H"""
+    <header {@rest}>
+      <div class="relative flex justify-between gap-4">
+        <.header underlined>
+          {@title}
+          <:subtitle>{@subtitle}</:subtitle>
+        </.header>
+
+        <div class="mt-2 flex justify-center gap-2">
+          <.header_overlay form={@form} />
+
+          <.icon_button variant="ghost" disabled>
+            <.icon name="lucide-tag" class="size-6 text-content-40/80" />
+          </.icon_button>
+
+          <.icon_button
+            variant="ghost"
+            phx-click={
+              JS.show(
+                to: "#header-overlay",
+                transition: {"ease-out duration-300", "opacity-0", "opacity-100"}
+              )
+              |> JS.focus(to: "#header-overlay input")
+            }
+          >
+            <.icon name="lucide-search" class="size-6 text-content-40/80" />
+          </.icon_button>
+        </div>
+      </div>
+    </header>
+    """
+  end
+
+  attr :form, Phoenix.HTML.Form, required: true
+
+  defp header_overlay(assigns) do
+    ~H"""
+    <div
+      id="header-overlay"
+      class="hidden absolute -inset-2 bg-surface z-1"
+      phx-window-keydown={
+        if(@form[:query].value == "",
+          do:
+            JS.hide(
+              to: "#header-overlay",
+              transition: {"ease-out duration-300", "opacity-100", "opacity-0"}
+            ),
+          else: nil
+        )
+      }
+      phx-key="Escape"
+    >
+      <div class="px-2 py-4 flex gap-4">
+        <.form
+          for={@form}
+          id="photo-search"
+          phx-change="search"
+          phx-submit="search"
+          phx-debounce="300"
+          class="flex-1"
+        >
+          <input
+            type="text"
+            name="query"
+            value={@form[:query].value}
+            placeholder="Search photos..."
+            phx-change="search"
+            phx-debounce="300"
+            aria-label="Search photos"
+            class={[
+              "w-full border-b-2 border-surface-30 text-lg text-content-10",
+              "focus:outline-none focus:border-primary",
+              "placeholder:text-content-40/60"
+            ]}
+          />
+        </.form>
+
+        <.icon_button
+          variant="ghost"
+          phx-click={
+            JS.push("clear_search")
+            |> JS.hide(
+              to: "#header-overlay",
+              transition: {"ease-out duration-300", "opacity-100", "opacity-0"}
+            )
+          }
+        >
+          <.icon name="lucide-x" class="size-6 text-content-40/80" />
+        </.icon_button>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
   Renders a grid of photography cards.
   """
 
   attr :photos, :list, required: true, doc: "list of Photo structs"
+  attr :query, :string, default: "", doc: "the active search query"
   attr :id, :string, default: "photo-grid", doc: "the DOM id of the grid container"
   attr :class, :string, default: nil
   attr :rest, :global
@@ -23,8 +128,17 @@ defmodule SiteWeb.PhotosLive.Components do
         :if={@photos == []}
         class="col-span-full place-items-center flex items-center justify-center gap-2"
       >
-        <p class="text-center py-16 text-content-40">No photos yet...</p>
-        <.icon name="lucide-frown" class="text-center text-content-40/50" />
+        <%= if String.trim(@query) == "" do %>
+          <div class="py-8 flex flex-col items-center justify-center gap-4">
+            <.icon name="lucide-frown" class="text-center text-content-40/50" />
+            <p class="text-center text-content-40">No photos yet...</p>
+          </div>
+        <% else %>
+          <div class="py-8 flex flex-col items-center justify-center gap-4">
+            <.icon name="lucide-search-x" class="size-8 text-center text-content-40/50" />
+            <p class="text-center text-content-40">No results for "{@query}"</p>
+          </div>
+        <% end %>
       </li>
 
       <.photo_card :for={photo <- @photos} photo={photo} />
@@ -146,7 +260,10 @@ defmodule SiteWeb.PhotosLive.Components do
 
   def photo_tags(assigns) do
     ~H"""
-    <div :if={@photo.tags && !Enum.empty?(@photo.tags)} class={["flex items-center gap-2", @class]}>
+    <div
+      :if={@photo.tags && !Enum.empty?(@photo.tags)}
+      class={["flex flex-wrap items-center gap-2", @class]}
+    >
       <span :for={tag <- @photo.tags} class="capitalize">
         <span class="text-content-40/80">#</span> <span class="text-content-10">{tag}</span>
       </span>

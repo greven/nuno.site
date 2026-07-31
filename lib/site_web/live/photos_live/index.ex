@@ -14,12 +14,12 @@ defmodule SiteWeb.PhotosLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="flex flex-col gap-8">
-        <.header underlined>
-          Photos
-          <:subtitle>Moments captured through my lens</:subtitle>
-        </.header>
-
-        <Components.photo_grid photos={@photos} />
+        <Components.photo_page_header
+          title="Photos"
+          subtitle="Moments captured through my lens"
+          form={@form}
+        />
+        <Components.photo_grid photos={@photos} query={@form[:query].value} />
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -27,26 +27,29 @@ defmodule SiteWeb.PhotosLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    photos = Gallery.list_photos()
-
     socket =
       socket
       |> assign(:page_title, "Photos")
-      |> assign(:photos, photos)
-      |> assign(:selected_photo, nil)
-      |> assign(:show_lightbox, false)
+      |> assign(:photos, Gallery.list_photos())
+      |> assign(:form, to_form(%{"query" => ""}))
 
     {:ok, socket}
   end
 
   @impl true
-  def handle_event("open-photo", %{"id" => id}, socket) do
-    photo = Gallery.get_photo(id)
+  def handle_event("search", %{"query" => query}, socket) do
+    query = query || ""
 
-    {:noreply, assign(socket, selected_photo: photo, show_lightbox: true)}
+    {:noreply,
+     socket
+     |> assign(:form, to_form(%{"query" => query}))
+     |> assign(:photos, Gallery.search_photos(query))}
   end
 
-  def handle_event("close-photo", _params, socket) do
-    {:noreply, assign(socket, selected_photo: nil, show_lightbox: false)}
+  def handle_event("clear_search", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(:form, to_form(%{"query" => ""}))
+     |> assign(:photos, Gallery.list_photos())}
   end
 end
