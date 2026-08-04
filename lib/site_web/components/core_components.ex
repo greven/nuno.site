@@ -11,8 +11,6 @@ defmodule SiteWeb.CoreComponents do
   alias SiteWeb.Components.Theming
   alias SiteWeb.Helpers
 
-  @button_radius "sm"
-
   @theme_colors ~w(default primary secondary info success warning danger)
 
   @tailwind_colors ~w(
@@ -875,7 +873,6 @@ defmodule SiteWeb.CoreComponents do
   attr :size, :string, values: ~w(sm md lg), default: "md"
   attr :wide, :boolean, default: false
   attr :loading, :boolean, default: false
-  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: @button_radius
   attr :disabled, :boolean, default: false
   attr :rest, :global, include: ~w(href navigate patch method target name value popovertarget)
 
@@ -925,7 +922,6 @@ defmodule SiteWeb.CoreComponents do
   attr :variant, :string, values: ~w(default solid light outline ghost link), default: "default"
   attr :size, :string, values: ~w(sm md lg), default: "md"
   attr :loading, :boolean, default: false
-  attr :radius, :string, values: ~w(none xs sm md lg xl 2xl 3xl 4xl full), default: @button_radius
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -936,7 +932,6 @@ defmodule SiteWeb.CoreComponents do
       variant={@variant}
       color={@color}
       size={@size}
-      radius={@radius}
       loading={@loading}
       style="width: var(--button-height)"
       {@rest}
