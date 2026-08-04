@@ -86,7 +86,7 @@ defmodule SiteWeb.TravelLive.Components do
     ~H"""
     <li data-item="trip" data-origin={@trip.origin} data-destination={@trip.destination} {@rest}>
       <div class="group flex gap-1 items-center justify-between text-xs md:text-sm px-3 py-2.5 bg-surface-20/50 hover:cursor-pointer
-          rounded-lg border border-surface-30 shadow-xs hover:shadow-sm hover:border-primary transition-shadow">
+          rounded-sm border border-surface-30 shadow-xs hover:shadow-sm hover:border-primary transition-shadow">
         <div class="flex items-center">
           <div class="flex flex-col justify-center items-start gap-0.5 lg:flex-row lg:items-center">
             <.icon name={@icon} class="hidden lg:block size-4.5 text-content-40/50 mr-2.5 md:mr-3" />

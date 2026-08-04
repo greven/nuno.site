@@ -20,10 +20,20 @@ defmodule SiteWeb.MusicLive.Index do
       active_link={@active_link}
     >
       <Layouts.page_content class="flex flex-col gap-12 md:gap-16">
-        <Components.now_playing track={@track} />
+        <div class="flex items-center justify-between gap-4">
+          <Components.now_playing track={@track} />
+          <.button
+            variant="light"
+            color="default"
+            class="hidden! md:inline-block!"
+            navigate={~p"/music/stats"}
+          >
+            <.icon name="lucide-chart-no-axes-column" class="text-primary" /> Stats
+          </.button>
+        </div>
 
         <section>
-          <.header tag="h2" underlined>
+          <.header tag="h3" underlined>
             <.icon name="lucide-list-music" class="hidden md:inline-block mr-2.5 text-content-40" />
             Spotify Playlists
           </.header>
@@ -36,7 +46,7 @@ defmodule SiteWeb.MusicLive.Index do
         </section>
 
         <section>
-          <.header tag="h2" underlined>
+          <.header tag="h3" underlined>
             <.icon name="lucide-history" class="hidden md:inline-block mr-2.5 text-content-40" />
             Recently Played
           </.header>
@@ -51,7 +61,7 @@ defmodule SiteWeb.MusicLive.Index do
         </section>
 
         <section>
-          <.header tag="h2" underlined>
+          <.header tag="h3" underlined>
             <.icon name="lucide-star" class="hidden md:inline-block mr-2.5 text-content-40" />
             Top Artists
             <:actions>
@@ -78,7 +88,7 @@ defmodule SiteWeb.MusicLive.Index do
         </section>
 
         <section>
-          <.header tag="h2" underlined>
+          <.header tag="h3" underlined>
             <.icon name="lucide-disc-album" class="hidden md:inline-block mr-2.5 text-content-40" />
             Top Albums
             <:actions>

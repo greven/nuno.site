@@ -68,6 +68,7 @@ defmodule SiteWeb.Router do
       live "/analytics", AnalyticsLive.Index, :index
       live "/travel", TravelLive.Index, :index
       live "/music", MusicLive.Index, :index
+      live "/music/stats", MusicLive.Stats, :index
       live "/books", BooksLive.Index, :index
       live "/gaming", GamingLive.Index, :index
       live "/photos", PhotosLive.Index, :index

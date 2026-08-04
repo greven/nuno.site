@@ -436,7 +436,7 @@ defmodule SiteWeb.SiteComponents do
     ~H"""
     <div class="flex flex-col items-center gap-2">
       <div
-        class="h-10 px-3 min-w-10 flex justify-center items-center rounded-lg border"
+        class="h-10 px-3 min-w-10 flex justify-center items-center rounded-sm border"
         style={"background: var(#{@color});border-color: color-mix(in oklch, var(#{@color}), #000 5%);"}
       >
         {render_slot(@inner_block)}
@@ -575,7 +575,7 @@ defmodule SiteWeb.SiteComponents do
       id="toc-container"
       class={[
         "fixed -bottom-2 left-1 right-1 w-full mb-1 p-5 z-10 rounded-t-lg",
-        "sm:relative sm:mb-20 sm:w-auto sm:min-w-87 sm:rounded-lg",
+        "sm:relative sm:mb-20 sm:w-auto sm:min-w-87 sm:rounded-sm",
         "bg-surface-10/95 border border-surface-30 shadow-xs backdrop-blur-sm",
         "transition-transform ease-in-out duration-500 touch-manipulation"
       ]}

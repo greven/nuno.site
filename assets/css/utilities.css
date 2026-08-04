@@ -145,3 +145,14 @@
     color: var(--color-primary);
   }
 }
+
+/* Charts */
+
+@utility bar-grow {
+  transform-box: fill-box;
+  transform-origin: bottom;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: bar-grow 0.25s ease-out backwards;
+  }
+}

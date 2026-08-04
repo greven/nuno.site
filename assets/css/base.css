@@ -163,6 +163,15 @@
       opacity: 0;
     }
   }
+
+  @keyframes bar-grow {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
 }
 
 /* View Transitions */

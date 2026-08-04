@@ -66,6 +66,52 @@ defmodule Site.Services.Lastfm do
     end
   end
 
+  @doc """
+  Fetches the scrobble count for a given period.
+  The period can be one of: overall | 7day | 1month | 3month | 6month | 12month
+  """
+  def get_scrobble_count(period) do
+    case get_config() do
+      {:ok, config} ->
+        fetch_scrobble_count(config, period)
+
+      {:error, reason} ->
+        Logger.error("Error getting scrobble count: #{inspect(reason)}")
+        {:error, reason}
+    end
+  end
+
+  @doc """
+  Fetches the scrobble count for a given calendar year (Jan 1 - Dec 31, UTC).
+  Accepts an integer (2025) or a string ("2025").
+  """
+  def get_scrobble_count_for_year(year) do
+    with {:ok, year} <- parse_year(year),
+         {:ok, config} <- get_config() do
+      fetch_scrobble_count_for_year(config, year)
+    else
+      {:error, reason} ->
+        Logger.error("Error getting scrobble count for #{inspect(year)}: #{inspect(reason)}")
+        {:error, reason}
+    end
+  end
+
+  @doc """
+  Fetches the scrobble count for a given calendar month (1-12).
+  Accepts integers or strings.
+  """
+  def get_scrobble_count_for_month(year, month) do
+    with {:ok, year} <- parse_year(year),
+         {:ok, month} <- parse_month(month),
+         {:ok, config} <- get_config() do
+      fetch_scrobble_count_for_month(config, year, month)
+    else
+      {:error, reason} ->
+        Logger.error("Error getting scrobble count for #{year}-#{month}: #{inspect(reason)}")
+        {:error, reason}
+    end
+  end
+
   ## API
 
   defp fetch_now_playing(config) do
@@ -276,6 +322,109 @@ defmodule Site.Services.Lastfm do
 
   defp parse_timestamp(_), do: nil
 
+  # Fetch the total number of scrobbles for a given period.
+  # The period can be one of: overall | 7day | 1month | 3month | 6month | 12month
+  defp fetch_scrobble_count(config, period) when is_binary(period) do
+    period =
+      if period in ~w(overall 7day 1month 3month 6month 12month) do
+        period
+      else
+        "7day"
+      end
+
+    config
+    |> scrobble_count_params()
+    |> maybe_add_period_start(period)
+    |> run_scrobble_count_query()
+  end
+
+  # Fetch the total number of scrobbles in a given calendar year.
+  # For the current year, the range runs from Jan 1 up to now.
+  defp fetch_scrobble_count_for_year(config, year) when is_integer(year) do
+    from = year_start_uts(year)
+    to = if year < DateTime.utc_now().year, do: year_start_uts(year + 1), else: nil
+    fetch_scrobble_count_range(config, from, to)
+  end
+
+  # Fetch the total number of scrobbles in a given calendar month.
+  # For the current month, the range runs from the 1st up to now.
+  defp fetch_scrobble_count_for_month(config, year, month)
+       when is_integer(year) and month in 1..12 do
+    from = month_start_uts(year, month)
+
+    to =
+      if current_month?(year, month) do
+        nil
+      else
+        {next_year, next_month} = next_month(year, month)
+        month_start_uts(next_year, next_month)
+      end
+
+    fetch_scrobble_count_range(config, from, to)
+  end
+
+  # Shared params for scrobble count requests. limit=1 is enough because we
+  # only read `total` from the response's @attr, which is not affected by
+  # pagination.
+  defp scrobble_count_params(config) do
+    %{
+      "method" => "user.getRecentTracks",
+      "user" => config.username,
+      "api_key" => config.api_key,
+      "limit" => "1",
+      "format" => "json"
+    }
+  end
+
+  # Count scrobbles between two Unix timestamps. A nil `to` means "up to now".
+  defp fetch_scrobble_count_range(config, from, to) do
+    config
+    |> scrobble_count_params()
+    |> Map.put("from", from)
+    |> maybe_put("to", to)
+    |> run_scrobble_count_query()
+  end
+
+  defp run_scrobble_count_query(params) do
+    params
+    |> get_request()
+    |> case do
+      {:ok, %{"recenttracks" => %{"@attr" => attr}}} ->
+        {:ok, String.to_integer(attr["total"] || "0")}
+
+      {:ok, _} ->
+        {:ok, 0}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp maybe_put(params, _key, nil), do: params
+  defp maybe_put(params, key, value), do: Map.put(params, key, value)
+
+  # Add a `from` timestamp for the period, except for `overall` (lifetime).
+  defp maybe_add_period_start(params, "overall"), do: params
+
+  defp maybe_add_period_start(params, period) do
+    days =
+      case period do
+        "7day" -> 7
+        "1month" -> 30
+        "3month" -> 90
+        "6month" -> 182
+        "12month" -> 365
+      end
+
+    from =
+      DateTime.utc_now()
+      |> DateTime.add(-days * 24 * 60 * 60, :second)
+      |> DateTime.to_unix()
+      |> Integer.to_string()
+
+    Map.put(params, "from", from)
+  end
+
   ## Authentication
 
   # One-time authentication setup (run manually in IEx)
@@ -399,4 +548,48 @@ defmodule Site.Services.Lastfm do
         {:error, :missing_config}
     end
   end
+
+  ## Helpers
+
+  # Unix timestamp (seconds) for Jan 1 of the given year, 00:00:00 UTC.
+  defp year_start_uts(year) do
+    {:ok, naive} = NaiveDateTime.new(year, 1, 1, 0, 0, 0)
+    naive |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_unix() |> Integer.to_string()
+  end
+
+  # Unix timestamp (seconds) for the 1st of the given month, 00:00:00 UTC.
+  defp month_start_uts(year, month) do
+    {:ok, naive} = NaiveDateTime.new(year, month, 1, 0, 0, 0)
+    naive |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_unix() |> Integer.to_string()
+  end
+
+  defp next_month(year, 12), do: {year + 1, 1}
+  defp next_month(year, month), do: {year, month + 1}
+
+  defp current_month?(year, month) do
+    now = DateTime.utc_now()
+    now.year == year and now.month == month
+  end
+
+  defp parse_year(year) when is_integer(year) and year > 0, do: {:ok, year}
+
+  defp parse_year(year) when is_binary(year) do
+    case Integer.parse(year) do
+      {parsed, ""} when parsed > 0 -> {:ok, parsed}
+      _ -> {:error, :invalid_year}
+    end
+  end
+
+  defp parse_year(_), do: {:error, :invalid_year}
+
+  defp parse_month(month) when is_integer(month) and month in 1..12, do: {:ok, month}
+
+  defp parse_month(month) when is_binary(month) do
+    case Integer.parse(month) do
+      {parsed, ""} when parsed in 1..12 -> {:ok, parsed}
+      _ -> {:error, :invalid_month}
+    end
+  end
+
+  defp parse_month(_), do: {:error, :invalid_month}
 end

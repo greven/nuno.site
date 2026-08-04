@@ -879,14 +879,14 @@ defmodule SiteWeb.PulseLive.Components do
     >
       <article class={[
         "relative flex flex-col gap-2 px-4 py-3",
-        "rounded-lg border border-transparent bg-transparent outline-none transition-all",
+        "rounded-sm border border-transparent bg-transparent outline-none transition-all",
         "group-hover:bg-surface-30/40 group-hover:border-border/50",
         "group-aria-selected:bg-surface-20 group-aria-selected:border-surface-40",
         "group-focus:bg-surface-20 group-focus:border-primary!"
       ]}>
         <.diagonal_pattern
           use_transition={false}
-          class="opacity-0 border border-surface-10 rounded-lg group-aria-selected:opacity-50 transition-opacity"
+          class="opacity-0 border border-surface-10 rounded-sm group-aria-selected:opacity-50 transition-opacity"
         />
 
         <div class="flex flex-col gap-1">
@@ -982,7 +982,7 @@ defmodule SiteWeb.PulseLive.Components do
       aria-selected="false"
       class={[
         "hidden absolute inset-2 z-1 overflow-y-auto",
-        "rounded-lg bg-surface-10 border border-border outline-none",
+        "rounded-sm bg-surface-10 border border-border outline-none",
         "opacity-0 duration-400 ease-in-out transition-all scale-90",
         "starting:opacity-0 starting:translate-x-80 starting:scale-100",
         "aria-selected:border-surface-40 aria-selected:opacity-100 aria-selected:scale-100 aria-selected:animate-fade-in"
@@ -1015,10 +1015,10 @@ defmodule SiteWeb.PulseLive.Components do
             alt="Article image"
             width={560}
             height={420}
-            class="w-full h-auto max-h-60 rounded-lg object-cover object-center"
+            class="w-full h-auto max-h-60 rounded-sm object-cover object-center"
           />
         <% else %>
-          <div class="w-full h-54 bg-surface-20 rounded-lg flex items-center justify-center">
+          <div class="w-full h-54 bg-surface-20 rounded-sm flex items-center justify-center">
             <.icon name="lucide-image-off" class="size-10 text-neutral-300 dark:text-neutral-800" />
           </div>
         <% end %>

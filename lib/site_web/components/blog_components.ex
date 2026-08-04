@@ -24,7 +24,7 @@ defmodule SiteWeb.BlogComponents do
       |> assign(
         :base_class,
         [
-          "w-full max-h-[200px] aspect-video rounded-md border border-border/50 shadow-sm object-cover",
+          "w-full max-h-[200px] aspect-video rounded-xs border border-border/50 shadow-sm object-cover",
           "md:w-44 md:aspect-square md:shrink-0"
         ]
       )
@@ -85,7 +85,7 @@ defmodule SiteWeb.BlogComponents do
         width={@width}
         height={@height}
         title={@caption}
-        class={[@class, @rounded && "rounded-lg"]}
+        class={[@class, @rounded && "rounded-sm"]}
         use_picture={@is_cdn_image?}
         use_blur={@is_cdn_image?}
         loading="lazy"
@@ -133,7 +133,7 @@ defmodule SiteWeb.BlogComponents do
       style={"--color-accent: var(--color-#{@intent_color}); --code-color: var(--color-#{@intent_color});"}
       class={[
         "relative isolate my-[1.5em] [&>*:last-child]:mb-0",
-        "text-[0.925em] text-content-10 rounded-lg border shadow-xs overflow-hidden",
+        "text-[0.925em] text-content-10 rounded-sm border shadow-xs overflow-hidden",
         @intent_border
       ]}
     >

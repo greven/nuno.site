@@ -5,15 +5,17 @@ defmodule Site.Services do
 
   use Nebulex.Caching, cache: Site.Cache
 
+  alias Site.Services.Steam
+  alias Site.Services.Lastfm
   alias Site.Services.Bluesky
   alias Site.Services.Goodreads
-  alias Site.Services.Lastfm
-  alias Site.Services.Steam
   alias Site.Services.Weather
 
   @music_albums_limit 36
   @music_top_artists_limit 50
   @music_top_tracks_limit 50
+
+  @music_scrobbled_years 12
 
   @playlists [
     {"Nuno FM", "38yrXszA90IS0092T8S6sU"},
@@ -111,6 +113,42 @@ defmodule Site.Services do
     Lastfm.get_top_tracks(period, limit)
   end
 
+  @decorate cacheable(key: :music_stats, opts: [ttl: :timer.hours(6)])
+  def get_music_stats do
+    now = DateTime.utc_now()
+
+    jobs = [
+      {:total, fn -> Lastfm.get_scrobble_count("overall") end},
+      {:last_365_days, fn -> Lastfm.get_scrobble_count("12month") end},
+      {:years, fn -> fetch_year_counts(now.year - @music_scrobbled_years + 1, now.year) end},
+      {:months, fn -> fetch_month_counts(now.year) end}
+    ]
+
+    with {:ok, pairs} <- fetch_counts_concurrently(jobs) do
+      counts = Map.new(pairs)
+
+      {:ok,
+       %{
+         total: counts.total,
+         last_365_days: counts.last_365_days,
+         current_year: now.year,
+         current_year_count: count_for(counts.years, now.year),
+         current_month: now.month,
+         current_month_count: count_for(counts.months, now.month),
+         # current_week_count:
+         years: counts.years,
+         months: counts.months
+       }}
+    end
+  end
+
+  @doc """
+  Fetches the scrobble count for a given period.
+  The period can be one of: overall | 7day | 1month | 3month | 6month | 12month
+  """
+  @decorate cacheable(key: :music_play_count, opts: [ttl: :timer.hours(2)])
+  def get_music_play_count_by_period(period), do: Lastfm.get_scrobble_count(period)
+
   @decorate cacheable(key: :spotify_playlists, opts: [ttl: :timer.hours(24)])
   def get_spotify_playlists do
     @playlists
@@ -165,5 +203,49 @@ defmodule Site.Services do
             )
   def get_github_activity_by_date_range(from_date, to_date) do
     Site.Services.Github.get_contributions_by_date_range(from_date, to_date)
+  end
+
+  ## Helpers
+  defp fetch_counts_concurrently(jobs) do
+    Task.async_stream(jobs, fn {key, fun} -> {key, fun.()} end,
+      max_concurrency: 4,
+      timeout: :infinity
+    )
+    |> Enum.map(fn
+      {:ok, {key, {:ok, count}}} -> {:ok, {key, count}}
+      {:ok, {_key, {:error, reason}}} -> {:error, reason}
+      {:exit, reason} -> {:error, reason}
+    end)
+    |> case do
+      results when is_list(results) ->
+        case Enum.split_with(results, &match?({:ok, _}, &1)) do
+          {ok_results, []} -> {:ok, Enum.map(ok_results, fn {:ok, pair} -> pair end)}
+          {_ok, [{:error, reason} | _]} -> {:error, reason}
+        end
+
+      _ ->
+        {:error, :unknown}
+    end
+  end
+
+  defp fetch_year_counts(from_year, to_year) do
+    from_year..to_year
+    |> Enum.map(fn year -> {year, fn -> Lastfm.get_scrobble_count_for_year(year) end} end)
+    |> fetch_counts_concurrently()
+  end
+
+  defp fetch_month_counts(year) do
+    1..12
+    |> Enum.map(fn month ->
+      {month, fn -> Lastfm.get_scrobble_count_for_month(year, month) end}
+    end)
+    |> fetch_counts_concurrently()
+  end
+
+  defp count_for(counts, key) do
+    case List.keyfind(counts, key, 0) do
+      {^key, count} -> count
+      nil -> 0
+    end
   end
 end

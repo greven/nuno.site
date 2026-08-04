@@ -652,7 +652,7 @@ defmodule SiteWeb.HomeLive.Components do
         </:loading>
 
         <:failed :let={_failure}>
-          <div class="max-w-lg mx-auto flex flex-col items-center justify-center h-48 md:h-52 lg:h-56 bg-surface-10/40 rounded-lg text-content-40/60">
+          <div class="max-w-lg mx-auto flex flex-col items-center justify-center h-48 md:h-52 lg:h-56 bg-surface-10/40 rounded-sm text-content-40/60">
             <.icon name="lucide-wifi-off" class="size-6 mb-2" /> Unable to load posts
           </div>
         </:failed>

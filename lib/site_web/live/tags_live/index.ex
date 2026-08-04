@@ -23,8 +23,11 @@ defmodule SiteWeb.TagsLive.Index do
 
         <BlogComponents.archive class="mt-8" articles={@posts} show_icon={false} sticky_header>
           <:header :let={tag} class="-ml-2 capitalize">
-            <.link navigate={~p"/tag/#{tag}"} class="link-subtle flex items-center gap-1.5">
-              <.icon name="hero-hashtag" class="size-7 text-primary" />
+            <.link navigate={~p"/tag/#{tag}"} class="group link-subtle flex items-center gap-1">
+              <.icon
+                name="hero-hashtag"
+                class="size-6 text-content-40 group-hover:text-primary transition-colors"
+              />
               {tag}
             </.link>
           </:header>

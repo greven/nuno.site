@@ -245,6 +245,12 @@ defmodule Site.Support do
   def month_number(_), do: {:error, :invalid_month}
 
   @doc """
+  Month abbreviations names.
+  """
+  def month_abbr_names,
+    do: for(m <- 1..12, do: month_abbr(m))
+
+  @doc """
   List days of week names in a given locale.
   """
   def days_of_week_names(locale \\ :en)

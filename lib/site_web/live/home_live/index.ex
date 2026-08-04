@@ -82,7 +82,7 @@ defmodule SiteWeb.HomeLive.Index do
           <%!-- Bento Grid --%>
           <div
             id="home-grid"
-            class="group relative grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:p-4"
+            class="group relative grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:p-4"
             phx-hook="HomeGrid"
           >
             <SiteComponents.box_chrome class="hidden sm:block" animated />

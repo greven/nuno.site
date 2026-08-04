@@ -23,7 +23,7 @@ defmodule SiteWeb.BlogLive.Components do
     ~H"""
     <article
       class={[
-        "group relative isolate flex flex-col gap-4 rounded-xl border border-transparent border-dashed bg-transparent transition ease-in-out duration-150",
+        "group relative isolate flex flex-col gap-4 rounded-xs border border-transparent border-dashed bg-transparent transition ease-in-out duration-150",
         "hover:bg-surface-20/60 hover:border-border/80 hover:backdrop-blur-xs",
         "md:flex-row md:gap-8 md:p-2"
       ]}
@@ -190,7 +190,7 @@ defmodule SiteWeb.BlogLive.Components do
 
       <div class={[
         "w-full flex justify-between items-center gap-4 px-4 py-3",
-        "bg-surface-10/60 border border-surface-30 border-dashed rounded-lg"
+        "bg-surface-10/60 border border-surface-30 border-dashed rounded-sm"
       ]}>
         <BlogComponents.post_author post={@post} />
 

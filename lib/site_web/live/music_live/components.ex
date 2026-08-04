@@ -4,8 +4,10 @@ defmodule SiteWeb.MusicLive.Components do
   alias Phoenix.LiveView.AsyncResult
 
   alias Site.Support
+
   alias SiteWeb.Helpers
   alias SiteWeb.SiteComponents
+  alias SiteWeb.ChartComponents
 
   @doc false
 
@@ -25,7 +27,7 @@ defmodule SiteWeb.MusicLive.Components do
   attr :padding_class, :string, default: "p-0.5"
   attr :border_class, :string, default: "border-none"
   attr :shadow_class, :string, default: "shadow-md"
-  attr :radius_class, :string, default: "rounded-md"
+  attr :radius_class, :string, default: "rounded-xs"
   attr :rest, :global
 
   def track_image(assigns) do
@@ -35,6 +37,7 @@ defmodule SiteWeb.MusicLive.Components do
         class={@wrapper_class}
         padding={@padding_class}
         border={@border_class}
+        radius={@radius_class}
         shadow={@shadow_class}
         bg="bg-surface-20/50"
       >
@@ -245,8 +248,8 @@ defmodule SiteWeb.MusicLive.Components do
                     loading={true}
                     image_width={50}
                     image_height={50}
-                    shadow_class="shadow-none"
                     padding_class="p-0"
+                    shadow_class="shadow-none"
                     class="size-12.5 flex items-center"
                   />
 
@@ -440,4 +443,123 @@ defmodule SiteWeb.MusicLive.Components do
     </div>
     """
   end
+
+  ## Stats
+
+  attr :stats, AsyncResult, required: true
+  attr :week_count, AsyncResult, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  def hero_stats(assigns) do
+    ~H"""
+    <div class={["h-full flex flex-col justify-center", @class]} {@rest}>
+      <.async_result :let={stats} assign={@stats}>
+        <:loading>
+          <p class="ml-1 mb-4 text-sm text-content-40/50 flex items-center animate-blink">
+            <.icon name="lucide-dot" class="size-7 text-primary" /> This year play count... so far!
+          </p>
+
+          <div class="font-sans text-7xl text-content">
+            <.skeleton height="96px" width="240px" />
+          </div>
+
+          <div class="mt-6 flex gap-2">
+            <.button variant="solid" href="https://www.last.fm/user/neverg" disabled>LastFM Profile</.button>
+            <.button
+              variant="light"
+              href="https://open.spotify.com/user/x5c4oddhq6uo3glgvlzam4jdt"
+              disabled
+            >Spotify Profile</.button>
+          </div>
+          <p class="mt-2 ml-1 mb-4 text-sm text-content-40/50 animate-blink">Loading...</p>
+        </:loading>
+
+        <p class="ml-1 mb-4 text-sm text-content-40 flex items-center">
+          <.icon name="lucide-dot" class="size-7 text-primary" /> This year play count... so far!
+        </p>
+
+        <div class="font-sans text-8xl text-content">
+          {Support.format_number(stats.current_year_count, 0)}
+        </div>
+
+        <div class="mt-6 flex gap-2">
+          <.button variant="solid" href="https://www.last.fm/user/neverg">LastFM Profile</.button>
+          <.button variant="light" href="https://open.spotify.com/user/x5c4oddhq6uo3glgvlzam4jdt">Spotify Profile</.button>
+        </div>
+        <p class="mt-4 ml-1 mb-4 text-sm text-content-40">
+          {@week_count.ok? &&
+            "+#{Support.format_number(@week_count.result, 0)} music tracks played this week"}
+        </p>
+      </.async_result>
+    </div>
+    """
+  end
+
+  attr :async, AsyncResult, required: true
+  attr :series, :atom, required: true, doc: "one of :years or :months"
+
+  attr :years, :integer,
+    default: nil,
+    doc: "number of years to render; nil renders all fetched years"
+
+  attr :class, :string, default: nil
+
+  def bar_chart(assigns) do
+    ~H"""
+    <div class={["w-full", @class]}>
+      <.async_result :let={stats} assign={@async}>
+        <:loading>
+          <ChartComponents.bar_chart_skeleton bars={placeholder_bars(@series, @years)} />
+        </:loading>
+
+        <:failed :let={_failure}>
+          <div class="flex items-center gap-2 text-content-40/50">
+            <.icon name="hero-bolt-slash-solid" class="size-5" /> Failed to load stats
+          </div>
+        </:failed>
+
+        <%= if stats do %>
+          <ChartComponents.bar_chart
+            points={build_points(stats, @series, @years)}
+            format_value={&format_count/1}
+            tick_count={4}
+            max_labels={4}
+          />
+        <% end %>
+      </.async_result>
+    </div>
+    """
+  end
+
+  # Skeleton bar count. The :years default matches the fetch window in
+  # Site.Services (@music_years).
+  defp placeholder_bars(:years, nil), do: 10
+  defp placeholder_bars(:years, years), do: years
+  defp placeholder_bars(:months, _years), do: 12
+
+  defp build_points(stats, :years, years) do
+    now = DateTime.utc_now()
+
+    stats.years
+    |> recent_years(years)
+    |> Enum.map(fn {year, count} ->
+      %{label: Integer.to_string(year), value: count, dim: year == now.year}
+    end)
+  end
+
+  defp build_points(stats, :months, _years) do
+    month_labels = Support.month_abbr_names()
+    now = DateTime.utc_now()
+
+    Enum.map(stats.months, fn {month, count} ->
+      %{label: Enum.at(month_labels, month - 1), value: count, dim: month == now.month}
+    end)
+  end
+
+  # Keep only the most recent `count`
+  defp recent_years(years, nil), do: years
+  defp recent_years(years, count), do: Enum.take(years, -count)
+
+  defp format_count(value), do: Support.format_number(value, 0)
 end
