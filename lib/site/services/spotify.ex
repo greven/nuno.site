@@ -81,27 +81,47 @@ defmodule Site.Services.Spotify do
 
   ## Authentication
 
-  def access_token do
-    if Site.Cache.get!(:spotify_access_token) && Site.Cache.ttl!(:spotify_access_token) do
-      {:ok, Site.Cache.get!(:spotify_access_token)}
-    else
-      case get_access_token() do
-        {:ok, response} ->
-          if access_token = response["access_token"] do
-            ttl = (Map.get(response, "expires_in", 3600) - 10) * 1000
-            Site.Cache.put(:spotify_access_token, access_token, ttl: ttl)
+  def access_token,
+    do: token(:spotify_access_token, &get_access_token/0)
 
-            {:ok, access_token}
-          else
-            Logger.error("No access_token in Spotify response: #{inspect(response)}")
-            {:error, :no_token}
-          end
+  def client_credentials_token,
+    do: token(:spotify_client_credentials_token, &get_client_credentials_token/0)
 
-        {:error, status} ->
-          Logger.error("Error getting access token: #{inspect(status)}")
-          {:error, status}
-      end
+  # Returns {:ok, token} from the cache, or fetches and caches a fresh one.
+  defp token(cache_key, fetch_fun) do
+    case cached_token(cache_key) do
+      nil ->
+        fetch_and_cache(cache_key, fetch_fun.())
+
+      token ->
+        {:ok, token}
     end
+  end
+
+  defp cached_token(cache_key) do
+    if Site.Cache.get!(cache_key) && Site.Cache.ttl!(cache_key) do
+      Site.Cache.get!(cache_key)
+    else
+      nil
+    end
+  end
+
+  defp fetch_and_cache(cache_key, {:ok, response}) do
+    case response["access_token"] do
+      nil ->
+        Logger.error("No access_token in Spotify response for #{cache_key}: #{inspect(response)}")
+        {:error, :no_token}
+
+      token ->
+        ttl = (Map.get(response, "expires_in", 3600) - 10) * 1000
+        Site.Cache.put(cache_key, token, ttl: ttl)
+        {:ok, token}
+    end
+  end
+
+  defp fetch_and_cache(_cache_key, {:error, status}) do
+    Logger.error("Error getting token: #{inspect(status)}")
+    {:error, status}
   end
 
   def get_access_token do
@@ -134,6 +154,24 @@ defmodule Site.Services.Spotify do
     end
   end
 
+  def get_client_credentials_token do
+    case Req.post("https://accounts.spotify.com/api/token",
+           auth: {:basic, "#{client_id()}:#{client_secret()}"},
+           form: [grant_type: "client_credentials"]
+         ) do
+      {:ok, %Req.Response{status: 200, body: body}} ->
+        {:ok, body}
+
+      {:ok, resp} ->
+        Logger.error("Spotify client credentials failed: #{resp.status} - #{inspect(resp.body)}")
+        {:error, resp.status}
+
+      {:error, error} ->
+        Logger.error("Spotify client credentials request failed: #{inspect(error)}")
+        {:error, error}
+    end
+  end
+
   def get_refresh_token(auth_code) do
     base_url = "https://accounts.spotify.com/api/token"
 
@@ -151,51 +189,6 @@ defmodule Site.Services.Spotify do
       auth: {:basic, "#{client_id()}:#{client_secret()}"},
       headers: %{"content-type" => "application/x-www-form-urlencoded", "content-length" => 0}
     )
-  end
-
-  def client_credentials_token do
-    if Site.Cache.get!(:spotify_client_credentials_token) &&
-         Site.Cache.ttl!(:spotify_client_credentials_token) do
-      {:ok, Site.Cache.get!(:spotify_client_credentials_token)}
-    else
-      case get_client_credentials_token() do
-        {:ok, response} ->
-          if access_token = response["access_token"] do
-            ttl = (Map.get(response, "expires_in", 3600) - 10) * 1000
-            Site.Cache.put(:spotify_client_credentials_token, access_token, ttl: ttl)
-
-            {:ok, access_token}
-          else
-            Logger.error(
-              "No access_token in Spotify client credentials response: #{inspect(response)}"
-            )
-
-            {:error, :no_token}
-          end
-
-        {:error, status} ->
-          Logger.error("Error getting client credentials token: #{inspect(status)}")
-          {:error, status}
-      end
-    end
-  end
-
-  def get_client_credentials_token do
-    case Req.post("https://accounts.spotify.com/api/token",
-           auth: {:basic, "#{client_id()}:#{client_secret()}"},
-           form: [grant_type: "client_credentials"]
-         ) do
-      {:ok, %Req.Response{status: 200, body: body}} ->
-        {:ok, body}
-
-      {:ok, resp} ->
-        Logger.error("Spotify client credentials failed: #{resp.status} - #{inspect(resp.body)}")
-        {:error, resp.status}
-
-      {:error, error} ->
-        Logger.error("Spotify client credentials request failed: #{inspect(error)}")
-        {:error, error}
-    end
   end
 
   def request_authorization_url do
