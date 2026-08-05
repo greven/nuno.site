@@ -489,7 +489,8 @@ defmodule SiteWeb.MusicLive.Components do
       <.async_result :let={stats} assign={@stats}>
         <:loading>
           <p class="ml-1 mb-4 text-sm text-content-40/50 flex items-center animate-blink">
-            <.icon name="lucide-dot" class="size-7 text-primary" /> This year play count... so far!
+            <.icon name="lucide-audio-lines" class="mr-2 size-5 text-content-40 animate-blink" />
+            This year play count... so far!
           </p>
 
           <div class="font-sans text-7xl text-content">
@@ -508,7 +509,8 @@ defmodule SiteWeb.MusicLive.Components do
         </:loading>
 
         <p class="ml-1 mb-4 text-sm text-content-40 flex items-center">
-          <.icon name="lucide-dot" class="size-7 text-primary" /> This year play count... so far!
+          <.icon name="lucide-audio-lines" class="mr-2 size-5 text-primary" />
+          This year play count... so far!
         </p>
 
         <div class="font-sans text-8xl text-content">

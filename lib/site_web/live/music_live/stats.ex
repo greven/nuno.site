@@ -24,7 +24,7 @@ defmodule SiteWeb.MusicLive.Stats do
                   </div>
                 </:loading>
 
-                <p>
+                <p class="text-pretty">
                   I've been tracking my music stats on LastFM since {scrobbling_since(stats)}. With
                   <span class="font-medium text-content-10">{Site.Support.format_number(
                     get_in(stats, [:total]),
@@ -42,11 +42,16 @@ defmodule SiteWeb.MusicLive.Stats do
           </div>
 
           <div>
-            <.box padding="p-2 md:p-4 lg:p-8">
-              <.header tag="h4" header_class="p-4 font-mono text-sm text-content-40">
+            <.box padding="p-4 md:p-4 lg:p-8">
+              <.header tag="h4" header_class="font-mono text-sm text-content-40">
                 Tracks played per year
               </.header>
-              <Components.bar_chart class="mt-4" async={@stats} series={:years} years={10} />
+              <Components.bar_chart
+                class="mt-4"
+                async={@stats}
+                series={:years}
+                years={10}
+              />
             </.box>
           </div>
         </section>
