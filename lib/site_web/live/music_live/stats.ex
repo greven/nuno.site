@@ -14,30 +14,22 @@ defmodule SiteWeb.MusicLive.Stats do
       <Layouts.page_content class="flex flex-col gap-12 md:gap-16">
         <section class="min-h-auto grid grid-cols-1 md:grid-cols-2 gap-10">
           <div>
-            <Components.hero_stats stats={@stats} week_count={@week_count}>
-              <.async_result :let={stats} assign={@stats}>
-                <:loading>
-                  <div class="flex flex-col gap-1">
-                    <.skeleton width="75%" height="25px" />
-                    <.skeleton width="80%" height="25px" />
-                    <.skeleton width="50%" height="25px" />
-                  </div>
-                </:loading>
-
-                <p class="text-pretty">
-                  I've been tracking my music stats on LastFM since {scrobbling_since(stats)}. With
-                  <span class="font-medium text-content-10">{Site.Support.format_number(
+            <Components.hero_stats :let={stats} stats={@stats} week_count={@week_count}>
+              <p class="text-pretty">
+                I've been tracking my music stats on LastFM since {stats && scrobbling_since(stats)}. With
+                <span class="font-medium text-content-10">{stats &&
+                  Site.Support.format_number(
                     get_in(stats, [:total]),
                     0
                   )}</span>
-                  total tracks played and an average of
-                  <span class="font-medium text-content-10">{Site.Support.format_number(
+                total tracks played and an average of
+                <span class="font-medium text-content-10">{stats &&
+                  Site.Support.format_number(
                     average_plays_per_day(stats),
                     0
                   )}</span>
-                  tracks per day.
-                </p>
-              </.async_result>
+                tracks per day.
+              </p>
             </Components.hero_stats>
           </div>
 
@@ -64,7 +56,11 @@ defmodule SiteWeb.MusicLive.Stats do
           >
             <:label>Tracks played</:label>
             <:sub :let={stats}>
-              <span class="text-success">+{Site.Support.format_number(stats.current_year_count, 0)}</span>
+              <span class="text-success">+{stats &&
+                Site.Support.format_number(
+                  get_in(stats, [:current_year_count]),
+                  0
+                )}</span>
               this year
             </:sub>
           </Components.stats_card>

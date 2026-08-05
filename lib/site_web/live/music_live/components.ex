@@ -461,7 +461,7 @@ defmodule SiteWeb.MusicLive.Components do
           <div class="flex flex-col gap-1">
             <div class="text-sm text-content-40/50">Loading...</div>
             <div class="text-3xl font-sans"><.skeleton height="36px" /></div>
-            <div class="text-sm text-content-40/50 animate-blink">Loading...</div>
+            <div class="text-sm text-content-40/50 animate-pulse">Loading...</div>
           </div>
         </:loading>
 
@@ -481,20 +481,28 @@ defmodule SiteWeb.MusicLive.Components do
   attr :week_count, AsyncResult, default: nil
   attr :class, :string, default: nil
   attr :rest, :global
-  slot :inner_block
+
+  # slot :text
+  slot :inner_block, required: true
 
   def hero_stats(assigns) do
     ~H"""
     <div class={["h-full flex flex-col justify-center", @class]} {@rest}>
       <.async_result :let={stats} assign={@stats}>
         <:loading>
-          <p class="ml-1 mb-4 text-sm text-content-40/50 flex items-center animate-blink">
-            <.icon name="lucide-audio-lines" class="mr-2 size-5 text-content-40 animate-blink" />
+          <p class="ml-1 mb-4 text-sm text-content-40/50 flex items-center animate-pulse">
+            <.icon name="lucide-audio-lines" class="mr-2 size-5 text-content-40 animate-pulse" />
             This year play count... so far!
           </p>
 
           <div class="font-sans text-7xl text-content">
             <.skeleton height="96px" width="240px" />
+          </div>
+
+          <div class="mt-6 flex flex-col gap-1">
+            <.skeleton width="75%" height="25px" />
+            <.skeleton width="80%" height="25px" />
+            <.skeleton width="50%" height="25px" />
           </div>
 
           <div class="mt-6 flex gap-2">
@@ -505,7 +513,7 @@ defmodule SiteWeb.MusicLive.Components do
               disabled
             >Spotify Profile</.button>
           </div>
-          <p class="mt-2 ml-1 mb-4 text-sm text-content-40/50 animate-blink">Loading...</p>
+          <p class="mt-2 ml-1 mb-4 text-sm text-content-40/50 animate-pulse">Loading...</p>
         </:loading>
 
         <p class="ml-1 mb-4 text-sm text-content-40 flex items-center">
@@ -518,7 +526,7 @@ defmodule SiteWeb.MusicLive.Components do
         </div>
 
         <div :if={@inner_block != []} class="mt-6 text-lg text-content-20">
-          {render_slot(@inner_block)}
+          {render_slot(@inner_block, stats)}
         </div>
 
         <div class="mt-6 flex gap-2">
