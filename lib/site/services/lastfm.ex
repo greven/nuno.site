@@ -67,6 +67,45 @@ defmodule Site.Services.Lastfm do
   end
 
   @doc """
+  Fetches the total number of unique artists scrobbled in the given period.
+  The period can be one of: overall | 7day | 1month | 3month | 6month | 12month
+  """
+  def get_top_artists_count(period) do
+    fetch_top_count(period, "user.getTopArtists", "topartists")
+  end
+
+  @doc """
+  Fetches the total number of unique albums scrobbled in the given period.
+  The period can be one of: overall | 7day | 1month | 3month | 6month | 12month
+  """
+  def get_top_albums_count(period) do
+    fetch_top_count(period, "user.getTopAlbums", "topalbums")
+  end
+
+  @doc """
+  Fetches the total number of unique tracks scrobbled in the given period.
+  The period can be one of: overall | 7day | 1month | 3month | 6month | 12month
+  """
+  def get_top_tracks_count(period) do
+    fetch_top_count(period, "user.getTopTracks", "toptracks")
+  end
+
+  @doc """
+  Fetches the user's LastFM profile info, including unique artist/album/track
+  counts and the account registration date.
+  """
+  def get_user_info do
+    case get_config() do
+      {:ok, config} ->
+        fetch_user_info(config)
+
+      {:error, reason} ->
+        Logger.error("Error getting user info: #{inspect(reason)}")
+        {:error, reason}
+    end
+  end
+
+  @doc """
   Fetches the scrobble count for a given period.
   The period can be one of: overall | 7day | 1month | 3month | 6month | 12month
   """
@@ -235,7 +274,7 @@ defmodule Site.Services.Lastfm do
       end
 
     %{
-      "method" => "user.gettoptracks",
+      "method" => "user.getTopTracks",
       "user" => config.username,
       "api_key" => config.api_key,
       "period" => period,
@@ -249,6 +288,48 @@ defmodule Site.Services.Lastfm do
 
       {:ok, _} ->
         {:ok, []}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  # Counts the unique entries in a top chart for a period by reading
+  # @attr.total with limit=1 (same approach as the scrobble counts).
+  defp fetch_top_count(period, method, response_key) do
+    case get_config() do
+      {:ok, config} ->
+        fetch_top_count(config, method, response_key, period)
+
+      {:error, reason} ->
+        Logger.error("Error getting #{response_key} count: #{inspect(reason)}")
+        {:error, reason}
+    end
+  end
+
+  defp fetch_top_count(config, method, response_key, period) when is_binary(period) do
+    period =
+      if period in ~w(overall 7day 1month 3month 6month 12month) do
+        period
+      else
+        "overall"
+      end
+
+    %{
+      "method" => method,
+      "user" => config.username,
+      "api_key" => config.api_key,
+      "period" => period,
+      "limit" => "1",
+      "format" => "json"
+    }
+    |> get_request()
+    |> case do
+      {:ok, %{^response_key => %{"@attr" => attr}}} ->
+        {:ok, parse_int(attr["total"])}
+
+      {:ok, _} ->
+        {:ok, 0}
 
       {:error, reason} ->
         {:error, reason}
@@ -321,6 +402,65 @@ defmodule Site.Services.Lastfm do
   end
 
   defp parse_timestamp(_), do: nil
+
+  # Fetch the user's profile info (user.getInfo).
+  defp fetch_user_info(config) do
+    %{
+      "method" => "user.getInfo",
+      "user" => config.username,
+      "api_key" => config.api_key,
+      "format" => "json"
+    }
+    |> get_request()
+    |> case do
+      {:ok, %{"user" => user}} when is_map(user) ->
+        {:ok, parse_user_info(user)}
+
+      {:ok, _} ->
+        {:ok, nil}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp parse_user_info(user) do
+    %{
+      artist_count: parse_int(user["artist_count"]),
+      album_count: parse_int(user["album_count"]),
+      track_count: parse_int(user["track_count"]),
+      registered_at: parse_registered(user["registered"])
+    }
+  end
+
+  defp parse_int(nil), do: 0
+
+  defp parse_int(value) when is_binary(value) do
+    case Integer.parse(value) do
+      {int, _} -> int
+      _ -> 0
+    end
+  end
+
+  defp parse_int(_), do: 0
+
+  # LastFM returns the registration date as a Unix timestamp string. Values
+  # below 2001 (1_000_000_000) are bogus for accounts created after the site
+  # launched, so treat those as missing.
+  defp parse_registered(%{"unixtime" => unixtime}) do
+    case Integer.parse(unixtime) do
+      {ts, _} when ts > 1_000_000_000 ->
+        case DateTime.from_unix(ts) do
+          {:ok, datetime} -> datetime
+          _ -> nil
+        end
+
+      _ ->
+        nil
+    end
+  end
+
+  defp parse_registered(_), do: nil
 
   # Fetch the total number of scrobbles for a given period.
   # The period can be one of: overall | 7day | 1month | 3month | 6month | 12month

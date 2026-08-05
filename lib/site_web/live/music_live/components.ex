@@ -446,10 +446,42 @@ defmodule SiteWeb.MusicLive.Components do
 
   ## Stats
 
+  @doc false
+
+  attr :async, AsyncResult, required: true
+  attr :value_fn, :fun, required: true
+  slot :label
+  slot :sub
+
+  def stats_card(assigns) do
+    ~H"""
+    <.card>
+      <.async_result :let={result} assign={@async}>
+        <:loading>
+          <div class="flex flex-col gap-1">
+            <div class="text-sm text-content-40/50">Loading...</div>
+            <div class="text-3xl font-sans"><.skeleton height="36px" /></div>
+            <div class="text-sm text-content-40/50 animate-blink">Loading...</div>
+          </div>
+        </:loading>
+
+        <div class="flex flex-col gap-1">
+          <div class="text-xs md:text-sm text-content-40/50">{render_slot(@label, result)}</div>
+          <div class="text-2xl md:text-3xl font-sans">{@value_fn.(result)}</div>
+          <div class="text-xs md:text-sm text-content-40/50">{render_slot(@sub, result)}</div>
+        </div>
+      </.async_result>
+    </.card>
+    """
+  end
+
+  @doc false
+
   attr :stats, AsyncResult, required: true
   attr :week_count, AsyncResult, default: nil
   attr :class, :string, default: nil
   attr :rest, :global
+  slot :inner_block
 
   def hero_stats(assigns) do
     ~H"""
@@ -483,18 +515,24 @@ defmodule SiteWeb.MusicLive.Components do
           {Support.format_number(stats.current_year_count, 0)}
         </div>
 
+        <div :if={@inner_block != []} class="mt-6 text-lg text-content-20">
+          {render_slot(@inner_block)}
+        </div>
+
         <div class="mt-6 flex gap-2">
           <.button variant="solid" href="https://www.last.fm/user/neverg">LastFM Profile</.button>
           <.button variant="light" href="https://open.spotify.com/user/x5c4oddhq6uo3glgvlzam4jdt">Spotify Profile</.button>
         </div>
         <p class="mt-4 ml-1 mb-4 text-sm text-content-40">
           {@week_count.ok? &&
-            "+#{Support.format_number(@week_count.result, 0)} music tracks played this week"}
+            "+#{Support.format_number(@week_count.result, 0)} tracks played this week"}
         </p>
       </.async_result>
     </div>
     """
   end
+
+  @doc false
 
   attr :async, AsyncResult, required: true
   attr :series, :atom, required: true, doc: "one of :years or :months"

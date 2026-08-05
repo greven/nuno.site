@@ -147,7 +147,7 @@ defmodule SiteWeb.ChartComponents do
                 class={[
                   "bar-grow transition-all hover:brightness-110",
                   @bar_class,
-                  bar.point[:dim] && "opacity-50 hover:opacity-100"
+                  bar.point[:dim] && "opacity-45 hover:opacity-100"
                 ]}
                 style={"animation-delay: #{bar.delay}ms"}
               />

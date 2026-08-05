@@ -113,7 +113,7 @@ defmodule Site.Services do
     Lastfm.get_top_tracks(period, limit)
   end
 
-  @decorate cacheable(key: :music_stats, opts: [ttl: :timer.hours(6)])
+  @decorate cacheable(key: :music_stats, opts: [ttl: :timer.hours(2)])
   def get_music_stats do
     now = DateTime.utc_now()
 
@@ -121,7 +121,11 @@ defmodule Site.Services do
       {:total, fn -> Lastfm.get_scrobble_count("overall") end},
       {:last_365_days, fn -> Lastfm.get_scrobble_count("12month") end},
       {:years, fn -> fetch_year_counts(now.year - @music_scrobbled_years + 1, now.year) end},
-      {:months, fn -> fetch_month_counts(now.year) end}
+      {:months, fn -> fetch_month_counts(now.year) end},
+      {:user_info, fn -> Lastfm.get_user_info() end},
+      {:last_12_months_artists, fn -> Lastfm.get_top_artists_count("12month") end},
+      {:last_12_months_albums, fn -> Lastfm.get_top_albums_count("12month") end},
+      {:last_12_months_tracks, fn -> Lastfm.get_top_tracks_count("12month") end}
     ]
 
     with {:ok, pairs} <- fetch_counts_concurrently(jobs) do
@@ -137,7 +141,11 @@ defmodule Site.Services do
          current_month_count: count_for(counts.months, now.month),
          # current_week_count:
          years: counts.years,
-         months: counts.months
+         months: counts.months,
+         user_info: counts.user_info,
+         last_12_months_artists: counts.last_12_months_artists,
+         last_12_months_albums: counts.last_12_months_albums,
+         last_12_months_tracks: counts.last_12_months_tracks
        }}
     end
   end
