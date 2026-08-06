@@ -172,6 +172,15 @@
       transform: scaleY(1);
     }
   }
+
+  @keyframes bar-grow-x {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
 }
 
 /* View Transitions */

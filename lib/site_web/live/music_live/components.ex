@@ -569,6 +569,7 @@ defmodule SiteWeb.MusicLive.Components do
 
         <%= if stats do %>
           <ChartComponents.bar_chart
+            bar_class="stroke-[0.5px] stroke-primary fill-primary/85"
             points={build_points(stats, @series, @years)}
             format_value={&format_count/1}
             tick_count={4}

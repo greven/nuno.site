@@ -1,6 +1,7 @@
 defmodule SiteWeb.MusicLive.Stats do
   use SiteWeb, :live_view
 
+  alias SiteWeb.ChartComponents
   alias SiteWeb.MusicLive.Components
 
   @impl true
@@ -35,7 +36,7 @@ defmodule SiteWeb.MusicLive.Stats do
 
           <div>
             <.box padding="p-4 md:p-4 lg:p-8">
-              <.header tag="h4" header_class="font-mono text-sm text-content-40">
+              <.header tag="h3" header_class="font-mono text-sm text-content-40">
                 Tracks played per year
               </.header>
               <Components.bar_chart
@@ -104,6 +105,80 @@ defmodule SiteWeb.MusicLive.Stats do
             </:sub>
           </Components.stats_card>
         </section>
+
+        <section class="flex flex-col gap-4">
+          <.header tag="h2">
+            <.icon
+              name="lucide-arrow-down"
+              class="mr-1.5 text-content-40"
+            /> Music styles
+            <:subtitle>Most popular music tags in my top tracks</:subtitle>
+          </.header>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <.box padding="p-4 md:p-4 lg:p-8">
+              <.header tag="h3" header_class="font-mono text-sm text-content-40">
+                Top tags overall
+              </.header>
+
+              <div class="mt-4">
+                <.async_result :let={tags} assign={@top_tags}>
+                  <:loading>
+                    <div class="min-h-40">
+                      <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+                    </div>
+                  </:loading>
+
+                  <:failed :let={_failure}>
+                    <div class="flex items-center gap-2 text-content-40/50">
+                      <.icon name="hero-bolt-slash-solid" class="size-5" /> Could not load top tags
+                    </div>
+                  </:failed>
+
+                  <ChartComponents.rank_list
+                    items={top_tag_rows(tags)}
+                    format_value={&Site.Support.abbreviate_number(&1)}
+                    label_width={50}
+                    show_rank={false}
+                    bar_class="border border-primary bg-primary/80"
+                    class="capitalize"
+                  />
+                </.async_result>
+              </div>
+            </.box>
+
+            <.box padding="p-4 md:p-4 lg:p-8">
+              <.header tag="h3" header_class="font-mono text-sm text-content-40">
+                Top tags this month
+              </.header>
+
+              <div class="mt-4">
+                <.async_result :let={tags} assign={@top_tags_month}>
+                  <:loading>
+                    <div class="min-h-40">
+                      <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
+                    </div>
+                  </:loading>
+
+                  <:failed :let={_failure}>
+                    <div class="flex items-center gap-2 text-content-40/50">
+                      <.icon name="hero-bolt-slash-solid" class="size-5" /> Could not load top tags
+                    </div>
+                  </:failed>
+
+                  <ChartComponents.rank_list
+                    items={top_tag_rows(tags)}
+                    format_value={&Site.Support.abbreviate_number(&1)}
+                    label_width={50}
+                    show_rank={false}
+                    bar_class="border border-secondary bg-secondary/80"
+                    class="capitalize"
+                  />
+                </.async_result>
+              </div>
+            </.box>
+          </div>
+        </section>
       </Layouts.page_content>
     </Layouts.app>
     """
@@ -127,6 +202,18 @@ defmodule SiteWeb.MusicLive.Stats do
         case Site.Services.get_music_play_count_by_period("7day") do
           {:ok, count} -> {:ok, %{week_count: count}}
           _ -> {:error, %{week_count: "Could not fetch weekly count"}}
+        end
+      end)
+      |> assign_async(:top_tags, fn ->
+        case Site.Services.get_top_tags("overall", 10) do
+          {:ok, tags} -> {:ok, %{top_tags: tags}}
+          {:error, reason} -> {:error, %{top_tags: reason}}
+        end
+      end)
+      |> assign_async(:top_tags_month, fn ->
+        case Site.Services.get_top_tags("1month", 10) do
+          {:ok, tags} -> {:ok, %{top_tags_month: tags}}
+          {:error, reason} -> {:error, %{top_tags_month: reason}}
         end
       end)
 
@@ -158,6 +245,11 @@ defmodule SiteWeb.MusicLive.Stats do
 
   defp last_12_months_count(stats, key) do
     get_in(stats, [key]) || 0
+  end
+
+  # Maps LastFM top tags (name/count) to rank_list items (name/value).
+  defp top_tag_rows(tags) do
+    Enum.map(tags, &%{name: &1.name, value: &1.count})
   end
 
   defp scrobbling_since(stats) do

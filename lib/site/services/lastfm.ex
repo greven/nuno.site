@@ -91,6 +91,22 @@ defmodule Site.Services.Lastfm do
   end
 
   @doc """
+  Fetches the top tags for the given period, derived from the top tags of the
+  top artists, weighted by each artist's play count.
+  The period can be one of: overall | 7day | 1month | 3month | 6month | 12month
+  """
+  def get_top_tags(period, limit \\ 10) do
+    case get_config() do
+      {:ok, config} ->
+        fetch_top_tags(config, period, limit)
+
+      {:error, reason} ->
+        Logger.error("Error getting top tags: #{inspect(reason)}")
+        {:error, reason}
+    end
+  end
+
+  @doc """
   Fetches the user's LastFM profile info, including unique artist/album/track
   counts and the account registration date.
   """
@@ -285,6 +301,57 @@ defmodule Site.Services.Lastfm do
     |> case do
       {:ok, %{"toptracks" => %{"track" => tracks}}} when is_list(tracks) ->
         {:ok, Enum.map(tracks, &parse_top_track/1)}
+
+      {:ok, _} ->
+        {:ok, []}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  # Fetch the top tags based on the top artists list
+  # The period can be one of: overall | 7day | 1month | 3month | 6month | 12month
+  defp fetch_top_tags(config, period, limit) when is_binary(period) do
+    with {:ok, artists} <- fetch_top_artists(config, period, limit) do
+      artists
+      |> Task.async_stream(&fetch_artist_tags(&1, config),
+        max_concurrency: 8,
+        timeout: :infinity
+      )
+      |> Enum.reduce(%{}, fn
+        {:ok, {:ok, tags}}, acc -> aggregate_tags(acc, tags)
+        _result, acc -> acc
+      end)
+      |> Enum.sort_by(fn {_name, count} -> count end, :desc)
+      |> Enum.take(limit)
+      |> Enum.map(fn {name, count} -> %{name: name, count: count} end)
+      |> then(&{:ok, &1})
+    end
+  end
+
+  defp aggregate_tags(acc, tags) do
+    Enum.reduce(tags, acc, fn {name, count}, acc ->
+      Map.update(acc, name, count, &(&1 + count))
+    end)
+  end
+
+  # Fetch an artist's top tags, each weighted by the artist's total play count.
+  defp fetch_artist_tags(%{name: name, playcount: playcount}, config) do
+    %{
+      "method" => "artist.gettoptags",
+      "artist" => name,
+      "api_key" => config.api_key,
+      "autocorrect" => "1",
+      "format" => "json"
+    }
+    |> get_request()
+    |> case do
+      {:ok, %{"toptags" => %{"tag" => tags}}} when is_list(tags) ->
+        {:ok,
+         tags
+         |> Enum.map(fn tag -> {tag["name"], playcount} end)
+         |> Enum.reject(fn {name, _count} -> is_nil(name) end)}
 
       {:ok, _} ->
         {:ok, []}

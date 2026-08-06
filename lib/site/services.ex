@@ -14,6 +14,7 @@ defmodule Site.Services do
   @music_albums_limit 36
   @music_top_artists_limit 50
   @music_top_tracks_limit 50
+  @music_top_tags_limit 50
 
   @music_scrobbled_years 12
 
@@ -111,6 +112,16 @@ defmodule Site.Services do
   @decorate cacheable(key: {:top_tracks, period, limit}, opts: [ttl: :timer.hours(6)])
   def get_top_tracks(period, limit \\ @music_top_tracks_limit) do
     Lastfm.get_top_tracks(period, limit)
+  end
+
+  @decorate cacheable(key: :top_tags, opts: [ttl: :timer.minutes(10)])
+  def get_top_tags do
+    Lastfm.get_top_tags("overall", @music_top_tags_limit)
+  end
+
+  @decorate cacheable(key: {:top_tags, period, limit}, opts: [ttl: :timer.hours(6)])
+  def get_top_tags(period, limit \\ @music_top_tags_limit) do
+    Lastfm.get_top_tags(period, limit)
   end
 
   @decorate cacheable(key: :music_stats, opts: [ttl: :timer.hours(2)])

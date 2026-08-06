@@ -156,3 +156,11 @@
     animation: bar-grow 0.25s ease-out backwards;
   }
 }
+
+@utility bar-grow-x {
+  transform-origin: left;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: bar-grow-x 0.25s ease-out backwards;
+  }
+}

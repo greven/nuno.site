@@ -43,20 +43,6 @@ defmodule SiteWeb.ChartComponents do
     * `:value` - integer, bar height is proportional to the axis max
     * `:dim` - optional boolean, renders the bar dimmed (e.g. an in-progress period)
 
-  The y-axis is scaled to a "nice" max just above the highest value: the axis
-  extends a fraction of a step past the last gridline, so the tallest bar keeps
-  a little breathing room from the top of the chart without an extra gridline.
-  The plot is padded on all sides so bars don't touch the chart edges.
-  Horizontal gridlines are drawn at nice intervals (e.g. a chart peaking at
-  4_000 gets lines at 1_000, 2_000, 3_000, 4_000 and 5_000) with abbreviated
-  value labels next to them. Density is controlled by `tick_count` and label
-  formatting by `format_axis`.
-
-  X-axis labels are spaced so only as many render as fit comfortably: with more
-  bars than labels can show, every Nth label is drawn, always keeping the first
-  and last. By default the step is estimated from the label text; pass
-  `max_labels` to set the count explicitly.
-
   ## Examples
 
       <.bar_chart
@@ -216,6 +202,212 @@ defmodule SiteWeb.ChartComponents do
     </div>
     """
   end
+
+  @doc """
+  Renders a rank list of items, where each item is represented by a label,
+  a horizontal bar, and a value.
+
+  Each item is a map:
+    * `:name` - string rendered before the bar (truncates)
+    * `:value` - integer, bar length is proportional to the largest value
+    * `:dim` - optional boolean, renders the row dimmed (e.g. an in-progress period)
+
+  `items` may be a plain list or a `Phoenix.LiveView.LiveStream` (e.g.
+  `@streams.top_artists`); streams render with `phx-update="stream"` semantics
+  and require the `id` attribute.
+
+  Pass `label_width` (a percentage of the row width, e.g. 50) to give every
+  label the same column: labels longer than that width are clamped with an
+  ellipsis (full text is available on hover) and every bar starts at the same
+  position, regardless of label length.
+
+  ## Examples
+
+      <ChartComponents.rank_list
+        items={[
+          %{name: "Beyoncé", value: 4_200},
+          %{name: "Kendrick Lamar", value: 3_100, dim: true}
+        ]}
+        format_value={&Site.Support.format_number(&1, 0)}
+      />
+  """
+
+  attr :items, :list, required: true
+  attr :format_value, :fun, default: nil, doc: "fun (value) -> binary, rendered after each bar"
+  attr :bar_class, :string, default: "bg-primary", doc: "Tailwind bg-* classes for the bar fill"
+  attr :show_rank, :boolean, default: true, doc: "render a leading rank number per row"
+  attr :show_value, :boolean, default: true, doc: "render the formatted value after each bar"
+
+  attr :label_width, :integer,
+    default: nil,
+    doc:
+      "label width as a percentage of the row; when set, labels are clamped with an ellipsis and bars align across rows"
+
+  attr :id, :string, default: nil, doc: "DOM id for the list; required when items is a stream"
+  attr :class, :any, default: nil
+  attr :rest, :global
+
+  def rank_list(assigns) do
+    max_value = rank_list_max(assigns.items)
+
+    assigns =
+      assign(assigns, :rows, rank_list_rows(assigns.items, assigns.format_value, max_value))
+      |> assign(:stream?, is_struct(assigns.items, Phoenix.LiveView.LiveStream))
+
+    ~H"""
+    <div class={["w-full", @class]} {@rest}>
+      <ol
+        :if={@rows != []}
+        id={@id}
+        phx-update={@stream? && "stream"}
+        class="flex list-none flex-col gap-2.5"
+      >
+        <li :for={{dom_id, row} <- @rows} id={dom_id} class="min-w-0">
+          <.rank_list_item
+            name={row.name}
+            value={row.value}
+            width={row.width}
+            rank={row.rank}
+            dim={row.dim}
+            formatted_value={row.formatted_value}
+            bar_class={@bar_class}
+            show_rank={@show_rank}
+            show_value={@show_value}
+            label_width={@label_width}
+          />
+        </li>
+      </ol>
+
+      <div
+        :if={@rows == []}
+        class="flex items-center justify-center gap-1.5 py-4 text-xs text-content-40/60"
+      >
+        <.icon name="hero-chart-bar" class="size-4" /> No data yet
+      </div>
+    </div>
+    """
+  end
+
+  # Renders a single item in the rank list with a label, a horizontal bar
+  # (its length is `width` percent of the track), and a value.
+
+  attr :name, :string, required: true
+  attr :value, :integer, required: true
+  attr :width, :float, default: 0.0, doc: "bar length as a percentage of the track"
+  attr :rank, :integer, default: nil, doc: "1-based rank, rendered before the name"
+  attr :dim, :boolean, default: false, doc: "render the bar and value dimmed"
+  attr :formatted_value, :string, default: nil, doc: "value string rendered after the bar"
+  attr :bar_class, :string, default: "bg-primary"
+  attr :show_rank, :boolean, default: true
+  attr :show_value, :boolean, default: true
+  attr :label_width, :integer, default: nil, doc: "label width as a percentage of the row"
+
+  defp rank_list_item(assigns) do
+    ~H"""
+    <div class="flex items-center gap-2">
+      <span
+        :if={@show_rank}
+        class={[
+          "w-6 shrink-0 text-right text-xs leading-none tabular-nums text-content-40",
+          @dim && "opacity-45"
+        ]}
+      >
+        {@rank}.
+      </span>
+
+      <span
+        class="min-w-0 text-sm leading-normal text-content-20 text-ellipsis line-clamp-1"
+        title={@name}
+        style={@label_width && "width: #{@label_width}%"}
+      >
+        {@name}
+      </span>
+
+      <div
+        class="h-2 min-w-10 flex-1 overflow-hidden rounded-[2px] bg-surface-30"
+        title={bar_title(@name, @formatted_value, nil)}
+      >
+        <div
+          class={[
+            "bar-grow-x h-full rounded-[2px] transition-[width] duration-500 ease-out",
+            @bar_class,
+            @dim && "opacity-45"
+          ]}
+          style={"width: #{Float.round(@width, 2)}%"}
+        />
+      </div>
+
+      <span
+        :if={@show_value}
+        class={[
+          "shrink-0 text-xs leading-none tabular-nums text-content-40",
+          @dim && "opacity-45"
+        ]}
+      >
+        {@formatted_value}
+      </span>
+    </div>
+    """
+  end
+
+  # Highest value across all items; never below 1 so an all-zero list still
+  # renders slivers. Handles plain lists and LiveStreams (tuple entries).
+  defp rank_list_max(items) when is_struct(items, Phoenix.LiveView.LiveStream) do
+    items
+    |> Enum.map(fn {_dom_id, item} -> item.value end)
+    |> rank_list_max_value()
+  end
+
+  defp rank_list_max(items) do
+    items
+    |> Enum.map(& &1.value)
+    |> rank_list_max_value()
+  end
+
+  defp rank_list_max_value(values) do
+    values
+    |> Enum.max(fn -> 0 end)
+    |> max(1)
+  end
+
+  # Normalize items into `{dom_id, row}` pairs. dom_id comes from the stream
+  # (required for phx-update="stream") and is nil for plain lists.
+  defp rank_list_rows(items, format_value, max_value)
+       when is_struct(items, Phoenix.LiveView.LiveStream) do
+    items
+    |> Enum.with_index()
+    |> Enum.map(fn {{dom_id, item}, index} ->
+      {dom_id, rank_list_row(item, index, format_value, max_value)}
+    end)
+  end
+
+  defp rank_list_rows(items, format_value, max_value) do
+    items
+    |> Enum.with_index()
+    |> Enum.map(fn {item, index} ->
+      {nil, rank_list_row(item, index, format_value, max_value)}
+    end)
+  end
+
+  defp rank_list_row(item, index, format_value, max_value) do
+    %{
+      name: item.name,
+      value: item.value,
+      rank: index + 1,
+      dim: item[:dim] || false,
+      width: bar_width(item.value, max_value),
+      formatted_value: rank_list_value(item.value, format_value)
+    }
+  end
+
+  # Bar length as a percentage of the track, with a small minimum so
+  # zero-valued items stay visible (mirrors the minimum bar height).
+  defp bar_width(value, max_value) do
+    max(value / max_value * 100, 2.0)
+  end
+
+  defp rank_list_value(value, nil), do: to_string(value)
+  defp rank_list_value(value, format_value), do: format_value.(value)
 
   # The SVG viewBox, e.g. "0 0 100 100". Keep in sync with the plot constants.
   defp view_box, do: "0 0 #{plot_width()} #{plot_height()}"
