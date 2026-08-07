@@ -77,6 +77,25 @@ defmodule SiteWeb.PulseLive.Components do
   attr :forex, :map, required: true
   attr :rest, :global
 
+  def forex(%{forex: nil} = assigns) do
+    ~H"""
+    <div {@rest}>
+      <.card
+        content_class="h-full flex flex-col items-start justify-center gap-3"
+        border="border border-border/60"
+        shadow="shadow-xs"
+      >
+        <.diagonal_pattern use_transition={false} class="-z-1" />
+        <.header tag="h3" header_class="flex items-center gap-2 text-2xl">
+          <.icon name="flag-eu-square" class="size-5 rounded-full" /> Forex
+          <:subtitle>Unavailable</:subtitle>
+        </.header>
+        <p class="text-sm text-content-40">Exchange rates are currently unavailable.</p>
+      </.card>
+    </div>
+    """
+  end
+
   def forex(assigns) do
     assigns =
       assigns

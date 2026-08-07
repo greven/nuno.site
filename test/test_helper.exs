@@ -1,2 +1,2 @@
-ExUnit.start(exclude: [:skip], trace: false)
+ExUnit.start(exclude: [:skip, :external], trace: false)
 Ecto.Adapters.SQL.Sandbox.mode(Site.Repo, :manual)

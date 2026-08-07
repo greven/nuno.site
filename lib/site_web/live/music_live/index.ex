@@ -65,7 +65,7 @@ defmodule SiteWeb.MusicLive.Index do
             <.icon name="lucide-star" class="hidden md:inline-block mr-2.5 text-content-40" />
             Top Artists
             <:actions>
-              <.form for={@form} phx-change="change_top_artists_range">
+              <.form for={@form} id="top-artists-form" phx-change="change_top_artists_range">
                 <.input
                   type="select"
                   field={@form[:artists_time_range]}
@@ -92,7 +92,7 @@ defmodule SiteWeb.MusicLive.Index do
             <.icon name="lucide-disc-album" class="hidden md:inline-block mr-2.5 text-content-40" />
             Top Albums
             <:actions>
-              <.form for={@form} phx-change="change_top_albums_range">
+              <.form for={@form} id="top-albums-form" phx-change="change_top_albums_range">
                 <.input
                   type="select"
                   field={@form[:albums_time_range]}
