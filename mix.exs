@@ -37,10 +37,10 @@ defmodule Site.MixProject do
     [
       # Phoenix Framework
       {:phoenix, "~> 1.8.9"},
-      {:phoenix_live_view, "~> 1.2.7"},
+      {:phoenix_live_view, "~> 1.2.8"},
       {:phoenix_ecto, "~> 4.7"},
       {:phoenix_html, "~> 4.3"},
-      {:phoenix_live_reload, "~> 1.6", only: :dev},
+      {:phoenix_live_reload, "~> 1.7", only: :dev},
       {:phoenix_live_dashboard, "~> 0.8"},
       {:bandit, "~> 1.12"},
       {:lazy_html, "~> 0.1"},
@@ -52,7 +52,7 @@ defmodule Site.MixProject do
       {:telemetry_poller, "~> 1.1"},
       {:gettext, "~> 1.0"},
       {:swoosh, "~> 1.22"},
-      {:req, "~> 0.6", override: true},
+      {:req, "~> 0.7", override: true},
 
       # Utilities
       {:oban, "~> 2.22"},
