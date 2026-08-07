@@ -24,7 +24,6 @@ defmodule Site.Sitemap do
       {"Tags", "/tags"},
       {"Analytics", "/analytics"},
       {"Categories", "/categories"},
-      {"Tags", "/tags"},
       {"Kitchen Sink", "/sink"},
       {"RSS", "/rss"}
     ]
