@@ -62,7 +62,7 @@ defmodule Site.MixProject do
       {:nebulex_local, "~> 3.0"},
       {:decorator, "~> 1.4"},
       {:nimble_csv, "~> 1.3"},
-      {:nimble_publisher, "~> 1.1"},
+      {:nimble_publisher, "~> 2.1"},
       {:ecto_sqlite3_extras, "~> 1.2"},
       {:error_tracker, "~> 0.7"},
       {:dotenvy, "~> 1.1"},

@@ -21,6 +21,9 @@ defmodule Site.Blog.HTMLConverter do
   end
 
   defp to_html(body, opts) do
+    # !! MDEx NimblePublisher integration, maybe remove in the future?
+    Code.ensure_loaded?(Phoenix.LiveView.TagEngine)
+
     body
     |> MDEx.to_heex!(opts)
     |> MDEx.to_html!()
