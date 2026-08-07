@@ -20,7 +20,9 @@ defmodule Site.GalleryTest do
 
   describe "get_photo/1" do
     test "returns a photo by id" do
-      assert %Photo{id: "example-sunset"} = Gallery.get_photo("example-sunset")
+      id = hd(Gallery.list_photos()).id
+
+      assert %Photo{id: ^id} = Gallery.get_photo(id)
     end
 
     test "returns nil for unknown id" do
