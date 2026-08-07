@@ -6,6 +6,8 @@ defmodule SiteWeb.BlogLive.Show do
   alias Phoenix.LiveView.AsyncResult
 
   alias Site.Blog
+  alias Site.Services.Bluesky
+  alias SiteWeb.BlogComponents
   alias SiteWeb.BlogLive.Components
 
   @impl true
@@ -16,21 +18,32 @@ defmodule SiteWeb.BlogLive.Show do
       current_scope={@current_scope}
       active_link={@active_link}
     >
-      <Layouts.page_content class="relative post" data-cateogry={@post.category}>
+      <Layouts.page_content class="relative post" data-cateogry={@post_meta.category}>
         <div id="blog-post" phx-hook="BlogPost">
-          <Components.post_header post={@post} readers={@readers} page_views={@page_views} />
-          <Components.post_content
-            body={@post.body}
-            headers={@post.headers}
-            show_toc={@post.show_toc}
+          <Components.post_header
+            post_meta={@post_meta}
+            readers={@readers}
+            page_views={@page_views}
+            post_updated?={@post_updated?}
           />
+
+          <div id="post-static-content" phx-update="ignore">
+            <%= if @post do %>
+              <Components.post_content
+                body={@post.body}
+                headers={@post.headers}
+                show_toc={@post.show_toc}
+              />
+            <% end %>
+          </div>
 
           <Components.post_footer
             post={@post}
+            post_meta={@post_meta}
             likes={@likes}
             next_post={@next_post}
             prev_post={@prev_post}
-            bsky_post={@bsky_post}
+            bsky_meta={@bsky_meta}
             comments={@streams.comments}
             comments_async={@comments}
           />
@@ -59,19 +72,48 @@ defmodule SiteWeb.BlogLive.Show do
       socket
       |> assign_seo(post)
       |> assign(:post, post)
+      |> assign(:post_meta, post_meta(post))
+      |> assign(:post_updated?, Blog.post_updated?(post))
       |> assign(:page_title, post.title)
       |> assign(:next_post, next_post)
       |> assign(:prev_post, prev_post)
-      |> assign(:bsky_post, bsky_post)
+      |> assign(:bsky_meta, bsky_post && bsky_meta(bsky_post))
       |> assign(:bsky_likes, (bsky_post && bsky_post.like_count) || 0)
       |> stream_async(:comments, fn -> Blog.get_post_comments(bsky_post) end)
       |> track_readers(post)
       |> track_likes(post),
       temporary_assigns: [
-        bsky_post: bsky_post,
+        post: nil,
+        seo: nil,
         next_post: nil,
         prev_post: nil
       ]
+    }
+  end
+
+  # Smaller, re-render-safe representation of the post.
+  # The full `post` struct is set as a temporary assign.
+  defp post_meta(post) do
+    %{
+      category: post.category,
+      title: post.title,
+      excerpt: post.excerpt,
+      year: post.year,
+      slug: post.slug,
+      date: post.date,
+      updated: post.updated,
+      reading_time: post.reading_time,
+      tags: post.tags,
+      url: BlogComponents.post_url(post)
+    }
+  end
+
+  defp bsky_meta(bsky_post) do
+    %{
+      reply_count: bsky_post.reply_count,
+      like_count: bsky_post.like_count,
+      repost_count: bsky_post.repost_count,
+      url: Bluesky.post_url(bsky_post)
     }
   end
 

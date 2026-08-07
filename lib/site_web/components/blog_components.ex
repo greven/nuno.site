@@ -294,7 +294,7 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
-  attr :post, Blog.Post, required: true
+  attr :post, :map, required: true
   attr :class, :string, default: nil
   attr :underline, :boolean, default: false
   attr :rest, :global
@@ -317,7 +317,7 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
-  attr :post, Blog.Post, required: true
+  attr :post, :map, required: true
   attr :class, :string, default: nil
   attr :badge_class, :string, default: nil
 
@@ -356,7 +356,7 @@ defmodule SiteWeb.BlogComponents do
   Renders the post meta information, including the publication date and tags.
   """
 
-  attr :post, Blog.Post, required: true
+  attr :post, :map, required: true
   attr :readers, :integer, default: nil
   attr :views, :integer, default: nil
   attr :class, :string, default: nil
@@ -479,7 +479,7 @@ defmodule SiteWeb.BlogComponents do
   Renders the reading time of a post in minutes (or seconds if less than 1 minute).
   """
 
-  attr :post, Blog.Post, required: true
+  attr :post, :map, required: true
   attr :label, :string, default: nil
   attr :show_icon, :boolean, default: true
   attr :icon_class, :string, default: "size-5 text-content-40"
@@ -513,7 +513,7 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
-  attr :post, Blog.Post, required: true
+  attr :post, :map, required: true
   attr :show_icon, :boolean, default: true
   attr :format, :string, default: "%b %o, %Y"
   attr :class, :string, default: nil
@@ -532,7 +532,7 @@ defmodule SiteWeb.BlogComponents do
 
   @doc false
 
-  attr :post, Blog.Post, required: true
+  attr :post, :map, required: true
   attr :class, :string, default: nil
   attr :show_date, :boolean, default: true
   attr :rest, :global
@@ -566,11 +566,11 @@ defmodule SiteWeb.BlogComponents do
   @doc """
   Post updated formatted date.
   """
-  def post_updated_date(%Blog.Post{updated: %Date{} = date}, format) do
+  def post_updated_date(%{updated: %Date{} = date}, format) do
     Calendar.strftime(date, format)
   end
 
-  def post_updated_date(%Blog.Post{date: %Date{} = date}, format) do
+  def post_updated_date(%{date: %Date{} = date}, format) do
     Calendar.strftime(date, format)
   end
 

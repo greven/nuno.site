@@ -119,7 +119,8 @@ defmodule SiteWeb.BlogLive.Components do
 
   @doc false
 
-  attr :post, Blog.Post, required: true
+  attr :post_meta, :map, required: true
+  attr :post_updated?, :boolean, default: false
   attr :readers, :integer, default: nil
   attr :page_views, :integer, default: nil
   attr :class, :string, default: nil
@@ -129,25 +130,29 @@ defmodule SiteWeb.BlogLive.Components do
     <div class={@class}>
       <div class="text-center">
         <.link
-          navigate={~p"/category/#{@post.category}"}
+          navigate={~p"/category/#{@post_meta.category}"}
           class={[
             "font-medium tracking-widest text-xs uppercase",
-            BlogComponents.category_color(@post.category)
+            BlogComponents.category_color(@post_meta.category)
           ]}
         >
-          {@post.category}
+          {@post_meta.category}
         </.link>
       </div>
 
-      <BlogComponents.post_title class="mt-2" post={@post} underline />
+      <BlogComponents.post_title class="mt-2" post={@post_meta} underline />
       <BlogComponents.post_meta
-        post={@post}
+        post={@post_meta}
         readers={@readers}
         views={@page_views}
         class="mt-4 md:mt-5 text-center"
       />
 
-      <.post_updated_disclaimer post={@post} class="mt-8 text-center" />
+      <.post_updated_disclaimer
+        post_meta={@post_meta}
+        post_updated?={@post_updated?}
+        class="mt-8 text-center"
+      />
     </div>
     """
   end
@@ -169,10 +174,11 @@ defmodule SiteWeb.BlogLive.Components do
 
   @doc false
 
-  attr :post, Blog.Post, required: true
+  attr :post, :map, default: nil
+  attr :post_meta, :map, required: true
   attr :next_post, Blog.Post, default: nil
   attr :prev_post, Blog.Post, default: nil
-  attr :bsky_post, Bluesky.Post, default: nil
+  attr :bsky_meta, :map, default: nil
   attr :comments_async, AsyncResult, required: true
   attr :comments, :list, required: true
   attr :likes, :integer, default: 0
@@ -183,7 +189,7 @@ defmodule SiteWeb.BlogLive.Components do
       <.the_end />
 
       <BlogComponents.post_tags
-        post={@post}
+        post={@post_meta}
         class="mt-4 flex items-center justify-centers"
         badge_class="text-base"
       />
@@ -192,21 +198,26 @@ defmodule SiteWeb.BlogLive.Components do
         "w-full flex justify-between items-center gap-4 px-4 py-3",
         "bg-surface-10/60 border border-surface-30 border-dashed rounded-sm"
       ]}>
-        <BlogComponents.post_author post={@post} />
+        <BlogComponents.post_author post={@post_meta} />
 
         <div class="flex items-center gap-2.5">
-          <.post_comments async={@comments_async} comments={@comments} bsky_post={@bsky_post} />
-          <.post_likes post={@post} count={@likes} />
-          <.post_share post={@post} />
+          <.post_comments async={@comments_async} comments={@comments} bsky_meta={@bsky_meta} />
+          <.post_likes post_meta={@post_meta} count={@likes} />
+          <.post_share post_meta={@post_meta} />
         </div>
       </div>
 
-      <.post_pagination
-        :if={@next_post || @prev_post}
-        next_post={@next_post}
-        prev_post={@prev_post}
-        class="mt-4"
-      />
+      <%!-- Pagination renders once alongside the full post --%>
+      <div id="post-pagination" phx-update="ignore">
+        <%= if @post do %>
+          <.post_pagination
+            :if={@next_post || @prev_post}
+            next_post={@next_post}
+            prev_post={@prev_post}
+            class="mt-4"
+          />
+        <% end %>
+      </div>
     </div>
     """
   end
@@ -214,7 +225,7 @@ defmodule SiteWeb.BlogLive.Components do
   @doc false
 
   attr :async, AsyncResult, required: true
-  attr :bsky_post, Bluesky.Post, default: nil
+  attr :bsky_meta, :map, default: nil
   attr :comments, :list, required: true
   attr :rest, :global
 
@@ -235,7 +246,7 @@ defmodule SiteWeb.BlogLive.Components do
           </.button>
         </:failed>
 
-        <%= if @bsky_post do %>
+        <%= if @bsky_meta do %>
           <.button
             variant="outline"
             size="sm"
@@ -243,8 +254,8 @@ defmodule SiteWeb.BlogLive.Components do
             phx-click={JS.dispatch("show-drawer", to: "#post-comments")}
           >
             <.icon name="lucide-message-square" class="text-content-30 opacity-40" />
-            <p class={["font-mono font-medium", @bsky_post.reply_count == 0 && "opacity-50"]}>
-              {@bsky_post.reply_count}
+            <p class={["font-mono font-medium", @bsky_meta.reply_count == 0 && "opacity-50"]}>
+              {@bsky_meta.reply_count}
             </p>
           </.button>
 
@@ -259,7 +270,7 @@ defmodule SiteWeb.BlogLive.Components do
               <.icon name="lucide-messages-square" class="size-5 text-content-40" />
               <p class="text-content-10">
                 Join the conversation
-                <.external_link href={Bluesky.post_url(@bsky_post)} class="link decoration-sky-500">
+                <.external_link href={@bsky_meta.url} class="link decoration-sky-500">
                   on Bluesky
                 </.external_link>
               </p>
@@ -268,28 +279,28 @@ defmodule SiteWeb.BlogLive.Components do
             <%!-- Stats --%>
             <div class="mt-4 flex items-center gap-4">
               <div class="flex items-center">
-                <div class="mr-1 text-content-20">{@bsky_post.reply_count}</div>
+                <div class="mr-1 text-content-20">{@bsky_meta.reply_count}</div>
                 <div class="text-content-40">
-                  {ngettext("comment", "comments", @bsky_post.reply_count)}
+                  {ngettext("comment", "comments", @bsky_meta.reply_count)}
                 </div>
               </div>
               <span class="text-content-40/80">·</span>
               <div class="flex items-center">
-                <div class="mr-1 text-content-20">{@bsky_post.like_count}</div>
-                <div class="text-content-40">{ngettext("like", "likes", @bsky_post.like_count)}</div>
+                <div class="mr-1 text-content-20">{@bsky_meta.like_count}</div>
+                <div class="text-content-40">{ngettext("like", "likes", @bsky_meta.like_count)}</div>
               </div>
               <span class="text-content-40/80">·</span>
               <div class="flex items-center">
-                <div class="mr-1 text-content-20">{@bsky_post.repost_count}</div>
+                <div class="mr-1 text-content-20">{@bsky_meta.repost_count}</div>
                 <div class="text-content-40">
-                  {ngettext("repost", "reposts", @bsky_post.repost_count)}
+                  {ngettext("repost", "reposts", @bsky_meta.repost_count)}
                 </div>
               </div>
             </div>
 
             <%!-- Comments Thread --%>
             <div class="py-10 text-content-10">
-              <%= if @bsky_post.reply_count == 0 do %>
+              <%= if @bsky_meta.reply_count == 0 do %>
                 <.empty_comments_state />
               <% else %>
                 <.comments_thread comments={@comments} />
@@ -424,7 +435,7 @@ defmodule SiteWeb.BlogLive.Components do
 
   @doc false
 
-  attr :post, Blog.Post, required: true
+  attr :post_meta, :map, required: true
   attr :count, AsyncResult
 
   def post_likes(assigns) do
@@ -450,7 +461,7 @@ defmodule SiteWeb.BlogLive.Components do
           variant="outline"
           size="sm"
           class="group relative overflow-visible!"
-          data-post-slug={"#{@post.year}-#{@post.slug}"}
+          data-post-slug={"#{@post_meta.year}-#{@post_meta.slug}"}
           phx-hook="PostLike"
         >
           <.icon
@@ -477,14 +488,14 @@ defmodule SiteWeb.BlogLive.Components do
 
   @doc false
 
-  attr :post, Blog.Post, required: true
+  attr :post_meta, :map, required: true
 
-  def post_share(%{post: post} = assigns) do
+  def post_share(%{post_meta: post_meta} = assigns) do
     assigns =
       assigns
-      |> assign(:share_title, "#{post.title} - Nuno Moço")
-      |> assign(:share_text, post.excerpt || "Check out this article by Nuno Moço.")
-      |> assign(:share_url, BlogComponents.post_url(post))
+      |> assign(:share_title, "#{post_meta.title} - Nuno Moço")
+      |> assign(:share_text, post_meta.excerpt || "Check out this article by Nuno Moço.")
+      |> assign(:share_url, post_meta.url)
 
     ~H"""
     <div
@@ -626,22 +637,21 @@ defmodule SiteWeb.BlogLive.Components do
 
   @doc false
 
-  attr :post, Blog.Post, required: true
+  attr :post_meta, :map, required: true
+  attr :post_updated?, :boolean, default: false
   attr :date_format, :string, default: "%B %-d, %Y"
   attr :text, :string, default: "Updated on"
   attr :rest, :global
 
   def post_updated_disclaimer(assigns) do
-    post_updated? = Site.Blog.post_updated?(assigns.post)
-
-    assigns = assign(assigns, :post_updated?, post_updated?)
-
     ~H"""
     <div :if={@post_updated?} {@rest}>
       <div class="flex justify-center">
         <.badge badge_class="ml-2 text-sm shadow-xs" color="sky">
           {@text}
-          <span class="font-medium">{BlogComponents.post_updated_date(@post, @date_format)}</span>
+          <span class="font-medium">
+            {BlogComponents.post_updated_date(@post_meta, @date_format)}
+          </span>
         </.badge>
       </div>
     </div>
