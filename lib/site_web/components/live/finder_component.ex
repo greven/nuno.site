@@ -240,7 +240,7 @@ defmodule SiteWeb.FinderComponent do
       />
       <input
         id={@id}
-        class="w-full h-12 pl-11 px-4 py-2.5 rounded-sm bg-transparent border-0 placeholder:text-content-40/80 text-content-10 sm:text-sm focus:outline-none focus:ring-0"
+        class="w-full h-12 pl-11 px-4 py-2.5 rounded-(--radius-control) bg-transparent border-0 placeholder:text-content-40/80 text-content-10 sm:text-sm focus:outline-none focus:ring-0"
         placeholder={@placeholder}
         autocomplete="off"
         role="combobox"
@@ -328,7 +328,7 @@ defmodule SiteWeb.FinderComponent do
     <li
       id={@id}
       class={[
-        "group cursor-default flex items-center justify-between rounded-sm px-3 py-2 select-none",
+        "group cursor-default flex items-center justify-between rounded-(--radius-control) px-3 py-2 select-none",
         "aria-selected:bg-neutral-900/5 dark:aria-selected:bg-neutral-50/4",
         "focus:outline-hidden",
         @class

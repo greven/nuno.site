@@ -26,14 +26,19 @@
   --animate-blink: blink 1s ease-in-out infinite;
   --animate-glitch: glitch 1s ease-in-out infinite;
 
-  --radius-xs: calc(var(--border-radius) - 6px);
-  --radius-sm: calc(var(--border-radius) - 4px);
-  --radius-md: calc(var(--border-radius) - 2px);
+  --radius-xs: max(0px, calc(var(--border-radius) - 6px));
+  --radius-sm: max(0px, calc(var(--border-radius) - 4px));
+  --radius-md: max(0px, calc(var(--border-radius) - 2px));
   --radius-lg: var(--border-radius);
   --radius-xl: calc(var(--border-radius) + 4px);
   --radius-2xl: calc(var(--border-radius) + 8px);
   --radius-3xl: calc(var(--border-radius) + 16px);
   --radius-4xl: calc(var(--border-radius) + 24px);
+
+  /* Semantic radius tokens */
+  --radius-control: var(--radius-xs);
+  --radius-container: var(--radius-sm);
+  --radius-overlay: var(--radius-md);
 
   --shadow-drop: 3px 3px 0 --alpha(var(--color-neutral-500) / 0.15);
 

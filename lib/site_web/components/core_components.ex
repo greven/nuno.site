@@ -28,7 +28,11 @@ defmodule SiteWeb.CoreComponents do
   attr :bg, :string, default: "bg-surface-10", doc: "the background color of the box"
   attr :border, :string, default: "border border-border", doc: "the border color of the box"
   attr :shadow, :string, default: "shadow-xs", doc: "the shadow class of the box"
-  attr :radius, :string, default: "rounded-sm", doc: "the border radius of the box"
+
+  attr :radius, :string,
+    default: "rounded-(--radius-container)",
+    doc: "the border radius of the box"
+
   attr :padding, :string, default: "p-4", doc: "the padding of the box"
 
   attr :focus, :any,
@@ -77,7 +81,7 @@ defmodule SiteWeb.CoreComponents do
 
   attr :border, :string, default: "border border-border hover:border-solid"
 
-  attr :radius, :string, default: "rounded-xs"
+  attr :radius, :string, default: "rounded-(--radius-container)"
   attr :shadow, :string, default: "hover:shadow-drop"
   attr :disabled, :boolean, default: false
   attr :rest, :global, include: ~w(href navigate patch method target rel)
@@ -276,7 +280,7 @@ defmodule SiteWeb.CoreComponents do
     >
       <div class={[
         "relative flex items-center gap-3 px-4 py-3.5",
-        "rounded-sm border text-sm shadow",
+        "rounded-(--radius-container) border text-sm shadow",
         @cx
       ]}>
         <.icon
@@ -329,7 +333,7 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <div
       class={[
-        "relative flex items-center gap-3.5 p-4 rounded-sm border text-sm",
+        "relative flex items-center gap-3.5 p-4 rounded-(--radius-container) border text-sm",
         @alert_cx,
         @class
       ]}
@@ -451,7 +455,7 @@ defmodule SiteWeb.CoreComponents do
             id={@id}
             name={@name}
             class={[
-              "col-start-1 row-start-1 w-full px-3 py-2 text-sm rounded-sm border transition-colors appearance-none",
+              "col-start-1 row-start-1 w-full px-3 py-2 text-sm rounded-(--radius-control) border transition-colors appearance-none",
               "bg-surface-10 border-surface-30 text-content-10",
               "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
               "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
@@ -492,7 +496,7 @@ defmodule SiteWeb.CoreComponents do
           id={@id}
           name={@name}
           class={[
-            "w-full px-3 py-2 text-sm rounded-sm border transition-colors resize-y",
+            "w-full px-3 py-2 text-sm rounded-(--radius-control) border transition-colors resize-y",
             "bg-surface-10 border-surface-30 text-content-10",
             "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
             "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
@@ -521,7 +525,7 @@ defmodule SiteWeb.CoreComponents do
           id={@id}
           value={Phoenix.HTML.Form.normalize_value(@type, @value)}
           class={[
-            "w-full px-3 py-2 text-sm rounded-sm border transition-colors",
+            "w-full px-3 py-2 text-sm rounded-(--radius-control) border transition-colors",
             "bg-surface-10 border-surface-30 text-content-10",
             "focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary",
             "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
@@ -807,7 +811,7 @@ defmodule SiteWeb.CoreComponents do
   attr :circle, :boolean, default: false
   attr :class, :string, default: nil
   attr :badge_class, :any, default: "text-sm"
-  attr :rounded_class, :string, default: "rounded-sm"
+  attr :rounded_class, :string, default: "rounded-(--radius-control)"
   attr :rest, :global, include: ~w(href navigate patch method disabled)
   slot :inner_block, required: true
 
@@ -956,7 +960,7 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <kbd
       class={[
-        "flex h-5 min-w-5 items-center justify-center rounded-sm border border-surface-40",
+        "flex h-5 min-w-5 items-center justify-center rounded-(--radius-control) border border-surface-40",
         @surface_class,
         @shadow_class,
         @text_class,
@@ -1141,7 +1145,7 @@ defmodule SiteWeb.CoreComponents do
             class={[
               item[:class],
               "group relative w-full h-10 px-4 inline-flex flex-nowrap shrink-0 items-center justify-center",
-              "text-sm rounded-sm corner-squircle overflow-hidden whitespace-nowrap cursor-pointer align-middle text-center",
+              "text-sm rounded-(--radius-control) overflow-hidden whitespace-nowrap cursor-pointer align-middle text-center",
               "text-content-30 border border-surface-30/50 bg-surface-20/50 transition-colors duration-150 backdrop-blur-sm",
               "hover:not-aria-current:bg-surface-10/25 hover:not-aria-current:text-content-10  hover:not-aria-current:border-surface-40",
               "aria-current:text-content aria-current:bg-surface-10 aria-current:border-primary aria-current:shadow-sm active:shadow-none",
@@ -1371,7 +1375,7 @@ defmodule SiteWeb.CoreComponents do
         <button
           type="button"
           class={[
-            "group mt-2 rounded-xs hover:cursor-pointer",
+            "group mt-2 rounded-(--radius-control) hover:cursor-pointer",
             "disabled:opacity-50 disabled:text-content-10/50 disabled:cursor-not-allowed",
             "focus:outline-1 focus:outline-offset-2 focus:outline-dashed focus:outline-primary"
           ]}
@@ -1810,7 +1814,7 @@ defmodule SiteWeb.CoreComponents do
           class={[
             "w-full grow-0 shrink-0 basis-(--dialog-size) backdrop-blur-md backdrop-filter overflow-y-auto",
             !@fullscreen && "max-w-full max-h-[calc(100dvh-2*var(--dialog-y-offset))]",
-            !@fullscreen && "rounded-t-sm md:rounded-sm",
+            !@fullscreen && "rounded-t-[var(--radius-overlay)] md:rounded-[var(--radius-overlay)]",
             @fullscreen && "h-full",
             @panel_animation_class,
             @panel_outline_class,
@@ -2154,11 +2158,14 @@ defmodule SiteWeb.CoreComponents do
   end
 
   defp drawer_radius_class(_position, 0), do: "rounded-none"
-  defp drawer_radius_class(_position, offset) when offset > 0, do: "rounded-sm"
-  defp drawer_radius_class("left", _), do: "rounded-r-sm"
-  defp drawer_radius_class("right", _), do: "rounded-l-sm"
-  defp drawer_radius_class("top", _), do: "rounded-b-sm"
-  defp drawer_radius_class("bottom", _), do: "rounded-t-sm"
+
+  defp drawer_radius_class(_position, offset) when offset > 0,
+    do: "rounded-[var(--radius-overlay)]"
+
+  defp drawer_radius_class("left", _), do: "rounded-r-[var(--radius-overlay)]"
+  defp drawer_radius_class("right", _), do: "rounded-l-[var(--radius-overlay)]"
+  defp drawer_radius_class("top", _), do: "rounded-b-[var(--radius-overlay)]"
+  defp drawer_radius_class("bottom", _), do: "rounded-t-[var(--radius-overlay)]"
 
   defp drawer_transform_class(position) do
     case position do
