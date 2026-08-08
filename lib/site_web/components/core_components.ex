@@ -1159,10 +1159,14 @@ defmodule SiteWeb.CoreComponents do
                   ]}
                 />
 
-                {render_slot(item, item[:value] == @value)}
+                <%= if item.inner_block do %>
+                  {render_slot(item, item[:value] == @value)}
+                <% end %>
               </div>
             <% else %>
-              {render_slot(item, item[:value] == @value)}
+              <%= if item.inner_block do %>
+                {render_slot(item, item[:value] == @value)}
+              <% end %>
             <% end %>
           </button>
         </li>

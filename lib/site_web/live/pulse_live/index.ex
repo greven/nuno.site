@@ -58,19 +58,15 @@ defmodule SiteWeb.PulseLive.Index do
                   <.icon name="lucide-maximize" />
                 </.button>
 
-                <.button
-                  title="Grid View"
-                  phx-click={JS.patch(~p"/pulse?view=grid")}
+                <.segmented_control
+                  value={@view}
+                  on_change="view_changed"
+                  aria_label="View mode"
+                  items_gap_class="gap-1"
                 >
-                  <.icon name="lucide-layout-grid" />
-                </.button>
-
-                <.button
-                  title="List View"
-                  phx-click={JS.patch(~p"/pulse?view=list")}
-                >
-                  <.icon name="lucide-panel-left" />
-                </.button>
+                  <:item value="grid" icon="lucide-layout-grid" />
+                  <:item value="list" icon="lucide-panel-left" />
+                </.segmented_control>
               </div>
             </:actions>
 
@@ -218,6 +214,10 @@ defmodule SiteWeb.PulseLive.Index do
     else
       {:noreply, socket}
     end
+  end
+
+  def handle_event("view_changed", %{"value" => view}, socket) do
+    {:noreply, push_patch(socket, to: ~p"/pulse?view=#{view}")}
   end
 
   @impl true
