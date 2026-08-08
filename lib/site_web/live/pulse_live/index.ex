@@ -49,7 +49,7 @@ defmodule SiteWeb.PulseLive.Index do
 
                 <.button
                   id="news-feed-fullscreen-button"
-                  title="Fullscreen"
+                  title="Maximize"
                   disabled={@view != "list"}
                   data-view={@view}
                   phx-hook="PulseFullscreen"

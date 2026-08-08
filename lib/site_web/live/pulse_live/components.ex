@@ -824,6 +824,15 @@ defmodule SiteWeb.PulseLive.Components do
           feed={@feed}
         />
       </div>
+
+      <.button
+        id={"#{@id}-exit-maximize"}
+        class="pulse-feed-exit"
+        aria-label="Exit Maximize"
+        title="Exit Maximize"
+      >
+        <.icon name="lucide-minimize" />
+      </.button>
     </div>
     """
   end

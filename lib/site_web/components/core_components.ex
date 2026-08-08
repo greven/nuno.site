@@ -1814,7 +1814,7 @@ defmodule SiteWeb.CoreComponents do
           class={[
             "w-full grow-0 shrink-0 basis-(--dialog-size) backdrop-blur-md backdrop-filter overflow-y-auto",
             !@fullscreen && "max-w-full max-h-[calc(100dvh-2*var(--dialog-y-offset))]",
-            !@fullscreen && "rounded-t-[var(--radius-overlay)] md:rounded-[var(--radius-overlay)]",
+            !@fullscreen && "rounded-t-(--radius-overlay) md:rounded-(--radius-overlay)",
             @fullscreen && "h-full",
             @panel_animation_class,
             @panel_outline_class,

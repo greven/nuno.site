@@ -785,9 +785,11 @@
   }
 }
 
-/* Pulse reader fullscreen */
-/* Un-layered so it overrides the feed's fixed-height utility classes. */
-#news-feed:fullscreen {
+/* Pulse reader maximize */
+#news-feed.pulse-feed-maximized {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
   background-color: var(--color-surface);
   padding: 0.75rem;
   overflow: hidden;
@@ -797,4 +799,22 @@
     min-height: 0;
     margin-bottom: 0;
   }
+}
+
+/* Hide the site header while the reader is maximized. */
+html[data-pulse-reader-maximized] #site-header {
+  display: none;
+}
+
+/* Exit control shown only while the reader is maximized */
+#news-feed .pulse-feed-exit {
+  display: none;
+}
+
+#news-feed.pulse-feed-maximized .pulse-feed-exit {
+  display: inline-flex;
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
 }
