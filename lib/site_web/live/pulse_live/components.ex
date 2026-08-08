@@ -907,7 +907,7 @@ defmodule SiteWeb.PulseLive.Components do
     >
       <article class={[
         "relative flex flex-col gap-2 px-4 py-3",
-        "rounded-sm border border-transparent bg-transparent outline-none transition-all",
+        "rounded-sm border border-transparent bg-transparent outline-none transition-colors",
         "group-hover:bg-surface-30/40 group-hover:border-border/50",
         "group-aria-selected:bg-surface-20 group-aria-selected:border-surface-40",
         "group-focus:bg-surface-20 group-focus:border-primary!"
@@ -1011,7 +1011,7 @@ defmodule SiteWeb.PulseLive.Components do
       class={[
         "hidden absolute inset-2 z-1 overflow-y-auto",
         "rounded-sm bg-surface-10 border border-border outline-none",
-        "opacity-0 duration-400 ease-in-out transition-all scale-90",
+        "opacity-0 duration-400 ease-in-out transition-[opacity,transform] scale-90",
         "starting:opacity-0 starting:translate-x-80 starting:scale-100",
         "aria-selected:border-surface-40 aria-selected:opacity-100 aria-selected:scale-100 aria-selected:animate-fade-in"
       ]}

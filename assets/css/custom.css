@@ -1,3 +1,9 @@
+@property --progress {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
+
 @layer base {
   /* Keyframes */
 
@@ -511,7 +517,12 @@
       box-shadow: var(--shadow-sm);
       backdrop-filter: blur(4px);
       transform: translateY(-50%);
-      transition: all 0.2s ease;
+      transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease,
+        opacity 0.2s ease;
       cursor: pointer;
       z-index: 10;
       opacity: 0;

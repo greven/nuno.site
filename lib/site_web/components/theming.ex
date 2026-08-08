@@ -31,7 +31,7 @@ defmodule SiteWeb.Components.Theming do
 
     %{
       root: [
-        "relative isolate outline-none overflow-hidden cursor-pointer transition-all rounded-(--radius-control)",
+        "relative isolate outline-none overflow-hidden cursor-pointer transition-[background-color,border-color,box-shadow,color,opacity] rounded-(--radius-control)",
         "disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed",
         "aria-invalid:ring-danger aria-invalid:border-danger",
         "active:shadow-none",

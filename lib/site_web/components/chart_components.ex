@@ -131,7 +131,7 @@ defmodule SiteWeb.ChartComponents do
               <path
                 d={bar.path}
                 class={[
-                  "bar-grow transition-all hover:brightness-110",
+                  "bar-grow transition-[filter] hover:brightness-110",
                   @bar_class,
                   bar.point[:dim] && "opacity-45 hover:opacity-100"
                 ]}
@@ -329,7 +329,7 @@ defmodule SiteWeb.ChartComponents do
       >
         <div
           class={[
-            "bar-grow-x h-full rounded-[2px] transition-[width] duration-500 ease-out",
+            "bar-grow-x h-full rounded-[2px]",
             @bar_class,
             @dim && "opacity-45"
           ]}

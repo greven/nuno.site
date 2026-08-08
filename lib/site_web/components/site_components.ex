@@ -246,7 +246,7 @@ defmodule SiteWeb.SiteComponents do
       class={[
         @class,
         "rounded-full object-cover",
-        "hover:ring ring-primary ring-offset-2 ring-offset-surface transition-all"
+        "hover:ring ring-primary ring-offset-2 ring-offset-surface transition-shadow"
       ]}
     />
     """
@@ -623,7 +623,7 @@ defmodule SiteWeb.SiteComponents do
           class="group relative flex items-center text-sm text-content-40
             before:content-[''] before:absolute before:-left-[calc(--spacing(5)+1px)] before:w-px
             before:h-5 before:border-l-2 before:border-l-transparent data-active:text-content-10
-            data-active:before:border-l-primary hover:text-content-20 transition-all touch-manipulation"
+            data-active:before:border-l-primary hover:text-content-20 transition-colors touch-manipulation"
         >
           <a href={"##{header.id}"} class="w-full line-clamp-1 touch-manipulation">
             {header.text}

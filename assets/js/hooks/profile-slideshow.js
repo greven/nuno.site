@@ -90,19 +90,18 @@ export const ProfileSlideshow = {
   },
 
   startProgress() {
-    this.el.style.setProperty('--progress', '0%');
-
-    // Start progress animation (~60fps)
-    this.progressStartTime = Date.now();
-    this.progressInterval = setInterval(() => {
-      const elapsed = Date.now() - this.progressStartTime;
-      const progress = Math.min(100, (elapsed / this.duration) * 100);
-      this.el.style.setProperty('--progress', `${progress}%`);
-    }, 16);
+    // (Re)start the progress ring animation from 0.
+    this.progressAnimation?.cancel();
+    this.progressAnimation = this.el.animate([{ '--progress': '0%' }, { '--progress': '100%' }], {
+      duration: this.duration,
+      easing: 'linear',
+      fill: 'forwards',
+    });
   },
 
   resetProgress() {
-    clearInterval(this.progressInterval);
+    this.progressAnimation?.cancel();
+    this.progressAnimation = null;
     this.el.style.setProperty('--progress', '0%');
   },
 
@@ -116,30 +115,23 @@ export const ProfileSlideshow = {
   },
 
   pauseSlideshow() {
-    // Store the remaining time
-    if (this.progressStartTime) {
-      this.remainingTime = this.duration - (Date.now() - this.progressStartTime);
+    // Pause the progress animation and keep the slide timer in sync with the
+    // animation's current position
+    if (this.progressAnimation) {
+      this.remainingTime = this.duration - (this.progressAnimation.currentTime || 0);
+      this.progressAnimation.pause();
     }
 
-    clearInterval(this.progressInterval);
     clearInterval(this.slideshowTimer);
     this.slideshowTimer = null;
   },
 
   resumeSlideshow() {
+    // Resume the progress animation from where it was paused
+    this.progressAnimation?.play();
+
     // If we have remaining time, use that instead of full duration
     if (this.remainingTime && this.remainingTime > 0) {
-      // Start progress from where we left off
-      const progress = 100 - (this.remainingTime / this.duration) * 100;
-      this.el.style.setProperty('--progress', `${progress}%`);
-
-      this.progressStartTime = Date.now() - (this.duration - this.remainingTime);
-      this.progressInterval = setInterval(() => {
-        const elapsed = Date.now() - this.progressStartTime;
-        const currentProgress = Math.min(100, (elapsed / this.duration) * 100);
-        this.el.style.setProperty('--progress', `${currentProgress}%`);
-      }, 16);
-
       // Set up the next slide after remaining time
       this.slideshowTimer = setTimeout(() => {
         this.nextSlide();
@@ -155,7 +147,8 @@ export const ProfileSlideshow = {
   },
 
   stopSlideshow() {
-    clearInterval(this.progressInterval);
+    this.progressAnimation?.cancel();
+    this.progressAnimation = null;
     clearTimeout(this.slideshowTimer);
     this.slideshowTimer = null;
   },

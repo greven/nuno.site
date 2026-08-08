@@ -75,6 +75,8 @@ export const ArticleTableOfContents = {
     // Clear timeouts
     if (this.hideTimeout) clearTimeout(this.hideTimeout);
     if (this.clickThroughTimeout) clearTimeout(this.clickThroughTimeout);
+    if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
+    if (this.intersectionRafId != null) cancelAnimationFrame(this.intersectionRafId);
 
     // Remove all event listeners using stored references
     if (this.scrollHandler) {
@@ -269,7 +271,14 @@ export const ArticleTableOfContents = {
   },
 
   handleIntersection() {
-    this.checkPosition();
+    // Coalesce multiple observer notifications within a frame into a single
+    // position check (checkPosition reads layout for every heading).
+    if (this.intersectionRafId == null) {
+      this.intersectionRafId = requestAnimationFrame(() => {
+        this.intersectionRafId = null;
+        this.checkPosition();
+      });
+    }
   },
 
   handleScroll() {
@@ -292,10 +301,14 @@ export const ArticleTableOfContents = {
   },
 
   handleResize() {
-    // Reset position when switching between mobile/desktop
-    if (!this.isVisible) {
-      this.positionNavigator();
-    }
+    // Debounce: only reposition once the resize settles, and only when
+    // switching between mobile/desktop layouts.
+    clearTimeout(this.resizeTimeout);
+    this.resizeTimeout = setTimeout(() => {
+      if (!this.isVisible) {
+        this.positionNavigator();
+      }
+    }, 100);
   },
 
   handleNavigatorClick(event) {

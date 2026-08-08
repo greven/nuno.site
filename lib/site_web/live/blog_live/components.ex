@@ -622,13 +622,13 @@ defmodule SiteWeb.BlogLive.Components do
       phx-hook="TheEnd"
       class="w-full flex items-center justify-center gap-1.5 font-sans text-xs"
     >
-      <span class="the-end-dot transition-all duration-400 ease-out text-content-40">
+      <span class="the-end-dot transition-colors duration-400 ease-out text-content-40">
         &bull;
       </span>
-      <span class="the-end-dot transition-all duration-400 ease-out text-content-40">
+      <span class="the-end-dot transition-colors duration-400 ease-out text-content-40">
         &bull;
       </span>
-      <span class="the-end-dot transition-all duration-400 ease-out text-content-40">
+      <span class="the-end-dot transition-colors duration-400 ease-out text-content-40">
         &bull;
       </span>
     </div>

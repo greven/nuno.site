@@ -1632,7 +1632,7 @@ defmodule SiteWeb.CoreComponents do
       height={@size}
       class={[
         "rounded-full object-cover",
-        "hover:ring ring-surface-10 ring-offset-2 ring-offset-surface transition-all",
+        "hover:ring ring-surface-10 ring-offset-2 ring-offset-surface transition-shadow",
         @class
       ]}
       {@rest}

@@ -1,21 +1,28 @@
 export const Layout = {
   mounted() {
+    this.pageContent = document.getElementById('page-content');
+
     this.updateCSSVariablesHandler = this.updateCSSVariables.bind(this);
     this.resizeHandler = this.handleResize.bind(this);
+    this.rafId = null;
 
-    // Initial CSS variables update
+    // Initial CSS variable update
     this.updateCSSVariablesHandler();
 
-    // Set up ResizeObserver for more efficient resize detection
+    // Set up ResizeObserver for resize detection.
     if (window.ResizeObserver) {
       this.resizeObserver = new ResizeObserver(() => {
-        this.updateCSSVariablesHandler();
+        if (this.rafId == null) {
+          this.rafId = requestAnimationFrame(() => {
+            this.rafId = null;
+            this.updateCSSVariablesHandler();
+          });
+        }
       });
 
       // Observe the page content element
-      const pageContent = document.getElementById('page-content');
-      if (pageContent) {
-        this.resizeObserver.observe(pageContent);
+      if (this.pageContent) {
+        this.resizeObserver.observe(this.pageContent);
       }
 
       // Also observe the body for general layout changes
@@ -30,6 +37,11 @@ export const Layout = {
   },
 
   destroyed() {
+    // Cancel any pending update
+    if (this.rafId != null) {
+      cancelAnimationFrame(this.rafId);
+    }
+
     // Clean up observers and event listeners
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
@@ -43,29 +55,14 @@ export const Layout = {
   },
 
   updateCSSVariables() {
-    const root = document.documentElement;
+    // Scope the custom property to the page content element so resizes only
+    // invalidate its subtree instead of the whole document.
+    if (!this.pageContent) return;
 
-    // Set viewport dimensions
-    const viewportWidth = Math.round(window.innerWidth);
-    const viewportHeight = Math.round(window.innerHeight);
+    const contentRect = this.pageContent.getBoundingClientRect();
+    const contentWidth = Math.round(contentRect.width);
 
-    root.style.setProperty('--viewport-width', `${viewportWidth}px`);
-    root.style.setProperty('--viewport-height', `${viewportHeight}px`);
-
-    // Get page content element
-    const pageContent = document.getElementById('page-content');
-
-    if (pageContent) {
-      const contentRect = pageContent.getBoundingClientRect();
-      const contentWidth = Math.round(contentRect.width);
-      const contentHeight = Math.round(contentRect.height);
-      const marginWidth = Math.round((viewportWidth - contentWidth) / 2);
-
-      // Set CSS variables for page content dimensions
-      root.style.setProperty('--content-width', `${contentWidth}px`);
-      root.style.setProperty('--content-height', `${contentHeight}px`);
-      root.style.setProperty('--content-margin', `${marginWidth}px`);
-    }
+    this.pageContent.style.setProperty('--content-width', `${contentWidth}px`);
   },
 
   handleResize() {
@@ -73,6 +70,6 @@ export const Layout = {
     clearTimeout(this.resizeTimeout);
     this.resizeTimeout = setTimeout(() => {
       this.updateCSSVariablesHandler();
-    }, 16); // ~60fps
+    }, 100); // Plenty for layout updates
   },
 };
