@@ -60,6 +60,47 @@ defmodule SiteWeb.PhotosLiveTest do
       assert view |> element("#photo-info") |> render() =~ photo.title
     end
 
+    test "fullscreen dialog shows title and controls", %{conn: conn} do
+      photo = hd(Gallery.list_photos())
+
+      {:ok, view, _html} = live(conn, ~p"/photos/#{photo.id}")
+
+      assert has_element?(view, "#photo-fullscreen")
+      assert has_element?(view, "#photo-fullscreen-title")
+      assert has_element?(view, "#photo-fullscreen-close")
+      assert has_element?(view, "#photo-fullscreen-info")
+      assert has_element?(view, "#photo-fullscreen-view")
+    end
+
+    test "maximize opens fullscreen and close exits it", %{conn: conn} do
+      photo = hd(Gallery.list_photos())
+
+      {:ok, view, _html} = live(conn, ~p"/photos/#{photo.id}")
+
+      view |> element("#photo-maximize") |> render_click()
+
+      assert has_element?(view, "#photo-fullscreen[data-show=true]")
+
+      view |> element("#photo-fullscreen-close") |> render_click()
+
+      assert has_element?(view, "#photo-fullscreen[data-show=false]")
+    end
+
+    test "navigating in fullscreen keeps the dialog open", %{conn: conn} do
+      [first, second] = Gallery.list_photos()
+
+      {:ok, view, _html} = live(conn, ~p"/photos/#{first.id}")
+
+      view |> element("#photo-maximize") |> render_click()
+      assert has_element?(view, "#photo-fullscreen[data-show=true]")
+      assert has_element?(view, "#photo-fullscreen-next")
+
+      view |> element("#photo-fullscreen-next") |> render_click()
+
+      assert has_element?(view, "#photo-fullscreen[data-show=true]")
+      assert view |> element("#photo-fullscreen-title") |> render() =~ second.title
+    end
+
     test "returns 404 for an unknown photo", %{conn: conn} do
       assert_raise Site.Gallery.NotFoundError, fn ->
         get(conn, ~p"/photos/does-not-exist")

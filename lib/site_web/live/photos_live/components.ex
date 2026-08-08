@@ -214,10 +214,14 @@ defmodule SiteWeb.PhotosLive.Components do
   end
 
   @doc """
-  Displays the photo fullscreen.
+  Displays the photo fullscreen, with a title bar and controls to
+  close, show info, and navigate between photos.
   """
 
   attr :photo, Gallery.Photo, required: true
+  attr :prev, Gallery.Photo, default: nil
+  attr :next, Gallery.Photo, default: nil
+  attr :show, :boolean, default: false, doc: "whether the dialog should stay open"
 
   def photo_fullscreen_dialog(assigns) do
     assigns =
@@ -226,7 +230,9 @@ defmodule SiteWeb.PhotosLive.Components do
 
     ~H"""
     <.dialog
+      show={@show}
       id="photo-fullscreen"
+      data-on-close-push="toggle_fullscreen"
       backdrop_class="backdrop:bg-black backdrop:opacity-0 open:backdrop:opacity-100 backdrop:transition-opacity backdrop:duration-300"
       panel_bg_class="bg-transparent"
       panel_shadow_class=""
@@ -236,18 +242,107 @@ defmodule SiteWeb.PhotosLive.Components do
       fullscreen
       centered
     >
-      <div class="w-full h-full flex items-center justify-center">
-        <.image
-          src={@photo_url}
-          alt={@photo.title || @photo.id}
-          width={@photo.width}
-          height={@photo.height}
-          class="max-h-full max-w-full object-contain"
-          use_picture
-          use_blur
-        />
+      <div
+        id="photo-fullscreen-view"
+        phx-hook="PhotoSwipe"
+        data-has-prev={to_string(@prev != nil)}
+        data-has-next={to_string(@next != nil)}
+        class="relative h-full w-full"
+      >
+        <%!-- Title bar + controls --%>
+        <div class="absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-4 bg-linear-to-b from-black/70 via-black/40 to-transparent p-4 sm:p-6">
+          <div class="min-w-0 pt-1">
+            <h2
+              id="photo-fullscreen-title"
+              class="truncate text-lg font-medium text-white drop-shadow-sm"
+            >
+              {@photo.title || @photo.id}
+            </h2>
+            <p :if={@photo.album} class="mt-0.5 truncate text-sm text-white/80">
+              {@photo.album}
+            </p>
+          </div>
+
+          <div class="flex shrink-0 items-center gap-2">
+            <.fullscreen_control_button
+              id="photo-fullscreen-info"
+              aria-label="Show photo info"
+              title="Info"
+              phx-click={JS.dispatch("show-drawer", to: "#photo-info")}
+            >
+              <.icon name="lucide-info" class="size-5 text-content-20" />
+            </.fullscreen_control_button>
+
+            <.fullscreen_control_button
+              id="photo-fullscreen-close"
+              aria-label="Exit fullscreen"
+              title="Exit fullscreen"
+              phx-click={JS.push("toggle_fullscreen") |> hide_dialog("#photo-fullscreen")}
+            >
+              <.icon name="lucide-x" class="size-6 text-content-20" />
+            </.fullscreen_control_button>
+          </div>
+        </div>
+
+        <%!-- Image --%>
+        <div class="flex h-full w-full items-center justify-center">
+          <.image
+            src={@photo_url}
+            alt={@photo.title || @photo.id}
+            width={@photo.width}
+            height={@photo.height}
+            class="max-h-full max-w-full object-contain"
+            use_picture
+            use_blur
+          />
+        </div>
+
+        <%!-- Navigation arrows, revealed when approaching their edge --%>
+        <div :if={@prev} class="group absolute inset-y-0 left-0 z-10 w-20 sm:w-24">
+          <.photo_nav_button
+            id="photo-fullscreen-prev"
+            class="left-4"
+            reveal="group-hover:opacity-100 group-focus-within:opacity-100"
+            aria-label="Previous photo"
+            phx-click={JS.push("navigate", value: %{direction: "prev"})}
+          >
+            <.icon name="lucide-chevron-left" class="size-7" />
+          </.photo_nav_button>
+        </div>
+
+        <div :if={@next} class="group absolute inset-y-0 right-0 z-10 w-20 sm:w-24">
+          <.photo_nav_button
+            id="photo-fullscreen-next"
+            class="right-4"
+            reveal="group-hover:opacity-100 group-focus-within:opacity-100"
+            aria-label="Next photo"
+            phx-click={JS.push("navigate", value: %{direction: "next"})}
+          >
+            <.icon name="lucide-chevron-right" class="size-7" />
+          </.photo_nav_button>
+        </div>
       </div>
     </.dialog>
+    """
+  end
+
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  defp fullscreen_control_button(assigns) do
+    ~H"""
+    <button
+      type="button"
+      class={[
+        "flex size-11 cursor-pointer items-center justify-center rounded-full",
+        "bg-black/50 text-white backdrop-blur-sm transition-colors",
+        "hover:bg-black/70 focus-visible:outline-2",
+        "focus-visible:outline-offset-2 focus-visible:outline-white"
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </button>
     """
   end
 
@@ -341,6 +436,11 @@ defmodule SiteWeb.PhotosLive.Components do
   end
 
   attr :class, :string, default: nil
+
+  attr :reveal, :string,
+    default: "group-hover/photo:opacity-100",
+    doc: "classes that reveal the button (e.g. on hover/focus of a surrounding group)"
+
   attr :rest, :global
 
   slot :inner_block, required: true
@@ -351,7 +451,8 @@ defmodule SiteWeb.PhotosLive.Components do
       class={[
         "absolute top-1/2 size-12 -translate-y-1/2 rounded-[50%] flex items-center justify-center",
         "bg-surface-10/60 backdrop-blur-sm shadow opacity-1 cursor-pointer z-10",
-        "transition-opacity ease-in group-hover/photo:opacity-100",
+        "transition-opacity ease-in",
+        @reveal,
         @class
       ]}
       {@rest}

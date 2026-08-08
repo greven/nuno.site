@@ -28,6 +28,16 @@ export const Dialog = {
     this.openObserver.observe(this.el, { attributes: true });
   },
 
+  updated() {
+    // LiveView morphs strip the `open` attribute on re-renders since the
+    // template never renders it. When the server marked this dialog as shown
+    // (data-show="true"), re-open it after every patch so it survives content
+    // updates (e.g. a gallery lightbox navigating between photos).
+    if (this.el.dataset.show === 'true' && !this.el.hasAttribute('open')) {
+      this.el.showModal();
+    }
+  },
+
   destroyed() {
     if (this.showHandler) window.removeEventListener('show-dialog', this.showHandler);
     if (this.hideHandler) window.removeEventListener('hide-dialog', this.hideHandler);
@@ -43,6 +53,11 @@ export const Dialog = {
 
   show(event) {
     if (event.target === this.el || event.target?.id === this.el.id) {
+      // Ignore re-show requests while the dialog is already open (e.g. a
+      // global shortcut firing while the dialog has focus), as calling
+      // showModal() would throw.
+      if (this.el.hasAttribute('open')) return;
+
       delete this.el.dataset.closing;
       clearTimeout(this._closeFallbackTimer);
       this.el.showModal();
@@ -56,7 +71,12 @@ export const Dialog = {
     }
   },
 
-  toggle() {
+  toggle(event) {
+    // Only respond to events targeting this specific dialog, mirroring
+    // show()/hide(), so a targeted toggle-dialog dispatch doesn't open
+    // every dialog on the page (e.g. the finder).
+    if (event.target !== this.el && event.target?.id !== this.el.id) return;
+
     if (this.isOpen) {
       this.animateClose();
     } else {
@@ -67,6 +87,15 @@ export const Dialog = {
   handleCancel(event) {
     event.preventDefault();
     this.animateClose();
+    this.notifyServerClosed();
+  },
+
+  // Pushes a server event when the dialog is closed through a path the server
+  // doesn't know about (Escape / backdrop click), so state stays in sync.
+  // The event name is taken from the `data-on-close-push` attribute.
+  notifyServerClosed() {
+    const eventName = this.el.dataset.onClosePush;
+    if (eventName) this.pushEvent(eventName, {});
   },
 
   handleClose() {
@@ -92,6 +121,7 @@ export const Dialog = {
       event.target.getAttribute('data-part') === 'dialog-container'
     ) {
       this.animateClose();
+      this.notifyServerClosed();
     }
   },
 

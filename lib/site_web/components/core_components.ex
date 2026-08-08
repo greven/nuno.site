@@ -1787,6 +1787,7 @@ defmodule SiteWeb.CoreComponents do
       phx-hook="Dialog"
       phx-mounted={@show && show_dialog("##{@id}")}
       phx-remove={hide_dialog("##{@id}")}
+      data-show={to_string(@show)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       data-close-on-click-outside={@close_on_click_outside}
       style={"--dialog-size: #{dialog_size(@size)};"}

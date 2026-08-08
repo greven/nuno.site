@@ -19,10 +19,11 @@ defmodule SiteWeb.PhotosLive.Show do
           <SiteWeb.SiteComponents.back_link navigate={~p"/photos"} />
           <div class="flex items-center gap-2">
             <.icon_button
+              id="photo-maximize"
               variant="ghost"
               title="Maximize"
-              phx-click={JS.dispatch("show-dialog", to: "#photo-fullscreen")}
-              phx-window-keydown={JS.dispatch("show-dialog", to: "#photo-fullscreen")}
+              phx-click={fullscreen_toggle()}
+              phx-window-keydown={fullscreen_toggle()}
               phx-key="m"
             >
               <.icon name="lucide-maximize" class="text-content-20" />
@@ -41,7 +42,12 @@ defmodule SiteWeb.PhotosLive.Show do
         </div>
 
         <Components.photo photo={@photo} prev={@prev_photo} next={@next_photo} />
-        <Components.photo_fullscreen_dialog photo={@photo} />
+        <Components.photo_fullscreen_dialog
+          photo={@photo}
+          prev={@prev_photo}
+          next={@next_photo}
+          show={@fullscreen_open}
+        />
 
         <.drawer
           id="photo-info"
@@ -75,6 +81,11 @@ defmodule SiteWeb.PhotosLive.Show do
   end
 
   @impl true
+  def mount(_params, _session, socket) do
+    {:ok, assign(socket, :fullscreen_open, false)}
+  end
+
+  @impl true
   def handle_params(params, _uri, socket) do
     id = Map.get(params, "id")
     album = Map.get(params, "album")
@@ -97,9 +108,32 @@ defmodule SiteWeb.PhotosLive.Show do
   end
 
   @impl true
+  def handle_event("toggle_fullscreen", _params, socket) do
+    {:noreply, update(socket, :fullscreen_open, &(!&1))}
+  end
+
   def handle_event("navigate", %{"direction" => dir}, socket) do
     path = photo_nav_path(socket, dir)
-    {:noreply, push_navigate(socket, to: ~p"/photos/#{path}")}
+
+    if path do
+      socket =
+        if socket.assigns.fullscreen_open do
+          # Stay in fullscreen while navigating: push_patch re-renders the page
+          push_patch(socket, to: ~p"/photos/#{path}")
+        else
+          push_navigate(socket, to: ~p"/photos/#{path}")
+        end
+
+      {:noreply, socket}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  # Opens/closes the fullscreen dialog and keeps the server-side state in sync
+  defp fullscreen_toggle do
+    JS.push("toggle_fullscreen")
+    |> JS.dispatch("toggle-dialog", to: "#photo-fullscreen")
   end
 
   defp photo_nav_path(%{assigns: %{prev_photo: %Photo{id: id}}}, "prev"), do: id
