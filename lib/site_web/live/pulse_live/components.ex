@@ -125,7 +125,7 @@ defmodule SiteWeb.PulseLive.Components do
       >
         <.diagonal_pattern use_transition={false} class="-z-1" />
         <.header tag="h3" header_class="flex items-center gap-2 text-2xl">
-          <.icon name="flag-eu-square" class="size-5 rounded-full" /> Forex
+          <.icon name="flag-eu-square" class="size-5 rounded-xs" /> Forex
           <:subtitle>
             Last updated
             <span class="font-medium">{Calendar.strftime(@forex.current.date, "%d %b %Y")}</span>

@@ -1453,7 +1453,7 @@ defmodule SiteWeb.CoreComponents do
 
   attr :name, :string, required: true
   attr :label, :string, default: nil
-  attr :radius, :string, default: "rounded-xs"
+  attr :radius, :string, default: "rounded-[2px]"
   attr :overlay, :string, values: ~w(none linear wave), default: "none"
   attr :border, :boolean, default: false
   attr :shadow, :boolean, default: false
