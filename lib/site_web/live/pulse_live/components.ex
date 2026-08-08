@@ -843,7 +843,7 @@ defmodule SiteWeb.PulseLive.Components do
     <div
       id={@id}
       class={[
-        "relative overflow-y-auto bg-surface-10 rounded-l-xl border border-border outline-none",
+        "relative overflow-y-auto bg-surface-10 rounded-l-(--radius-container) border border-border outline-none",
         @class
       ]}
       tabindex="-1"
@@ -940,7 +940,7 @@ defmodule SiteWeb.PulseLive.Components do
     <div
       id={@id}
       class={[
-        "relative isolate flex rounded-r-xl bg-surface border-y border-r border-border overflow-hidden",
+        "relative isolate flex rounded-r-(--radius-container) bg-surface border-y border-r border-border overflow-hidden",
         @class
       ]}
     >
