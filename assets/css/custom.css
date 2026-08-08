@@ -784,3 +784,17 @@
     }
   }
 }
+
+/* Pulse reader fullscreen */
+/* Un-layered so it overrides the feed's fixed-height utility classes. */
+#news-feed:fullscreen {
+  background-color: var(--color-surface);
+  padding: 0.75rem;
+  overflow: hidden;
+
+  & > div {
+    height: 100%;
+    min-height: 0;
+    margin-bottom: 0;
+  }
+}

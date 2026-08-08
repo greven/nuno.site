@@ -48,6 +48,17 @@ defmodule SiteWeb.PulseLive.Index do
                 </.button>
 
                 <.button
+                  id="news-feed-fullscreen-button"
+                  title="Fullscreen"
+                  disabled={@view != "list"}
+                  data-view={@view}
+                  phx-hook="PulseFullscreen"
+                  phx-update="ignore"
+                >
+                  <.icon name="lucide-maximize" />
+                </.button>
+
+                <.button
                   title="Grid View"
                   phx-click={JS.patch(~p"/pulse?view=grid")}
                 >
@@ -152,9 +163,10 @@ defmodule SiteWeb.PulseLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    lv_pid = self()
+
     today = Date.utc_today()
     year_progress = round(Date.day_of_year(today) / 365 * 100)
-    lv_pid = self()
 
     socket =
       socket

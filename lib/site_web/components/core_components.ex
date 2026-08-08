@@ -1349,7 +1349,7 @@ defmodule SiteWeb.CoreComponents do
             "max-h-(--spoiler-max-height) aria-expanded:max-h-min",
             @open && "max-h-min"
           ]}
-          aria-expanded={@open}
+          aria-expanded={to_string(@open)}
           data-part="spoiler-content"
           role="region"
         >
@@ -1371,7 +1371,7 @@ defmodule SiteWeb.CoreComponents do
             "disabled:opacity-50 disabled:text-content-10/50 disabled:cursor-not-allowed",
             "focus:outline-1 focus:outline-offset-2 focus:outline-dashed focus:outline-primary"
           ]}
-          aria-expanded={@open}
+          aria-expanded={to_string(@open)}
           aria-controls={"spoiler-#{@id}-region"}
           data-part="spoiler-trigger"
           data-on-click={@on_click}

@@ -118,6 +118,27 @@ defmodule SiteWeb.PublicPagesTest do
       {:ok, view, _html} = live(conn, ~p"/pulse")
       assert has_element?(view, "#news-grid")
     end
+
+    @tag :external
+    test "disables the fullscreen button outside List View", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/pulse")
+      assert has_element?(view, "#news-feed-fullscreen-button")
+      assert has_element?(view, "#news-feed-fullscreen-button[disabled]")
+      assert has_element?(view, "#news-feed-fullscreen-button[data-view='grid']")
+
+      # The PulseFullscreen hook watches `data-view` to toggle `disabled`, so it
+      # must track the view even though the button is phx-update="ignore".
+      render_patch(view, "/pulse?view=list")
+      assert has_element?(view, "#news-feed-fullscreen-button[data-view='list']")
+    end
+
+    @tag :external
+    test "enables the fullscreen button in List View", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/pulse?view=list")
+      assert has_element?(view, "#news-feed-fullscreen-button")
+      refute has_element?(view, "#news-feed-fullscreen-button[disabled]")
+      assert has_element?(view, "#news-feed-fullscreen-button[data-view='list']")
+    end
   end
 
   describe "music" do
