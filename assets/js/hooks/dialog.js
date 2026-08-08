@@ -35,6 +35,7 @@ export const Dialog = {
     // updates (e.g. a gallery lightbox navigating between photos).
     if (this.el.dataset.show === 'true' && !this.el.hasAttribute('open')) {
       this.el.showModal();
+      this.focusPanel();
     }
   },
 
@@ -61,6 +62,7 @@ export const Dialog = {
       delete this.el.dataset.closing;
       clearTimeout(this._closeFallbackTimer);
       this.el.showModal();
+      this.focusPanel();
     }
   },
 
@@ -81,6 +83,19 @@ export const Dialog = {
       this.animateClose();
     } else {
       this.el.showModal();
+      this.focusPanel();
+    }
+  },
+
+  // When data-focus-panel is set, keep focus on the dialog panel instead of
+  // letting showModal() land on the first focusable control.
+  focusPanel() {
+    if (this.el.dataset.focusPanel !== 'true') return;
+
+    const panel = this.el.querySelector('[data-part="dialog-panel"]');
+    if (panel) {
+      panel.tabIndex = -1;
+      panel.focus();
     }
   },
 

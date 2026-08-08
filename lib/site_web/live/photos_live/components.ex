@@ -233,6 +233,7 @@ defmodule SiteWeb.PhotosLive.Components do
       show={@show}
       id="photo-fullscreen"
       data-on-close-push="toggle_fullscreen"
+      data-focus-panel="true"
       backdrop_class="backdrop:bg-black backdrop:opacity-0 open:backdrop:opacity-100 backdrop:transition-opacity backdrop:duration-300"
       panel_bg_class="bg-transparent"
       panel_shadow_class=""
