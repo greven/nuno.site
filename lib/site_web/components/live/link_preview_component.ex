@@ -21,6 +21,18 @@ defmodule SiteWeb.LinkPreviewComponent do
         target="_blank"
         rel="noopener noreferrer"
       >
+        <div :if={@fav}>
+          <div class={[
+            "absolute top-0 right-0 w-0 h-0 rotate-180 border-solid",
+            "border-l-34 border-l-primary/90",
+            "border-t-34 border-t-transparent",
+            "border-r-0 border-r-transparent",
+            "border-b-0 border-b-transparent"
+          ]}>
+          </div>
+          <.icon name="hero-star-mini" class="absolute top-1 right-1 size-3 text-neutral-100" />
+        </div>
+
         <.async_result :let={preview} assign={@preview}>
           <:loading>
             <div class="flex items-center justify-center w-full h-44 bg-surface-20">

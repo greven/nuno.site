@@ -21,6 +21,7 @@ defmodule SiteWeb.LiveComponents do
   attr :class, :string, default: "w-full md:w-3xs"
   attr :href, :string, required: true
   attr :text, :string
+  attr :fav, :boolean, default: false
   attr :rest, :global, include: ~w(download hreflang referrerpolicy rel target type)
 
   def live_preview(assigns) do
@@ -32,6 +33,7 @@ defmodule SiteWeb.LiveComponents do
       module={SiteWeb.LinkPreviewComponent}
       href={@href}
       text={@text}
+      fav={@fav}
       rest={@rest}
       class={@class}
     />

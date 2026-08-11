@@ -39,7 +39,7 @@ defmodule SiteWeb.UsesLive.Index do
 
           <div class="flex flex-col gap-8">
             <div class="flex gap-3 flex-wrap">
-              <LiveComponents.live_preview id="zed-link" href="https://zed.dev" text="Zed" />
+              <LiveComponents.live_preview id="zed-link" href="https://zed.dev" text="Zed" fav />
               <LiveComponents.live_preview
                 id="vscode-link"
                 href="https://code.visualstudio.com/"
@@ -77,11 +77,17 @@ defmodule SiteWeb.UsesLive.Index do
           </:subtitle>
 
           <div class="flex gap-3 flex-wrap">
-            <LiveComponents.live_preview id="bearapp-link" href="https://bear.app" text="Bear Notes" />
+            <LiveComponents.live_preview
+              id="bearapp-link"
+              href="https://bear.app"
+              text="Bear Notes"
+              fav
+            />
             <LiveComponents.live_preview
               id="things-link"
               href="https://culturedcode.com/things/"
               text="Things 3"
+              fav
             />
             <LiveComponents.live_preview
               id="cleanshot-link"
