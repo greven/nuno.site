@@ -797,7 +797,10 @@
 }
 
 /* Pulse reader maximize */
-#news-feed.pulse-feed-maximized {
+/* Key the maximized look off the <html> attribute instead of a class on
+   #news-feed: LiveView morphs #news-feed on every patch and would strip any
+   class the hook adds, but it never touches <html>. */
+html[data-pulse-reader-maximized] #news-feed {
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -822,7 +825,7 @@ html[data-pulse-reader-maximized] #site-header {
   display: none;
 }
 
-#news-feed.pulse-feed-maximized .pulse-feed-exit {
+html[data-pulse-reader-maximized] #news-feed .pulse-feed-exit {
   display: inline-flex;
   position: absolute;
   top: 0.75rem;

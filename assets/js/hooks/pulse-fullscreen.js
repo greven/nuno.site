@@ -11,8 +11,8 @@ export const PulseFullscreen = {
     document.addEventListener('click', this.onExitClick);
     document.addEventListener('keydown', this.handleKeydown);
 
-    // If the page reconnected while the reader was maximized, release the
-    // scroll lock the previous session left behind.
+    // If the page reconnected while the reader was maximized,
+    // release the scroll lock the previous session left behind.
     if (
       !document.documentElement.hasAttribute('data-dialog-open') &&
       !document.documentElement.hasAttribute('data-drawer-open')
@@ -29,8 +29,7 @@ export const PulseFullscreen = {
     this.target = document.getElementById('news-feed');
     this.icon = this.el.querySelector('[data-slot="icon"]');
 
-    // LiveView morphs #news-feed on re-renders, which strips the class the
-    // hook added, so re-apply the maximized state after every patch.
+    // Keep the toolbar in sync after view changes
     this.applyMaximizedState();
     this.syncState();
   },
@@ -106,10 +105,8 @@ export const PulseFullscreen = {
 
     if (maximized) {
       this.lockPageScroll();
-      this.target.classList.add('pulse-feed-maximized');
       document.documentElement.setAttribute('data-pulse-reader-maximized', '');
     } else {
-      this.target.classList.remove('pulse-feed-maximized');
       this.unlockPageScroll();
       document.documentElement.removeAttribute('data-pulse-reader-maximized');
     }
@@ -129,8 +126,7 @@ export const PulseFullscreen = {
     const isListView = this.el.dataset.view === 'list';
     const isMaximized = this.isMaximized();
 
-    // Only usable from List View. LiveView keeps `data-view` up to date on
-    // ignored elements, so this stays in sync when the view changes.
+    // Only usable from List View
     this.el.disabled = !isListView;
 
     // If the view changed away from List View while maximized, the reader is
@@ -142,8 +138,6 @@ export const PulseFullscreen = {
 
     this.el.setAttribute('title', isMaximized ? 'Exit Maximize' : 'Maximize');
 
-    // The button theme styles `aria-[pressed]` on attribute presence, so only
-    // keep the attribute while the reader is actually maximized.
     if (isMaximized) {
       this.el.setAttribute('aria-pressed', 'true');
     } else {
