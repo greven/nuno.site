@@ -49,6 +49,7 @@ config :site, Site.Mailer, adapter: Swoosh.Adapters.Local
 
 config :bun,
   version: "1.3.14",
+  path: System.get_env("MIX_BUN_PATH"),
   assets: [args: [], cd: Path.expand("../assets", __DIR__)],
   js: [
     args:

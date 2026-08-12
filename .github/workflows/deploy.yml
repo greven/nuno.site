@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -34,9 +34,13 @@ jobs:
           otp-version: ${{ env.OTP_VERSION }}
 
       - name: Set up Bun
+        id: bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: 1.3.14
+
+      - name: Configure bun path for Mix
+        run: echo "MIX_BUN_PATH=${{ steps.bun.outputs.bun-path }}" >> $GITHUB_ENV
 
       - name: Get release version
         id: version
@@ -48,7 +52,7 @@ jobs:
           fi
 
       - name: Restore dependencies cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             deps
@@ -113,47 +117,6 @@ jobs:
           # Execute deployment on VPS
           ssh -i ~/.ssh/deploy_key ${VPS_USER}@${VPS_HOST} \
             "bash /tmp/deploy_release.sh ${VERSION}"
-
-      # FIX: deployment verification
-      # - name: Verify deployment
-      #   env:
-      #     VPS_DOMAIN: ${{ secrets.VPS_DOMAIN }}
-      #   run: |
-      #     echo "Verifying deployment via public HTTPS endpoint..."
-      #     echo "Testing: https://${VPS_DOMAIN}/health"
-
-      #     MAX_ATTEMPTS=10  # 10 attempts = 50 seconds
-      #     ATTEMPT=1
-
-      #     while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-      #       echo "Attempt ${ATTEMPT}/${MAX_ATTEMPTS}: Checking health endpoint..."
-
-      #       if curl -f -s "https://${VPS_DOMAIN}/health" > /dev/null; then
-      #         echo "✅ Deployment successful! Application is healthy and accessible."
-      #         echo "🌐 Public URL: https://${VPS_DOMAIN}"
-      #         exit 0
-      #       fi
-
-      #       if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-      #         echo "❌ Deployment verification failed after ${MAX_ATTEMPTS} attempts (75s)."
-      #         echo ""
-      #         echo "Possible issues:"
-      #         echo "  - Application is still starting up (check VPS logs)"
-      #         echo "  - Caddy reverse proxy not configured correctly"
-      #         echo "  - DNS not pointing to VPS"
-      #         echo "  - Firewall blocking HTTPS traffic"
-      #         echo "  - SSL certificate issue"
-      #         echo ""
-      #         echo "The deployment script completed successfully, but the public endpoint is not responding."
-      #         echo "The application may be running - check manually with:"
-      #         echo "  ssh deploy@<VPS_IP> 'sudo systemctl status site'"
-      #         exit 1
-      #       fi
-
-      #       echo "  Not ready yet, waiting 5 seconds..."
-      #       sleep 5
-      #       ATTEMPT=$((ATTEMPT + 1))
-      #     done
 
       - name: Cleanup
         if: always()
