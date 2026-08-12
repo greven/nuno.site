@@ -148,6 +148,7 @@ defmodule Site.Gallery do
       width: item["width"],
       height: item["height"],
       date: parse_date(item["date"]),
+      added: parse_date(item["added"]),
       location: item["location"],
       camera: item["camera"],
       tags: parse_tags(item["tags"])

@@ -36,8 +36,8 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.9"},
-      {:phoenix_live_view, "~> 1.2.8"},
+      {:phoenix, "~> 1.8.11"},
+      {:phoenix_live_view, "~> 1.2.9"},
       {:phoenix_ecto, "~> 4.7"},
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.7", only: :dev},
@@ -96,7 +96,7 @@ defmodule Site.MixProject do
        depth: 1},
       {:lucide_icons,
        github: "lucide-icons/lucide",
-       tag: "1.7.0",
+       tag: "1.30.0",
        sparse: "icons",
        app: false,
        compile: false,

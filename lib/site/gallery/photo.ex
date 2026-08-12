@@ -13,6 +13,7 @@ defmodule Site.Gallery.Photo do
     - `date` - Optional Date when the photo was taken
     - `location` - Optional photo location
     - `camera` - Optional camera model used to take the photo
+    - `added` - Optional Date when the photo was added
     - `tags` - Image tags
   """
 
@@ -27,6 +28,7 @@ defmodule Site.Gallery.Photo do
           date: Date.t() | nil,
           location: String.t() | nil,
           camera: String.t() | nil,
+          added: Date.t() | nil,
           tags: List.t() | nil
         }
 
@@ -43,6 +45,7 @@ defmodule Site.Gallery.Photo do
     :date,
     :location,
     :camera,
+    :added,
     :tags
   ]
 end
