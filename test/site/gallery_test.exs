@@ -18,6 +18,33 @@ defmodule Site.GalleryTest do
     end
   end
 
+  describe "group_photos_by_year/1" do
+    test "groups photos by year, most recent year first" do
+      photo_2024 = %Photo{id: "p1", key: "k1", date: ~D[2024-05-01]}
+      photo_2025 = %Photo{id: "p2", key: "k2", date: ~D[2025-01-15]}
+      photo_2025b = %Photo{id: "p3", key: "k3", date: ~D[2025-11-02]}
+
+      assert Gallery.group_photos_by_year([photo_2024, photo_2025, photo_2025b]) == [
+               {2025, [photo_2025, photo_2025b]},
+               {2024, [photo_2024]}
+             ]
+    end
+
+    test "groups photos without a date under nil, sorted last" do
+      undated = %Photo{id: "p1", key: "k1", date: nil}
+      photo_2025 = %Photo{id: "p2", key: "k2", date: ~D[2025-03-01]}
+
+      assert Gallery.group_photos_by_year([undated, photo_2025]) == [
+               {2025, [photo_2025]},
+               {nil, [undated]}
+             ]
+    end
+
+    test "returns an empty list for no photos" do
+      assert Gallery.group_photos_by_year([]) == []
+    end
+  end
+
   describe "get_photo/1" do
     test "returns a photo by id" do
       id = hd(Gallery.list_photos()).id

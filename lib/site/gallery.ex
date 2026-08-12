@@ -38,6 +38,18 @@ defmodule Site.Gallery do
   end
 
   @doc """
+  Groups photos by the year of their `date`, most recent year first.
+
+  Photos without a date are grouped together under `nil` and sorted last,
+  so they can be labelled with a fallback like "No date".
+  """
+  def group_photos_by_year(photos) when is_list(photos) do
+    photos
+    |> Enum.group_by(fn %Photo{date: date} -> date && date.year end)
+    |> Enum.sort_by(fn {year, _photos} -> year || 0 end, :desc)
+  end
+
+  @doc """
   Returns a single photo by its id, or `nil` if not found.
   """
   def get_photo(id) when is_binary(id) do

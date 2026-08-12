@@ -13,13 +13,14 @@ defmodule SiteWeb.PhotosLiveTest do
       assert has_element?(view, "#photo-search")
     end
 
-    test "search filters the photos", %{conn: conn} do
+    test "search filters the photos and patches the url", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/photos")
 
       view
       |> form("#photo-search", %{"query" => "leeds"})
       |> render_change()
 
+      assert_patch(view, "/photos?query=leeds")
       assert has_element?(view, "img[alt='Leeds Corn Exchange']")
       refute has_element?(view, "img[alt='British Museum']")
     end
@@ -31,15 +32,13 @@ defmodule SiteWeb.PhotosLiveTest do
       |> form("#photo-search", %{"query" => "zzzz"})
       |> render_change()
 
+      assert_patch(view, "/photos?query=zzzz")
+
       assert view |> element("#photo-grid") |> render() =~ "No results for"
     end
 
-    test "clear search restores all photos", %{conn: conn} do
-      {:ok, view, _html} = live(conn, ~p"/photos")
-
-      view
-      |> form("#photo-search", %{"query" => "leeds"})
-      |> render_change()
+    test "clear search restores all photos and drops the url param", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/photos?query=leeds")
 
       refute has_element?(view, "img[alt='British Museum']")
 
@@ -47,7 +46,101 @@ defmodule SiteWeb.PhotosLiveTest do
       |> element("#header-overlay button")
       |> render_click()
 
+      assert_patch(view, "/photos")
       assert has_element?(view, "img[alt='British Museum']")
+    end
+
+    test "restores the search query from the url", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/photos?query=leeds")
+
+      assert has_element?(view, "img[alt='Leeds Corn Exchange']")
+      refute has_element?(view, "img[alt='British Museum']")
+    end
+
+    test "clearing the query input drops the url param", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/photos?query=leeds")
+
+      view
+      |> form("#photo-search", %{"query" => ""})
+      |> render_change()
+
+      assert_patch(view, "/photos")
+      assert has_element?(view, "img[alt='British Museum']")
+    end
+  end
+
+  describe "group by year toggle" do
+    test "starts ungrouped", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/photos")
+
+      assert has_element?(view, "#toggle-group-by-year[aria-pressed=false]")
+      refute has_element?(view, "#photo-grid section")
+    end
+
+    test "clicking the toggle groups photos and patches the url", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/photos")
+
+      view |> element("#toggle-group-by-year") |> render_click()
+
+      assert_patch(view, "/photos?group=year")
+      assert has_element?(view, "#toggle-group-by-year[aria-pressed=true]")
+      assert has_element?(view, "#photo-grid section")
+      assert has_element?(view, "#photo-grid section h2")
+      assert has_element?(view, "#photo-grid section[data-year]")
+    end
+
+    test "clicking again reverts to the flat grid and drops the param", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/photos")
+
+      view |> element("#toggle-group-by-year") |> render_click()
+      assert_patch(view, "/photos?group=year")
+      assert has_element?(view, "#photo-grid section")
+
+      view |> element("#toggle-group-by-year") |> render_click()
+
+      assert_patch(view, "/photos")
+      assert has_element?(view, "#toggle-group-by-year[aria-pressed=false]")
+      refute has_element?(view, "#photo-grid section")
+    end
+
+    test "grouping keeps photos visible", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/photos")
+
+      view |> element("#toggle-group-by-year") |> render_click()
+
+      assert has_element?(view, "img[alt='Leeds Corn Exchange']")
+      assert has_element?(view, "img[alt='British Museum']")
+    end
+
+    test "restores grouping from the url", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/photos?group=year")
+
+      assert has_element?(view, "#toggle-group-by-year[aria-pressed=true]")
+      assert has_element?(view, "#photo-grid section")
+    end
+
+    test "toggling preserves other url query params", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/photos?query=leeds")
+
+      view |> element("#toggle-group-by-year") |> render_click()
+
+      assert_patch(view, "/photos?group=year&query=leeds")
+
+      view |> element("#toggle-group-by-year") |> render_click()
+
+      assert_patch(view, "/photos?query=leeds")
+    end
+
+    test "searching preserves the group param", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/photos?group=year")
+
+      view
+      |> form("#photo-search", %{"query" => "leeds"})
+      |> render_change()
+
+      assert_patch(view, "/photos?group=year&query=leeds")
+      assert has_element?(view, "#photo-grid section")
+      assert has_element?(view, "img[alt='Leeds Corn Exchange']")
     end
   end
 

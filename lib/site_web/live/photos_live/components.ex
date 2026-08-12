@@ -14,6 +14,7 @@ defmodule SiteWeb.PhotosLive.Components do
   attr :title, :string, required: true
   attr :subtitle, :string, required: true
   attr :form, Phoenix.HTML.Form, required: true
+  attr :group_by_year, :boolean, default: false, doc: "whether photos are grouped by year"
   attr :rest, :global
 
   def photo_page_header(assigns) do
@@ -21,7 +22,10 @@ defmodule SiteWeb.PhotosLive.Components do
     <header {@rest}>
       <div class="relative flex justify-between gap-4">
         <.header underlined>
-          {@title}
+          <div class="flex items-center gap-2.5">
+            <.icon name="lucide-gallery-vertical-end" class="size-10 text-content-40" />
+            {@title}
+          </div>
           <:subtitle>{@subtitle}</:subtitle>
         </.header>
 
@@ -30,6 +34,24 @@ defmodule SiteWeb.PhotosLive.Components do
 
           <.icon_button variant="ghost" disabled>
             <.icon name="lucide-tag" class="size-6 text-content-40/80" />
+          </.icon_button>
+
+          <.icon_button
+            id="toggle-group-by-year"
+            variant={if(@group_by_year, do: "light", else: "ghost")}
+            color={if(@group_by_year, do: "primary", else: "default")}
+            aria-pressed={to_string(@group_by_year)}
+            aria-label={if(@group_by_year, do: "Show photos ungrouped", else: "Group photos by year")}
+            title={if(@group_by_year, do: "Show photos ungrouped", else: "Group photos by year")}
+            phx-click="toggle_group_by_year"
+          >
+            <.icon
+              name={if(@group_by_year, do: "lucide-calendar-range", else: "lucide-layout-grid")}
+              class={[
+                "size-6",
+                if(@group_by_year, do: "text-primary", else: "text-content-40/80")
+              ]}
+            />
           </.icon_button>
 
           <.icon_button
@@ -112,39 +134,55 @@ defmodule SiteWeb.PhotosLive.Components do
   end
 
   @doc """
-  Renders a grid of photography cards.
+  Renders a grid of photography cards, optionally grouped into year sections.
   """
 
   attr :photos, :list, required: true, doc: "list of Photo structs"
   attr :query, :string, default: "", doc: "the active search query"
+  attr :group_by_year, :boolean, default: false, doc: "group the grid into year sections"
   attr :id, :string, default: "photo-grid", doc: "the DOM id of the grid container"
   attr :class, :string, default: nil
   attr :rest, :global
 
   def photo_grid(assigns) do
+    assigns = assign(assigns, :photo_groups, Gallery.group_photos_by_year(assigns.photos))
+
     ~H"""
-    <ul id={@id} class={["grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4", @class]} {@rest}>
-      <li
-        :if={@photos == []}
-        class="col-span-full place-items-center flex items-center justify-center gap-2"
-      >
-        <%= if String.trim(@query) == "" do %>
-          <div class="py-8 flex flex-col items-center justify-center gap-4">
+    <div id={@id} class={["flex flex-col gap-8", @class]} {@rest}>
+      <%= if @photos == [] do %>
+        <div class="py-8 flex flex-col items-center justify-center gap-4">
+          <%= if String.trim(@query) == "" do %>
             <.icon name="lucide-frown" class="text-center text-content-40/50" />
             <p class="text-center text-content-40">No photos yet...</p>
-          </div>
-        <% else %>
-          <div class="py-8 flex flex-col items-center justify-center gap-4">
+          <% else %>
             <.icon name="lucide-search-x" class="size-8 text-center text-content-40/50" />
             <p class="text-center text-content-40">No results for "{@query}"</p>
-          </div>
+          <% end %>
+        </div>
+      <% else %>
+        <%= if @group_by_year do %>
+          <section
+            :for={{year, year_photos} <- @photo_groups}
+            data-year={year || "none"}
+            class="flex flex-col gap-3 font-mono"
+          >
+            <h2 class="text-lg font-semibold text-content-10">{year_label(year)}</h2>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <.photo_card :for={photo <- year_photos} photo={photo} />
+            </ul>
+          </section>
+        <% else %>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <.photo_card :for={photo <- @photos} photo={photo} />
+          </ul>
         <% end %>
-      </li>
-
-      <.photo_card :for={photo <- @photos} photo={photo} />
-    </ul>
+      <% end %>
+    </div>
     """
   end
+
+  defp year_label(nil), do: "No date"
+  defp year_label(year), do: "#{year}"
 
   @doc """
   A single photo card with a blurred placeholder loading effect.

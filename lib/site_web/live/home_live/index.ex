@@ -151,7 +151,7 @@ defmodule SiteWeb.HomeLive.Index do
               <Components.bento_card
                 navigate={~p"/changelog"}
                 class="col-span-2 row-span-1"
-                icon="lucide-history"
+                icon="lucide-rotate-ccw-clock"
                 size={:small}
                 description="A log of site and socials updates"
               >

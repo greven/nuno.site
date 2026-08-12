@@ -51,7 +51,10 @@ defmodule SiteWeb.Finder do
         {:nav_bookmarks,
          name: "Bookmarks", description: "My bookmarks", icon: "lucide-bookmark", push: true},
         {:nav_changelog,
-         name: "Changelog", description: "Site updates", icon: "lucide-history", push: true}
+         name: "Changelog",
+         description: "Site updates",
+         icon: "lucide-rotate-ccw-clock",
+         push: true}
       ]
     }
   end

@@ -47,8 +47,10 @@ defmodule SiteWeb.MusicLive.Index do
 
         <section>
           <.header tag="h3" underlined>
-            <.icon name="lucide-history" class="hidden md:inline-block mr-2.5 text-content-40" />
-            Recently Played
+            <.icon
+              name="lucide-rotate-ccw-clock"
+              class="hidden md:inline-block mr-2.5 text-content-40"
+            /> Recently Played
           </.header>
 
           <.spoiler id="recently-tracks-container" max_height="254px" loading={@recent_tracks.loading}>

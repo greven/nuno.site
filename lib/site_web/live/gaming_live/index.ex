@@ -22,8 +22,10 @@ defmodule SiteWeb.GamingLive.Index do
 
         <section>
           <.header tag="h2">
-            <.icon name="lucide-history" class="hidden md:inline-block mr-2.5 text-content-40" />
-            Recently Played
+            <.icon
+              name="lucide-rotate-ccw-clock"
+              class="hidden md:inline-block mr-2.5 text-content-40"
+            /> Recently Played
             <:subtitle>
               Games played in the last two weeks
             </:subtitle>
