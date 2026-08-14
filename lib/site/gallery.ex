@@ -5,9 +5,10 @@ defmodule Site.Gallery do
   Reads photo metadata from a local JSON manifest and provides URLs
   pointing  to the photos R2 bucket.
 
-  Photos themselves are stored in a dedicated R2 bucket (configured under
-  `:cdn_photos`), while the manifest at `priv/content/photos.json` holds
-  metadata (titles, descriptions, albums, dimensions).
+  Photos themselves are stored in the R2 bucket (configured under `:cdn`)
+  under the `gallery/` prefix (see `cdn_path/0`), while the manifest at
+  `priv/content/photos.json` holds metadata (titles, descriptions, albums,
+  dimensions).
   """
 
   use Nebulex.Caching, cache: Site.Cache
@@ -21,13 +22,21 @@ defmodule Site.Gallery do
   end
 
   @doc """
+  The CDN path prefix under which gallery photos are stored, e.g. `"/gallery"`.
+  Photo object keys in the R2 bucket are prefixed with it, so a photo with
+  id `leeds-corn-exchange-1` lives at `gallery/leeds-corn-exchange-1.jpg`.
+  """
+  def cdn_path, do: @cdn_path
+
+  @doc """
   Returns all photos, sorted by `date` descending (most recent first).
+  Photos without a date sort last.
   """
   @decorate cacheable(key: :photos)
   def list_photos do
     manifest()
     |> Enum.map(&build_photo/1)
-    |> Enum.sort_by(fn %Photo{date: date} -> date end, {:desc, Date})
+    |> Enum.sort_by(fn %Photo{date: date} -> date || Date.new!(1, 1, 1) end, {:desc, Date})
   end
 
   @doc """
@@ -178,11 +187,125 @@ defmodule Site.Gallery do
 
   defp parse_tags(_), do: nil
 
+  @doc """
+  Returns the path to the photos manifest file.
+  Overridable for tests via `config :site, :photos_manifest_path`.
+  """
+  def manifest_path do
+    Application.get_env(:site, :photos_manifest_path) ||
+      Path.join([:code.priv_dir(:site), "content/photos.json"])
+  end
+
   defp manifest do
     manifest_path()
     |> File.read!()
     |> JSON.decode!()
   end
 
-  defp manifest_path, do: Path.join([:code.priv_dir(:site), "content/photos.json"])
+  @doc """
+  Appends new photo entries to the manifest and invalidates the photo cache.
+
+  `new_photos` is a list of maps matching the manifest shape (see
+  `priv/content/photos.json`). Returns `:ok` or `{:error, reason}`.
+  """
+  def add_photos(new_photos) when is_list(new_photos) do
+    path = manifest_path()
+    photos = manifest() ++ new_photos
+
+    with :ok <- write_manifest(path, photos) do
+      purge_photo_cache()
+      :ok
+    end
+  end
+
+  @doc """
+  Removes photos from the manifest by id and invalidates the photo cache.
+
+  Returns `:ok` or `{:error, reason}`. The photo files on the CDN (if any)
+  are not touched; see `Site.Gallery.Uploader.delete_photo/2` for that.
+  """
+  def remove_photos(ids) when is_list(ids) do
+    path = manifest_path()
+    id_set = MapSet.new(ids)
+    photos = Enum.reject(manifest(), &MapSet.member?(id_set, &1["id"]))
+
+    with :ok <- write_manifest(path, photos) do
+      purge_photo_cache()
+      :ok
+    end
+  end
+
+  @doc """
+  Updates the editable fields of a photo in the manifest and invalidates the
+  cache.
+
+  Currently supports `title` and `date` (blank values are stored as `nil`).
+  Returns `:ok` or `{:error, reason}`.
+  """
+  def update_photo(id, attrs) when is_binary(id) and is_map(attrs) do
+    with {:ok, title} <- normalize_title(Map.get(attrs, "title")),
+         {:ok, date} <- normalize_date(Map.get(attrs, "date")) do
+      update_photo_in_manifest(id, title, date)
+    end
+  end
+
+  defp update_photo_in_manifest(id, title, date) do
+    path = manifest_path()
+
+    photos =
+      Enum.map(manifest(), fn photo ->
+        if photo["id"] == id do
+          photo
+          |> Map.put("title", title)
+          |> Map.put("date", date)
+        else
+          photo
+        end
+      end)
+
+    if Enum.any?(photos, &(&1["id"] == id)) do
+      with :ok <- write_manifest(path, photos) do
+        purge_photo_cache()
+        :ok
+      end
+    else
+      {:error, "photo #{inspect(id)} not found in the manifest"}
+    end
+  end
+
+  defp normalize_title(nil), do: {:ok, nil}
+
+  defp normalize_title(title) when is_binary(title) do
+    title = String.trim(title)
+    {:ok, if(title == "", do: nil, else: title)}
+  end
+
+  defp normalize_title(_), do: {:error, "invalid title"}
+
+  defp normalize_date(nil), do: {:ok, nil}
+  defp normalize_date(""), do: {:ok, nil}
+
+  defp normalize_date(date) when is_binary(date) do
+    case Date.from_iso8601(date) do
+      {:ok, parsed} -> {:ok, Date.to_iso8601(parsed)}
+      {:error, _} -> {:error, "invalid date #{inspect(date)} (expected YYYY-MM-DD)"}
+    end
+  end
+
+  defp normalize_date(_), do: {:error, "invalid date (expected YYYY-MM-DD)"}
+
+  # Write the manifest atomically (write to a temp file, then rename over)
+  defp write_manifest(path, photos) do
+    tmp_path = path <> ".tmp"
+    json = JSON.encode!(photos)
+
+    with :ok <- File.write(tmp_path, json) do
+      File.rename(tmp_path, path)
+    end
+  end
+
+  defp purge_photo_cache do
+    Enum.each([:photos, :photo_albums, :photos_count], &Site.Cache.delete/1)
+    :ok
+  end
 end

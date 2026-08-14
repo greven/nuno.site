@@ -32,6 +32,9 @@ config :swoosh, :api_client, false
 # Print only warnings and errors during test
 config :logger, level: :warning
 
+# Enable dev routes so the dev-only admin photo upload screen can be tested
+config :site, dev_routes: true
+
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
 

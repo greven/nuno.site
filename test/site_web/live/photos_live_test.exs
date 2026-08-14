@@ -180,7 +180,7 @@ defmodule SiteWeb.PhotosLiveTest do
     end
 
     test "navigating in fullscreen keeps the dialog open", %{conn: conn} do
-      [first, second] = Gallery.list_photos()
+      [first, second] = Enum.take(Gallery.list_photos(), 2)
 
       {:ok, view, _html} = live(conn, ~p"/photos/#{first.id}")
 

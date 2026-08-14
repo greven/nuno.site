@@ -18,7 +18,7 @@ defmodule Site.Accounts.Scope do
 
   alias Site.Accounts.User
 
-  defstruct user: nil
+  defstruct user: nil, env: nil
 
   @doc """
   Creates a scope for the given user.
@@ -30,4 +30,8 @@ defmodule Site.Accounts.Scope do
   end
 
   def for_user(nil), do: nil
+
+  def put_env(%__MODULE__{} = scope, env) do
+    %{scope | env: env}
+  end
 end

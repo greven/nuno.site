@@ -28,6 +28,7 @@ defmodule SiteWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_scope_for_user
+    plug :assign_env_to_scope
   end
 
   pipeline :api do
@@ -117,8 +118,19 @@ defmodule SiteWeb.Router do
     pipe_through [:browser_admin, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{SiteWeb.UserAuth, :require_authenticated}, Hooks.ActiveLinks] do
+      on_mount: [
+        {SiteWeb.UserAuth, :require_authenticated},
+        {SiteWeb.UserAuth, :assign_env_to_scope},
+        Hooks.ActiveLinks
+      ] do
       live "/", AdminLive.Index, :index
+
+      # Admin dev only routes
+      if Application.compile_env(:site, :dev_routes) do
+        live "/dev", AdminLive.Dev, :index
+        live "/dev/photos", AdminLive.PhotosUpload, :index
+        live "/dev/photos/manage", AdminLive.PhotosManage, :index
+      end
     end
 
     live_dashboard "/dashboard", metrics: SiteWeb.Telemetry

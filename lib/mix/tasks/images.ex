@@ -72,9 +72,14 @@ defmodule Mix.Tasks.Images do
         end
 
         Mix.shell().info("Optimizing single image: #{normalized_path}")
-        optimize_image(normalized_path, opts)
-        opts[:blur] && create_blur_placeholder(normalized_path)
-        Mix.shell().info("Image optimized successfully.")
+
+        case Site.Images.process(normalized_path, opts) do
+          :ok ->
+            Mix.shell().info("Image optimized successfully.")
+
+          {:error, reason} ->
+            Mix.shell().error("Failed to optimize image: #{reason}")
+        end
     end
   end
 
@@ -115,162 +120,32 @@ defmodule Mix.Tasks.Images do
       end)
 
     # Process each image (concurrently... because BEAM!!)
-    Task.async_stream(
-      images,
-      fn image ->
-        optimize_image(image, opts)
-        opts[:blur] && create_blur_placeholder(image)
-      end
-    )
-    |> Stream.run()
+    results =
+      Task.async_stream(
+        images,
+        fn image ->
+          case Site.Images.process(image, opts) do
+            :ok -> :ok
+            {:error, reason} -> {:error, "#{Path.basename(image)}: #{reason}"}
+          end
+        end,
+        timeout: :infinity,
+        ordered: false
+      )
+      |> Enum.to_list()
 
-    Mix.shell().info("Images optimized successfully.")
-  end
+    errors =
+      Enum.flat_map(results, fn
+        {:ok, :ok} -> []
+        {:ok, {:error, reason}} -> [reason]
+        {:exit, reason} -> ["#{inspect(reason)}"]
+      end)
 
-  # Optimize the image using ImageMagick and pngquant
-  defp optimize_image(image_path, opts) do
-    quality = Keyword.get(opts, :quality, 85)
-    gravity = Keyword.get(opts, :gravity, "center")
-
-    # Resize the image if the resize option is provided
-    maybe_resize(image_path, opts[:resize])
-
-    # Optimize based on file extension
-    image_path
-    |> Path.extname()
-    |> String.downcase()
-    |> case do
-      ext when ext in [".jpg", ".jpeg"] ->
-        optimize_jpg(image_path, quality)
-        to_webp(image_path, quality)
-        to_avif(image_path, quality)
-
-      ".png" ->
-        optimize_png(image_path, quality)
-        to_webp(image_path, quality)
-        to_avif(image_path, quality)
-
-      _ ->
-        :ok
-    end
-
-    # Create thumbnail if requested
-    opts[:thumbnail] && create_thumbnails(image_path, gravity, opts)
-  end
-
-  defp maybe_resize(image_path, resize) do
-    if resize do
-      cmd = "magick #{image_path} -resize #{resize} #{image_path}"
-      System.cmd("sh", ["-c", cmd])
+    if errors == [] do
+      Mix.shell().info("Images optimized successfully.")
     else
-      :ok
-    end
-  end
-
-  defp optimize_jpg(image_path, quality) do
-    cmd =
-      "magick #{image_path} \
-      -strip \
-      -colorspace sRGB \
-      -interlace Plane \
-      -quality #{quality} #{image_path}"
-
-    System.cmd("sh", ["-c", cmd])
-  end
-
-  defp optimize_png(image_path, quality) do
-    quality_range = "#{quality - 5}-#{quality}"
-
-    cmd =
-      "pngquant #{image_path} \
-      --quality=#{quality_range} \
-      --strip \
-      --force \
-      --output #{image_path}"
-
-    System.cmd("sh", ["-c", cmd])
-  end
-
-  defp to_webp(image_path, quality) do
-    cmd = "magick #{image_path} \
-    -quality #{quality} \
-    #{Path.rootname(image_path)}.webp"
-
-    System.cmd("sh", ["-c", cmd])
-  end
-
-  defp to_avif(image_path, quality) do
-    # AVIF quality scale is different (0-63), convert from 0-100
-    avif_quality = floor(quality * 0.63)
-
-    cmd =
-      "magick #{image_path} \
-      -quality #{avif_quality} \
-      -define heic:speed=8 \
-      #{Path.rootname(image_path)}.avif"
-
-    System.cmd("sh", ["-c", cmd])
-  end
-
-  defp create_blur_placeholder(image_path) do
-    cmd =
-      "magick #{image_path} \
-      -resize 2% \
-      -gaussian-blur 0.05 \
-      -resize 1000% -quality 10 \
-      #{Path.rootname(image_path)}_blur.jpg"
-
-    System.cmd("sh", ["-c", cmd])
-  end
-
-  defp create_thumbnails(image_path, gravity, opts) do
-    sizes = thumbnail_sizes(opts)
-
-    for size <- sizes do
-      create_thumbnail(image_path, size, gravity, opts)
-    end
-  end
-
-  defp create_thumbnail(image_path, size, gravity, opts) do
-    {width, height} = get_dimensions_from_size(size)
-    quality = Keyword.get(opts, :quality, 85)
-
-    dimension =
-      cond do
-        width && height -> if width >= height, do: "#{width}w", else: "#{height}h"
-        width -> "#{width}w"
-        height -> "#{height}h"
-        true -> ""
-      end
-
-    cmd =
-      "magick #{image_path} \
-      -quality #{quality} \
-      -filter Lanczos \
-      -resize #{size}^ \
-      -unsharp 0.5x0.5+0.5+0.008 \
-      -gravity #{gravity} \
-      -extent #{size} \
-      #{Path.rootname(image_path)}_thumbnail_#{dimension}#{Path.extname(image_path)}"
-
-    System.cmd("sh", ["-c", cmd])
-  end
-
-  defp thumbnail_sizes(opts) do
-    case opts[:thumbnail_size] do
-      nil -> ["200x200", "400x200"]
-      str -> String.split(str, ",") |> Enum.map(&String.trim/1)
-    end
-  end
-
-  # Helper to parse resize dimensions from string
-  # Examples: "300x200" -> {300, 200}, "300" -> {300, nil}, "x200" -> {nil, 200}
-  defp get_dimensions_from_size(size) do
-    case String.split(size, "x") do
-      [w, h] when w != "" and h != "" -> {String.to_integer(w), String.to_integer(h)}
-      [w, ""] when w != "" -> {String.to_integer(w), nil}
-      ["", h] when h != "" -> {nil, String.to_integer(h)}
-      _ -> {nil, nil}
+      Enum.each(errors, fn error -> Mix.shell().error(error) end)
+      Mix.shell().error("Some images failed to optimize.")
     end
   end
 end

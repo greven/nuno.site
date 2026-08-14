@@ -81,6 +81,17 @@ defmodule SiteWeb.Components.Theming do
     end
   end
 
+  ## Inputs
+
+  # Mirrors `button_size_cx/1` so inputs align with buttons of the same size.
+  def input_size_cx(size) do
+    case size do
+      "sm" -> "[--input-height:--spacing(9)] h-(--input-height)"
+      "md" -> "[--input-height:--spacing(10)] h-(--input-height)"
+      "lg" -> "[--input-height:--spacing(11)] h-(--input-height)"
+    end
+  end
+
   def button_variant_cx("default", variant) do
     case variant do
       "default" ->

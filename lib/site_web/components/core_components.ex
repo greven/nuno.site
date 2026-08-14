@@ -395,11 +395,16 @@ defmodule SiteWeb.CoreComponents do
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
 
+  attr :size, :string,
+    values: ~w(sm md lg),
+    default: "md",
+    doc: "the size of the input, matching the `.button` sizes so they align"
+
   attr :class, :string, default: "w-full mb-4", doc: "the CSS class to apply to the root element"
 
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
-                multiple pattern placeholder readonly required rows size step)
+                multiple pattern placeholder readonly required rows step)
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
@@ -456,6 +461,7 @@ defmodule SiteWeb.CoreComponents do
             name={@name}
             class={[
               "col-start-1 row-start-1 w-full px-3 py-2 text-sm rounded-(--radius-control) border transition-colors appearance-none",
+              Theming.input_size_cx(@size),
               "bg-surface-10 border-surface-30 text-content-10",
               "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
               "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
@@ -514,7 +520,7 @@ defmodule SiteWeb.CoreComponents do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <fieldset class={["grid grid-cols-1 gap-1.5 py-1", @class]}>
+    <fieldset class={["grid grid-cols-1 gap-1.5", @class]}>
       <label>
         <span :if={@label} class="block text-sm/6 font-medium text-content-10 pl-0.5 mb-2">
           {@label}
@@ -526,6 +532,7 @@ defmodule SiteWeb.CoreComponents do
           value={Phoenix.HTML.Form.normalize_value(@type, @value)}
           class={[
             "w-full px-3 py-2 text-sm rounded-(--radius-control) border transition-colors",
+            Theming.input_size_cx(@size),
             "bg-surface-10 border-surface-30 text-content-10",
             "focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary",
             "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-20",
@@ -878,7 +885,9 @@ defmodule SiteWeb.CoreComponents do
   attr :wide, :boolean, default: false
   attr :loading, :boolean, default: false
   attr :disabled, :boolean, default: false
-  attr :rest, :global, include: ~w(href navigate patch method target name value popovertarget)
+
+  attr :rest, :global,
+    include: ~w(type href navigate patch method target name value popovertarget)
 
   slot :inner_block, required: true
 

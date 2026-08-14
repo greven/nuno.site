@@ -77,6 +77,17 @@ defmodule SiteWeb.UserAuth do
     end
   end
 
+  def assign_env_to_scope(conn, _opts) do
+    case conn.assigns.current_scope do
+      %{env: nil} = scope ->
+        env = Application.get_env(:site, :env)
+        assign(conn, :current_scope, Scope.put_env(scope, env))
+
+      _ ->
+        conn
+    end
+  end
+
   defp ensure_user_token(conn) do
     if token = get_session(conn, :user_token) do
       {token, conn}
@@ -245,6 +256,20 @@ defmodule SiteWeb.UserAuth do
 
       {:halt, socket}
     end
+  end
+
+  def on_mount(:assign_env_to_scope, _params, _session, socket) do
+    socket =
+      case socket.assigns.current_scope do
+        %{env: nil} = scope ->
+          env = Application.get_env(:site, :env)
+          Phoenix.Component.assign(socket, :current_scope, Scope.put_env(scope, env))
+
+        _ ->
+          socket
+      end
+
+    {:cont, socket}
   end
 
   defp mount_current_scope(socket, session) do

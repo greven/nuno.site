@@ -22,9 +22,19 @@ defmodule SiteWeb.AdminLive.Index do
           <.header tag="h1">
             Admin Dashboard
             <:actions>
-              <.button variant="light" color="primary" href={~p"/admin/log-out"} method="delete">
-                <.icon name="lucide-log-out" /> Log out
-              </.button>
+              <div class="flex items-center gap-2">
+                <.button
+                  :if={@current_scope.env == :dev}
+                  variant="light"
+                  href={~p"/admin/dev"}
+                  title="Development"
+                >
+                  <.icon name="lucide-code" />
+                </.button>
+                <.button variant="light" color="primary" href={~p"/admin/log-out"} method="delete">
+                  <.icon name="lucide-log-out" /> Log out
+                </.button>
+              </div>
             </:actions>
           </.header>
 
