@@ -224,12 +224,17 @@ defmodule SiteWeb.AdminLive.PhotosUpload do
           <div>
             <.button
               id="process-photos"
-              color="primary"
+              variant="outline"
+              color={((@processing or @uploads.photos.entries == []) && "default") || "success"}
               disabled={@processing or @uploads.photos.entries == []}
               class="phx-submit-loading:opacity-60"
             >
               <.icon name="lucide-cloud-upload" class="size-5" />
-              Process {photos_count(@uploads.photos.entries)} photo(s)
+              Process {photos_count(@uploads.photos.entries)} {ngettext(
+                "photo",
+                "photos",
+                photos_count(@uploads.photos.entries)
+              )}
             </.button>
           </div>
         </.form>
