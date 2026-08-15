@@ -84,6 +84,7 @@ defmodule SiteWeb.AdminLive.PhotosUpload do
           <.box
             id="photos-dropzone"
             phx-drop-target={@uploads.photos.ref}
+            phx-hook="PhotoExif"
             class="text-center transition-colors"
             border="border border-border border-dashed phx-drop-target-active:border-primary phx-drop-target-active:bg-surface-20"
           >

@@ -13,6 +13,7 @@ import { Layout } from './layout';
 import { PostLike } from './post-like';
 import { PostMeta } from './post-meta';
 import { PhotoSwipe } from './photo-swipe';
+import { PhotoExif } from './photo-exif';
 import { ProfileSlideshow } from './profile-slideshow';
 import { PulseClock } from './pulse-clock';
 import { PulseFeed } from './pulse-feed';
@@ -46,6 +47,7 @@ export default {
   PostLike,
   PostMeta,
   PhotoSwipe,
+  PhotoExif,
   ProfileSlideshow,
   PulseClock,
   PulseFeed,
