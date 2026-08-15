@@ -488,8 +488,9 @@ defmodule Site.Blog do
 
   # The frontmatter attrs that can be edited from the admin dev screens.
   @editable_attrs [:title, :status, :featured, :category, :tags]
+
   # Canonical order used when re-serializing the frontmatter.
-  @attr_order ~w(title tags excerpt lead category status featured image updated show_toc likes)
+  @attr_order ~w(title tags excerpt lead category status featured image updated show_toc likes)a
 
   defp posts_dir do
     Application.get_env(:site, :posts_dir, Path.expand(@posts_dir))
@@ -524,11 +525,25 @@ defmodule Site.Blog do
          {:ok, frontmatter, body} <- split_post_contents(contents),
          {:ok, current_attrs} <- parse_frontmatter(frontmatter) do
       updated_attrs = Map.merge(current_attrs, Map.take(attrs, @editable_attrs))
+      write_post_file(path, updated_attrs, body)
+    end
+  end
 
-      case File.write(path, serialize_frontmatter(updated_attrs) <> "\n\n---\n" <> body) do
-        :ok -> :ok
-        {:error, reason} -> {:error, file_error(path, reason)}
-      end
+  # Serialize and write the frontmatter, but only after verifying the
+  # serialized output still parses back to the same attrs, so a broken
+  # serialization can never corrupt a post file.
+  defp write_post_file(path, attrs, body) do
+    serialized = serialize_frontmatter(attrs)
+
+    case parse_frontmatter(serialized) do
+      {:ok, ^attrs} ->
+        case File.write(path, serialized <> "\n\n---\n" <> body) do
+          :ok -> :ok
+          {:error, reason} -> {:error, file_error(path, reason)}
+        end
+
+      _ ->
+        {:error, "refusing to write an invalid frontmatter to #{path}"}
     end
   end
 
@@ -560,7 +575,7 @@ defmodule Site.Blog do
   defp serialize_frontmatter(attrs) do
     attrs
     |> Enum.sort_by(fn {key, _value} -> {attr_index(key), key} end)
-    |> Enum.map_join("\n", fn {key, value} -> "#{key}: #{serialize_attr_value(value)}" end)
+    |> Enum.map_join(",\n", fn {key, value} -> "#{key}: #{serialize_attr_value(value)}" end)
     |> then(&"%{\n#{&1}\n}")
   end
 

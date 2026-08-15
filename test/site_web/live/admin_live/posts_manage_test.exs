@@ -69,11 +69,17 @@ defmodule SiteWeb.AdminLive.PostsManageTest do
 
       contents = File.read!(Path.join(posts_dir, "2026/01-10-life_is_hardmode.md"))
 
-      assert contents =~ "title: \"Life is Ultra Hardmode\""
-      assert contents =~ "status: :review"
-      assert contents =~ "featured: true"
-      assert contents =~ "category: :article"
-      assert contents =~ "~w(random gaming hardcore)"
+      assert parse_frontmatter(contents) == %{
+               title: "Life is Ultra Hardmode",
+               tags: ["random", "gaming", "hardcore"],
+               excerpt: "Why hard games can be more rewarding than easy ones.",
+               lead: true,
+               category: :article,
+               status: :review,
+               featured: true,
+               image: "hollow_knight.jpg"
+             }
+
       assert contents =~ "I'm often asked"
     end
 
@@ -96,7 +102,7 @@ defmodule SiteWeb.AdminLive.PostsManageTest do
       })
 
       contents = File.read!(Path.join(posts_dir, "2026/01-10-life_is_hardmode.md"))
-      assert contents =~ "featured: false"
+      assert parse_frontmatter(contents)[:featured] == false
     end
 
     test "an empty title is rejected", %{conn: conn} do
@@ -116,5 +122,13 @@ defmodule SiteWeb.AdminLive.PostsManageTest do
 
       assert render(view) =~ "Title cannot be empty."
     end
+  end
+
+  # Parse the frontmatter of a written post file back into a map, raising on
+  # invalid syntax, so tests verify the written files stay parseable.
+  defp parse_frontmatter(contents) do
+    [frontmatter, _body] = String.split(contents, "---\n", parts: 2)
+    {attrs, _bindings} = Code.eval_string(frontmatter, [])
+    attrs
   end
 end
