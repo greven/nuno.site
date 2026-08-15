@@ -224,8 +224,8 @@ defmodule SiteWeb.AdminLive.PhotosUpload do
           <div>
             <.button
               id="process-photos"
-              variant="outline"
-              color={((@processing or @uploads.photos.entries == []) && "default") || "success"}
+              variant="solid"
+              color="default"
               disabled={@processing or @uploads.photos.entries == []}
               class="phx-submit-loading:opacity-60"
             >

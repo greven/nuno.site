@@ -21,7 +21,7 @@ defmodule SiteWeb.AdminLive.Dev do
           </.header>
         </div>
 
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-4 gap-4">
           <.card class="aspect-square" navigate={~p"/admin/dev/posts"}>
             <.diagonal_pattern class="opacity-80" use_transition={false} />
             <div class="flex-1 flex flex-col items-center justify-center gap-4">
