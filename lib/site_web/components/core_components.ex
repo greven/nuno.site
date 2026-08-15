@@ -454,7 +454,7 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <div class={@class}>
       <label class="block w-full">
-        <span :if={@label} class="block text-sm font-medium text-content-10 mb-2">{@label}</span>
+        <span :if={@label} class="block text-sm/6 font-medium text-content-10 pl-0.5 mb-2">{@label}</span>
         <div class="grid grid-cols-1">
           <select
             id={@id}
@@ -497,7 +497,7 @@ defmodule SiteWeb.CoreComponents do
     ~H"""
     <div class={@class}>
       <label class="block">
-        <span :if={@label} class="block text-sm font-medium text-content-10 mb-2">{@label}</span>
+        <span :if={@label} class="block text-sm/6 font-medium text-content-10 pl-0.5 mb-2">{@label}</span>
         <textarea
           id={@id}
           name={@name}

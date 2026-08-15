@@ -483,6 +483,115 @@ defmodule Site.Blog do
   end
 
   # ------------------------------------------
+  #  Post file editing (dev only)
+  # ------------------------------------------
+
+  # The frontmatter attrs that can be edited from the admin dev screens.
+  @editable_attrs [:title, :status, :featured, :category, :tags]
+  # Canonical order used when re-serializing the frontmatter.
+  @attr_order ~w(title tags excerpt lead category status featured image updated show_toc likes)
+
+  defp posts_dir do
+    Application.get_env(:site, :posts_dir, Path.expand(@posts_dir))
+  end
+
+  @doc """
+  Returns the filesystem path of the markdown source file for a post.
+
+  The posts directory can be overridden for tests via
+  `Application.put_env(:site, :posts_dir, path)`.
+  """
+  def post_file_path(%Blog.Post{year: year, date: %Date{month: month, day: day}, id: id}) do
+    id = String.replace_prefix(id, "#{year}_", "")
+    month = String.pad_leading(Integer.to_string(month), 2, "0")
+    day = String.pad_leading(Integer.to_string(day), 2, "0")
+
+    Path.join([posts_dir(), to_string(year), "#{month}-#{day}-#{id}.md"])
+  end
+
+  @doc """
+  Updates the editable frontmatter attrs of a post markdown file in place.
+
+  Only `title`, `status`, `featured`, `category` and `tags` are updated; all
+  other frontmatter attrs and the post body are preserved.
+
+  Returns `:ok` or `{:error, message}`.
+  """
+  def update_post_attrs(%Blog.Post{} = post, attrs) when is_map(attrs) do
+    path = post_file_path(post)
+
+    with {:ok, contents} <- read_post_file(path),
+         {:ok, frontmatter, body} <- split_post_contents(contents),
+         {:ok, current_attrs} <- parse_frontmatter(frontmatter) do
+      updated_attrs = Map.merge(current_attrs, Map.take(attrs, @editable_attrs))
+
+      case File.write(path, serialize_frontmatter(updated_attrs) <> "\n\n---\n" <> body) do
+        :ok -> :ok
+        {:error, reason} -> {:error, file_error(path, reason)}
+      end
+    end
+  end
+
+  defp read_post_file(path) do
+    case File.read(path) do
+      {:ok, contents} -> {:ok, contents}
+      {:error, reason} -> {:error, file_error(path, reason)}
+    end
+  end
+
+  defp split_post_contents(contents) do
+    case String.split(contents, "---\n", parts: 2) do
+      [frontmatter, body] -> {:ok, frontmatter, body}
+      _ -> {:error, "could not find the frontmatter separator"}
+    end
+  end
+
+  defp parse_frontmatter(frontmatter) do
+    try do
+      case Code.eval_string(frontmatter, []) do
+        {%{} = attrs, _} -> {:ok, attrs}
+        _ -> {:error, "invalid frontmatter"}
+      end
+    rescue
+      _ -> {:error, "invalid frontmatter"}
+    end
+  end
+
+  defp serialize_frontmatter(attrs) do
+    attrs
+    |> Enum.sort_by(fn {key, _value} -> {attr_index(key), key} end)
+    |> Enum.map_join("\n", fn {key, value} -> "#{key}: #{serialize_attr_value(value)}" end)
+    |> then(&"%{\n#{&1}\n}")
+  end
+
+  defp attr_index(key) do
+    Enum.find_index(@attr_order, &(&1 == key)) || length(@attr_order)
+  end
+
+  defp serialize_attr_value(value) when is_boolean(value), do: to_string(value)
+  defp serialize_attr_value(value) when is_atom(value), do: ":#{value}"
+  defp serialize_attr_value(value) when is_integer(value), do: Integer.to_string(value)
+  defp serialize_attr_value(value) when is_float(value), do: Float.to_string(value)
+  defp serialize_attr_value(value) when is_binary(value), do: inspect(value)
+  defp serialize_attr_value(%Date{} = date), do: "~D[#{Date.to_iso8601(date)}]"
+
+  defp serialize_attr_value(value) when is_list(value) do
+    if value != [] and Enum.all?(value, &simple_tag?/1) do
+      "~w(" <> Enum.join(value, " ") <> ")"
+    else
+      "[" <> Enum.map_join(value, ", ", &serialize_attr_value/1) <> "]"
+    end
+  end
+
+  defp serialize_attr_value(value), do: inspect(value)
+
+  defp simple_tag?(tag), do: is_binary(tag) and Regex.match?(~r/^[a-zA-Z0-9_-]+$/, tag)
+
+  defp file_error(path, reason) do
+    "could not read or write #{path}: #{:file.format_error(reason)}"
+  end
+
+  # ------------------------------------------
   #  Helpers
   # ------------------------------------------
 

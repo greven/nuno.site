@@ -37,7 +37,7 @@ defmodule SiteWeb.AdminLive.PhotosManage do
           No photos in the manifest yet.
         </p>
 
-        <div id="photos-manage" class="flex flex-col gap-2">
+        <div id="photos-manage" class="flex flex-col gap-4">
           <.card
             :for={photo <- @photos}
             id={"photo-row-#{photo.id}"}

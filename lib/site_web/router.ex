@@ -130,6 +130,7 @@ defmodule SiteWeb.Router do
         live "/dev", AdminLive.Dev, :index
         live "/dev/photos", AdminLive.PhotosUpload, :index
         live "/dev/photos/manage", AdminLive.PhotosManage, :index
+        live "/dev/posts", AdminLive.PostsManage, :index
       end
     end
 

@@ -721,4 +721,87 @@ defmodule Site.BlogTest do
       assert headings == expected
     end
   end
+
+  describe "post_file_path/1" do
+    test "returns the markdown source path for a post" do
+      post = Blog.get_post_by_id!("2026_life_is_hardmode")
+
+      assert Blog.post_file_path(post) ==
+               Path.join(File.cwd!(), "priv/content/posts/2026/01-10-life_is_hardmode.md")
+    end
+  end
+
+  describe "update_post_attrs/2" do
+    setup do
+      posts_dir =
+        Path.join(System.tmp_dir!(), "blog-update-test-#{System.unique_integer([:positive])}")
+
+      File.mkdir_p!(Path.join(posts_dir, "2026"))
+
+      File.cp!(
+        Path.join([:code.priv_dir(:site), "content/posts/2026/01-10-life_is_hardmode.md"]),
+        Path.join(posts_dir, "2026/01-10-life_is_hardmode.md")
+      )
+
+      Application.put_env(:site, :posts_dir, posts_dir)
+
+      on_exit(fn ->
+        Application.delete_env(:site, :posts_dir)
+        File.rm_rf(posts_dir)
+      end)
+
+      %{posts_dir: posts_dir}
+    end
+
+    test "updates the editable attrs and preserves the rest", %{posts_dir: posts_dir} do
+      post = Blog.get_post_by_id!("2026_life_is_hardmode")
+
+      assert :ok =
+               Blog.update_post_attrs(post, %{
+                 title: "Life is Ultra Hardmode",
+                 status: :review,
+                 featured: true,
+                 category: :article,
+                 tags: ["random", "gaming", "hardcore"]
+               })
+
+      contents = File.read!(Path.join(posts_dir, "2026/01-10-life_is_hardmode.md"))
+
+      assert contents =~ "title: \"Life is Ultra Hardmode\""
+      assert contents =~ "status: :review"
+      assert contents =~ "featured: true"
+      assert contents =~ "category: :article"
+      assert contents =~ "~w(random gaming hardcore)"
+      # Non-editable attrs and the body are preserved
+      assert contents =~ "excerpt: \"Why hard games can be more rewarding than easy ones.\""
+      assert contents =~ "lead: true"
+      assert contents =~ "image: \"hollow_knight.jpg\""
+      assert contents =~ "I'm often asked"
+    end
+
+    test "ignores attrs outside the editable scope", %{posts_dir: posts_dir} do
+      post = Blog.get_post_by_id!("2026_life_is_hardmode")
+
+      assert :ok =
+               Blog.update_post_attrs(post, %{
+                 title: "Life is Hardmode",
+                 status: :published,
+                 featured: false,
+                 category: :note,
+                 tags: ["random", "gaming"],
+                 excerpt: "SHOULD NOT BE WRITTEN"
+               })
+
+      contents = File.read!(Path.join(posts_dir, "2026/01-10-life_is_hardmode.md"))
+
+      refute contents =~ "SHOULD NOT BE WRITTEN"
+      assert contents =~ "excerpt: \"Why hard games can be more rewarding than easy ones.\""
+    end
+
+    test "returns an error when the file cannot be read" do
+      post = Blog.get_post_by_id!("2025_markdown-sample")
+
+      assert {:error, _message} = Blog.update_post_attrs(post, %{title: "Nope"})
+    end
+  end
 end
