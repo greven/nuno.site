@@ -31,6 +31,27 @@ defmodule SiteWeb.AdminLive.Components do
     """
   end
 
+  @doc false
+
+  attr :title, :string, required: true
+  attr :icon, :string, required: true
+  attr :navigate, :string, required: true
+
+  def dev_dashboard_card(assigns) do
+    ~H"""
+    <.card class="group aspect-square" navigate={@navigate}>
+      <.diagonal_pattern class="opacity-80" use_transition={false} />
+      <div class="flex-1 flex flex-col items-center justify-center gap-4">
+        <.icon
+          name={@icon}
+          class="size-12 text-content-40 group-hover:text-primary transition-colors"
+        />
+        <div class="font-headings text-content-10">{@title}</div>
+      </div>
+    </.card>
+    """
+  end
+
   defp post_path(post), do: ~p"/blog/#{post.year}/#{post}"
 
   defp post_views(post) do

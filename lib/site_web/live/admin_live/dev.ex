@@ -5,6 +5,8 @@ defmodule SiteWeb.AdminLive.Dev do
 
   use SiteWeb, :live_view
 
+  alias SiteWeb.AdminLive.Components
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -22,29 +24,22 @@ defmodule SiteWeb.AdminLive.Dev do
         </div>
 
         <div class="grid grid-cols-4 gap-4">
-          <.card class="aspect-square" navigate={~p"/admin/dev/posts"}>
-            <.diagonal_pattern class="opacity-80" use_transition={false} />
-            <div class="flex-1 flex flex-col items-center justify-center gap-4">
-              <.icon name="lucide-file-pen-line" class="size-12 text-secondary" />
-              <div class="font-headings text-content-30">Manage Posts</div>
-            </div>
-          </.card>
+          <Components.dev_dashboard_card
+            title="Manage Posts"
+            icon="lucide-file-pen-line"
+            navigate={~p"/admin/dev/posts"}
+          />
+          <Components.dev_dashboard_card
+            title="Upload Photos"
+            icon="lucide-image-up"
+            navigate={~p"/admin/dev/photos"}
+          />
 
-          <.card class="aspect-square" navigate={~p"/admin/dev/photos"}>
-            <.diagonal_pattern class="opacity-80" use_transition={false} />
-            <div class="flex-1 flex flex-col items-center justify-center gap-4">
-              <.icon name="lucide-image-up" class="size-12 text-secondary" />
-              <div class="font-headings text-content-30">Upload Photos</div>
-            </div>
-          </.card>
-
-          <.card class="aspect-square" navigate={~p"/admin/dev/photos/manage"}>
-            <.diagonal_pattern class="opacity-80" use_transition={false} />
-            <div class="flex-1 flex flex-col items-center justify-center gap-4">
-              <.icon name="lucide-image-down" class="size-12 text-secondary" />
-              <div class="font-headings text-content-30">Manage Photos</div>
-            </div>
-          </.card>
+          <Components.dev_dashboard_card
+            title="Manage Photos"
+            icon="lucide-image-down"
+            navigate={~p"/admin/dev/photos/manage"}
+          />
         </div>
       </Layouts.page_content>
     </Layouts.app>

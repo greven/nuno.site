@@ -174,7 +174,7 @@ defmodule SiteWeb.PulseLive.Index do
       |> assign(:hacker_news, AsyncResult.loading())
       |> stream(:news_feed, [])
       |> stream(:hacker_news, [])
-      |> assign_async(:weather, fn -> {:ok, %{weather: get_weather()}} end)
+      |> assign_async(:weather, fn -> fetch_weather() end)
       |> stream_async(:ars_technica_news, fn -> fetch_source(:ars_technica) end)
       |> stream_async(:bbc_news, fn -> fetch_source(:bbc) end)
       |> stream_async(:changelog_news, fn -> fetch_source(:changelog) end)
@@ -250,8 +250,19 @@ defmodule SiteWeb.PulseLive.Index do
   end
 
   def handle_async(:hacker_news_loader, {:exit, reason}, socket) do
-    {:noreply,
-     assign(socket, :hacker_news, AsyncResult.failed(socket.assigns.hacker_news, {:exit, reason}))}
+    socket =
+      assign(
+        socket,
+        :hacker_news,
+        AsyncResult.failed(socket.assigns.hacker_news, {:exit, reason})
+      )
+
+    {:noreply, socket}
+  end
+
+  # Catch-all
+  def handle_async(_name, _result, socket) do
+    {:noreply, socket}
   end
 
   @impl true
@@ -264,6 +275,11 @@ defmodule SiteWeb.PulseLive.Index do
       end
 
     {:noreply, stream_insert(socket, :hacker_news, item)}
+  end
+
+  # Catch-all for unexpected errors
+  def handle_info(_message, socket) do
+    {:noreply, socket}
   end
 
   defp paginate_feed(socket, items, new_page) when new_page >= 1 do
@@ -312,36 +328,11 @@ defmodule SiteWeb.PulseLive.Index do
     end
   end
 
-  defp get_exchange_rates do
-    case Forex.last_ninety_days_rates() do
-      {:ok, rates} ->
-        latest_rates = Enum.take(rates, 7)
-
-        %{
-          current: List.first(latest_rates),
-          change: %{
-            gbp: rate_change(latest_rates, :gbp),
-            usd: rate_change(latest_rates, :usd),
-            jpy: rate_change(latest_rates, :jpy),
-            chf: rate_change(latest_rates, :chf)
-          }
-        }
-
-      _ ->
-        nil
+  def fetch_weather do
+    case get_weather() do
+      {:ok, weather} -> {:ok, %{weather: weather}}
+      {:error, reason} -> {:error, reason}
     end
-  end
-
-  # Calculate the percentage change in exchange rate for a rates list and currency code
-  defp rate_change(rates, currency_code) do
-    # Most recent rate is the first in the list, oldest is the last
-    first_value = List.first(rates).rates |> Map.get(currency_code)
-    last_value = List.last(rates).rates |> Map.get(currency_code)
-
-    Decimal.div(Decimal.sub(first_value, last_value), last_value)
-    |> Decimal.mult(100)
-    |> Decimal.round(2)
-    |> Decimal.to_float()
   end
 
   defp get_weather do
@@ -365,30 +356,71 @@ defmodule SiteWeb.PulseLive.Index do
               ]
           end)
 
-        %{
-          time: weather.current.time,
-          weather_code: weather.current.weather_code,
-          temp: weather.current.temperature.value,
-          temp_unit: weather.current.temperature.unit,
-          apparent_temp: weather.current.apparent_temperature.value,
-          temp_max: weather.daily.temperature_max.values |> hd(),
-          temp_min: weather.daily.temperature_min.values |> hd(),
-          humidity: weather.current.relative_humidity.value,
-          rain: weather.current.precipitation.value,
-          rain_unit: weather.current.precipitation.unit,
-          pressure: weather.current.surface_pressure.value,
-          pressure_unit: weather.current.surface_pressure.unit,
-          wind_speed: weather.current.wind_speed.value,
-          wind_speed_unit: weather.current.wind_speed.unit,
-          uv_index: weather.daily.uv_index_max |> hd(),
-          sunrise: weather.daily.sunrise |> hd() |> Calendar.strftime("%H:%M"),
-          sunset: weather.daily.sunset |> hd() |> Calendar.strftime("%H:%M"),
-          is_day: weather.current.is_day,
-          daily: daily
-        }
+        {:ok,
+         %{
+           time: weather.current.time,
+           weather_code: weather.current.weather_code,
+           temp: weather.current.temperature.value,
+           temp_unit: weather.current.temperature.unit,
+           apparent_temp: weather.current.apparent_temperature.value,
+           temp_max: weather.daily.temperature_max.values |> hd(),
+           temp_min: weather.daily.temperature_min.values |> hd(),
+           humidity: weather.current.relative_humidity.value,
+           rain: weather.current.precipitation.value,
+           rain_unit: weather.current.precipitation.unit,
+           pressure: weather.current.surface_pressure.value,
+           pressure_unit: weather.current.surface_pressure.unit,
+           wind_speed: weather.current.wind_speed.value,
+           wind_speed_unit: weather.current.wind_speed.unit,
+           uv_index: weather.daily.uv_index_max |> hd(),
+           sunrise: weather.daily.sunrise |> hd() |> Calendar.strftime("%H:%M"),
+           sunset: weather.daily.sunset |> hd() |> Calendar.strftime("%H:%M"),
+           is_day: weather.current.is_day,
+           daily: daily
+         }}
 
-      {:error, _reason} ->
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp get_exchange_rates do
+    case Forex.last_ninety_days_rates() do
+      {:ok, [_ | _] = rates} ->
+        latest_rates = Enum.take(rates, 7)
+
+        with %{rates: current_rates} when is_map(current_rates) <- List.first(latest_rates),
+             true <- Enum.all?([:gbp, :usd, :jpy, :chf], &Map.has_key?(current_rates, &1)) do
+          %{
+            current: List.first(latest_rates),
+            change: %{
+              gbp: rate_change(latest_rates, :gbp),
+              usd: rate_change(latest_rates, :usd),
+              jpy: rate_change(latest_rates, :jpy),
+              chf: rate_change(latest_rates, :chf)
+            }
+          }
+        else
+          _ -> nil
+        end
+
+      _ ->
         nil
+    end
+  end
+
+  # Calculate the percentage change in exchange rate for a rates list and currency code
+  defp rate_change(rates, currency_code) do
+    with %{rates: first_rates} <- List.first(rates),
+         %{rates: last_rates} <- List.last(rates),
+         first_value when not is_nil(first_value) <- Map.get(first_rates, currency_code),
+         last_value when not is_nil(last_value) <- Map.get(last_rates, currency_code) do
+      Decimal.div(Decimal.sub(first_value, last_value), last_value)
+      |> Decimal.mult(100)
+      |> Decimal.round(2)
+      |> Decimal.to_float()
+    else
+      _ -> nil
     end
   end
 end
