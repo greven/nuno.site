@@ -204,7 +204,7 @@ defmodule SiteWeb.Layouts do
     <.link
       id="site-logo"
       navigate={~p"/"}
-      class="relative group flex items-center rounded-(--radius-control)"
+      class="relative group flex items-center rounded-control"
     >
       <span class="flex items-baseline gap-0.5 font-headings font-medium">
         <span class="text-2xl text-content-10">nuno</span>
@@ -334,7 +334,7 @@ defmodule SiteWeb.Layouts do
       <button
         type="button"
         class={[
-          "group flex items-center gap-1 mr-4 px-2 py-1 rounded-(--radius-control) corner-squircle bg-surface-40/25
+          "group flex items-center gap-1 mr-4 px-2 py-1 rounded-control corner-squircle bg-surface-40/25
           inset-ring inset-ring-surface-40/40 outline-none cursor-pointer transition duration-200",
           "hover:inset-ring-surface-40 hover:bg-surface-20",
           Theming.focus_visible_outline_cx()
@@ -410,9 +410,9 @@ defmodule SiteWeb.Layouts do
   """
   def theme_toggle(assigns) do
     ~H"""
-    <div class="relative flex flex-row items-center border border-surface-30 bg-surface-20 rounded-(--radius-control)">
+    <div class="relative flex flex-row items-center border border-surface-30 bg-surface-20 rounded-control">
       <div class={[
-        "absolute w-[33.33%] h-full rounded-(--radius-control) border border-surface-40 bg-surface left-0",
+        "absolute w-[33.33%] h-full rounded-control border border-surface-40 bg-surface left-0",
         "[[data-theme-mode=user][data-theme=light]_&]:left-[33.33%] [[data-theme-mode=user][data-theme=dark]_&]:left-[66.66%] transition-[left]"
       ]} />
 

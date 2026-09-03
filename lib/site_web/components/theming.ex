@@ -31,7 +31,7 @@ defmodule SiteWeb.Components.Theming do
 
     %{
       root: [
-        "relative isolate outline-none overflow-hidden cursor-pointer transition-[background-color,border-color,box-shadow,color,opacity] rounded-(--radius-control)",
+        "relative isolate outline-none overflow-hidden cursor-pointer transition-[background-color,border-color,box-shadow,color,opacity] rounded-control",
         "disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed",
         "aria-invalid:ring-danger aria-invalid:border-danger",
         "active:shadow-none",
@@ -558,9 +558,9 @@ defmodule SiteWeb.Components.Theming do
       "4xl" -> "rounded-4xl"
       "full" -> "rounded-full"
       "none" -> "rounded-none"
-      "control" -> "rounded-(--radius-control)"
-      "container" -> "rounded-(--radius-container)"
-      "overlay" -> "rounded-(--radius-overlay)"
+      "control" -> "rounded-control"
+      "container" -> "rounded-container"
+      "overlay" -> "rounded-overlay"
       _ -> nil
     end
   end

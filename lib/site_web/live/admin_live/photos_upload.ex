@@ -121,7 +121,7 @@ defmodule SiteWeb.AdminLive.PhotosUpload do
                   entry={entry}
                   width="240"
                   id={"photo-preview-#{entry.ref}"}
-                  class="max-w-full rounded-(--radius-control) border border-surface-30 object-contain"
+                  class="max-w-full rounded-control border border-surface-30 object-contain"
                 />
               </div>
 

@@ -48,7 +48,7 @@ defmodule SiteWeb.AdminLive.PhotosManage do
                 alt={photo.title || photo.id}
                 width={96}
                 height={96}
-                class="size-24 shrink-0 rounded-(--radius-control) border border-surface-30 object-cover"
+                class="size-24 shrink-0 rounded-control border border-surface-30 object-cover"
               />
 
               <%!-- Forms --%>

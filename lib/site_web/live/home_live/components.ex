@@ -10,8 +10,8 @@ defmodule SiteWeb.HomeLive.Components do
 
   attr :tag, :string, default: "div"
   attr :icon, :string, default: nil
-  attr :variant, :atom, values: ~w(default static subtle)a, default: :default
   attr :size, :atom, values: ~w(small medium)a, default: :medium
+  attr :variant, :atom, values: ~w(default static subtle)a, default: :default
   attr :description, :string, default: nil
   attr :content_class, :any, default: "flex flex-col justify-between gap-2"
   attr :icon_class, :string, default: "size-8 text-primary bg-primary shrink-0"
@@ -20,12 +20,13 @@ defmodule SiteWeb.HomeLive.Components do
   slot :inner_block, required: true
 
   # credo:disable-for-next-line
-  def bento_card(assigns) do
+  def bento_card(%{icon: icon} = assigns) do
     duotone_icon =
-      if(assigns[:icon] && String.ends_with?(assigns[:icon], "-duotone"),
-        do: assigns[:icon] |> String.trim_leading("lucide-") |> String.trim_trailing("-duotone"),
-        else: nil
-      )
+      if icon && String.ends_with?(icon, "-duotone") do
+        String.trim_leading(icon, "lucide-") |> String.trim_trailing("-duotone")
+      else
+        nil
+      end
 
     assigns =
       assigns
