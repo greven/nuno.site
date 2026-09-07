@@ -334,7 +334,7 @@ defmodule SiteWeb.Layouts do
       <button
         type="button"
         class={[
-          "group flex items-center gap-1 mr-4 px-2 py-1 rounded-control corner-squircle bg-surface-40/25
+          "group flex items-center gap-1 mr-4 px-2 py-1 rounded-control bg-surface-40/25
           inset-ring inset-ring-surface-40/40 outline-none cursor-pointer transition duration-200",
           "hover:inset-ring-surface-40 hover:bg-surface-20",
           Theming.focus_visible_outline_cx()

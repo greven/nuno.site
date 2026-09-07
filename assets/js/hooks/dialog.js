@@ -150,24 +150,31 @@ export const Dialog = {
       this.el.close();
     };
 
-    this._closeFallbackTimer = setTimeout(finishClose, 300);
     this.el.dataset.closing = '';
 
     const panel = this.el.querySelector('[data-part="dialog-panel"]');
     if (panel) {
       if (this._onAnimEnd) {
         panel.removeEventListener('animationend', this._onAnimEnd);
+        panel.removeEventListener('animationcancel', this._onAnimEnd);
       }
 
-      // Only respond to the panel's OWN animationend ignore bubbled events
+      // Only respond to the panel's OWN animation events, ignoring bubbled ones
       const onAnimEnd = (event) => {
-        if (event.target !== panel) return; // ← KEY FIX
+        if (event.target !== panel) return;
         panel.removeEventListener('animationend', onAnimEnd);
+        panel.removeEventListener('animationcancel', onAnimEnd);
         this._onAnimEnd = null;
         finishClose();
       };
       panel.addEventListener('animationend', onAnimEnd);
+      panel.addEventListener('animationcancel', onAnimEnd);
       this._onAnimEnd = onAnimEnd;
+
+      // Fallback: if the exit animation never runs or is cancelled (e.g. a
+      // LiveView morph strips `data-closing` mid-close), close shortly after
+      // the CSS animation would have finished.
+      this._closeFallbackTimer = setTimeout(finishClose, 250);
     } else {
       setTimeout(finishClose, 200);
     }

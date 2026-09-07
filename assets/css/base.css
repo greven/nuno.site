@@ -71,22 +71,6 @@
     pointer-events: none;
   }
 
-  /* Safari and Firefox do not support transitioning the `overlay` CSS property */
-  dialog[data-closing] [data-part='dialog-panel'] {
-    animation: slide-out-down 200ms ease forwards;
-  }
-
-  @media (width >= 768px) {
-    dialog[data-closing] [data-part='dialog-panel'] {
-      animation: scale-out 200ms ease forwards;
-    }
-  }
-
-  dialog[data-closing]::backdrop {
-    opacity: 0;
-    transition: opacity 200ms ease;
-  }
-
   /* Disable dialog body scroll */
   html:has(dialog:open) {
     overflow: hidden;
@@ -181,6 +165,27 @@
       transform: scaleX(1);
     }
   }
+}
+
+/* Dialog exit animations.
+ *
+ * Safari and Firefox do not support transitioning the `overlay` CSS property,
+ * so the exit must run as a keyframe animation *before* `close()` hides the
+ * dialog from the top layer.
+ */
+dialog[data-closing] [data-part='dialog-panel'] {
+  animation: slide-out-down 200ms ease forwards;
+}
+
+@media (width >= 768px) {
+  dialog[data-closing] [data-part='dialog-panel'] {
+    animation: scale-out 200ms ease forwards;
+  }
+}
+
+dialog[data-closing]::backdrop {
+  opacity: 0;
+  transition: opacity 200ms ease;
 }
 
 /* View Transitions */
