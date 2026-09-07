@@ -3,10 +3,10 @@
 @custom-variant dark-hover (&:where([data-theme=dark], [data-theme=dark] *):hover:not(:disabled));
 
 /* Add variants based on LiveView classes */
-@custom-variant phx-drop-target-active ([".phx-drop-target-active&", ".phx-drop-target-active &"]);
-@custom-variant phx-click-loading ([".phx-click-loading&", ".phx-click-loading &"]);
-@custom-variant phx-submit-loading ([".phx-submit-loading&", ".phx-submit-loading &"]);
-@custom-variant phx-change-loading ([".phx-change-loading&", ".phx-change-loading &"]);
+@custom-variant phx-drop-target-active (&:where(.phx-drop-target-active, .phx-drop-target-active *));
+@custom-variant phx-click-loading (&:where(.phx-click-loading, .phx-click-loading *));
+@custom-variant phx-submit-loading (&:where(.phx-submit-loading, .phx-submit-loading *));
+@custom-variant phx-change-loading (&:where(.phx-change-loading, .phx-change-loading *));
 
 /* Aria variants */
 @custom-variant aria-current (&[aria-current="true"], &[aria-current]);
