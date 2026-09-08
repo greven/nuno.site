@@ -7,10 +7,12 @@ export const CoverImage = {
   mounted() {
     this.initWorker();
     this.extractDominantColor();
+    this.previousSrc = this.artworkSrc();
   },
 
   updated() {
     this.extractDominantColor();
+    this.crossfadeArtwork();
   },
 
   destroyed() {
@@ -103,6 +105,52 @@ export const CoverImage = {
   applyColor(color) {
     this.el.style.setProperty('--album-shadow-color', `${color.r}, ${color.g}, ${color.b}`);
     this.el.classList.add('album-shadow');
+  },
+
+  artworkSrc() {
+    const img = this.el.querySelector('img');
+    return img && (img.currentSrc || img.src);
+  },
+
+  crossfadeArtwork() {
+    const img = this.el.querySelector('img');
+    const src = img && (img.currentSrc || img.src);
+
+    if (!img || !src || !this.previousSrc || src === this.previousSrc) return;
+
+    const overlay = document.createElement('img');
+    overlay.src = this.previousSrc;
+    overlay.alt = '';
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.style.cssText = [
+      'position: absolute',
+      'inset: 0',
+      'width: 100%',
+      'height: 100%',
+      'object-fit: cover',
+      'object-position: center',
+      'pointer-events: none',
+    ].join(';');
+
+    const stage = this.el.firstElementChild || this.el;
+    stage.appendChild(overlay);
+
+    const finish = () => {
+      overlay.style.transition = 'opacity 400ms ease';
+      overlay.style.opacity = '0';
+      const remove = () => overlay.remove();
+      overlay.addEventListener('transitionend', remove, { once: true });
+      window.setTimeout(remove, 600);
+    };
+
+    if (img.complete) {
+      requestAnimationFrame(finish);
+    } else {
+      img.addEventListener('load', finish, { once: true });
+      img.addEventListener('error', finish, { once: true });
+    }
+
+    this.previousSrc = src;
   },
 
   // Cache

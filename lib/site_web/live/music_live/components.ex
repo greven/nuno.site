@@ -5,7 +5,6 @@ defmodule SiteWeb.MusicLive.Components do
 
   alias Site.Support
 
-  alias SiteWeb.Helpers
   alias SiteWeb.SiteComponents
   alias SiteWeb.ChartComponents
 
@@ -111,10 +110,10 @@ defmodule SiteWeb.MusicLive.Components do
               :if={@show_artwork}
               src={track.image}
               class={[
-                "size-30 md:size-32 lg:size-36",
+                "relative size-30 md:size-32 lg:size-36",
                 "drop-shadow-[0_8px_16px_rgba(var(--album-shadow-color),0.5)]"
               ]}
-              id={track.image && Helpers.use_id("album")}
+              id={track.image && "music-now-playing-cover"}
               phx-hook={track.image && "CoverImage"}
             />
             <div class="flex flex-col justify-center gap-1">
