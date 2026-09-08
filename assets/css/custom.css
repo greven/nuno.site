@@ -176,6 +176,20 @@
     }
   }
 
+  .game-cover {
+    .game-cover-fallback {
+      display: flex;
+    }
+
+    &:has(> img.image:not([data-error='true'])) .game-cover-fallback {
+      display: none;
+    }
+
+    & > img.image[data-error='true'] {
+      visibility: hidden;
+    }
+  }
+
   /* Tooltip */
 
   .tooltip-container {
