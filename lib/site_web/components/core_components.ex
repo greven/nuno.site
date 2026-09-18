@@ -280,7 +280,7 @@ defmodule SiteWeb.CoreComponents do
     >
       <div class={[
         "relative flex items-center gap-3 px-4 py-3.5",
-        "rounded-container) border text-sm shadow",
+        "rounded-container border text-sm shadow",
         @cx
       ]}>
         <.icon

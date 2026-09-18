@@ -36,8 +36,8 @@ defmodule Site.MixProject do
   defp deps do
     [
       # Phoenix Framework
-      {:phoenix, "~> 1.8.11"},
-      {:phoenix_live_view, "~> 1.2.9"},
+      {:phoenix, "~> 1.8.14"},
+      {:phoenix_live_view, "~> 1.2.12"},
       {:phoenix_ecto, "~> 4.7"},
       {:phoenix_html, "~> 4.3"},
       {:phoenix_live_reload, "~> 1.7", only: :dev},
@@ -48,14 +48,14 @@ defmodule Site.MixProject do
       {:ecto_sqlite3, ">= 0.0.0"},
       {:bcrypt_elixir, "~> 3.3"},
       {:dns_cluster, "~> 0.2"},
-      {:telemetry_metrics, "~> 1.1"},
-      {:telemetry_poller, "~> 1.1"},
+      {:telemetry_metrics, "~> 1.2"},
+      {:telemetry_poller, "~> 1.3"},
       {:gettext, "~> 1.0"},
-      {:swoosh, "~> 1.22"},
+      {:swoosh, "~> 1.28"},
       {:req, "~> 0.7", override: true},
 
       # Utilities
-      {:oban, "~> 2.22"},
+      {:oban, "~> 2.24"},
       {:uniq, "~> 0.6"},
       {:req_s3, "~> 0.2"},
       {:nebulex, "~> 3.0"},
@@ -68,9 +68,9 @@ defmodule Site.MixProject do
       {:dotenvy, "~> 1.1"},
       {:recase, "~> 0.9"},
       {:mdex, "~> 0.13"},
-      {:lumis, "~> 0.6"},
+      {:lumis, "~> 0.8"},
       {:mdex_gfm, "~> 0.2"},
-      {:forex, "~> 1.1.3"},
+      {:forex, "~> 1.1.4"},
       {:geocalc, "~> 0.8"},
       {:sweet_xml, "~> 0.7"},
       {:ogi, "~> 0.2"},
@@ -80,9 +80,9 @@ defmodule Site.MixProject do
 
       # Development
       {:igniter, "~> 0.8", only: [:dev]},
-      {:credo, "~> 1.7", only: :dev, runtime: false},
-      {:tidewave, "~> 0.5", only: [:dev]},
+      {:tidewave, "~> 0.9", only: [:dev]},
       {:live_debugger, "~> 1.0", only: :dev},
+      {:credo, "~> 1.7", only: :dev, runtime: false},
       # {:benchee, "~> 1.4", only: :dev},
 
       # Assets
