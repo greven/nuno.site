@@ -9,6 +9,7 @@ defmodule Site.Services.Book do
     :cover_url,
     :thumbnail_url,
     :pub_date,
+    :date_added,
     :started_date,
     :read_date
   ]

@@ -21,7 +21,9 @@ defmodule Site.Services.Goodreads do
   defp rss_base_url, do: "#{@base_url}/review/list_rss/#{@user_id}"
   defp reading_shelf_url, do: "#{rss_base_url()}?shelf=currently-reading"
   defp read_shelf_url, do: "#{rss_base_url()}?shelf=read&sort=date_read&order=d&per_page=25"
-  defp want_to_read_url, do: "#{rss_base_url()}?shelf=to-read&sort=date_read&order=d&per_page=25"
+
+  defp want_to_read_url,
+    do: "#{rss_base_url()}?shelf=to-read&sort=date_added&order=d&per_page=100"
 
   def get_currently_reading do
     fetch_reading_shelf()
@@ -104,15 +106,7 @@ defmodule Site.Services.Goodreads do
         description: ~x"./description/text()"s
       )
       |> Enum.map(&build_book_struct/1)
-      |> Enum.sort_by(
-        fn book ->
-          case book.read_date do
-            nil -> ~D[1970-01-01]
-            date -> date
-          end
-        end,
-        {:desc, Date}
-      )
+      |> sort_by_date_desc(:read_date)
 
     {:ok, books}
   rescue
@@ -156,6 +150,7 @@ defmodule Site.Services.Goodreads do
         description: ~x"./description/text()"s
       )
       |> Enum.map(&build_book_struct/1)
+      |> sort_by_date_desc(:date_added)
 
     {:ok, books}
   rescue
@@ -184,11 +179,26 @@ defmodule Site.Services.Goodreads do
       author: item[:author],
       url: book_url_from_description(item[:description]),
       pub_date: parse_year_to_date(item[:book_published]),
+      date_added: parse_rfc822_date(item[:user_date_added]),
       started_date: parse_rfc822_date(item[:user_date_added]),
       read_date: parse_rfc822_date(item[:user_read_at]),
       thumbnail_url: item[:thumbnail_url],
       cover_url: item[:cover_url]
     }
+  end
+
+  # Sort books by the given date field, newest first.
+  defp sort_by_date_desc(books, field) do
+    Enum.sort_by(
+      books,
+      fn book ->
+        case Map.get(book, field) do
+          nil -> ~D[1970-01-01]
+          %Date{} = date -> date
+        end
+      end,
+      {:desc, Date}
+    )
   end
 
   # Build the book URL given
