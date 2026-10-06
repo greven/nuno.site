@@ -41,6 +41,11 @@ defmodule SiteWeb.Finder do
          name: "Books", description: "Currently reading", icon: "lucide-book", push: true},
         {:nav_gaming,
          name: "Gaming", description: "Games I'm playing", icon: "lucide-gamepad-2", push: true},
+        {:nav_movies,
+         name: "Movies & TV",
+         description: "Favourite films and shows",
+         icon: "lucide-film",
+         push: true},
         {:nav_resume,
          name: "Resume", description: "My Resume", icon: "lucide-file-user", push: true},
         {:nav_photos, name: "Photos", description: "My photos", icon: "lucide-image", push: true},
@@ -77,6 +82,7 @@ defmodule SiteWeb.Finder do
   def handle_command(:nav_music, socket), do: push_navigate(socket, to: ~p"/music")
   def handle_command(:nav_books, socket), do: push_navigate(socket, to: ~p"/books")
   def handle_command(:nav_gaming, socket), do: push_navigate(socket, to: ~p"/gaming")
+  def handle_command(:nav_movies, socket), do: push_navigate(socket, to: ~p"/movies")
   def handle_command(:nav_resume, socket), do: push_navigate(socket, to: ~p"/resume")
   def handle_command(:nav_photos, socket), do: push_navigate(socket, to: ~p"/photos")
   def handle_command(:nav_travel, socket), do: push_navigate(socket, to: ~p"/travel")

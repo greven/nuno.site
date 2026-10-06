@@ -33,6 +33,10 @@ config :site, :spotify,
 
 config :site, :github, access_token: env!("GITHUB_ACCESS_TOKEN", :string!, "github-access-token")
 
+config :site, :tmdb,
+  access_token: env!("TMDB_ACCESS_TOKEN", :string!, "tmdb-access-token"),
+  session_id: env!("TMDB_SESSION_ID", :string!, "tmdb-session-id")
+
 config :site, :cdn,
   access_key_id: env!("R2_ACCESS_KEY_ID", :string, "access-key-id"),
   secret_access_key: env!("R2_SECRET_ACCESS_KEY", :string, "secret-key"),

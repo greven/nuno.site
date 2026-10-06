@@ -171,6 +171,16 @@ defmodule SiteWeb.PublicPagesTest do
     end
   end
 
+  describe "movies" do
+    @tag :external
+    test "renders the movies page", %{conn: conn} do
+      {:ok, _view, html} = live(conn, ~p"/movies")
+      assert html =~ "Movies &amp; TV"
+      assert html =~ "Favourite Movies"
+      assert html =~ "Favourite TV Series"
+    end
+  end
+
   describe "uses" do
     @tag :external
     test "renders the uses page with tool links", %{conn: conn} do

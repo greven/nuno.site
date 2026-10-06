@@ -10,6 +10,7 @@ defmodule Site.Services do
   alias Site.Services.Bluesky
   alias Site.Services.Goodreads
   alias Site.Services.Weather
+  alias Site.Services.Tmdb
 
   @music_albums_limit 36
   @music_top_artists_limit 50
@@ -213,6 +214,14 @@ defmodule Site.Services do
   def get_favourite_games do
     Steam.get_favourite_games()
   end
+
+  ## Movies & TV
+
+  @decorate cacheable(key: :favourite_movies, opts: [ttl: :timer.hours(12)])
+  def get_favourite_movies, do: Tmdb.get_favourite_movies()
+
+  @decorate cacheable(key: :favourite_tv, opts: [ttl: :timer.hours(12)])
+  def get_favourite_tv, do: Tmdb.get_favourite_tv()
 
   ## Github
 

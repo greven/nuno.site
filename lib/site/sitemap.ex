@@ -17,6 +17,7 @@ defmodule Site.Sitemap do
       {"Music", "/music"},
       {"Books", "/books"},
       {"Gaming", "/gaming"},
+      {"Movies & TV", "/movies"},
       {"Travel", "/travel"},
       {"Changelog", "/changelog"},
       {"Photography", "/photos"},
