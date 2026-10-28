@@ -31,6 +31,12 @@ defmodule SiteWeb.AdminLive.PhotosManageTest do
         Application.delete_env(:site, :photos_manifest_path)
         Application.delete_env(:site, :photo_cdn_check)
         File.rm(manifest_path)
+
+        # The test manifest may have repopulated the cache after a delete/edit.
+        # Clear it so later tests read the real manifest again.
+        Site.Cache.delete(:photos)
+        Site.Cache.delete(:photo_albums)
+        Site.Cache.delete(:photos_count)
       end)
 
       %{manifest_path: manifest_path}

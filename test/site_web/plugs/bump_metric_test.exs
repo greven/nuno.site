@@ -4,6 +4,21 @@ defmodule SiteWeb.Plugs.BumpMetricTest do
   alias Plug.Conn
   alias SiteWeb.Plugs.BumpMetric
 
+  setup do
+    Application.put_env(:site, :analytics_enabled, true)
+
+    on_exit(fn ->
+      Application.put_env(:site, :analytics_enabled, false)
+
+      case Registry.lookup(Site.Analytics.Registry, "/") do
+        [{pid, _}] -> DynamicSupervisor.terminate_child(Site.Analytics.WorkerSupervisor, pid)
+        [] -> :ok
+      end
+    end)
+
+    :ok
+  end
+
   describe "call/2" do
     test "records the path and starts the metric worker on a 200 response", %{conn: conn} do
       conn =

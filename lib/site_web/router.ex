@@ -125,6 +125,7 @@ defmodule SiteWeb.Router do
         Hooks.ActiveLinks
       ] do
       live "/", AdminLive.Index, :index
+      live "/books", AdminLive.Books, :index
 
       # Admin dev only routes
       if Application.compile_env(:site, :dev_routes) do

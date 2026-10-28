@@ -17,6 +17,7 @@ defmodule Site.Application do
         {Oban, Application.fetch_env!(:site, Oban)},
         {DNSCluster, query: Application.get_env(:site, :dns_cluster_query) || :ignore},
         {Phoenix.PubSub, name: Site.PubSub},
+        {Registry, keys: :unique, name: Site.Books.ImportRegistry},
         SiteWeb.Presence,
         Site.Analytics,
         SiteWeb.Endpoint

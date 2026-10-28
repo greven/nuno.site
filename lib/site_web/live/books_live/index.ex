@@ -16,6 +16,9 @@ defmodule SiteWeb.BooksLive.Index do
           Books
           <:subtitle>
             Books I've read or am currently reading
+            <span :if={@library_updated_at} class="mt-1 block text-xs text-content-40/70">
+              Library last updated <.relative_time date={@library_updated_at} />
+            </span>
           </:subtitle>
         </.header>
 
@@ -62,33 +65,62 @@ defmodule SiteWeb.BooksLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    library_updated_at =
+      case Site.Books.latest_import() do
+        %{status: :completed, completed_at: completed_at} -> completed_at
+        _ -> nil
+      end
+
     socket =
       socket
       |> assign(:page_title, "Books")
-      |> stream_async(:books, fn ->
-        case Site.Services.get_currently_reading() do
-          {:ok, books} ->
-            # The public Goodreads profile does not expose a start date. Treat
-            # those books as the oldest so they keep their relative order.
-            {:ok, Enum.sort_by(books, &(&1.started_date || ~D[1970-01-01]), {:desc, Date})}
-
-          error ->
-            error
-        end
-      end)
+      |> assign(:library_updated_at, library_updated_at)
+      |> stream_async(:books, &currently_reading/0)
       |> stream_async(:want_books, fn ->
-        case Site.Services.get_want_to_read_books() do
-          {:ok, books} -> {:ok, Enum.take(books, 20)}
-          error -> error
-        end
+        # This list is cover-only, so omit books that have no cover URL at all.
+        books =
+          Site.Books.list_want_to_read()
+          |> Enum.map(&Site.Books.to_view_book/1)
+          |> Enum.filter(& &1.cover_url)
+
+        {:ok, books}
       end)
       |> stream_async(:recent_books, fn ->
-        case Site.Services.get_recent_books() do
-          {:ok, books} -> {:ok, books}
-          error -> error
-        end
+        books =
+          Site.Books.list_read()
+          |> Enum.map(&Site.Books.to_view_book/1)
+
+        {:ok, books}
       end)
 
     {:ok, socket}
+  end
+
+  defp currently_reading do
+    case Site.Services.get_currently_reading() do
+      {:ok, books} -> {:ok, sort_currently_reading(books)}
+      {:error, reason} -> currently_reading_fallback(reason)
+    end
+  end
+
+  defp currently_reading_fallback(reason) do
+    case Site.Books.list_currently_reading() do
+      [] ->
+        {:error, reason}
+
+      books ->
+        books =
+          books
+          |> Enum.map(&Site.Books.to_view_book/1)
+          |> sort_currently_reading()
+
+        {:ok, books}
+    end
+  end
+
+  # The public Goodreads profile does not expose a start date. Treat those
+  # books as the oldest so they keep their relative order.
+  defp sort_currently_reading(books) do
+    Enum.sort_by(books, &(&1.started_date || ~D[1970-01-01]), {:desc, Date})
   end
 end

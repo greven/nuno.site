@@ -13,7 +13,16 @@ defmodule SiteWeb.PublicPagesTest do
   describe "home" do
     setup do
       Enum.each(@home_cache_keys, &Site.Cache.delete/1)
-      on_exit(fn -> Enum.each(@home_cache_keys, &Site.Cache.delete/1) end)
+
+      on_exit(fn ->
+        Enum.each(@home_cache_keys, &Site.Cache.delete/1)
+
+        case Registry.lookup(Site.Analytics.Registry, "/") do
+          [{pid, _}] -> DynamicSupervisor.terminate_child(Site.Analytics.WorkerSupervisor, pid)
+          [] -> :ok
+        end
+      end)
+
       :ok
     end
 
@@ -181,10 +190,79 @@ defmodule SiteWeb.PublicPagesTest do
   end
 
   describe "books" do
+    setup do
+      Req.Test.set_req_test_to_shared()
+
+      Req.Test.stub(Site.Services.Goodreads, fn conn ->
+        Req.Test.html(conn, """
+        <html>
+          <body>
+            <div id="shelves">
+              <a class="actionLinkLite userShowPageShelfListItem" href="/review/list/1?shelf=read">read (0)</a>
+              <a class="actionLinkLite userShowPageShelfListItem" href="/review/list/1?shelf=currently-reading">currently-reading (0)</a>
+            </div>
+            <div id="currentlyReadingReviews"></div>
+          </body>
+        </html>
+        """)
+      end)
+
+      :ok
+    end
+
     @tag :external
     test "renders the books page", %{conn: conn} do
       {:ok, _view, html} = live(conn, ~p"/books")
       assert html =~ "Books"
+    end
+
+    test "renders imported books read and want to read", %{conn: conn} do
+      Site.Cache.put(:books, {:error, :not_available}, ttl: :timer.minutes(1))
+      on_exit(fn -> Site.Cache.delete(:books) end)
+
+      Site.Repo.insert!(%Site.Books.Book{
+        goodreads_id: "read-1",
+        title: "Imported Read Book",
+        author: "Read Author",
+        exclusive_shelf: :read,
+        date_read: ~D[2026-01-10],
+        date_added: ~D[2025-12-01]
+      })
+
+      Site.Repo.insert!(%Site.Books.Book{
+        goodreads_id: "want-1",
+        title: "Imported Want Book",
+        author: "Want Author",
+        exclusive_shelf: :want_to_read,
+        date_added: ~D[2026-02-01],
+        cover_url: "https://example.com/want-1.jpg"
+      })
+
+      Site.Repo.insert!(%Site.Books.Book{
+        goodreads_id: "want-hidden",
+        title: "Hidden Want Book",
+        author: "Want Author",
+        exclusive_shelf: :want_to_read,
+        date_added: ~D[2026-02-02]
+      })
+
+      {:ok, view, _html} = live(conn, ~p"/books")
+      html = render_async(view)
+
+      assert html =~ "Books Read"
+      assert html =~ "Want to read"
+
+      assert view |> element("#recent-books") |> render() =~ "Imported Read Book"
+
+      assert has_element?(
+               view,
+               "#want-to-read-list a[href='https://www.goodreads.com/book/show/want-1']"
+             )
+
+      refute has_element?(
+               view,
+               "#want-to-read-list a[href='https://www.goodreads.com/book/show/want-hidden']"
+             )
     end
   end
 

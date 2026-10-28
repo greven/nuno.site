@@ -30,6 +30,14 @@ defmodule Site.Analytics do
 
   # Bump the count of the page page by using an existing worker or spawning a new one.
   def bump(path) when is_binary(path) do
+    if Application.get_env(:site, :analytics_enabled, true) do
+      bump_path(path)
+    else
+      :ok
+    end
+  end
+
+  defp bump_path(path) do
     pid =
       case Registry.lookup(@registry, path) do
         [{pid, _}] ->

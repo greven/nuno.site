@@ -40,6 +40,12 @@ defmodule SiteWeb.AdminLive.Dev do
             icon="lucide-image-down"
             navigate={~p"/admin/dev/photos/manage"}
           />
+
+          <Components.dev_dashboard_card
+            title="Import Books"
+            icon="lucide-library"
+            navigate={~p"/admin/books"}
+          />
         </div>
       </Layouts.page_content>
     </Layouts.app>

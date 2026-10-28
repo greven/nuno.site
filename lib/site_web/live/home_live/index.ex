@@ -338,9 +338,18 @@ defmodule SiteWeb.HomeLive.Index do
 
   defp get_reading_stats do
     case Services.get_reading_stats() do
-      {:ok, stats} -> {:ok, %{reading_stats: stats}}
-      {:error, reason} -> {:error, reason}
-      other -> {:error, {:unexpected, other}}
+      {:ok, stats} ->
+        {:ok, %{reading_stats: stats}}
+
+      {:error, _reason} ->
+        if Site.Books.has_books?() do
+          {:ok, %{reading_stats: Site.Books.reading_stats()}}
+        else
+          {:error, :not_available}
+        end
+
+      other ->
+        {:error, {:unexpected, other}}
     end
   rescue
     error -> {:error, error}

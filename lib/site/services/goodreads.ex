@@ -34,12 +34,6 @@ defmodule Site.Services.Goodreads do
     end
   end
 
-  # The read and to-read shelf pages redirect to Goodreads sign-in, so they
-  # cannot be fetched from the public profile. Keep the API shape intact so the
-  # UI can show a graceful "not available" state.
-  def get_recently_read, do: {:error, :unavailable}
-  def get_want_to_read, do: {:error, :unavailable}
-
   @doc false
   def parse_profile(html) when is_binary(html) do
     with {:ok, stats} <- parse_reading_stats(html),

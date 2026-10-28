@@ -44,3 +44,7 @@ config :phoenix_live_view,
 
 # Route Goodreads requests through Req.Test so tests never hit the network.
 config :site, :goodreads, req_options: [plug: {Req.Test, Site.Services.Goodreads}]
+
+# Do not spawn analytics workers from every LiveView test. The BumpMetric test
+# enables this explicitly when it needs the worker behaviour.
+config :site, :analytics_enabled, false

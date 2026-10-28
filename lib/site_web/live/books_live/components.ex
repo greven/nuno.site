@@ -43,6 +43,7 @@ defmodule SiteWeb.BooksLive.Components do
       <a
         href={@url}
         target="_blank"
+        title={@title}
         class="group relative shrink-0 rounded-md border-2 border-transparent hover:border-secondary transition-border"
       >
         <.icon
@@ -59,14 +60,20 @@ defmodule SiteWeb.BooksLive.Components do
             class="size-10 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90"
           />
         </div>
-        <.image
-          src={@cover_url}
-          alt={"#{@title} cover by #{@author}"}
-          class="object-cover rounded-sm shadow-sm"
-          width={110}
-          height={150}
-          loading="lazy"
-        />
+        <%= if @cover_url do %>
+          <.image
+            src={@cover_url}
+            alt={"#{@title} cover by #{@author}"}
+            class="object-cover rounded-sm shadow-sm"
+            width={110}
+            height={150}
+            loading="lazy"
+          />
+        <% else %>
+          <div class="flex h-37.5 w-27.5 items-center justify-center rounded-sm border border-surface-30 bg-surface-20">
+            <.icon name="lucide-book" class="size-8 text-content-40/40" />
+          </div>
+        <% end %>
       </a>
       <%!-- Book Info --%>
       <div :if={@show_info} class="max-w-md flex flex-col justify-center gap-1">
@@ -136,7 +143,7 @@ defmodule SiteWeb.BooksLive.Components do
           </li>
 
           <%!-- Empty state --%>
-          <li class="hidden only:flex items-center gap-3">
+          <li id="books-reading-empty" class="hidden only:flex items-center gap-3">
             <.icon name="lucide-book-dashed" class="size-8 text-content-40/40" />
             <span class="text-lg text-content-40">Currently not reading any books...</span>
           </li>
@@ -258,7 +265,7 @@ defmodule SiteWeb.BooksLive.Components do
           class="flex gap-8 snap-x snap-proximity overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0"
           phx-update={is_struct(@books, Phoenix.LiveView.LiveStream) && "stream"}
         >
-          <div class="hidden only:flex items-center gap-3 pb-4">
+          <div id="want-to-read-empty" class="hidden only:flex items-center gap-3 pb-4">
             <.icon name="lucide-book-dashed" class="size-8 text-content-40/40" />
             <span class="text-lg text-content-40">Empty Want to Read list...</span>
           </div>
