@@ -17,18 +17,33 @@ defmodule Site.Books do
 
   @doc """
   Lists books on the given shelf.
+
+  ## Options
+
+    * `:limit` - the maximum number of books to return
+    * `:offset` - the number of books to skip
   """
   def list_by_shelf(shelf, opts \\ []) when shelf in [:read, :want_to_read, :currently_reading] do
     Book
     |> where([b], b.exclusive_shelf == ^shelf)
     |> order_shelf(shelf)
     |> maybe_limit(opts[:limit])
+    |> maybe_offset(opts[:offset])
     |> Repo.all()
   end
 
   def list_read(opts \\ []), do: list_by_shelf(:read, opts)
   def list_want_to_read(opts \\ []), do: list_by_shelf(:want_to_read, opts)
   def list_currently_reading(opts \\ []), do: list_by_shelf(:currently_reading, opts)
+
+  @doc """
+  Counts the books on the given shelf.
+  """
+  def count_by_shelf(shelf) when shelf in [:read, :want_to_read, :currently_reading] do
+    Book
+    |> where([b], b.exclusive_shelf == ^shelf)
+    |> Repo.aggregate(:count, :id)
+  end
 
   defp order_shelf(query, :read) do
     order_by(query, [b], desc: b.date_read, desc: b.date_added)
@@ -40,6 +55,11 @@ defmodule Site.Books do
 
   defp maybe_limit(query, nil), do: query
   defp maybe_limit(query, limit) when is_integer(limit) and limit > 0, do: limit(query, ^limit)
+
+  defp maybe_offset(query, nil), do: query
+
+  defp maybe_offset(query, offset) when is_integer(offset) and offset >= 0,
+    do: offset(query, ^offset)
 
   @doc """
   Returns the counts used by the home reading card.

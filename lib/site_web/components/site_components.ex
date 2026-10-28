@@ -640,4 +640,103 @@ defmodule SiteWeb.SiteComponents do
     </div>
     """
   end
+
+  @doc """
+  Renders simple pagination controls.
+
+  The page list is windowed around the current page, while the first and last
+  pages remain visible, e.g. `1 … 4 5 6 … 12`. Clicking a page sends a
+  `phx-click` event (configurable via `:event`) with the target page in
+  `phx-value-page`, leaving data loading to the parent LiveView.
+
+  ## Examples
+
+      <.pagination page={@page} total_pages={@total_pages} event="paginate_books" />
+  """
+
+  attr :page, :integer, required: true
+  attr :total_pages, :integer, required: true
+
+  attr :event, :string,
+    default: "paginate",
+    doc: "the LiveView event sent when a page is clicked"
+
+  attr :class, :any, default: nil
+  attr :rest, :global
+
+  def pagination(assigns) do
+    assigns = assign(assigns, :items, pagination_items(assigns.page, assigns.total_pages))
+
+    ~H"""
+    <nav
+      :if={@total_pages > 1}
+      aria-label="Pagination"
+      class={["flex flex-wrap items-center justify-center gap-1", @class]}
+      {@rest}
+    >
+      <.button
+        type="button"
+        variant="ghost"
+        size="sm"
+        phx-click={@event}
+        phx-value-page={@page - 1}
+        disabled={@page <= 1}
+        aria-label="Previous page"
+      >
+        <.icon name="lucide-arrow-left" class="size-4" /> Prev
+      </.button>
+
+      <%= for item <- @items do %>
+        <span :if={item == :gap} aria-hidden="true" class="px-1.5 text-content-40/60">…</span>
+        <.button
+          :if={item != :gap}
+          type="button"
+          variant={if(item == @page, do: "default", else: "ghost")}
+          size="sm"
+          phx-click={@event}
+          phx-value-page={item}
+          aria-label={"Page #{item}"}
+          aria-current={item == @page && "page"}
+        >
+          {item}
+        </.button>
+      <% end %>
+
+      <.button
+        type="button"
+        variant="ghost"
+        size="sm"
+        phx-click={@event}
+        phx-value-page={@page + 1}
+        disabled={@page >= @total_pages}
+        aria-label="Next page"
+      >
+        Next <.icon name="lucide-arrow-right" class="size-4" />
+      </.button>
+    </nav>
+    """
+  end
+
+  defp pagination_items(_page, total_pages) when total_pages < 1, do: []
+
+  defp pagination_items(_page, total_pages) when total_pages <= 7,
+    do: Enum.to_list(1..total_pages)
+
+  defp pagination_items(page, total_pages) do
+    [1, page - 1, page, page + 1, total_pages]
+    |> Enum.filter(&(&1 >= 1 and &1 <= total_pages))
+    |> Enum.uniq()
+    |> Enum.sort()
+    |> Enum.reduce([], fn
+      page, [] ->
+        [page]
+
+      page, [previous | _] = acc when page - previous == 1 ->
+        [page | acc]
+
+      page, acc ->
+        [page, :gap | acc]
+    end)
+    |> Enum.reverse()
+  end
 end

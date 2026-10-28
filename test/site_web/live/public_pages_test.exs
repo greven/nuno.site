@@ -264,6 +264,35 @@ defmodule SiteWeb.PublicPagesTest do
                "#want-to-read-list a[href='https://www.goodreads.com/book/show/want-hidden']"
              )
     end
+
+    test "paginates the books read table", %{conn: conn} do
+      Site.Cache.put(:books, {:error, :not_available}, ttl: :timer.minutes(1))
+      on_exit(fn -> Site.Cache.delete(:books) end)
+
+      for i <- 1..25 do
+        Site.Repo.insert!(%Site.Books.Book{
+          goodreads_id: "paged-read-#{i}",
+          title: "Paged Read Book #{i}",
+          author: "Paged Author #{i}",
+          exclusive_shelf: :read,
+          date_read: Date.add(~D[2026-01-01], i),
+          date_added: ~D[2025-12-01]
+        })
+      end
+
+      {:ok, view, _html} = live(conn, ~p"/books")
+      render_async(view)
+
+      assert has_element?(view, "#recent-books-pagination")
+      assert has_element?(view, "#recent-books-pagination button[aria-label='Page 2']")
+      assert view |> element("#recent-books") |> render() =~ "Paged Read Book 25"
+      refute view |> element("#recent-books") |> render() =~ "Paged Read Book 5"
+
+      view |> element("#recent-books-pagination button[aria-label='Page 2']") |> render_click()
+
+      assert view |> element("#recent-books") |> render() =~ "Paged Read Book 5"
+      refute view |> element("#recent-books") |> render() =~ "Paged Read Book 25"
+    end
   end
 
   describe "gaming" do

@@ -3,6 +3,7 @@ defmodule SiteWeb.BooksLive.Components do
 
   alias Phoenix.LiveView.AsyncResult
   alias SiteWeb.Helpers
+  alias SiteWeb.SiteComponents
 
   @doc false
 
@@ -159,6 +160,9 @@ defmodule SiteWeb.BooksLive.Components do
   attr :async, AsyncResult, required: true
   attr :books, :list, required: true
   attr :count, :integer, default: nil
+  attr :page, :integer, default: 1
+  attr :total_pages, :integer, default: 1
+  attr :page_event, :string, default: "paginate"
   attr :class, :string, default: nil
   attr :rest, :global
 
@@ -199,7 +203,7 @@ defmodule SiteWeb.BooksLive.Components do
                 >
                   <div class="flex flex-col gap-1">
                     <div class="flex gap-0.5 items-center">
-                      <div class="max-w-[32ch] sm:max-w-[46ch] md:max-w-[50ch] truncate">
+                      <div class="max-w-[32ch] sm:max-w-[46ch] md:max-w-[50ch] lg:max-w-[40ch] truncate">
                         {book.title}
                       </div>
                       <.icon
@@ -228,11 +232,23 @@ defmodule SiteWeb.BooksLive.Components do
               head_class="hidden lg:table-cell text-left"
               class="hidden lg:table-cell text-left whitespace-nowrap text-content-40"
             >
-              {format_read_date(book.read_date)}
+              <%= if book.read_date do %>
+                {format_read_date(book.read_date)}
+              <% else %>
+                <span class="text-content-40/50">Unknown</span>
+              <% end %>
             </:col>
           </.table>
         </div>
       </.async_result>
+
+      <SiteComponents.pagination
+        id="recent-books-pagination"
+        page={@page}
+        total_pages={@total_pages}
+        event={@page_event}
+        class="mt-4"
+      />
     </div>
     """
   end
@@ -290,8 +306,6 @@ defmodule SiteWeb.BooksLive.Components do
     </div>
     """
   end
-
-  defp format_read_date(nil), do: "Unknown"
 
   defp format_read_date(%Date{} = date) do
     Helpers.format_date(date, "%b %Y")

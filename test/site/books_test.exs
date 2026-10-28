@@ -60,6 +60,19 @@ defmodule Site.BooksTest do
       assert view.cover_url == "https://example.com/covers/24963100.jpg"
     end
 
+    test "paginates a shelf with limit and offset", %{cover_fetcher: cover_fetcher} do
+      import_fixture(cover_fetcher)
+
+      assert Books.count_by_shelf(:read) == 2
+
+      assert [newest] = Books.list_read(limit: 1, offset: 0)
+      assert [oldest] = Books.list_read(limit: 1, offset: 1)
+
+      assert newest.title == "The Amber Spyglass"
+      assert oldest.title == "Elixir in Action"
+      assert Books.list_read(limit: 1, offset: 2) == []
+    end
+
     test "re-importing moves a book between shelves and keeps its cover", %{
       cover_fetcher: cover_fetcher
     } do

@@ -3,6 +3,8 @@ defmodule SiteWeb.BooksLive.Index do
 
   alias SiteWeb.BooksLive.Components
 
+  @recent_books_per_page 20
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -55,6 +57,9 @@ defmodule SiteWeb.BooksLive.Index do
           <Components.read_list
             async={@recent_books}
             books={@streams.recent_books}
+            page={@recent_books_page}
+            total_pages={@recent_books_total_pages}
+            page_event="paginate_recent_books"
             class="mt-4"
           />
         </section>
@@ -85,15 +90,41 @@ defmodule SiteWeb.BooksLive.Index do
 
         {:ok, books}
       end)
-      |> stream_async(:recent_books, fn ->
-        books =
-          Site.Books.list_read()
-          |> Enum.map(&Site.Books.to_view_book/1)
-
-        {:ok, books}
-      end)
+      |> assign(:recent_books_page, 1)
+      |> assign(:recent_books_total_pages, recent_books_total_pages())
+      |> stream_async(:recent_books, fn -> {:ok, recent_books_page(1)} end)
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("paginate_recent_books", %{"page" => page}, socket) do
+    page = normalize_page(page, socket.assigns.recent_books_total_pages)
+
+    {:noreply,
+     socket
+     |> assign(:recent_books_page, page)
+     |> stream(:recent_books, recent_books_page(page), reset: true)}
+  end
+
+  defp recent_books_page(page) do
+    Site.Books.list_read(
+      limit: @recent_books_per_page,
+      offset: (page - 1) * @recent_books_per_page
+    )
+    |> Enum.map(&Site.Books.to_view_book/1)
+  end
+
+  defp recent_books_total_pages do
+    total = Site.Books.count_by_shelf(:read)
+    max(1, ceil(total / @recent_books_per_page))
+  end
+
+  defp normalize_page(page, total_pages) do
+    case Integer.parse(to_string(page)) do
+      {page, ""} -> page |> max(1) |> min(total_pages)
+      _ -> 1
+    end
   end
 
   defp currently_reading do
