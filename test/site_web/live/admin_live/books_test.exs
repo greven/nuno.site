@@ -29,6 +29,12 @@ defmodule SiteWeb.AdminLive.BooksTest do
     :ok
   end
 
+  test "admin dashboard links to the books importer", %{conn: conn} do
+    {:ok, view, _html} = live(conn, ~p"/admin")
+
+    assert has_element?(view, "#import-books-card a[href='/admin/books']")
+  end
+
   test "uploads a Goodreads CSV and shows the imported books", %{conn: conn} do
     {:ok, view, html} = live(conn, ~p"/admin/books")
 

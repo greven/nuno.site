@@ -69,6 +69,18 @@ defmodule SiteWeb.AdminLive.Index do
         </section>
 
         <section>
+          <.header tag="h2">Manage</.header>
+          <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            <Components.dashboard_card
+              id="import-books-card"
+              title="Import Books"
+              icon="lucide-library"
+              navigate={~p"/admin/books"}
+            />
+          </div>
+        </section>
+
+        <section>
           <.header tag="h2">Blog Posts</.header>
           <Components.blog_posts posts={@streams.posts} class="mt-8 text-sm w-full table-auto" />
         </section>

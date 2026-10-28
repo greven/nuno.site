@@ -36,10 +36,11 @@ defmodule SiteWeb.AdminLive.Components do
   attr :title, :string, required: true
   attr :icon, :string, required: true
   attr :navigate, :string, required: true
+  attr :rest, :global
 
-  def dev_dashboard_card(assigns) do
+  def dashboard_card(assigns) do
     ~H"""
-    <.card class="group aspect-square" navigate={@navigate}>
+    <.card class="group aspect-square" navigate={@navigate} {@rest}>
       <.diagonal_pattern class="opacity-80" use_transition={false} />
       <div class="flex-1 flex flex-col items-center justify-center gap-4">
         <.icon

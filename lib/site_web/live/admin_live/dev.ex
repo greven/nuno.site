@@ -24,27 +24,21 @@ defmodule SiteWeb.AdminLive.Dev do
         </div>
 
         <div class="grid grid-cols-4 gap-4">
-          <Components.dev_dashboard_card
+          <Components.dashboard_card
             title="Manage Posts"
             icon="lucide-file-pen-line"
             navigate={~p"/admin/dev/posts"}
           />
-          <Components.dev_dashboard_card
+          <Components.dashboard_card
             title="Upload Photos"
             icon="lucide-image-up"
             navigate={~p"/admin/dev/photos"}
           />
 
-          <Components.dev_dashboard_card
+          <Components.dashboard_card
             title="Manage Photos"
             icon="lucide-image-down"
             navigate={~p"/admin/dev/photos/manage"}
-          />
-
-          <Components.dev_dashboard_card
-            title="Import Books"
-            icon="lucide-library"
-            navigate={~p"/admin/books"}
           />
         </div>
       </Layouts.page_content>
