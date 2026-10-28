@@ -1,294 +1,197 @@
 defmodule Site.Services.Goodreads do
   @moduledoc """
-  Goodreads RSS feed parser to retrieve currently reading and total books read.
-  Since the Goodreads API is no longer available and HTML pages require authentication,
-  we use the RSS feeds which are still publicly accessible.
+  Scrapes the public Goodreads profile page for reading stats and the
+  currently reading shelf.
+
+  Goodreads no longer serves the public `review/list_rss` feeds and the shelf pages
+  require authentication. The public profile page is still available and exposes the
+  shelf counts and the currently reading books.
   """
 
   require Logger
-  import SweetXml
 
+  alias Site.Cache
   alias Site.Services.Book
-  alias Site.Support
 
   @base_url "https://www.goodreads.com"
   @user_id "87020422"
+  @user_slug "nuno-freire"
 
-  # order=d&shelf=read&sort=date_read
+  @profile_cache_key :goodreads_profile_html
+  @profile_cache_ttl :timer.minutes(30)
 
-  def profile_url, do: "#{@base_url}/review/list/#{@user_id}-nuno-freire"
-
-  defp rss_base_url, do: "#{@base_url}/review/list_rss/#{@user_id}"
-  defp reading_shelf_url, do: "#{rss_base_url()}?shelf=currently-reading"
-  defp read_shelf_url, do: "#{rss_base_url()}?shelf=read&sort=date_read&order=d&per_page=25"
-
-  defp want_to_read_url,
-    do: "#{rss_base_url()}?shelf=to-read&sort=date_added&order=d&per_page=100"
+  def profile_url, do: "#{@base_url}/user/show/#{@user_id}-#{@user_slug}"
 
   def get_currently_reading do
-    fetch_reading_shelf()
-    |> parse_currently_reading_response()
-  end
-
-  defp fetch_reading_shelf do
-    reading_shelf_url()
-    |> Req.get(headers: [{"Accept", "application/xml"}])
-    |> case do
-      {:ok, %Req.Response{status: 200, body: body}} ->
-        Site.Cache.put(:currently_reading, body, ttl: :timer.minutes(5))
-        {:ok, body}
-
-      {:ok, %Req.Response{status: status, body: body}} ->
-        {:error, {status, body}}
-
-      {:error, reason} ->
-        {:error, reason}
+    with {:ok, html} <- fetch_profile() do
+      parse_currently_reading(html)
     end
   end
-
-  defp parse_currently_reading_response({:ok, body}) do
-    books =
-      body
-      |> xpath(
-        ~x"//item"l,
-        id: ~x"./book_id/text()"s,
-        title: ~x"./title/text()"s,
-        author: ~x"./author_name/text()"s,
-        link: ~x"./link/text()"s,
-        thumbnail_url: ~x"./book_medium_image_url/text()"s,
-        cover_url: ~x"./book_large_image_url/text()"s,
-        book_published: ~x"./book_published/text()"s,
-        user_date_added: ~x"./user_date_added/text()"s,
-        description: ~x"./description/text()"s
-      )
-      |> Enum.map(&build_book_struct/1)
-
-    {:ok, books}
-  rescue
-    error ->
-      Logger.error("Failed to parse RSS feed: #{inspect(error)}")
-      {:error, :parse_error}
-  end
-
-  defp parse_currently_reading_response({:error, _} = error), do: error
-
-  def get_recently_read do
-    read_shelf_url()
-    |> Req.get(headers: [{"Accept", "application/xml"}])
-    |> case do
-      {:ok, %Req.Response{status: 200, body: body}} ->
-        Site.Cache.put(:recently_read, body, ttl: :timer.hours(24 * 5))
-        {:ok, body}
-
-      {:ok, %Req.Response{status: status, body: body}} ->
-        {:error, {status, body}}
-
-      {:error, reason} ->
-        {:error, reason}
-    end
-    |> parse_recently_read_response()
-  end
-
-  defp parse_recently_read_response({:ok, body}) do
-    books =
-      body
-      |> xpath(
-        ~x"//item"l,
-        id: ~x"./book_id/text()"s,
-        title: ~x"./title/text()"s,
-        author: ~x"./author_name/text()"s,
-        link: ~x"./link/text()"s,
-        thumbnail_url: ~x"./book_medium_image_url/text()"s,
-        cover_url: ~x"./book_large_image_url/text()"s,
-        book_published: ~x"./book_published/text()"s,
-        user_read_at: ~x"./user_read_at/text()"s,
-        user_date_added: ~x"./user_date_added/text()"s,
-        description: ~x"./description/text()"s
-      )
-      |> Enum.map(&build_book_struct/1)
-      |> sort_by_date_desc(:read_date)
-
-    {:ok, books}
-  rescue
-    error ->
-      Logger.error("Failed to parse RSS feed: #{inspect(error)}")
-      {:error, :parse_error}
-  end
-
-  defp parse_recently_read_response({:error, _} = error), do: error
-
-  def get_want_to_read do
-    want_to_read_url()
-    |> Req.get(headers: [{"Accept", "application/xml"}])
-    |> case do
-      {:ok, %Req.Response{status: 200, body: body}} ->
-        Site.Cache.put(:want_to_read, body, ttl: :timer.hours(24 * 5))
-        {:ok, body}
-
-      {:ok, %Req.Response{status: status, body: body}} ->
-        {:error, {status, body}}
-
-      {:error, reason} ->
-        {:error, reason}
-    end
-    |> parse_want_to_read_response()
-  end
-
-  defp parse_want_to_read_response({:ok, body}) do
-    books =
-      body
-      |> xpath(
-        ~x"//item"l,
-        id: ~x"./book_id/text()"s,
-        title: ~x"./title/text()"s,
-        author: ~x"./author_name/text()"s,
-        link: ~x"./link/text()"s,
-        thumbnail_url: ~x"./book_medium_image_url/text()"s,
-        cover_url: ~x"./book_large_image_url/text()"s,
-        book_published: ~x"./book_published/text()"s,
-        user_date_added: ~x"./user_date_added/text()"s,
-        description: ~x"./description/text()"s
-      )
-      |> Enum.map(&build_book_struct/1)
-      |> sort_by_date_desc(:date_added)
-
-    {:ok, books}
-  rescue
-    error ->
-      Logger.error("Failed to parse RSS feed: #{inspect(error)}")
-      {:error, :parse_error}
-  end
-
-  defp parse_want_to_read_response({:error, _} = error), do: error
 
   def get_reading_stats do
-    case Site.Cache.get!(:reading_stats) do
-      nil ->
-        fetch_reading_stats()
-
-      cached_stats ->
-        {:ok, cached_stats}
+    with {:ok, html} <- fetch_profile() do
+      parse_reading_stats(html)
     end
   end
 
-  # Build a Book struct extracted from the RSS item
-  defp build_book_struct(item) do
+  # The read and to-read shelf pages redirect to Goodreads sign-in, so they
+  # cannot be fetched from the public profile. Keep the API shape intact so the
+  # UI can show a graceful "not available" state.
+  def get_recently_read, do: {:error, :unavailable}
+  def get_want_to_read, do: {:error, :unavailable}
+
+  @doc false
+  def parse_profile(html) when is_binary(html) do
+    with {:ok, stats} <- parse_reading_stats(html),
+         {:ok, books} <- parse_currently_reading(html) do
+      {:ok, %{stats: stats, books: books}}
+    end
+  end
+
+  def parse_profile(_html), do: {:error, :parse_error}
+
+  defp parse_reading_stats(html) when is_binary(html) do
+    html
+    |> LazyHTML.from_document()
+    |> parse_shelf_counts()
+  rescue
+    error ->
+      Logger.error("Failed to parse Goodreads reading stats: #{inspect(error)}")
+      {:error, :parse_error}
+  end
+
+  defp parse_reading_stats(_html), do: {:error, :parse_error}
+
+  defp parse_currently_reading(html) when is_binary(html) do
+    doc = LazyHTML.from_document(html)
+
+    books =
+      doc
+      |> LazyHTML.query("#currentlyReadingReviews .Updates")
+      |> Enum.map(&parse_book/1)
+
+    case parse_shelf_counts(doc) do
+      {:ok, %{currently_reading: expected}} when expected > 0 and books == [] ->
+        Logger.error("Goodreads currently reading section could not be parsed")
+        {:error, :parse_error}
+
+      _ ->
+        {:ok, books}
+    end
+  rescue
+    error ->
+      Logger.error("Failed to parse Goodreads currently reading shelf: #{inspect(error)}")
+      {:error, :parse_error}
+  end
+
+  defp parse_currently_reading(_html), do: {:error, :parse_error}
+
+  defp parse_shelf_counts(doc) do
+    counts =
+      doc
+      |> LazyHTML.query("#shelves a.userShowPageShelfListItem")
+      |> Enum.reduce(%{}, fn link, acc ->
+        with [href] <- LazyHTML.attribute(link, "href"),
+             %URI{query: query} when is_binary(query) <- URI.parse(href),
+             %{"shelf" => shelf} <- URI.decode_query(query),
+             [_, count] <- Regex.run(~r/\((\d+)\)/, LazyHTML.text(link)) do
+          Map.put(acc, shelf, String.to_integer(count))
+        else
+          _ -> acc
+        end
+      end)
+
+    case counts do
+      %{"read" => read, "currently-reading" => currently_reading}
+      when is_integer(read) and is_integer(currently_reading) ->
+        {:ok, %{currently_reading: currently_reading, total_read: read}}
+
+      _ ->
+        {:error, :parse_error}
+    end
+  end
+
+  defp parse_book(item) do
+    href = attr(item, "a.bookTitle", "href")
+    thumbnail_url = attr(item, ".firstcol img", "src")
+
     %Book{
-      id: item[:id],
-      title: item[:title],
-      author: item[:author],
-      url: book_url_from_description(item[:description]),
-      pub_date: parse_year_to_date(item[:book_published]),
-      date_added: parse_rfc822_date(item[:user_date_added]),
-      started_date: parse_rfc822_date(item[:user_date_added]),
-      read_date: parse_rfc822_date(item[:user_read_at]),
-      thumbnail_url: item[:thumbnail_url],
-      cover_url: item[:cover_url]
+      id: attr(item, "input[name=\"book_id\"]", "value"),
+      title: text(item, "a.bookTitle"),
+      author: text(item, "a.authorName"),
+      url: absolute_url(href),
+      cover_url: cover_url(thumbnail_url),
+      thumbnail_url: thumbnail_url
     }
   end
 
-  # Sort books by the given date field, newest first.
-  defp sort_by_date_desc(books, field) do
-    Enum.sort_by(
-      books,
-      fn book ->
-        case Map.get(book, field) do
-          nil -> ~D[1970-01-01]
-          %Date{} = date -> date
-        end
-      end,
-      {:desc, Date}
-    )
+  defp text(doc, selector) do
+    case doc |> LazyHTML.query(selector) |> Enum.to_list() do
+      [node | _] -> node |> LazyHTML.text() |> String.trim()
+      [] -> nil
+    end
   end
 
-  # Build the book URL given
-  def book_url_from_description(text) do
-    Regex.run(~r/href="([^"]+\/book\/show\/[^?"]+)/, text, capture: :all_but_first)
-    |> List.wrap()
+  defp attr(doc, selector, name) do
+    doc
+    |> LazyHTML.query(selector)
+    |> LazyHTML.attribute(name)
     |> List.first()
-    |> URI.parse()
-    |> case do
-      %URI{host: "www.goodreads.com"} = uri -> URI.to_string(uri)
-      _ -> nil
-    end
   end
 
-  # Parse RFC822 date format used in RSS feeds
-  # Example: "Thu, 5 Jan 2017 00:00:00 +0000"
-  defp parse_rfc822_date(nil), do: nil
-  defp parse_rfc822_date(""), do: nil
+  defp cover_url(nil), do: nil
 
-  # Try to extract just the date part
-  # RSS dates look like: "Thu, 5 Jan 2017 00:00:00 +0000"
-  defp parse_rfc822_date(date_string) when is_binary(date_string) do
-    case Regex.run(~r/(\d{1,2})\s+(\w{3})\s+(\d{4})/, date_string) do
-      [_, day, month_abbr, year] ->
-        with {:ok, month} <- Support.month_number(month_abbr),
-             {day_int, ""} <- Integer.parse(day),
-             {year_int, ""} <- Integer.parse(year),
-             {:ok, date} <- Date.new(year_int, month, day_int) do
-          date
-        else
-          _ -> nil
-        end
-
-      _ ->
-        nil
-    end
+  defp cover_url(url) do
+    String.replace(url, ~r/\._SX\d+_/, "._SY475_")
   end
 
-  # Parse year-only publication date
-  defp parse_year_to_date(nil), do: nil
-  defp parse_year_to_date(""), do: nil
+  defp absolute_url(nil), do: nil
+  defp absolute_url("http" <> _ = url), do: url
 
-  defp parse_year_to_date(year_string) when is_binary(year_string) do
-    case Integer.parse(year_string) do
-      {year, ""} ->
-        case Date.new(year, 1, 1) do
-          {:ok, date} -> date
-          _ -> nil
-        end
-
-      _ ->
-        nil
-    end
+  defp absolute_url(path) when is_binary(path) do
+    @base_url
+    |> URI.merge(path)
+    |> URI.to_string()
   end
 
-  defp fetch_reading_stats do
-    with {:ok, currently_reading_body} <- fetch_reading_shelf(),
-         {:ok, read_body} <- fetch_full_read_shelf() do
-      stats = %{
-        currently_reading: count_items_in_rss(currently_reading_body),
-        total_read: count_items_in_rss(read_body)
-      }
-
-      Site.Cache.put(:reading_stats, stats, ttl: :timer.hours(24))
-      {:ok, stats}
-    else
-      {:error, reason} ->
-        Logger.error("Failed to fetch reading stats: #{inspect(reason)}")
-        {:error, reason}
-    end
-  end
-
-  defp count_items_in_rss(xml_body) do
-    xml_body
-    |> xpath(~x"//item"l)
-    |> length()
-  end
-
-  defp fetch_full_read_shelf do
-    "#{rss_base_url()}?shelf=read"
-    |> Req.get(headers: [{"Accept", "application/xml"}])
-    |> case do
+  defp fetch_profile do
+    case Req.get(profile_url(), request_options()) do
       {:ok, %Req.Response{status: 200, body: body}} ->
+        Cache.put(@profile_cache_key, body, ttl: @profile_cache_ttl)
         {:ok, body}
 
-      {:ok, %Req.Response{status: status, body: body}} ->
-        {:error, {status, body}}
+      {:ok, %Req.Response{status: status}} ->
+        Logger.error("Goodreads profile request failed with status #{status}")
+        cached_profile({status, :unexpected_response})
 
       {:error, reason} ->
-        {:error, reason}
+        Logger.error("Goodreads profile request failed: #{inspect(reason)}")
+        cached_profile(reason)
     end
+  end
+
+  # Prefer the last successfully fetched profile over showing nothing when
+  # Goodreads is temporarily unavailable.
+  defp cached_profile(reason) do
+    case Cache.get!(@profile_cache_key) do
+      nil -> {:error, reason}
+      body -> {:ok, body}
+    end
+  end
+
+  defp request_options do
+    defaults = [
+      headers: [
+        {"accept", "text/html,application/xhtml+xml"},
+        {"user-agent", "Mozilla/5.0 (compatible; nuno.site/1.0; +https://nuno.site)"}
+      ],
+      receive_timeout: 15_000,
+      connect_options: [timeout: 10_000],
+      # Retry transient network failures once, but never retry a 404.
+      retry: :safe_transient,
+      max_retries: 1
+    ]
+
+    Keyword.merge(defaults, Application.get_env(:site, :goodreads, [])[:req_options] || [])
   end
 end

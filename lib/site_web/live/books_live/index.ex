@@ -67,8 +67,13 @@ defmodule SiteWeb.BooksLive.Index do
       |> assign(:page_title, "Books")
       |> stream_async(:books, fn ->
         case Site.Services.get_currently_reading() do
-          {:ok, books} -> {:ok, Enum.sort_by(books, & &1.started_date, {:desc, Date})}
-          error -> error
+          {:ok, books} ->
+            # The public Goodreads profile does not expose a start date. Treat
+            # those books as the oldest so they keep their relative order.
+            {:ok, Enum.sort_by(books, &(&1.started_date || ~D[1970-01-01]), {:desc, Date})}
+
+          error ->
+            error
         end
       end)
       |> stream_async(:want_books, fn ->

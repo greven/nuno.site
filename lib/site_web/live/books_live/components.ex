@@ -112,6 +112,13 @@ defmodule SiteWeb.BooksLive.Components do
           <.book id="book-reading-loading" loading />
         </:loading>
 
+        <:failed :let={_failure}>
+          <div class="flex items-center gap-3 text-content-40/60">
+            <.icon name="lucide-book-dashed" class="size-6" />
+            <span class="text-lg">Reading list not available</span>
+          </div>
+        </:failed>
+
         <ul
           id={@id}
           class="min-h-32 flex flex-col gap-4"
@@ -155,6 +162,13 @@ defmodule SiteWeb.BooksLive.Components do
         <:loading>
           <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
         </:loading>
+
+        <:failed :let={_failure}>
+          <div class="flex items-center gap-3 text-content-40/60">
+            <.icon name="lucide-book-dashed" class="size-6" />
+            <span class="text-lg">Books read not available</span>
+          </div>
+        </:failed>
 
         <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
           <.table id="recent-books" class="w-full text-sm table-auto" rows={@books}>
@@ -231,14 +245,24 @@ defmodule SiteWeb.BooksLive.Components do
         <:loading>
           <span class="font-medium text-content-40/50 animate-pulse">Loading...</span>
         </:loading>
-      </.async_result>
 
-      <%= if @books != [] do %>
+        <:failed :let={_failure}>
+          <div class="flex items-center gap-3 text-content-40/60">
+            <.icon name="lucide-book-dashed" class="size-6" />
+            <span class="text-lg">Want to read list not available</span>
+          </div>
+        </:failed>
+
         <div
           id="want-to-read-list"
           class="flex gap-8 snap-x snap-proximity overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0"
           phx-update={is_struct(@books, Phoenix.LiveView.LiveStream) && "stream"}
         >
+          <div class="hidden only:flex items-center gap-3 pb-4">
+            <.icon name="lucide-book-dashed" class="size-8 text-content-40/40" />
+            <span class="text-lg text-content-40">Empty Want to Read list...</span>
+          </div>
+
           <div
             :for={{dom_id, book} <- @books}
             id={dom_id}
@@ -255,12 +279,7 @@ defmodule SiteWeb.BooksLive.Components do
             />
           </div>
         </div>
-      <% else %>
-        <div class="flex items-center gap-3">
-          <.icon name="lucide-book-dashed" class="size-8 text-content-40/40" />
-          <span class="text-lg text-content-40">Empty Want to Read list...</span>
-        </div>
-      <% end %>
+      </.async_result>
     </div>
     """
   end

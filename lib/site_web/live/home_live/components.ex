@@ -215,18 +215,18 @@ defmodule SiteWeb.HomeLive.Components do
           </div>
         </:failed>
 
-        <%= if track.name do %>
+        <%= if is_map(track) and Map.get(track, :name) do %>
           <div class="flex flex-col justify-center">
             <.playing_indicator
-              is_playing={track.now_playing}
-              last_played={track.played_at}
+              is_playing={Map.get(track, :now_playing)}
+              last_played={Map.get(track, :played_at)}
             />
             <div class="mt-0.5 leading-5">
               <div class="text-sm md:text-base font-medium line-clamp-1">
-                {track.name}
+                {Map.get(track, :name)}
               </div>
               <div class="text-sm md:text-base text-content-30 line-clamp-1">
-                {track.artist}
+                {Map.get(track, :artist)}
               </div>
             </div>
           </div>
@@ -295,24 +295,26 @@ defmodule SiteWeb.HomeLive.Components do
     ~H"""
     <div class={["absolute inset-1 -z-1 rounded-md", @class]} {@rest}>
       <.async_result :let={track} assign={@track}>
-        <div
-          :if={@show_vignette && track.now_playing}
-          class="absolute inset-0 size-full rounded-md bg-radial from-transparent from-40% to-black/10 blur-xs"
-        >
-        </div>
-        <.image
-          :if={track.image && track.now_playing}
-          src={@track.result.image}
-          width={1000}
-          height={1000}
-          alt="Album artwork"
-          crossorigin="anonymous"
-          class={[
-            "rounded-md object-cover opacity-10 transition-[filter,opacity] duration-400 blur-xs brightness-70",
-            "group-hover/card:brightness-100 group-hover/card:blur-none group-hover/card:opacity-15",
-            @class
-          ]}
-        />
+        <%= if is_map(track) do %>
+          <div
+            :if={@show_vignette && Map.get(track, :now_playing)}
+            class="absolute inset-0 size-full rounded-md bg-radial from-transparent from-40% to-black/10 blur-xs"
+          >
+          </div>
+          <.image
+            :if={Map.get(track, :image) && Map.get(track, :now_playing)}
+            src={Map.get(track, :image)}
+            width={1000}
+            height={1000}
+            alt="Album artwork"
+            crossorigin="anonymous"
+            class={[
+              "rounded-md object-cover opacity-10 transition-[filter,opacity] duration-400 blur-xs brightness-70",
+              "group-hover/card:brightness-100 group-hover/card:blur-none group-hover/card:opacity-15",
+              @class
+            ]}
+          />
+        <% end %>
       </.async_result>
     </div>
     """

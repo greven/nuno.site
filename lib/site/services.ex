@@ -188,16 +188,18 @@ defmodule Site.Services do
 
   ## Books
 
-  @decorate cacheable(key: :books, opts: [ttl: :timer.hours(12)])
+  @decorate cacheable(key: :books, opts: [ttl: :timer.hours(1)])
   def get_currently_reading, do: Goodreads.get_currently_reading()
 
+  # The read and to-read shelves are not publicly available on Goodreads
+  # anymore, so these keep their API shape but return `{:error, :unavailable}`.
   @decorate cacheable(key: :recent_books, opts: [ttl: :timer.hours(24 * 5)])
   def get_recent_books, do: Goodreads.get_recently_read()
 
   @decorate cacheable(key: :want_books, opts: [ttl: :timer.hours(24)])
   def get_want_to_read_books, do: Goodreads.get_want_to_read()
 
-  @decorate cacheable(key: :reading_stats, opts: [ttl: :timer.hours(24)])
+  @decorate cacheable(key: :reading_stats, opts: [ttl: :timer.hours(1)])
   def get_reading_stats, do: Goodreads.get_reading_stats()
 
   ## Games

@@ -41,3 +41,6 @@ config :phoenix, :plug_init_mode, :runtime
 # Enable helpful, but potentially expensive runtime checks
 config :phoenix_live_view,
   enable_expensive_runtime_checks: true
+
+# Route Goodreads requests through Req.Test so tests never hit the network.
+config :site, :goodreads, req_options: [plug: {Req.Test, Site.Services.Goodreads}]

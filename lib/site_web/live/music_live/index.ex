@@ -203,8 +203,12 @@ defmodule SiteWeb.MusicLive.Index do
   defp get_currently_playing do
     case Services.get_now_playing() do
       {:ok, %MusicTrack{} = track} -> {:ok, %{track: track}}
-      error -> error
+      {:ok, _other} -> {:error, :not_available}
+      {:error, reason} -> {:error, reason}
+      other -> {:error, {:unexpected, other}}
     end
+  rescue
+    error -> {:error, error}
   end
 
   defp get_recent_tracks(opts) do

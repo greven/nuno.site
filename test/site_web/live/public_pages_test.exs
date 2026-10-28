@@ -3,13 +3,38 @@ defmodule SiteWeb.PublicPagesTest do
 
   import Phoenix.LiveViewTest
 
+  @home_cache_keys [
+    :reading_stats,
+    :now_playing,
+    :list_yearly_activity,
+    :list_yearly_activity_grouped_by_week
+  ]
+
   describe "home" do
+    setup do
+      Enum.each(@home_cache_keys, &Site.Cache.delete/1)
+      on_exit(fn -> Enum.each(@home_cache_keys, &Site.Cache.delete/1) end)
+      :ok
+    end
+
     @tag :external
     test "renders the hero section", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/")
 
       assert has_element?(view, "#hero")
       assert has_element?(view, "#site-intro")
+    end
+
+    test "renders when third-party services fail", %{conn: conn} do
+      Site.Cache.put(:reading_stats, {:error, :boom}, ttl: :timer.minutes(1))
+      Site.Cache.put(:now_playing, {:error, :boom}, ttl: :timer.minutes(1))
+      Site.Cache.put(:list_yearly_activity, [], ttl: :timer.minutes(1))
+
+      {:ok, view, _html} = live(conn, ~p"/")
+      html = render_async(view)
+
+      assert has_element?(view, "#home-grid")
+      assert html =~ "Not Available"
     end
   end
 

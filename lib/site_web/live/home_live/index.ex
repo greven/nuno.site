@@ -189,7 +189,7 @@ defmodule SiteWeb.HomeLive.Index do
               <Components.async_card_content async_result={@reading_stats}>
                 <:label>Reading</:label>
                 <:result :let={result}>
-                  <%= if result[:currently_reading] do %>
+                  <%= if is_map(result) and result[:currently_reading] do %>
                     {result[:currently_reading]} {ngettext(
                       "Book",
                       "Books",
@@ -300,7 +300,7 @@ defmodule SiteWeb.HomeLive.Index do
       |> assign(:photos_count, Site.Gallery.photos_count())
       |> stream(:posts, posts)
       |> assign_async(:track, &get_currently_playing/0)
-      |> assign_async(:reading_stats, fn -> {:ok, %{reading_stats: get_reading_stats()}} end)
+      |> assign_async(:reading_stats, &get_reading_stats/0)
       |> stream_async(:activity, fn -> {:ok, Activity.list_yearly_activity_grouped_by_month()} end)
       |> stream_async(:activity_redux, fn ->
         {:ok, Activity.list_yearly_activity_grouped_by_month(), limit: -9}
@@ -328,14 +328,21 @@ defmodule SiteWeb.HomeLive.Index do
   defp get_currently_playing do
     case Services.get_now_playing() do
       {:ok, %MusicTrack{} = track} -> {:ok, %{track: track}}
-      error -> error
+      {:ok, _other} -> {:error, :not_available}
+      {:error, reason} -> {:error, reason}
+      other -> {:error, {:unexpected, other}}
     end
+  rescue
+    error -> {:error, error}
   end
 
   defp get_reading_stats do
     case Services.get_reading_stats() do
-      {:ok, stats} -> stats
-      error -> error
+      {:ok, stats} -> {:ok, %{reading_stats: stats}}
+      {:error, reason} -> {:error, reason}
+      other -> {:error, {:unexpected, other}}
     end
+  rescue
+    error -> {:error, error}
   end
 end
