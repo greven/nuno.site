@@ -203,7 +203,7 @@ defmodule SiteWeb.BooksLive.Components do
                 >
                   <div class="flex flex-col gap-1">
                     <div class="flex gap-0.5 items-center">
-                      <div class="max-w-[32ch] sm:max-w-[46ch] md:max-w-[50ch] lg:max-w-[40ch] truncate">
+                      <div class="max-w-[32ch] sm:max-w-[40ch] md:max-w-[52ch] lg:max-w-[65ch] truncate">
                         {book.title}
                       </div>
                       <.icon
@@ -211,20 +211,12 @@ defmodule SiteWeb.BooksLive.Components do
                         class="size-4 inline-block ml-1 text-content-40/20 group-hover:text-content-40 transition-colors"
                       />
                     </div>
-                    <div class="lg:hidden max-w-[32ch] sm:max-w-[48ch] md:max-w-[60ch] lg:max-w-[72ch] truncate text-content-40">
+                    <div class="max-w-[32ch] sm:max-w-[40ch] md:max-w-[52ch] lg:max-w-[65ch] truncate text-content-40">
                       {book.author}
                     </div>
                   </div>
                 </.link>
               </span>
-            </:col>
-            <:col
-              :let={{_id, book}}
-              label="Author"
-              head_class="hidden lg:table-cell text-left"
-              class="hidden lg:table-cell text-left whitespace-nowrap text-content-20"
-            >
-              {book.author}
             </:col>
             <:col
               :let={{_id, book}}
