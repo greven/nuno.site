@@ -18,17 +18,22 @@ defmodule Site.Travel.Measures do
     {origin_city, origin_country} = parse_location(origin)
     {dest_city, dest_country} = parse_location(destination)
 
-    %{alpha2: origin_country_code} = Geo.get_country_by_name(origin_country)
-    %{alpha2: dest_country_code} = Geo.get_country_by_name(dest_country)
-
-    origin_place = Geo.find_place(origin_city, origin_country_code)
-    destination_place = Geo.find_place(dest_city, dest_country_code)
-
-    {
-      Geo.Point.new(origin_place.latitude, origin_place.longitude),
-      Geo.Point.new(destination_place.latitude, destination_place.longitude)
-    }
+    with %{alpha2: origin_country_code} <- Geo.get_country_by_name(origin_country),
+         %{alpha2: dest_country_code} <- Geo.get_country_by_name(dest_country),
+         %{latitude: origin_lat, longitude: origin_lon} <-
+           Geo.find_place(origin_city, origin_country_code),
+         %{latitude: dest_lat, longitude: dest_lon} <-
+           Geo.find_place(dest_city, dest_country_code) do
+      {
+        Geo.Point.new(origin_lat, origin_lon),
+        Geo.Point.new(dest_lat, dest_lon)
+      }
+    else
+      _ -> {nil, nil}
+    end
   end
+
+  def trip_coordinates(_origin, _destination), do: {nil, nil}
 
   @doc """
   Calculate distance between two cities in `km` given a origin and destination, either
@@ -42,17 +47,20 @@ defmodule Site.Travel.Measures do
 
   def travel_distance({origin_city, origin_country}, {dest_city, dest_country}, transport_type)
       when transport_type in [:direct, :air, :car] do
-    %{alpha2: origin_country_code} = Geo.get_country_by_name(origin_country)
-    %{alpha2: dest_country_code} = Geo.get_country_by_name(dest_country)
-
-    origin_city = Geo.find_place(origin_city, origin_country_code)
-    dest_city = Geo.find_place(dest_city, dest_country_code)
-
-    Geo.Point.distance_between(
-      %Geo.Point{lat: origin_city.latitude, long: origin_city.longitude},
-      %Geo.Point{lat: dest_city.latitude, long: dest_city.longitude},
-      transport_type
-    )
+    with %{alpha2: origin_country_code} <- Geo.get_country_by_name(origin_country),
+         %{alpha2: dest_country_code} <- Geo.get_country_by_name(dest_country),
+         %{latitude: origin_lat, longitude: origin_lon} <-
+           Geo.find_place(origin_city, origin_country_code),
+         %{latitude: dest_lat, longitude: dest_lon} <-
+           Geo.find_place(dest_city, dest_country_code) do
+      Geo.Point.distance_between(
+        %Geo.Point{lat: origin_lat, long: origin_lon},
+        %Geo.Point{lat: dest_lat, long: dest_lon},
+        transport_type
+      )
+    else
+      _ -> nil
+    end
   end
 
   def travel_distance(origin, destination, transport_type)
@@ -64,7 +72,10 @@ defmodule Site.Travel.Measures do
   end
 
   defp parse_location(location) do
-    [city, country] = String.split(location, ", ", trim: true)
-    {city, country}
+    case String.split(location, ", ", trim: true) do
+      [city, country] -> {city, country}
+      [city] -> {city, nil}
+      _ -> {location, nil}
+    end
   end
 end

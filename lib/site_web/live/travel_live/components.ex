@@ -129,6 +129,8 @@ defmodule SiteWeb.TravelLive.Components do
     """
   end
 
+  defp format_distance(nil), do: "—"
+
   defp format_distance(meters) do
     Support.format_number(round(meters / 1000), 0)
   end

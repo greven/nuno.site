@@ -43,7 +43,7 @@ defmodule Site.Travel do
   def travel_stats do
     km_traveled =
       list_trips()
-      |> Enum.sum_by(& &1.distance)
+      |> Enum.sum_by(&(&1.distance || 0))
       |> div(1000)
       |> round()
 
@@ -132,15 +132,19 @@ defmodule Site.Travel do
   defp travel_distance(%Trip{origin: origin, destination: destination, type: type}) do
     transport_type = transport_type(type)
 
-    Measures.travel_distance(origin, destination, transport_type)
-    |> round()
+    case Measures.travel_distance(origin, destination, transport_type) do
+      nil -> nil
+      distance -> round(distance)
+    end
   end
 
   defp travel_distance(%Geo.Point{} = point_a, %Geo.Point{} = point_b, type) do
     transport_type = transport_type(type)
 
-    Measures.travel_distance(point_a, point_b, transport_type)
-    |> round()
+    case Measures.travel_distance(point_a, point_b, transport_type) do
+      nil -> nil
+      distance -> round(distance)
+    end
   end
 
   defp transport_type(type) do
@@ -158,9 +162,11 @@ defmodule Site.Travel do
     {from_point, to_point} = Measures.trip_coordinates(origin, destination)
 
     distance =
-      if trip.distance,
-        do: trip.distance,
-        else: travel_distance(from_point, to_point, trip.type)
+      cond do
+        trip.distance -> trip.distance
+        from_point && to_point -> travel_distance(from_point, to_point, trip.type)
+        true -> nil
+      end
 
     Map.merge(trip, %{
       distance: distance,

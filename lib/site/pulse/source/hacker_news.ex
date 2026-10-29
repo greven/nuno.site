@@ -35,7 +35,11 @@ defmodule Site.Pulse.Source.HackerNews do
         items =
           ids
           |> Enum.take(limit)
-          |> Task.async_stream(&fetch_story/1, timeout: :infinity, max_concurrency: 20)
+          |> Task.async_stream(&fetch_story/1,
+            timeout: 20_000,
+            on_timeout: :kill_task,
+            max_concurrency: 20
+          )
           |> Enum.reduce([], fn
             {:ok, {:ok, item}}, acc -> [item | acc]
             _, acc -> acc
@@ -73,7 +77,8 @@ defmodule Site.Pulse.Source.HackerNews do
         ids
         |> Enum.take(limit)
         |> Task.async_stream(&fetch_story(&1, false),
-          timeout: :infinity,
+          timeout: 20_000,
+          on_timeout: :kill_task,
           max_concurrency: 20,
           ordered: false
         )

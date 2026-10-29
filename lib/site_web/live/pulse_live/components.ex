@@ -96,25 +96,15 @@ defmodule SiteWeb.PulseLive.Components do
     """
   end
 
-  def forex(assigns) do
+  def forex(%{forex: %{current: %{rates: rates}, change: change}} = assigns)
+      when is_map(rates) and is_map(change) do
     assigns =
       assigns
-      |> assign(
-        :gbp_rate,
-        Map.get(assigns.forex.current.rates, :gbp) |> Decimal.round(2) |> Decimal.to_float()
-      )
-      |> assign(
-        :usd_rate,
-        Map.get(assigns.forex.current.rates, :usd) |> Decimal.round(2) |> Decimal.to_float()
-      )
-      |> assign(
-        :jpy_rate,
-        Map.get(assigns.forex.current.rates, :jpy) |> Decimal.round(2) |> Decimal.to_float()
-      )
-      |> assign(
-        :chf_rate,
-        Map.get(assigns.forex.current.rates, :chf) |> Decimal.round(2) |> Decimal.to_float()
-      )
+      |> assign(:gbp_rate, rate_float(rates, :gbp))
+      |> assign(:usd_rate, rate_float(rates, :usd))
+      |> assign(:jpy_rate, rate_float(rates, :jpy))
+      |> assign(:chf_rate, rate_float(rates, :chf))
+      |> assign(:forex_date, format_forex_date(assigns.forex.current.date))
 
     ~H"""
     <div {@rest}>
@@ -127,8 +117,7 @@ defmodule SiteWeb.PulseLive.Components do
         <.header tag="h3" header_class="flex items-center gap-2 text-2xl">
           <.icon name="flag-eu-square" class="size-5 rounded-xs" /> Forex
           <:subtitle>
-            Last updated
-            <span class="font-medium">{Calendar.strftime(@forex.current.date, "%d %b %Y")}</span>
+            Last updated <span class="font-medium">{@forex_date}</span>
           </:subtitle>
         </.header>
 
@@ -141,7 +130,7 @@ defmodule SiteWeb.PulseLive.Components do
         <ul class="w-full space-y-3.5">
           <.forex_rate_item
             rate={@gbp_rate}
-            change={@forex.change.gbp}
+            change={Map.get(@forex.change, :gbp)}
             currency_name="Pound"
             currency_symbol="£"
             icon_name="flag-gb"
@@ -149,7 +138,7 @@ defmodule SiteWeb.PulseLive.Components do
 
           <.forex_rate_item
             rate={@usd_rate}
-            change={@forex.change.usd}
+            change={Map.get(@forex.change, :usd)}
             currency_name="Dollar"
             currency_symbol="$"
             icon_name="flag-us"
@@ -157,7 +146,7 @@ defmodule SiteWeb.PulseLive.Components do
 
           <.forex_rate_item
             rate={@chf_rate}
-            change={@forex.change.chf}
+            change={Map.get(@forex.change, :chf)}
             currency_name="Franc"
             currency_symbol="CHF"
             icon_name="flag-ch"
@@ -165,7 +154,7 @@ defmodule SiteWeb.PulseLive.Components do
 
           <.forex_rate_item
             rate={@jpy_rate}
-            change={@forex.change.jpy}
+            change={Map.get(@forex.change, :jpy)}
             currency_name="Yen"
             currency_symbol="¥"
             icon_name="flag-jp"
@@ -175,6 +164,8 @@ defmodule SiteWeb.PulseLive.Components do
     </div>
     """
   end
+
+  def forex(assigns), do: forex(%{assigns | forex: nil})
 
   @doc """
   Renders and exchange rate list item.
@@ -187,6 +178,11 @@ defmodule SiteWeb.PulseLive.Components do
   attr :icon_name, :string, required: true
 
   def forex_rate_item(assigns) do
+    assigns =
+      assigns
+      |> assign(:rate, assigns.rate || 0.0)
+      |> assign(:change, assigns.change || 0.0)
+
     ~H"""
     <li class="flex flex-col items-center text-sm">
       <div class="w-full flex items-center gap-2">
@@ -506,17 +502,18 @@ defmodule SiteWeb.PulseLive.Components do
   def weather_forecast_list(assigns) do
     {daily_min, daily_max} =
       if assigns.weather.ok? && assigns.weather.result do
-        day_min =
+        days =
           assigns.weather.result.daily
           |> Enum.take(assigns.number_of_days)
-          |> Enum.min_by(& &1.temp_min)
 
-        day_max =
-          assigns.weather.result.daily
-          |> Enum.take(assigns.number_of_days)
-          |> Enum.max_by(& &1.temp_max)
+        if days != [] and Enum.all?(days, &(is_number(&1.temp_min) and is_number(&1.temp_max))) do
+          day_min = Enum.min_by(days, & &1.temp_min)
+          day_max = Enum.max_by(days, & &1.temp_max)
 
-        {day_min.temp_min, day_max.temp_max}
+          {day_min.temp_min, day_max.temp_max}
+        else
+          {nil, nil}
+        end
       else
         {nil, nil}
       end
@@ -717,7 +714,7 @@ defmodule SiteWeb.PulseLive.Components do
     assigns =
       assigns
       |> assign(:id, "news-#{assigns.source}")
-      |> assign(:meta, Pulse.meta!(assigns.source))
+      |> assign(:meta, meta_for(assigns.source))
 
     ~H"""
     <article id={@id} class={@class} style={@meta.accent && "--link-accent: #{@meta.accent};"} {@rest}>
@@ -893,7 +890,7 @@ defmodule SiteWeb.PulseLive.Components do
   def news_list_item(assigns) do
     assigns =
       assigns
-      |> assign(:meta, assigns.item && Pulse.meta!(assigns.item.source))
+      |> assign(:meta, assigns.item && meta_for(assigns.item.source))
 
     ~H"""
     <li
@@ -922,7 +919,7 @@ defmodule SiteWeb.PulseLive.Components do
             <div class="flex items-center gap-1.5 text-xs text-content-40">
               {@meta && @meta.name}
             </div>
-            <%= if @item.date do %>
+            <%= if valid_date?(@item.date) do %>
               <span class="text-xs text-content-40 shrink-0">
                 <.relative_time date={@item.date} suffix="" short />
               </span>
@@ -1001,7 +998,7 @@ defmodule SiteWeb.PulseLive.Components do
   def news_feed_detail_item(assigns) do
     assigns =
       assigns
-      |> assign(:meta, assigns.item && Pulse.meta!(assigns.item.source))
+      |> assign(:meta, assigns.item && meta_for(assigns.item.source))
 
     ~H"""
     <div
@@ -1018,7 +1015,7 @@ defmodule SiteWeb.PulseLive.Components do
     >
       <div class="w-full max-w-[60ch] mx-auto p-8 flex flex-col gap-6">
         <%!-- Source --%>
-        <div class="-mb-4 text-sm text-content-40">{@meta.name}</div>
+        <div class="-mb-4 text-sm text-content-40">{@meta && @meta.name}</div>
 
         <%!-- Title --%>
         <.header
@@ -1031,7 +1028,12 @@ defmodule SiteWeb.PulseLive.Components do
 
           <:subtitle>
             <span class="text-content-40/80 text-sm">
-              Published <.relative_time date={@item.date} />
+              Published
+              <%= if valid_date?(@item.date) do %>
+                <.relative_time date={@item.date} />
+              <% else %>
+                date unavailable
+              <% end %>
             </span>
           </:subtitle>
         </.header>
@@ -1077,6 +1079,7 @@ defmodule SiteWeb.PulseLive.Components do
       </.button>
 
       <.button
+        :if={@item.discussion_url}
         variant="light"
         href={@item.discussion_url}
         target="_blank"
@@ -1095,6 +1098,7 @@ defmodule SiteWeb.PulseLive.Components do
       </.button>
 
       <.button
+        :if={@item.discussion_url}
         variant="light"
         href={@item.discussion_url}
         target="_blank"
@@ -1108,7 +1112,7 @@ defmodule SiteWeb.PulseLive.Components do
   defp news_feed_detail_item_links(assigns) do
     ~H"""
     <div>
-      <.button variant="solid" href={@item.url} target="_blank">
+      <.button :if={@item.url} variant="solid" href={@item.url} target="_blank">
         Full Article <.icon name="lucide-arrow-up-right" />
       </.button>
     </div>
@@ -1116,6 +1120,29 @@ defmodule SiteWeb.PulseLive.Components do
   end
 
   ## Helpers
+
+  defp meta_for(source) do
+    case Pulse.meta(source) do
+      {:ok, meta} -> meta
+      _ -> %Pulse.Meta{name: "Unknown source", icon: "lucide-box"}
+    end
+  end
+
+  defp rate_float(rates, key) do
+    case Decimal.cast(Map.get(rates, key)) do
+      {:ok, decimal} -> decimal |> Decimal.round(2) |> Decimal.to_float()
+      _ -> 0.0
+    end
+  end
+
+  defp format_forex_date(%Date{} = date), do: Calendar.strftime(date, "%d %b %Y")
+  defp format_forex_date(%DateTime{} = date), do: Calendar.strftime(date, "%d %b %Y")
+  defp format_forex_date(_date), do: "Unknown"
+
+  defp valid_date?(%Date{}), do: true
+  defp valid_date?(%DateTime{}), do: true
+  defp valid_date?(%NaiveDateTime{}), do: true
+  defp valid_date?(_date), do: false
 
   @doc """
   Given a weather code, returns the corresponding icon path.

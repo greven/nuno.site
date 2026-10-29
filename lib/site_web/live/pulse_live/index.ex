@@ -1,6 +1,8 @@
 defmodule SiteWeb.PulseLive.Index do
   use SiteWeb, :live_view
 
+  require Logger
+
   alias Phoenix.LiveView.AsyncResult
 
   alias Site.Pulse
@@ -169,7 +171,13 @@ defmodule SiteWeb.PulseLive.Index do
       |> assign(:page_title, "Pulse")
       |> assign(:year_progress, year_progress)
       |> assign(:rates, get_exchange_rates())
-      |> assign(feed_page: 1, feed_per_page: @feed_per_page, end_of_feed?: false)
+      |> assign(
+        feed_page: 1,
+        feed_per_page: @feed_per_page,
+        end_of_feed?: false,
+        feed_loading?: false,
+        pending_feed_page: nil
+      )
       |> assign(:news_feed, AsyncResult.loading())
       |> assign(:hacker_news, AsyncResult.loading())
       |> stream(:news_feed, [])
@@ -201,16 +209,16 @@ defmodule SiteWeb.PulseLive.Index do
 
   @impl true
   def handle_event("feed_next_page", _params, socket) do
-    {:noreply, paginate_feed(socket, socket.assigns.feed_page + 1)}
+    request_feed_page(socket, socket.assigns.feed_page + 1)
   end
 
   def handle_event("feed_prev_page", %{"_overran" => true}, socket) do
-    {:noreply, paginate_feed(socket, 1)}
+    request_feed_page(socket, 1)
   end
 
   def handle_event("feed_prev_page", _params, socket) do
     if socket.assigns.feed_page > 1 do
-      {:noreply, paginate_feed(socket, socket.assigns.feed_page - 1)}
+      request_feed_page(socket, socket.assigns.feed_page - 1)
     else
       {:noreply, socket}
     end
@@ -221,12 +229,45 @@ defmodule SiteWeb.PulseLive.Index do
   end
 
   @impl true
-  def handle_async(:fetch_feed, {:ok, items}, socket) do
+  def handle_async(:fetch_feed, {:ok, items}, socket) when is_list(items) do
     {:noreply, paginate_feed(socket, items, 1)}
   end
 
-  def handle_async(:fetch_feed, {:exit, _}, socket) do
-    {:noreply, paginate_feed(socket, [], 1)}
+  def handle_async(:fetch_feed, result, socket) do
+    socket =
+      socket
+      |> assign(:news_feed, AsyncResult.failed(socket.assigns.news_feed, result))
+      |> assign(:end_of_feed?, true)
+      |> assign(:feed_loading?, false)
+
+    {:noreply, socket}
+  end
+
+  def handle_async(:feed_page, {:ok, {page, items}}, socket) when is_list(items) do
+    if page == socket.assigns.pending_feed_page do
+      socket =
+        socket
+        |> assign(:feed_loading?, false)
+        |> assign(:pending_feed_page, nil)
+        |> paginate_feed(items, page)
+
+      {:noreply, socket}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_async(:feed_page, result, socket) do
+    Logger.warning("Pulse feed page failed: #{inspect(result)}")
+
+    socket =
+      socket
+      |> assign(:feed_loading?, false)
+      |> assign(:pending_feed_page, nil)
+      |> assign(:end_of_feed?, true)
+      |> put_flash(:error, "Could not load more news.")
+
+    {:noreply, socket}
   end
 
   def handle_async(:hacker_news_loader, {:ok, :done}, socket) do
@@ -260,13 +301,25 @@ defmodule SiteWeb.PulseLive.Index do
     {:noreply, socket}
   end
 
+  def handle_async(:hacker_news_loader, result, socket) do
+    socket =
+      assign(
+        socket,
+        :hacker_news,
+        AsyncResult.failed(socket.assigns.hacker_news, {:unexpected, result})
+      )
+
+    {:noreply, socket}
+  end
+
   # Catch-all
   def handle_async(_name, _result, socket) do
     {:noreply, socket}
   end
 
   @impl true
-  def handle_info({:hacker_news_item, item}, socket) do
+  def handle_info({:hacker_news_item, %Site.Pulse.Item{id: id} = item}, socket)
+      when is_binary(id) do
     socket =
       if socket.assigns.hacker_news.ok? do
         socket
@@ -277,19 +330,41 @@ defmodule SiteWeb.PulseLive.Index do
     {:noreply, stream_insert(socket, :hacker_news, item)}
   end
 
+  def handle_info({:hacker_news_item, _item}, socket), do: {:noreply, socket}
+
   # Catch-all for unexpected errors
   def handle_info(_message, socket) do
     {:noreply, socket}
   end
 
-  defp paginate_feed(socket, items, new_page) when new_page >= 1 do
-    assign_feed(socket, items, new_page)
+  defp request_feed_page(socket, new_page) when new_page >= 1 do
+    cond do
+      new_page == socket.assigns.feed_page ->
+        {:noreply, socket}
+
+      socket.assigns.feed_loading? ->
+        {:noreply, socket}
+
+      new_page > socket.assigns.feed_page and socket.assigns.end_of_feed? ->
+        {:noreply, socket}
+
+      true ->
+        %{feed_per_page: per_page} = socket.assigns
+
+        socket =
+          assign(socket,
+            feed_loading?: true,
+            pending_feed_page: new_page
+          )
+
+        {:noreply,
+         start_async(socket, :feed_page, fn ->
+           {new_page, Pulse.list_feed(offset: (new_page - 1) * per_page, limit: per_page)}
+         end)}
+    end
   end
 
-  defp paginate_feed(socket, new_page) when new_page >= 1 do
-    %{feed_per_page: per_page} = socket.assigns
-    items = Pulse.list_feed(offset: (new_page - 1) * per_page, limit: per_page)
-
+  defp paginate_feed(socket, items, new_page) when new_page >= 1 do
     assign_feed(socket, items, new_page)
   end
 
@@ -356,41 +431,94 @@ defmodule SiteWeb.PulseLive.Index do
               ]
           end)
 
-        {:ok,
-         %{
-           time: weather.current.time,
-           weather_code: weather.current.weather_code,
-           temp: weather.current.temperature.value,
-           temp_unit: weather.current.temperature.unit,
-           apparent_temp: weather.current.apparent_temperature.value,
-           temp_max: weather.daily.temperature_max.values |> hd(),
-           temp_min: weather.daily.temperature_min.values |> hd(),
-           humidity: weather.current.relative_humidity.value,
-           rain: weather.current.precipitation.value,
-           rain_unit: weather.current.precipitation.unit,
-           pressure: weather.current.surface_pressure.value,
-           pressure_unit: weather.current.surface_pressure.unit,
-           wind_speed: weather.current.wind_speed.value,
-           wind_speed_unit: weather.current.wind_speed.unit,
-           uv_index: weather.daily.uv_index_max |> hd(),
-           sunrise: weather.daily.sunrise |> hd() |> Calendar.strftime("%H:%M"),
-           sunset: weather.daily.sunset |> hd() |> Calendar.strftime("%H:%M"),
-           is_day: weather.current.is_day,
-           daily: daily
-         }}
+        weather_map = %{
+          time: weather.current.time,
+          weather_code: weather.current.weather_code,
+          temp: weather.current.temperature.value,
+          temp_unit: weather.current.temperature.unit,
+          apparent_temp: weather.current.apparent_temperature.value,
+          temp_max: weather.daily.temperature_max.values |> hd(),
+          temp_min: weather.daily.temperature_min.values |> hd(),
+          humidity: weather.current.relative_humidity.value,
+          rain: weather.current.precipitation.value,
+          rain_unit: weather.current.precipitation.unit,
+          pressure: weather.current.surface_pressure.value,
+          pressure_unit: weather.current.surface_pressure.unit,
+          wind_speed: weather.current.wind_speed.value,
+          wind_speed_unit: weather.current.wind_speed.unit,
+          uv_index: weather.daily.uv_index_max |> hd(),
+          sunrise: weather.daily.sunrise |> hd() |> Calendar.strftime("%H:%M"),
+          sunset: weather.daily.sunset |> hd() |> Calendar.strftime("%H:%M"),
+          is_day: weather.current.is_day,
+          daily: daily
+        }
+
+        if valid_weather?(weather_map) do
+          {:ok, weather_map}
+        else
+          {:error, :invalid_weather}
+        end
 
       {:error, reason} ->
         {:error, reason}
     end
   end
 
+  defp valid_weather?(weather) do
+    valid_daily?(weather.daily) and valid_current?(weather)
+  end
+
+  defp valid_daily?(daily) do
+    daily != [] and Enum.all?(daily, &valid_day?/1)
+  end
+
+  defp valid_day?(day) do
+    match?(%Date{}, day.day) and is_number(day.temp_min) and is_number(day.temp_max)
+  end
+
+  defp valid_weather_time?(%Date{}), do: true
+  defp valid_weather_time?(%DateTime{}), do: true
+  defp valid_weather_time?(%NaiveDateTime{}), do: true
+  defp valid_weather_time?(_time), do: false
+
+  defp valid_current?(weather) do
+    Enum.all?([
+      valid_weather_time?(weather.time),
+      is_integer(weather.weather_code),
+      is_number(weather.temp),
+      is_number(weather.apparent_temp),
+      is_number(weather.temp_max),
+      is_number(weather.temp_min),
+      is_number(weather.humidity),
+      is_number(weather.wind_speed),
+      is_number(weather.uv_index),
+      is_boolean(weather.is_day),
+      is_binary(weather.temp_unit),
+      is_binary(weather.wind_speed_unit),
+      is_binary(weather.sunrise),
+      is_binary(weather.sunset)
+    ])
+  end
+
   defp get_exchange_rates do
+    build_exchange_rates()
+  rescue
+    error ->
+      Logger.warning("Failed to load exchange rates: #{inspect(error)}")
+      nil
+  catch
+    kind, reason ->
+      Logger.warning("Failed to load exchange rates: #{inspect({kind, reason})}")
+      nil
+  end
+
+  defp build_exchange_rates do
     case Forex.last_ninety_days_rates() do
       {:ok, [_ | _] = rates} ->
         latest_rates = Enum.take(rates, 7)
 
         with %{rates: current_rates} when is_map(current_rates) <- List.first(latest_rates),
-             true <- Enum.all?([:gbp, :usd, :jpy, :chf], &Map.has_key?(current_rates, &1)) do
+             true <- Enum.all?([:gbp, :usd, :jpy, :chf], &valid_rate?(current_rates, &1)) do
           %{
             current: List.first(latest_rates),
             change: %{
@@ -409,12 +537,17 @@ defmodule SiteWeb.PulseLive.Index do
     end
   end
 
+  defp valid_rate?(rates, currency_code) do
+    match?({:ok, _decimal}, Decimal.cast(Map.get(rates, currency_code)))
+  end
+
   # Calculate the percentage change in exchange rate for a rates list and currency code
   defp rate_change(rates, currency_code) do
     with %{rates: first_rates} <- List.first(rates),
          %{rates: last_rates} <- List.last(rates),
-         first_value when not is_nil(first_value) <- Map.get(first_rates, currency_code),
-         last_value when not is_nil(last_value) <- Map.get(last_rates, currency_code) do
+         {:ok, first_value} <- Decimal.cast(Map.get(first_rates, currency_code)),
+         {:ok, last_value} <- Decimal.cast(Map.get(last_rates, currency_code)),
+         true <- Decimal.compare(last_value, Decimal.new(0)) != :eq do
       Decimal.div(Decimal.sub(first_value, last_value), last_value)
       |> Decimal.mult(100)
       |> Decimal.round(2)
@@ -422,5 +555,7 @@ defmodule SiteWeb.PulseLive.Index do
     else
       _ -> nil
     end
+  rescue
+    _ -> nil
   end
 end

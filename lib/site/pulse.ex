@@ -49,7 +49,8 @@ defmodule Site.Pulse do
       fn source_name ->
         list_items(source_name, limit: limit_per_source)
       end,
-      timeout: :infinity,
+      timeout: 20_000,
+      on_timeout: :kill_task,
       max_concurrency: length(@all_sources)
     )
     |> Enum.reduce([], fn
